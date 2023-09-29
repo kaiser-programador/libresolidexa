@@ -1,0 +1,248 @@
+{{! para la ventana de RESPONSABILIDAD SOCIAL DEL PROYECTO CONTRUDIDO, VISTA DEL LADO PUBLICO DEL CLIENTE }}
+
+<div class="row mt-5 cuadro_estandart py-3">
+
+    <div class="col-12 d-flex">
+        <div class="mr-3 contenedor-detalle-icono">
+            <i class="fas fa-hand-holding-heart"></i>
+        </div>
+
+        <div class="container-fluid contenedor-detalle-texto">
+
+            <div class="row">
+
+                <div class="col-12 col-md-9 col-lg-6 mb-4">
+                    {{! <div class="col-12 col-md-6 col-lg-4 mb-4"> }}
+
+                    <h4 class="texto-resaltado">Beneficiario</h4>
+                    <h3>{{contenido_proyecto.beneficiario_rs}}</h3>
+
+                    <h4 class="mt-3 texto-resaltado">Monto</h4>
+
+                    <div class="borde_entero p-0 mb-2 d-flex mr-lg-5">
+                        <div class="dolar_seg_social">
+                            $us
+                        </div>
+                        {{! w-100 }}
+                        <div
+                            class="text-center px-2 py-1 align-self-center d-block w-100"
+                            style="font-size: 2.3rem;font-weight: 500;letter-spacing: 0.8rem;"
+                        >
+                            {{contenido_proyecto.monto_dinero_rs}}
+                        </div>
+                    </div>
+
+                    <h4 class="mt-3 texto-resaltado">Fecha de entrega</h4>
+                    <h5>{{contenido_proyecto.fecha_entrega_rs}}</h5>
+
+                </div>
+
+                <div class="col-12 col-lg-6">
+                    {{! <div class="col-12 col-md-6 offset-lg-1 col-lg-7"> }}
+                    <h4 class="texto-resaltado">Descripción</h4>
+                    <div class="escritura">
+                        {{contenido_proyecto.descripcion_rs}}
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-12">
+                    <h4 class="texto-resaltado">¿De donde se obtienen estos recursos?</h4>
+                    <p class="text-left">
+                        Gracias al uso eficiente de los recursos materiales y humanos, a la optimización
+                        de las tareas de ejecución y al establecimiento de una cadena competitiva con
+                        nuestros proveedores, logramos obtener beneficios económicos a lo largo del
+                        desarrollo del presente proyecto, dichos recursos obtenidos son destinados a
+                        causas sociales como una contribución a nuestra sociedad.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{{#if contenido_proyecto.link_youtube_rs}}
+    {{! <hr class="border-success mt-5"> }}
+
+    <div class="row mt-5 cuadro_estandart py-3">
+
+        <div class="col-12 d-flex">
+            <div class="mr-3 contenedor-detalle-icono">
+                <i class="fas fa-film"></i>
+            </div>
+
+            <div class="container-fluid contenedor-detalle-texto">
+
+                <div class="row">
+                    <div class="col-12 mb-3">
+                        <h4 class="texto-resaltado">Vídeo</h4>
+                    </div>
+
+                    {{! las imagenes son como los span }}
+                    <div class="col-0 col-lg-2"></div>
+                    <div class="col-12 col-lg-8 mb-3">
+                        {{! el IFRAME }}
+                        <div id="video-rs">
+                            {{contenido_proyecto.link_youtube_rs}}
+                        </div>
+                    </div>
+                    <div class="col-0 col-lg-2"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+{{/if}}
+
+{{#if contenido_proyecto.imagenes_rs}}
+    {{! <hr class="border-success mt-5"> }}
+
+    <div class="row mt-5 cuadro_estandart py-3">
+
+        <div class="col-12 d-flex">
+            <div class="mr-3 contenedor-detalle-icono">
+                <i class="fas fa-camera-retro"></i>
+            </div>
+
+            <div class="container-fluid contenedor-detalle-texto">
+
+                <div class="row">
+                    <div class="col-12 mb-4">
+                        <div class="d-flex justify-content-between">
+                            <h4 class="texto-resaltado">Imágenes</h4>
+                            <div>
+                                <button class="btn btn-primary" id="ver_fotos_rspy"><i class="fas fa-binoculars"></i><span class="ml-2">Ver</span></button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    {{! las imagnes son como los span }}
+
+                    {{#each contenido_proyecto.imagenes_rs}}
+
+                        <div class="mb-3 col-12 col-sm-6 col-md-4 col-lg-3">
+
+                            <div class="card">
+                                <div class="card-header p-0">
+                                    <div class="p-0 m-0">
+                                        <div class="align-self-center p-2 text-center texto-link">
+                                            <h6>{{nombre_imagen}}</h6>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <img
+                                    src="/rutavirtualpublico/subido/{{imagen_rs}}"
+                                    alt="{{codigo_imagen}}"
+                                    title="{{nombre_imagen}}"
+                                    class="estilo_imagen card-img-top"
+                                />
+                            </div>
+
+                        </div>
+
+                    {{/each}}
+
+                    {{! /////////////////////////////////////////// }}
+                    <div class="wrapper" id="contenedor_imagenes_rspy" hidden>
+                        {{! solo indicamos la ruta "href" para visualizar la imagen (aun no la cargamos visualmente) }}
+                        {{! Por pura suerte para que fancybox no presente las imagenes propias del proyecto con las de responsabilidad es que aqui se puso en el atributo: data-fancybox="gallery_rs" en lugar de: data-fancybox="gallery"  (dado que esta ultima esta reservada para las imagenes propias del proyecto) }}
+                        {{#each contenido_proyecto.imagenes_rs}}
+                            <a
+                                href="/rutavirtualpublico/subido/{{imagen_rs}}"
+                                data-fancybox="gallery_rs"
+                                data-caption="{{nombre_imagen}}"
+                            ><img
+                                    src="/rutavirtualpublico/subido/{{imagen_rs}}"
+                                    alt="{{nombre_imagen}}"
+                                /></a>
+                        {{/each}}
+                    </div>
+                    {{! /////////////////////////////////////////// }}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+{{/if}}
+
+{{#if contenido_proyecto.detalles_tabla}}
+    {{! <hr class="border-success mt-5"> }}
+
+    <div class="row mt-5 cuadro_estandart py-3">
+
+        <div class="col-12 d-flex">
+            <div class="mr-3 contenedor-detalle-icono">
+                <i class="fas fa-clipboard-list"></i>
+            </div>
+
+            <div class="container-fluid contenedor-detalle-texto">
+
+                <div class="row">
+                    <div class="col-12 mb-4">
+                        <h4 class="texto-resaltado">Detalles de beneficio entregado</h4>
+                    </div>
+
+                    <div class="col-12">
+                        <div
+                            class="tabla_caracteristicas barra-deslizadora-mob table-responsive cuadro_titulo p-4"
+                        >
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="texto-resaltado">#</th>
+                                        <th
+                                            class="texto-resaltado"
+                                        >Ítem&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                        <th class="texto-resaltado">Unidad</th>
+                                        <th class="texto-resaltado">Precio unitario $us/Unid </th>
+                                        <th class="texto-resaltado">Cantidad</th>
+                                        <th class="texto-resaltado">Total $us</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody class="texto-normal">
+
+                                    {{#each contenido_proyecto.detalles_tabla}}
+                                        <tr>
+                                            <td>{{rs_numero}}</td>
+                                            <td>{{rs_item}}</td>
+                                            <td>{{rs_unidad}}</td>
+                                            <td>{{rs_pu}}</td>
+                                            <td>{{rs_cantidad}}</td>
+                                            <td>{{rs_total}}</td>
+                                        </tr>
+                                    {{/each}}
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+{{/if}}
+
+<div class="text-right mt-4" title="Numero de visualizaciones">
+    <span><i class="fas fa-glasses icono_visualizaciones"></i></span>
+    <span class="numero_visualizaciones"><b>{{nv_ventana}}</b></span>
+</div>

@@ -1,0 +1,131 @@
+{{! PIE DE PAGINA DE VENTANAS LADO ADMINISTRADOR }}
+
+{{! "z-index: 2000;" para que los elementos que se animan con caida lluvia no tapen la parte del footer cuando lleguen
+a este, sino que se queden destras de este y ADEMAS PARA QUE EL MODAL DE "CREAR CONVOCATORIA" NO SE VEA OPACADO}}
+<footer class="footer_cliente">
+
+    <div class="container">
+
+        <div class="row">
+            <div class="col-12">
+                <div class="contenedor_1 text-center">
+                    <h5 class="mb-3 texto-resaltado">Misión, Visión</h5>
+                    <h6>{{pie_pagina_adm.mision_vision}}</h6>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="contenedor_2 text-center mb-2">
+
+                    <form id="id_form_crear_terreno" method="POST" hidden>
+                        {{! auxiliar donde se guardara el ci del administrador (maestro) creador del nuevo
+                        proyecto }}
+                        <input
+                            type="text"
+                            name="html_ci_administrador_creador"
+                            id="ci_administrador_creador"
+                            value=""
+                        />
+                    </form>
+
+                    <a class="btn btn-primary" href="#ventanaModalNp" data-toggle="modal">Crear
+                        convocatoria</a>
+
+                    {{! "modal fade" convierte toda la pantalla en oscuro }}
+                    {{! data-backdrop="static" es para evitar que la ventana se cierre cuando se haga click fuera
+                    de la ventana modal }}
+                    <div class="modal fade" id="ventanaModalNp" data-backdrop="static">
+                        <div class="modal-dialog">
+                            <div class="modal-content fondo_secundario">
+                                <form id="id_crear_terreno">
+
+                                    {{! para el encabezado de la ventana }}
+                                    <div class="modal-header">
+                                        <h4 class="modal-title texto-resaltado">Claves maestras</h4>
+
+                                        {{! BOTON PARA CERRAR la ventana modal }}
+                                        <button
+                                            type="button"
+                                            class="aux_cerrar_np close texto-resaltado"
+                                            data-dismiss="modal"
+                                            aria-hidden="true"
+                                        >&times;</button>
+                                    </div>
+
+                                    {{! para el contenido de la ventana modal }}
+                                    <div class="modal-body">
+
+                                        <div class="form-group text-left">
+                                            <label
+                                                for="id_usuario_maestro_modal"
+                                                class="texto-normal"
+                                            >Usuario</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <div class="input-group-text texto-resaltado">
+                                                        <i class="fas fa-user"></i>
+                                                    </div>
+                                                </div>
+
+                                                <input
+                                                    type="text"
+                                                    name="usuario_maestro"
+                                                    class="form-control borrador_1"
+                                                    id="id_usuario_maestro_modal"
+                                                    required
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group text-left">
+                                            <label
+                                                for="id_clave_maestro_modal"
+                                                class="texto-normal"
+                                            >Clave</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <div class="input-group-text texto-resaltado">
+                                                        <i class="fas fa-lock"></i>
+                                                    </div>
+                                                </div>
+
+                                                <input
+                                                    type="password"
+                                                    name="clave_maestro"
+                                                    class="form-control borrador_1"
+                                                    id="id_clave_maestro_modal"
+                                                    required
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <input
+                                            type="submit"
+                                            class="btn btn-primary"
+                                            value="Crear convocatoria"
+                                        />
+
+                                    </div>
+
+                                </form>
+
+                            </div>
+                        </div>
+                        {{! FIN DE VENTANA MODAL }}
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-12 text-center">
+                {{! esto que sea colocado con administrador maestro, para hacerlo visible cada vez que se quiera }}
+                <h6>{{pie_pagina_adm.texto_footer}}</h6>
+                <h6>{{pie_pagina_adm.year_derecho}} © Todos los derechos reservados</h6>
+                {{! <h6>Create by: Ing. M. Cesar V. Canaviri</h6>
+                <h6>© Todos los derechos reservados</h6> }}
+            </div>
+        </div>
+
+    </div>
+
+</footer>

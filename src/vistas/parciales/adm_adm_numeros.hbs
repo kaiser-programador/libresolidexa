@@ -1,0 +1,96 @@
+{{! para la pestaña de ver NUMEROS RESUMEN en administrador maestro }}
+
+<div class="contenido container-fluid">
+    <div class="row m-4">
+        <div class="col-12 cuadro_estandart p-3">
+            {{! <h5 class="my-4">NÚMEROS RESUMEN</h5> }}
+            <button class="btn btn-primary" id="actualizar_numeros">Actualizar</button>
+
+            <div class="table-responsive ref_mensaje_numeros_resumen">
+                <table class="text-primary col-12" cellpadding="8">
+                    <thead>
+                        <tr>
+                            <th class="text-center h5 texto-resaltado" colspan="2">NÚMEROS RESUMEN</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+                            <td class="text-right h5" style="width: 50%;">
+                                Construidos:&nbsp;&nbsp;&nbsp;
+                            </td>
+
+                            <td class="text-left h5 texto-normal" style="width: 50%;">
+                                <span
+                                    class="n_construidos"
+                                >{{contenido_administrador.n_construidos}}</span>
+                                <span>m<sup>2</sup></span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="text-right h5" style="width: 50%;">
+                                Proyectos:&nbsp;&nbsp;&nbsp;
+                            </td>
+
+                            <td class="text-left h5 texto-normal" style="width: 50%;">
+                                <span
+                                    class="n_proyectos"
+                                >{{contenido_administrador.n_proyectos}}</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="text-right h5" style="width: 50%;">
+                                Inmuebles:&nbsp;&nbsp;&nbsp;
+                            </td>
+
+                            <td class="text-left h5 texto-normal" style="width: 50%;">
+                                <span
+                                    class="n_inmuebles"
+                                >{{contenido_administrador.n_inmuebles}}</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="text-right h5" style="width: 50%;">
+                                Empleos:&nbsp;&nbsp;&nbsp;
+                            </td>
+
+                            <td class="text-left h5 texto-normal" style="width: 50%;">
+                                <span class="n_empleos">{{contenido_administrador.n_empleos}}</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="text-right h5" style="width: 50%;">
+                                Ahorros:&nbsp;&nbsp;&nbsp;
+                            </td>
+
+                            <td class="text-left h5 texto-normal" style="width: 50%;">
+                                <span class="n_ahorros">{{contenido_administrador.n_ahorros}}</span>
+                                <span>$us</span>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="text-right h5" style="width: 50%;">
+                                Resp. Social:&nbsp;&nbsp;&nbsp;
+                            </td>
+
+                            <td class="text-left h5 texto-normal" style="width: 50%;">
+                                <span
+                                    class="n_resp_social"
+                                >{{contenido_administrador.n_resp_social}}</span>
+                                <span>$us</span>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>

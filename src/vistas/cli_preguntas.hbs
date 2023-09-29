@@ -1,0 +1,51 @@
+{{!-- PREGUNTAS FRECUENES lado del cliente --}}
+
+{{!-- "> cli_opciones_nav"  NO DEBE ESTAR APEGADO A LA LINEA CODIGO "1", DE ESTARLO, DARIA UN ERROR --}}
+
+{{!-- ------------------------- --}}
+{{!-- datos elementales --}}
+<div id="id_tipo_ventana" data-tipo_ventana="normal"></div>
+
+{{!-- data-objetivo_tipo = terreno, inmueble, proyecto, propietario, cards_proyectos --}}
+<div id="id_objetivo_tipo" data-objetivo_tipo="info_empresa"></div>
+<div id="id_objetivo_codigo" data-objetivo_codigo="{{codigo_propietario}}"></div>
+{{!-- ------------------------- --}}
+
+<div class="tipo_ventana" data-tipo_ventana="info-empresa"></div>
+
+{{> cli_opciones_nav}}
+
+{{> adm_cli_cabezeras_externas}}
+
+<div class="container">
+
+    <div class="row mt-4">
+
+        <div class="col-12">
+            <div id="acordion">
+                <div class="card">
+
+                    {{#each lista_preguntas}}
+
+                    <div class="card-header">
+                        <a href="{{almohadilla}}" class="card-link d-block" data-toggle="collapse"
+                            data-parent="#acordion">{{pregunta}}</a>
+                    </div>
+                    <div id="{{identificador}}" class="collapse ml-4">
+                        <div class="escritura card-body">
+                            {{respuesta}}
+                        </div>
+                    </div>
+
+                    {{/each}}
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{{> cli_pie_pagina}}

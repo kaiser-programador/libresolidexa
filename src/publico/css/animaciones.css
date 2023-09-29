@@ -1,0 +1,608 @@
+/* Mis animaciones CSS */
+
+#contenedor-icono-info-madre {
+    /* para media screen */
+    font-size: 5px;
+}
+
+.contenedor-icono-info-hijo {
+    height: var(--alto-conten-anima-inic);
+}
+.contenedor-icono-info-hijo :nth-child(2) {
+    position: relative;
+    overflow: hidden;
+}
+
+/* PARA ANIMACIONES EN EL CONTENDOR IZQUIERDO */
+
+.contenedor {
+    width: 100%;
+    height: 100%;
+}
+.contenedor .caja {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3em;
+    /* color: var(--color_texto_normal); */
+    color: var(--color_fondo_secundario);
+
+    /* para convertirlo a mayusculas */
+    /* text-transform: uppercase; */
+
+    text-align: center;
+    overflow: hidden;
+}
+
+.contenedor .caja span:nth-child(1) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(to right, transparent, var(--color_texto_link));
+    /* background: linear-gradient(to right, transparent, rgb(50, 217, 247)); */
+    animation: animate1 4s linear infinite;
+}
+
+@keyframes animate1 {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.contenedor .caja span:nth-child(2) {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 6px;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent, var(--color_texto_link));
+    /* background: linear-gradient(to bottom, transparent, rgb(50, 217, 247)); */
+    animation: animate2 4s linear infinite;
+    animation-delay: 2s;
+}
+
+@keyframes animate2 {
+    0% {
+        transform: translateY(-100%);
+    }
+    100% {
+        transform: translateY(100%);
+    }
+}
+
+.contenedor .caja span:nth-child(3) {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(to left, transparent, var(--color_texto_link));
+    /* background: linear-gradient(to left, transparent, rgb(50, 217, 247)); */
+    animation: animate3 4s linear infinite;
+    animation-delay: 4s;
+}
+
+@keyframes animate3 {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+.contenedor .caja span:nth-child(4) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 6px;
+    height: 100%;
+    background: linear-gradient(to top, transparent, var(--color_texto_link));
+    /* background: linear-gradient(to top, transparent, rgb(50, 217, 247)); */
+    animation: animate4 4s linear infinite;
+    animation-delay: 6s;
+}
+
+@keyframes animate4 {
+    0% {
+        transform: translateY(100%);
+    }
+    100% {
+        transform: translateY(-100%);
+    }
+}
+
+/* PARA ANIMACIONES EN EL CONTENDOR DERECHO */
+.contenedor-icono-info-1 {
+    display: inline-block;
+}
+
+.contenedor-icono-info-2 {
+    display: flex;
+    /* este padding, para mantener la simetria, debe ser igual que el pading de  "padding-left" de contenedor-icono-info--info */
+    padding: 0.7em;
+    border-radius: 10px;
+}
+
+/* 
+Notese que esta hoja de css, a pesar de encontrarse separado del css principal donde estan las varibles globales como "color_texto_resalte", aqui estan reconocidos, solo aclarar que la hoja css principal debe estar en el ordenamiento de llamadas antes de esta hoja para ser leida por el navegador.
+ */
+.contenedor-icono-info--texto_principal {
+    color: var(--color_texto_resalte);
+    letter-spacing: 0.1em;
+    font-weight: bold;
+    font-size: 1.4em;
+    text-align: center;
+}
+
+.contenedor-icono-info--texto_normal {
+    /* color: var(--color_texto_normal); */
+    color: var(--color_fondo_secundario);
+    letter-spacing: 0.1em;
+    font-size: 1.1em;
+    text-align: center;
+}
+
+.contenedor-icono-info-1:nth-child(1) .contenedor-icono-info-2 {
+    border: 0.15rem solid var(--color_texto_link);
+    /* background: var(--color_fondo_secundario); */
+}
+.contenedor-icono-info-1:nth-child(2) .contenedor-icono-info-2 {
+    border: 0.15rem solid var(--color_texto_link);
+    /* background: var(--color_fondo_secundario); */
+}
+.contenedor-icono-info-1:nth-child(3) .contenedor-icono-info-2 {
+    border: 0.15rem solid var(--color_texto_link);
+    /* background: var(--color_fondo_secundario); */
+}
+.contenedor-icono-info-1:nth-child(4) .contenedor-icono-info-2 {
+    border: 0.15rem solid var(--color_texto_link);
+    /* background: var(--color_fondo_secundario); */
+}
+.contenedor-icono-info-1:nth-child(5) .contenedor-icono-info-2 {
+    border: 0.15rem solid var(--color_texto_link);
+    /* background: var(--color_fondo_secundario); */
+}
+.contenedor-icono-info-1:nth-child(6) .contenedor-icono-info-2 {
+    border: 0.15rem solid var(--color_texto_link);
+    /* background: var(--color_fondo_secundario); */
+}
+
+.contenedor-icono-info--icono {
+    display: flex;
+    align-items: center;
+    color: var(--color_texto_resalte);
+}
+
+/* para el elemento "i" que esta dentro del "contenedor-icono-info--icono", si "i" tuviera una identificacion como una clase o id, entonces no se lo pondria como "i", sino se usaria su ".clase" o ".id" */
+.contenedor-icono-info--icono i {
+    font-size: 3em;
+}
+
+.contenedor-icono-info--info {
+    padding-left: 0.7em;
+
+    /* para evitar el salto de linea automatico, para que se mantenga en una solo linea, aunque el texto sea muy extenso */
+    white-space: nowrap;
+}
+
+/* ANIMACION DESPLAZAMIENTO */
+
+.contenedor-icono-info-1:nth-child(1) {
+    /* "position relative" usado solo para animar desplazamientos */
+    position: absolute;
+    /* "left" (para este elemento y sus hermanos) se le dara jquery segun calculos de anchuras */
+    /* left: 0%; */
+    top: 0%;
+    opacity: 0;
+    animation-name: animacion_1;
+
+    /* tiempo de duracion de la animacion */
+    animation-duration: var(--duracion-anima-inic);
+
+    animation-iteration-count: infinite;
+
+    transition-timing-function: linear;
+
+    /* tiempo que se esperara antes de que se inicie la animacion */
+    animation-delay: 0s;
+}
+
+@keyframes animacion_1 {
+    /* en el 0% de la animacion */
+    0% {
+        top: 0em;
+        opacity: 0;
+    }
+
+    /* en el 30% de la animacion */
+    30% {
+        opacity: 1;
+    }
+
+    45% {
+        opacity: 0;
+    }
+
+    /* en el 100% de la animacion */
+    100% {
+        top: var(--alto-anima-inic);
+        opacity: 0;
+    }
+}
+
+.contenedor-icono-info-1:nth-child(2) {
+    position: absolute;
+    top: 0em;
+    opacity: 0;
+    animation-name: animacion_2;
+    animation-duration: var(--duracion-anima-inic);
+    animation-iteration-count: infinite;
+    transition-timing-function: linear;
+    animation-delay: 6s;
+}
+@keyframes animacion_2 {
+    0% {
+        top: 0em;
+        opacity: 0;
+    }
+
+    30% {
+        opacity: 1;
+    }
+
+    45% {
+        opacity: 0;
+    }
+
+    100% {
+        top: var(--alto-anima-inic);
+        opacity: 0;
+    }
+}
+
+.contenedor-icono-info-1:nth-child(3) {
+    position: absolute;
+    top: 0em;
+    opacity: 0;
+    animation-name: animacion_3;
+    animation-duration: var(--duracion-anima-inic);
+    animation-iteration-count: infinite;
+    transition-timing-function: linear;
+    animation-delay: 12s;
+}
+@keyframes animacion_3 {
+    0% {
+        top: 0em;
+        opacity: 0;
+    }
+
+    30% {
+        opacity: 1;
+    }
+
+    45% {
+        opacity: 0;
+    }
+
+    100% {
+        top: var(--alto-anima-inic);
+        opacity: 0;
+    }
+}
+
+.contenedor-icono-info-1:nth-child(4) {
+    position: absolute;
+    top: 0em;
+    opacity: 0;
+    animation-name: animacion_4;
+    animation-duration: var(--duracion-anima-inic);
+    animation-iteration-count: infinite;
+    transition-timing-function: linear;
+    animation-delay: 18s;
+}
+@keyframes animacion_4 {
+    0% {
+        top: 0em;
+        opacity: 0;
+    }
+
+    30% {
+        opacity: 1;
+    }
+
+    45% {
+        opacity: 0;
+    }
+
+    100% {
+        top: var(--alto-anima-inic);
+        opacity: 0;
+    }
+}
+
+.contenedor-icono-info-1:nth-child(5) {
+    position: absolute;
+    top: 0em;
+    opacity: 0;
+    animation-name: animacion_5;
+    animation-duration: var(--duracion-anima-inic);
+    animation-iteration-count: infinite;
+    transition-timing-function: linear;
+    animation-delay: 24s;
+}
+@keyframes animacion_5 {
+    0% {
+        top: 0em;
+        opacity: 0;
+    }
+
+    30% {
+        opacity: 1;
+    }
+
+    45% {
+        opacity: 0;
+    }
+
+    100% {
+        top: var(--alto-anima-inic);
+        opacity: 0;
+    }
+}
+
+.contenedor-icono-info-1:nth-child(6) {
+    position: absolute;
+    top: 0em;
+    opacity: 0;
+    animation-name: animacion_6;
+    animation-duration: var(--duracion-anima-inic);
+    animation-iteration-count: infinite;
+    transition-timing-function: linear;
+    animation-delay: 30s;
+}
+@keyframes animacion_6 {
+    0% {
+        top: 0em;
+        opacity: 0;
+    }
+
+    30% {
+        opacity: 1;
+    }
+
+    45% {
+        opacity: 0;
+    }
+
+    100% {
+        top: var(--alto-anima-inic);
+        opacity: 0;
+    }
+}
+
+/* --------------------------------------------------- */
+/* ANIMACION DE CARGADO DE PROYECTOS INEXISTENTES */
+.contenedor-carga {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 2em;
+}
+.dot-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 120px;
+}
+.dot {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--color_texto_link);
+}
+.dot-1 {
+    animation-name: flow;
+    animation-duration: 0.4s;
+    animation-timing-function: ease;
+    animation-delay: 0s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+.dot-2 {
+    animation: flow 0.4s ease 0.2s infinite alternate;
+}
+.dot-3 {
+    animation: flow 0.4s ease 0.4s infinite alternate;
+}
+@keyframes flow {
+    from {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+    to {
+        opacity: 0.2;
+        transform: scale(0.75);
+    }
+}
+/* --------------------------------------------------- */
+
+/* ANIMACION RESPLANDOR CIRCULOS ESTADO */
+.celda-tabla-circulo-estados {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.css-numero-estado {
+    text-align: center;
+    height: 4rem;
+    width: 4rem;
+    background: var(--color_texto_link);
+    color: var(--color_fondo_principal);
+    font-size: 1.9rem;
+    font-weight: bold;
+    padding: 0.5rem;
+    /* top: 0%;
+    left: 0%; */
+    border-radius: 50%;
+}
+
+.css-numero-resplandor {
+    text-align: center;
+    height: 4rem;
+    width: 4rem;
+    padding: 0.5rem;
+
+    background: var(--color_texto_link);
+    color: var(--color_fondo_principal);
+    font-size: 1.9rem;
+    font-weight: bold;
+
+    /* top: 0%;
+    left: 0%; */
+    border-radius: 50%;
+    animation: animacion_resplandor 2s linear infinite;
+}
+
+@keyframes animacion_resplandor {
+    0% {
+        box-shadow: 0 0 0 0 var(--color_texto_link), 0 0 0 0 var(--color_texto_link);
+    }
+    30% {
+        box-shadow: 0 0 0 40px rgba(224, 248, 3, 0), 0 0 0 0 var(--color_texto_link);
+    }
+    65% {
+        box-shadow: 0 0 0 40px rgba(224, 248, 3, 0), 0 0 0 30px rgba(224, 248, 3, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(224, 248, 3, 0), 0 0 0 30px rgba(224, 248, 3, 0);
+    }
+}
+
+/* ----------------------------------------------------- */
+/* QUIENES SOMOS */
+
+
+/* ----------------------------------------------------- */
+/* ANIMACION DE CIRCULOS DE QUIENES SOMOS */
+.contenedor-imagen-somos{
+    text-align: center;
+    /* width: 30rem;
+    height: 30rem; */
+    border-radius: 50%;
+}
+/* .contenedor-imagen-somos:nth-child(2n+1) { NO FUNCIONA CON CHILD */
+.somos_impar {
+    
+    /* animation: animacion_resplandor_somos 5s linear infinite; */
+
+    animation-name: animacion_resplandor_somos;
+    animation-duration: 5s;
+    animation-iteration-count: infinite;
+    transition-timing-function: linear;
+
+    /* tiempo que se esperara antes de que se inicie la animacion */
+    animation-delay: 2.5s;
+}
+
+/* .contenedor-imagen-somos:nth-child(2n) { NO FUNCIONA CON CHILD */
+.somos_par {
+    /* animation: animacion_resplandor_somos 5s linear infinite ; */
+
+    animation-name: animacion_resplandor_somos;
+    animation-duration: 5s;
+    animation-iteration-count: infinite;
+    transition-timing-function: linear;
+
+    /* tiempo que se esperara antes de que se inicie la animacion */
+    /* animation-delay: 2.5s; */
+}
+
+@keyframes animacion_resplandor_somos {
+    0% {
+        box-shadow: 0 0 0 0 var(--color_texto_link), 0 0 0 0 var(--color_texto_link);
+    }
+    33% {
+        box-shadow: 0 0 0 40px rgba(224, 248, 3, 0), 0 0 0 0 var(--color_texto_link);
+    }
+    66% {
+        box-shadow: 0 0 0 40px rgba(224, 248, 3, 0), 0 0 0 30px rgba(224, 248, 3, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(224, 248, 3, 0), 0 0 0 30px rgba(224, 248, 3, 0);
+    }
+}
+
+/* ----------------------------------------------------- */
+/* PARA ANIMACIONES DE LOS ENGRANAJES */
+
+.main_engranajes {
+    /* height: 100vh; */
+    /* height: 35vh; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.container_engranajes_a, .container_engranajes_b {
+    position: absolute;
+    height: 100px;
+    width: 100px;
+}
+
+/* tamaño normal */
+.container_engranajes_a {
+    top: 14%;
+}
+
+/* tamaño menor */
+.container_engranajes_b {
+    top: 14%;
+}
+
+.large {
+    position: absolute;
+    animation: rotate-right 9s linear infinite;
+    fill: rgb(10, 88, 174);
+}
+
+.medium {
+    position: absolute;
+    animation: rotate-left 9s linear infinite;
+    fill: rgb(55, 172, 223);
+}
+
+.small {
+    position: absolute;
+    animation: rotate-right 9s linear infinite;
+    fill: var(--color_texto_link);
+}
+
+/* All values of top and left values are experimental
+  you may change those values to see different results. */
+
+@keyframes rotate-right {
+    from {
+        transform: rotateZ(0);
+    }
+    to {
+        transform: rotateZ(360deg);
+    }
+}
+
+@keyframes rotate-left {
+    from {
+        transform: rotateZ(0);
+    }
+    to {
+        transform: rotateZ(-360deg);
+    }
+}

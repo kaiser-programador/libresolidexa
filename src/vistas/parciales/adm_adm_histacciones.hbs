@@ -1,0 +1,155 @@
+{{! para la pestaña de ver el listado de HISTORIAL DE ACCIONES en administrador maestro }}
+
+<div class="contenido container-fluid">
+    <div class="row">
+        <div class="col-12 col-sm-6">
+            <div class="card my-4" style="max-width: 30rem;">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>BUSCAR EN HISTORIAL</h5>
+                    <i class="d-block fas fa-user size_iconos"></i>
+                </div>
+
+                <form id="id_form_buscar_historial">
+                    <div class="card-body text-primary">
+
+                        <div class="ref_buscar_historial input-group">
+                            <input
+                                type="search"
+                                class="form-control"
+                                name="html_buscar_historial"
+                                placeholder="Códigos o C.I."
+                                id="id_input_historial"
+                                required
+                            />
+
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary boton_resaltado"><i
+                                        class="fas fa-user"
+                                    ></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6">
+            <div class="card my-4" style="max-width: 30rem;">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>BORRAR HISTORIAL</h5>
+                    <i class="d-block fas fa-trash-alt size_iconos"></i>
+                </div>
+
+                <form id="id_form_borrar_historial">
+                    <div class="card-body text-primary">
+                        <p class="text-left">Borrar historial de acciones más antiguos que:</p>
+                        <div title="Solo permaneceran aquellas acciones que esten dentro de la última semana">
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="name_hist_tiempo_borrar"
+                                    value="semana"
+                                    required
+                                />
+                                Una semana
+                            </label>
+                        </div>
+
+                        <div title="Solo permaneceran aquellas acciones que esten dentro del último mes">
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="name_hist_tiempo_borrar"
+                                    value="mes"
+                                    required
+                                />
+                                Un mes
+                            </label>
+                        </div>
+
+                        <div title="Solo permaneceran aquellas acciones que esten dentro del último trimestre">
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="name_hist_tiempo_borrar"
+                                    value="trimestre"
+                                    required
+                                />
+                                Un trimestre
+                            </label>
+                        </div>
+
+                        <div title="Solo permaneceran aquellas acciones que esten dentro del último semestre">
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="name_hist_tiempo_borrar"
+                                    value="semestre"
+                                    required
+                                />
+                                Un semestre
+                            </label>
+                        </div>
+
+                        <div title="Solo permaneceran aquellas acciones que esten dentro del último año">
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="name_hist_tiempo_borrar"
+                                    value="year"
+                                    required
+                                />
+                                Un año
+                            </label>
+                        </div>
+
+                        <hr />
+
+                        <div>
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="name_hist_tiempo_borrar"
+                                    value="todo"
+                                    required
+                                />
+                                Todo
+                            </label>
+                        </div>
+
+                        <div class="text-center">
+                            <input
+                                type="submit"
+                                value="Borrar"
+                                class="ref_boton_borrar_hist btn btn-primary"
+                            />
+                        </div>
+
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="tabla_caracteristicas table-responsive ref_historial_acciones cuadro_estandart p-3 my-4">
+        <table class="texto-link table table-bordered">
+            <thead>
+                <tr>
+                    <th class="text-left texto-resaltado">#</th>
+                    <th class="text-left texto-resaltado">C.I. Administrador</th>
+                    <th class="text-left texto-resaltado">Acción</th>
+                    <th class="text-left texto-resaltado">Fecha</th>
+                </tr>
+            </thead>
+
+            <tbody class="ref_enlistar_resultados">
+                {{! <tbody> }}
+
+            </tbody>
+
+        </table>
+
+        {{! fin de table responsibe }}
+    </div>
+</div>

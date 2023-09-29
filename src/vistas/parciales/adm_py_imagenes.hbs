@@ -1,0 +1,256 @@
+{{! para pestaña IMAGENES del lado del ADMINISTRADOR }}
+
+<div class="contenido container-fluid">
+
+    <div class="card my-3" style="max-width: 40rem;">
+        <h5 class="card-header">SUBIR ARCHIVO IMAGEN</h5>
+
+        <div class="card-body text-primary">
+            <form enctype="multipart/form-data" id="idSubirImagen">
+
+                <div class="form-group row">
+
+                    {{! name="subirArchivoNavegador" este "name" deve coincidir con el dado en el
+                    MIDDLEWARE "multer" en el "configuracion.js" }}
+
+                    <label for="id_input_subir_imagen" class="col-12 col-sm-4">Seleccionar imagén</label>
+
+                    <input
+                        type="file"
+                        name="subirArchivoNavegador"
+                        class="clase_input_subir_imagen form-control col-12 col-sm-5"
+                        id="id_input_subir_imagen"
+                        required
+                    />
+
+                </div>
+
+                {{! campo para escribir el titulo de la imagen }}
+
+                <div class="form-group row">
+                    <label for="id_titulo_imagen" class="col-12 col-sm-4">Título de la imagen</label>
+
+                    <input
+                        type="text"
+                        name="nombreImagenHtml"
+                        class="form-control col-12 col-sm-5"
+                        placeholder="Titulo de la imagen"
+                        id="id_titulo_imagen"
+                        required
+                    />
+
+                </div>
+
+                {{! auxiliar para guardado de imagen para envio por jquery }}
+                <input type="text" name="tipo_imagen" value="proyecto" id="tipo_objetivo" hidden />
+                {{! codigo_objetivo, dependiendo, puede ser de terreno o proyecto }}
+                <input type="text" name="codigo_objetivo" class="input_codigo_proyecto" value="{{codigo_proyecto}}" hidden />
+                {{! codigo_terreno, para determinar si este esta bloqueado o no para efectuar cambios }}
+                <input type="text" name="codigo_terreno" value="{{cabezera_adm.codigo_terreno}}" hidden />
+                {{! tipo imagen proyecto, como estamos en proyecto normal, entonces sera: "py" }}
+                <input type="text" name="tipo_imagen_py" value="py" id="tipo_py_rs" hidden />
+
+                <input type="submit" class="ref_subir_img btn btn-primary offset-4" value="Subir Imagen" />
+
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<hr />
+
+<div class="contenido container-fluid contenedor_imagenes_subidas">
+
+    <div class="row">
+
+        <div class="contenedor_titulo_imagen_principal col-12">
+            <h5 class="cuadro_estandart p-2 rounded text-center">
+                IMAGEN PRINCIPAL DEL PROYECTO
+            </h5>
+        </div>
+
+        {{#each contenido_proyecto.imagenesDelProyecto_principal}}
+
+            <div
+                class="cuadro_contenedor_imagen la_imagen_principal mb-3 col-12 col-sm-6 col-md-4 col-lg-3"
+            >
+                <div class="card">
+
+                    <div class="card-header p-0">
+                        <div class="d-flex p-0 m-0">
+
+                            <div class="align-self-center w-75 py-2 ml-2 text-primary">
+                                <h6>{{nombre_imagen}}</h6>
+                            </div>
+
+                            <div
+                                class="boton_eliminar_imagen_jquery text-center ir_rojo text-danger w-25 align-self-center border-left"
+                                data-id="{{codigo_imagen}}"
+                            >
+                                <i class="fas fa-window-close py-1" style="font-size: 2em;"></i>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    {{! .h-100 es para que la imagen no se desproporcione cuando se aumente el tamaño de la
+                ventana }}
+                    <img
+                        src="/rutavirtualpublico/subido/{{codigo_imagen}}{{extension_imagen}}"
+                        alt="{{nombre_imagen}}"
+                        title="{{codigo_imagen}}"
+                        class="estilo_imagen card-img-top"
+                    />
+
+                    <div class="card-body">
+
+                        <button
+                            class="boton_seleccionar_deseleccionar_imagen_jquery btn btn-success mb-2"
+                            data-id="{{codigo_imagen}}/{{codigo_proyecto}}"
+                        >Exclusiva</button>
+
+                        <button
+                            class="selec_deselec_imagen_principal btn btn-primary mb-2"
+                            data-id="{{codigo_imagen}}/{{codigo_proyecto}}"
+                        >Principal</button>
+                    </div>
+                </div>
+            </div>
+
+        {{/each}}
+
+    </div>
+
+    <hr />
+
+    <div class="row">
+
+        <div class="contenedor_titulo_imagenes_pertenecen col-12">
+            <h5 class="cuadro_estandart p-2 rounded text-center">
+                IMÁGENES PERTENECIENTES AL PROYECTO
+            </h5>
+        </div>
+
+        {{! aqui se muestra las imagenes que forman parte propia del proyecto }}
+        {{#each contenido_proyecto.imagenesDelProyecto_exclusiva}}
+
+            <div class="cuadro_contenedor_imagen col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card">
+
+                    <div class="card-header p-0">
+                        <div class="d-flex p-0 m-0">
+
+                            <div class="align-self-center w-75 py-2 ml-2 text-primary">
+                                <h6>{{nombre_imagen}}</h6>
+                            </div>
+
+                            <div
+                                class="boton_eliminar_imagen_jquery text-center ir_rojo text-danger w-25 align-self-center border-left"
+                                data-id="{{codigo_imagen}}"
+                            >
+                                <i class="fas fa-window-close py-1" style="font-size: 2em;"></i>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    {{! h-100 es para que la imagen no se desproporcione cuando se aumente el tamaño de la
+                ventana }}
+                    <img
+                        src="/rutavirtualpublico/subido/{{codigo_imagen}}{{extension_imagen}}"
+                        alt="{{nombre_imagen}}"
+                        title="{{codigo_imagen}}"
+                        class="estilo_imagen card-img-top"
+                    />
+
+                    <div class="card-body">
+
+                        <button
+                            class="boton_seleccionar_deseleccionar_imagen_jquery btn btn-success mb-2"
+                            data-id="{{codigo_imagen}}/{{codigo_proyecto}}"
+                        >Exclusiva</button>
+
+                        <button
+                            class="selec_deselec_imagen_principal btn btn-primary mb-2"
+                            data-id="{{codigo_imagen}}/{{codigo_proyecto}}"
+                        >Principal</button>
+                    </div>
+                </div>
+            </div>
+
+        {{/each}}
+
+    </div>
+
+    <hr />
+
+    <div class="row">
+
+        <div class="contenedor_titulo_imagenes_otras col-12">
+            <h5 class="cuadro_estandart p-2 text-center">
+                IMÁGENES OTRAS
+            </h5>
+        </div>
+
+        {{! las IMAGENES OTRAS deveran poder ser vistas con un boton que al hacer click los mostrara
+        desplegandolas hacia abajo }}
+
+        {{! para recorrer las imagenes ordenadas }}
+        {{#each contenido_proyecto.imagenesDelProyecto_otros}}
+
+            <div class="cuadro_contenedor_imagen mb-3 col-12 col-sm-6 col-md-4 col-lg-3">
+
+                <div class="card">
+
+                    <div class="card-header p-0">
+                        <div class="d-flex p-0 m-0">
+
+                            <div class="align-self-center w-75 py-2 ml-2 text-primary">
+                                <h6>{{nombre_imagen}}</h6>
+                            </div>
+
+                            <div
+                                class="boton_eliminar_imagen_jquery text-center ir_rojo text-danger w-25 align-self-center border-left"
+                                data-id="{{codigo_imagen}}"
+                            >
+                                <i class="fas fa-window-close py-1" style="font-size: 2em;"></i>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    {{! h-100 es para que la imagen no se desproporcione cuando se aumente el tamaño de la
+                ventana }}
+                    <img
+                        src="/rutavirtualpublico/subido/{{codigo_imagen}}{{extension_imagen}}"
+                        alt="{{nombre_imagen}}"
+                        title="{{codigo_imagen}}"
+                        class="estilo_imagen card-img-top"
+                    />
+
+                    <div class="card-body">
+
+                        <button
+                            class="boton_seleccionar_deseleccionar_imagen_jquery btn btn-success mb-2"
+                            data-id="{{codigo_imagen}}/{{codigo_proyecto}}"
+                        >Exclusiva</button>
+
+                        <button
+                            class="selec_deselec_imagen_principal btn btn-primary mb-2"
+                            data-id="{{codigo_imagen}}/{{codigo_proyecto}}"
+                        >Principal</button>
+                    </div>
+
+                </div>
+
+            </div>
+
+        {{/each}}
+
+    </div>
+
+</div>
+{{! container contenedor de imagenes subidas }}

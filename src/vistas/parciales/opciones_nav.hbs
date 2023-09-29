@@ -1,0 +1,260 @@
+{{!-- los opciones de la barra cabezera (para administradores EMPLEADOS o MAESTRO) --}}
+{{!-- --}}
+{{!-- yo le puse la clase "fixed-top" para que este fijo arriba y al desplegar el menu no baje a sus los que estan
+debajo de este --}}
+{{!-- "fixed-bottom" para que este fijo en la parte inferior --}}
+<nav class="menu-navegacion-adm fixed-top navbar navbar-expand-md">
+
+    <div class="container-fluid">
+
+        {{!-- para el logo de la empresa --}}
+        <div class="order-3 order-md-1">
+            <a href="/laapirest/accesosistema" class="navbar-brand texto-resaltado" id="ref_conduce_ventana_inicio">
+                <b>SOLIDEXA</b>
+            </a>
+        </div>
+
+        <div class="order-1 d-md-none">
+            <button type="button" class=" navbar-toggler" data-toggle="collapse" data-target="#menu_navegacion"
+                aria-expanded="false">
+                {{!-- <span class="navbar-toggler-icon"></span> --}}
+                <i class="fas fa-bars size_iconos"></i>
+            </button>
+        </div>
+
+        {{!-- disparador de busqueda --}}
+        <div class="order-2 d-md-none">
+            <form class=" form-inline">
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#buscador-tio"
+                    aria-expanded="false">
+                    <i class="fas fa-search size_iconos"></i>
+                </button>
+            </form>
+        </div>
+
+        {{!-- disparador de propios --}}
+        <div class="order-4 d-md-none">
+            <button type="button" class=" navbar-toggler" data-toggle="collapse" data-target="#menu_propios"
+                aria-expanded="false">
+                <i class="fas fa-ellipsis-h texto-resaltado" style="font-size:1.5rem;"></i>
+            </button>
+        </div>
+
+        <div class="order-5 d-md-none">
+            <button type="button" class=" navbar-toggler" data-toggle="collapse" data-target="#opciones_administrador"
+                aria-expanded="false">
+                <i class="fas fa-user size_iconos"></i>
+                {{!-- <i class="fas fa-user texto-resaltado" style="font-size:1.5rem;"></i> --}}
+            </button>
+        </div>
+
+        <div class="order-10  order-md-2 collapse navbar-collapse" id="buscador-tio">
+            <div class="input-group">
+                <input type="search" class="campo_buscador_gestionador form-control" id="label_campo_buscador_gestionador"
+                    placeholder="C.I, te, py, inm, req" title="Introduzca el C.I. o el código de: terreno, proyecto, inmueble o requerimiento que desea buscar">
+                <div class="input-group-append">
+                    <button class="boton_buscar_gestionador btn btn-outline-secondary boton_resaltado">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        {{!-- al lado de navbar-collapse justify-content-between --}}
+        <div class="order-11 order-md-3 collapse navbar-collapse" id="menu_navegacion">
+
+            {{!-- ml-auto significa que el "margen left" margen a la izquierda sea auto, esto para que los menus "li"
+            sean desplazados a la derecha --}}
+            <ul class="navbar-nav ml-auto ">
+                <li class="nav-item dropdown">
+
+                    <a class="nav-link pestana_navegador dropdown-toggle" href="#" id="guardados_tepyinm" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Guardados
+                    </a>
+
+                    {{!-- <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Dropdown link
+                    </a> --}}
+
+                    <ul class="dropdown-menu fondo_secundario" aria-labelledby="guardados_tepyinm">
+                        <li><a class="dropdown-item pestana_navegador" href="/laapirest/ventana/guardado_terreno">Terreno</a></li>
+                        <li><a class="dropdown-item pestana_navegador" href="/laapirest/ventana/guardado_proyecto">Proyecto</a></li>
+                        <li><a class="dropdown-item pestana_navegador" href="/laapirest/ventana/guardado_inmueble">Inmueble</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item"><a class="nav-link pestana_navegador" href="/laapirest/ventana/reserva">Reserva</a>
+                </li>
+                <li class="nav-item"><a class="nav-link pestana_navegador" href="/laapirest/ventana/pago">Pago</a>
+                </li>
+                <li class="nav-item"><a class="nav-link pestana_navegador" href="/laapirest/ventana/aprobacion">Aprobación</a>
+                </li>
+                <li class="nav-item"><a class="nav-link pestana_navegador"
+                        href="/laapirest/ventana/construccion">Construcción</a></li>
+                <li class="nav-item"><a class="nav-link pestana_navegador"
+                        href="/laapirest/ventana/construido">Construido</a></li>
+                <li class="nav-item"><a class="nav-link pestana_navegador"
+                        href="/laapirest/ventana/convocatoria">Convocatoria</a></li>
+
+            </ul>
+
+        </div>
+
+        {{#if es_terreno}}
+        <div class="order-12 collapse navbar-collapse" id="menu_propios">
+            <ul class="d-md-none navbar-nav ml-auto ">
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="descripcion_te-tab">Descripción</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="imagenes_te-tab">Imágenes</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="documentos_te-tab">Documentos</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="proyectos_te-tab">Proyectos</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="estados_te-tab">Estados</a></li>
+            </ul>
+        </div>
+        {{/if}}
+
+        {{#if es_proyecto}}
+        <div class="order-12 collapse navbar-collapse" id="menu_propios">
+            <ul class="d-md-none navbar-nav ml-auto ">
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="descripcion_py-tab">Descripción</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="imagenes_py-tab">Imágenes</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="documentos_py-tab">Documentos</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="inmuebles_py-tab">Inmuebles
+                    {{#if existe_n_inmuebles}}
+                    <span class="badge badge-success ml-1">{{n_inmuebles}}</span>
+                    {{/if}}
+                </a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="sociedad_py-tab">Sociedad</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="empleos_py-tab">Empleos</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="requerimientos_py-tab">Requerimientos
+                    {{#if existe_n_requerimientos}}
+                    <span class="badge badge-success ml-1">{{n_requerimientos}}</span>
+                    {{/if}}
+                </a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="estados_py-tab">Estados</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="textos_py-tab">Textos</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="eliminar_py-tab">Eliminar</a></li>
+            </ul>
+        </div>
+        {{/if}}
+
+        {{#if es_inmueble}}
+        <div class="order-12 collapse navbar-collapse" id="menu_propios">
+            <ul class="d-md-none navbar-nav ml-auto ">
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="descripcion_inm-tab">Descripción</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="imagenes_inm-tab">Imágenes</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="documentos_inm-tab">Documentos</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="estados_inm-tab">Estados</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="propietario_inm-tab">Propietario</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="pagos_inm-tab">Pagos</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="eliminar_inm-tab">Eliminar</a></li>
+            </ul>
+        </div>
+        {{/if}}
+
+        {{#if es_propietario}}
+        <div class="order-12 collapse navbar-collapse" id="menu_propios">
+            <ul class="d-md-none navbar-nav ml-auto ">
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="datos_prop-tab">Información</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="resumen_prop-tab">Resumen</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="propiedades_prop-tab">Propiedades</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="documentos_prop-tab">Documentos</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="textos_prop-tab">Textos</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="eliminar_prop-tab">Eliminar</a></li>
+            </ul>
+        </div>
+        {{/if}}
+
+        {{#if administrador_empleado}}
+        <div class="order-12 collapse navbar-collapse" id="menu_propios">
+            <ul class="d-md-none navbar-nav ml-auto ">
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="cuenta-tab">Cuenta</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="cambiar_claves-tab">Cambiar claves</a></li>
+            </ul>
+        </div>
+        {{/if}}
+
+        {{#if administrador_maestro}}
+        <div class="order-12 collapse navbar-collapse" id="menu_propios">
+            <ul class="d-md-none navbar-nav ml-auto ">
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="cambiar_claves-tab">Cambiar claves</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="gestionar_adm-tab">Administrador</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="personal-tab">Personal</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="historial_acciones-tab">Historial
+                        acciones</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="genericos_empresa-tab">Empresa</a>
+                </li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="textos_empresa-tab">Textos</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="como_funciona-tab">Cómo funciona</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="quienes_somos-tab">Quienes somos</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="preguntas_frecuentes-tab">Preguntas
+                        frecuentes</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="imagenes_empresa-tab">Imágenes</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="numeros_resumen-tab">Números resumen</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="visitas-tab">Visitas</a></li>
+            </ul>
+        </div>
+        {{/if}}
+
+        {{!-- CUANDO se esta en la ventana de inicio (no donde se pone usuario y contraseña) del lado ADMINISTRADOR --}}
+        {{!-- es_ninguno: true  // para las opciones de navegacion de la ventana en estado comprimido --}}
+        {{#if es_ninguno}}
+        <div class="order-12 collapse navbar-collapse" id="menu_propios">
+            <ul class="d-md-none navbar-nav ml-auto ">
+                <li class="nav-item"><a class="nav-link pestana_navegador" href="#ventanaModalNp" data-toggle="modal">Crear
+                        convocatoria</a>
+                </li>
+            </ul>
+        </div>
+        {{/if}}
+
+
+        <div class="order-12 collapse navbar-collapse" id="opciones_administrador">
+            <ul class="d-md-none navbar-nav ml-auto ">
+                {{!-- al hacer click en "Cuenta" redireccionamos a "claves", porque el navegante puede ser un simple administrador o el maestro  --}}
+                <li class="nav-item"><a class="nav-link pestana_navegador"
+                        href="/laapirest/administrador/claves">Cuenta</a></li>
+                <li class="nav-item"><a class="nav-link pestana_navegador"
+                        href="/laapirest/administrador/accion/cerrar">Cerrar sesión</a>
+                </li>
+            </ul>
+        </div>
+
+        <span class="d-none d-md-inline order-md-4 ml-3">
+            <div class="malisimo collapse navbar-collapse" id="usuario-tio">
+
+                <div class="dropdown">
+
+                    <a href="#" id="opciones_usuario" role="button" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                        <i class="fas fa-user size_iconos"></i>
+                    </a>
+
+                    <div style="position: relative;right: 8rem;z-index: 500;">
+                        <div class="dropdown-menu fondo_secundario" aria-labelledby="opciones_usuario">
+                            {{!-- al hacer click en "Cuenta" redireccionamos a "claves", porque el navegante puede ser un simple administrador o el maestro  --}}
+                            <a class="dropdown-item pestana_navegador"
+                                href="/laapirest/administrador/claves">Cuenta</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item pestana_navegador"
+                                href="/laapirest/administrador/accion/cerrar">Cerrar sesión</a>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </span>
+
+        <form id="form_cuenta_administrador" method="post" hidden>
+            <input type="text" id="aux_ci_administrador" value="{{usuario_administrador}}" hidden>
+        </form>
+
+        {{!-- para dirigirnos a la ventana de busqueda RESULTADO --}}
+        <form id="form_visualizador_resultado" action="" method="get" hidden>
+        </form>
+
+    </div>
+
+</nav>

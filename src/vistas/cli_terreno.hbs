@@ -1,0 +1,66 @@
+{{!-- PARA VENTANA DE TERRENO LADO CLIENTE --}}
+
+{{!-- ------------------------- --}}
+{{!-- datos elementales --}}
+<div id="id_tipo_ventana" data-tipo_ventana="normal"></div>
+<div id="id_objetivo_tipo" data-objetivo_tipo="terreno"></div>
+<div id="id_objetivo_codigo" data-objetivo_codigo="{{codigo_terreno}}"></div>
+{{!-- ------------------------- --}}
+
+{{> cli_opciones_nav}}
+
+{{> cli_cabezeras_internas}}
+
+<div class="wrapper" id="contenedor_imagenes_te" hidden>
+    {{!-- solo indicamos la ruta "href" para visualizar la imagen (aun no la cargamos visualmente) --}}
+    {{#each global_te.imagenes_te}}
+    <a href="/rutavirtualpublico/subido/{{imagen_te}}" data-fancybox="gallery" data-caption="{{nombre_imagen}}"><img src="/rutavirtualpublico/subido/{{imagen_te}}" alt="{{nombre_imagen}}"></a>
+    {{/each}}
+</div>
+
+<div class="w-100">
+    <ul class="nav nav-tabs" id="tab_terreno" role="tablist">
+        {{!-- de todos los tabs se eliminao el atributo data-toggle="tab" , esto para que funcionen los HREF y nos redireccionen a la ventana correspondiente al tab elegido --}}
+
+        {{#if descripcion_te}}
+        <li class="nav-item">
+            <a href="/terreno/{{codigo_terreno}}/descripcion" class="nav-link active"
+                id="descripcion_te-tab" role="tab" aria-controls="descripcion_te"
+                aria-selected="true">Descripción</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/terreno/{{codigo_terreno}}/descripcion" class="nav-link" id="descripcion_te-tab"
+                role="tab" aria-controls="descripcion_te" aria-selected="false">Descripción</a>
+        </li>
+        {{/if}}
+
+        {{#if proyectos_te}}
+        <li class="nav-item">
+            <a href="/terreno/{{codigo_terreno}}/proyectos" class="nav-link active" id="proyectos_te-tab"
+                role="tab" aria-controls="proyectos_te" aria-selected="true">Proyectos</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/terreno/{{codigo_terreno}}/proyectos" class="nav-link" id="proyectos_te-tab"
+                role="tab" aria-controls="proyectos_te" aria-selected="false">Proyectos</a>
+        </li>
+        {{/if}}
+
+    </ul>
+</div>
+
+
+{{#if descripcion_te}}
+<div class="container">
+    {{> cli_te_descri}}
+</div>
+{{/if}}
+
+{{#if proyectos_te}}
+<div class="contenido container-fluid">
+    {{> cli_te_proyectos}}
+</div>
+{{/if}}
+
+{{> cli_pie_pagina}}

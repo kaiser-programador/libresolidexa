@@ -1,0 +1,1152 @@
+{{! barra de opciones de la aplicacion del lado del cliente }}
+{{! pagina de edifio }}
+
+{{! <nav class="navbar navbar-expand-md navbar-light bg-light contenedor_nav_estados_proyecto"> }}
+<nav class="menu-navegacion-adm fixed-top navbar navbar-expand-md">
+
+    <div class="container-fluid">
+
+        {{! para el logo de la empresa }}
+
+        {{! parece cuando la ventana es mayor que md }}
+        <div class="order-1 order-md-1 collapse navbar-collapse" id="buscador-tio">
+            <button class="deslizador_busqueda btn btn-outline-secondary boton_resaltado">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+
+        {{! desaparece cuando la ventana es mayor que md }}
+        <div class="order-1 d-md-none">
+            <button class="deslizador_busqueda btn btn-outline-secondary boton_resaltado">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+
+        <div class="order-3 order-md-2">
+            <a href="/" class="navbar-brand m-0 texto-resaltado" id="ref_conduce_ventana_inicio">
+                SOLIDEXA
+            </a>
+        </div>
+
+        <div class="order-2 d-md-none">
+            <button
+                type="button"
+                class="navbar-toggler"
+                data-toggle="collapse"
+                data-target="#menu_navegacion"
+                aria-expanded="false"
+                style="z-index: 500;"
+            >
+                {{! <span class="navbar-toggler-icon"></span> }}
+                <i class="fas fa-bars size_iconos"></i>
+            </button>
+        </div>
+
+        {{! disparador de busqueda }}
+
+        {{! disparador de propios }}
+        <div class="order-4 d-md-none">
+            <button
+                type="button"
+                class="navbar-toggler"
+                data-toggle="collapse"
+                data-target="#menu_propios"
+                aria-expanded="false"
+            >
+                <i class="fas fa-ellipsis-h size_iconos"></i>
+            </button>
+        </div>
+
+        {{#if inversor_autenticado}}
+            <div class="order-5 d-md-none">
+                <button
+                    type="button"
+                    class="navbar-toggler"
+                    data-toggle="collapse"
+                    data-target="#opciones_administrador"
+                    aria-expanded="false"
+                >
+                    <i class="fas fa-user texto-link" style="font-size:1.5rem;"></i>
+                </button>
+            </div>
+        {{else}}
+            <div class="order-5 d-md-none">
+                <a href="#ventanaModalAccesoInversor" data-toggle="modal">
+                    <i class="fas fa-user size_iconos"></i>
+                    {{! <i class="fas fa-user texto-resaltado" style="font-size:1.5em;"></i> }}
+                </a>
+            </div>
+        {{/if}}
+
+        {{! al lado de navbar-collapse   justify-content-between   }}
+
+        <div class="order-11 order-md-3 collapse navbar-collapse" id="menu_navegacion">
+
+            {{! ml-auto  significa que el "margen left" margen a la izquierda sea auto, esto para que los menus "li" sean desplazados a la derecha }}
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a
+                        class="nav-link pestana_navegador"
+                        href="/ventana/reserva"
+                    >Reserva</a></li>
+                <li class="nav-item"><a
+                        class="nav-link pestana_navegador"
+                        href="/ventana/pago"
+                    >Pago</a></li>
+                <li class="nav-item"><a
+                        class="nav-link pestana_navegador"
+                        href="/ventana/aprobacion"
+                    >Aprobación</a></li>
+                <li class="nav-item"><a
+                        class="nav-link pestana_navegador"
+                        href="/ventana/construccion"
+                    >Construcción</a>
+                </li>
+                <li class="nav-item"><a
+                        class="nav-link pestana_navegador"
+                        href="/ventana/construido"
+                    >Construido</a></li>
+                <li class="nav-item"><a
+                        class="nav-link pestana_navegador"
+                        href="/ventana/convocatoria"
+                    >Convocatoria</a>
+                </li>
+            </ul>
+
+        </div>
+
+        {{! en las vistas comprimidas, no se ponen los href o url, porque se trabajara con jquery al momento de hacer clic en cualquierea de las opciones desplegadas, jquery actuara como si se hiciese con la mano clic en esas opciones }}
+
+        {{#if es_terreno}}
+            <div class="order-12 collapse navbar-collapse" id="menu_propios">
+                <ul class="d-md-none navbar-nav ml-auto">
+
+                    <li class="nav-item"><a
+                            href="#"
+                            class="nav-link aux_tabe pestana_navegador"
+                            data-id="descripcion_te-tab"
+                        >Descripción</a></li>
+
+                    <li class="nav-item"><a
+                            href="#"
+                            class="nav-link aux_tabe pestana_navegador"
+                            data-id="proyectos_te-tab"
+                        >Proyectos</a></li>
+
+                </ul>
+            </div>
+        {{/if}}
+
+        {{#if es_proyecto}}
+            <div class="order-12 collapse navbar-collapse" id="menu_propios">
+                <ul class="d-md-none navbar-nav ml-auto">
+
+                    <li class="nav-item"><a
+                            href="#"
+                            class="nav-link aux_tabe pestana_navegador"
+                            data-id="descripcion_py-tab"
+                        >Descripción</a></li>
+
+                    <li class="nav-item"><a
+                            href="#"
+                            class="nav-link aux_tabe pestana_navegador"
+                            data-id="inmuebles_py-tab"
+                        >Inmuebles
+                            {{#if existe_n_inmuebles}}
+                                <span class="badge badge-success ml-1">{{n_inmuebles}}</span>
+                            {{/if}}
+                        </a></li>
+
+                    <li class="nav-item"><a
+                            href="#"
+                            class="nav-link aux_tabe pestana_navegador"
+                            data-id="garantias_py-tab"
+                        >Garantías</a></li>
+
+                    <li class="nav-item"><a
+                            href="#"
+                            class="nav-link aux_tabe pestana_navegador"
+                            data-id="beneficios_py-tab"
+                        >Beneficios</a></li>
+
+                    <li class="nav-item"><a
+                            href="#"
+                            class="nav-link aux_tabe pestana_navegador"
+                            data-id="informe_economico-tab"
+                        >Presupuesto</a></li>
+
+                    <li class="nav-item"><a
+                            href="#"
+                            class="nav-link aux_tabe pestana_navegador"
+                            data-id="empleos_py-tab"
+                        >Empleos</a></li>
+
+                    <li class="nav-item"><a
+                            href="#"
+                            class="nav-link aux_tabe pestana_navegador"
+                            data-id="requerimientos_py-tab"
+                        >Requerimientos
+                            {{#if existe_n_requerimientos}}
+                                <span class="badge badge-success ml-1">{{n_requerimientos}}</span>
+                            {{/if}}
+                        </a></li>
+
+                    {{#if global_py.estado_proyecto_construido}}
+                        {{#if global_py.existe_res_soc}}
+                            <li class="nav-item"><a
+                                    href="#"
+                                    class="nav-link aux_tabe pestana_navegador"
+                                    data-id="responsabilidad_social-tab"
+                                >Responsabilidad social</a></li>
+                        {{/if}}
+                    {{/if}}
+                </ul>
+            </div>
+        {{/if}}
+
+        {{#if es_inmueble}}
+            <div class="order-12 collapse navbar-collapse" id="menu_propios">
+                <ul class="d-md-none navbar-nav ml-auto">
+
+                    <li class="nav-item"><a
+                            href="#"
+                            class="nav-link aux_tabe pestana_navegador"
+                            data-id="descripcion_inm-tab"
+                        >Descripción</a></li>
+
+                    <li class="nav-item"><a
+                            href="#"
+                            class="nav-link aux_tabe pestana_navegador"
+                            data-id="garantias_inm-tab"
+                        >Garantías</a></li>
+
+                    <li class="nav-item"><a
+                            href="#"
+                            class="nav-link aux_tabe pestana_navegador"
+                            data-id="beneficios_inm-tab"
+                        >Beneficios</a></li>
+
+                    <li class="nav-item"><a
+                            href="#"
+                            class="nav-link aux_tabe pestana_navegador"
+                            data-id="informe_economico-tab"
+                        >Presupuesto</a></li>
+
+                    <li class="nav-item"><a
+                            href="#"
+                            class="nav-link aux_tabe pestana_navegador"
+                            data-id="empleos_inm-tab"
+                        >Empleos</a></li>
+
+                    {{#if global_inm.existe_inversor_inmueble}}
+                        <li class="nav-item"><a
+                                href="#"
+                                class="nav-link aux_tabe pestana_navegador"
+                                data-id="inversor_inmueble-tab"
+                            >Inversor</a></li>
+                    {{/if}}
+
+                </ul>
+            </div>
+        {{/if}}
+
+        {{#if es_propietario}}
+            <div class="order-12 collapse navbar-collapse" id="menu_propios">
+                <ul class="d-md-none navbar-nav ml-auto">
+                    <li class="nav-item"><a
+                            href="#"
+                            class="nav-link aux_tabe pestana_navegador"
+                            data-id="resumen_prop-tab"
+                        >Resumen</a></li>
+                    <li class="nav-item"><a
+                            href="#"
+                            class="nav-link aux_tabe pestana_navegador"
+                            data-id="propiedades_prop-tab"
+                        >Propiedades</a></li>
+                    <li class="nav-item"><a
+                            href="#"
+                            class="nav-link aux_tabe pestana_navegador"
+                            data-id="documentos_prop-tab"
+                        >Documentos</a></li>
+                    <li class="nav-item"><a
+                            href="#"
+                            class="nav-link aux_tabe pestana_navegador"
+                            data-id="guardados_prop-tab"
+                        >Guardados</a></li>
+                    <li class="nav-item"><a
+                            href="#"
+                            class="nav-link aux_tabe pestana_navegador"
+                            data-id="informacion_prop-tab"
+                        >Información</a></li>
+                </ul>
+            </div>
+        {{/if}}
+
+        {{! es_ninguno: true  // para las opciones de navegacion de la ventana en estado comprimido }}
+        {{#if es_ninguno}}
+            <div class="order-12 collapse navbar-collapse" id="menu_propios">
+                <ul class="d-md-none navbar-nav ml-auto">
+                    <li class="nav-item"><a
+                            class="nav-link pestana_navegador texto-link"
+                            href="/empresa/quienes_somos"
+                            style="text-decoration: none;"
+                        >¿Quiénes somos?</a>
+                    </li>
+                    <li class="nav-item"><a
+                            class="nav-link pestana_navegador texto-link"
+                            href="/empresa/como_funciona"
+                            style="text-decoration: none;"
+                        >¿Cómo funciona?</a>
+                    </li>
+                    <li class="nav-item"><a
+                            class="nav-link pestana_navegador texto-link"
+                            href="/empresa/preguntas_frecuentes"
+                            style="text-decoration: none;"
+                        >Preguntas frecuentes</a>
+                    </li>
+                </ul>
+            </div>
+        {{/if}}
+
+        <div class="order-12 collapse navbar-collapse" id="opciones_administrador">
+            <ul class="d-md-none navbar-nav ml-auto">
+                <li class="nav-item"><a
+                        class="nav-link pestana_navegador"
+                        href="/propietario/{{ci_propietario}}/resumen"
+                    >Cuenta</a></li>
+                <li class="nav-item"><a
+                        class="nav-link pestana_navegador"
+                        href="/ventana/inversor/cerrar"
+                    >Cerrar sesión</a>
+                </li>
+            </ul>
+        </div>
+
+        {{#if inversor_autenticado}}
+            <div class="d-none d-md-inline order-md-4 ml-3">
+                <div class="collapse navbar-collapse" id="usuario-tio">
+
+                    <div class="dropdown">
+
+                        <a
+                            href="#"
+                            id="opciones_usuario"
+                            role="button"
+                            data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false"
+                        >
+                            <i class="fas fa-user texto-link" style="font-size: 1.5rem;"></i>
+                        </a>
+
+                        <div style="position: relative;right: 8rem;z-index: 500;">
+                            <div
+                                class="dropdown-menu fondo_secundario"
+                                aria-labelledby="opciones_usuario"
+                            >
+                                <a
+                                    class="dropdown-item pestana_navegador"
+                                    href="/propietario/{{ci_propietario}}/resumen"
+                                >Cuenta</a>
+                                <div class="dropdown-divider"></div>
+                                <a
+                                    class="dropdown-item pestana_navegador"
+                                    href="/ventana/inversor/cerrar"
+                                >Cerrar sesión</a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        {{else}}
+
+            <div class="d-none d-md-inline order-md-4 ml-3">
+                <div class="collapse navbar-collapse" id="usuario-tio">
+                    <a href="#ventanaModalAccesoInversor" data-toggle="modal">
+                        <i class="fas fa-user size_iconos"></i>
+                    </a>
+                </div>
+            </div>
+
+        {{/if}}
+
+        <form id="form_cuenta_administrador" method="post" hidden>
+            <input type="text" id="aux_ci_administrador" value="{{usuario_administrador}}" hidden />
+        </form>
+
+    </div>
+
+</nav>
+
+<div
+    class="card rounded-0"
+    style="width: 18rem;height: 100%; z-index: 900;position: fixed;top: O%;left: -18rem; z-index: 4000;"
+    id="id_contenedor_busqueda_orden"
+>
+
+    <span class="deslizado_busqueda_cli" hidden>comprimido</span>
+    {{! <span class="deslizado_o_f_inm" hidden>comprimido</span> }}
+
+    <div class="card-header px-1">
+        <div class="d-flex justify-content-between mx-2">
+            <div
+                class="btn btn-outline-secondary boton_resaltado"
+                id="deshacer_filtros"
+                title="Limpiar filtros"
+            >
+                <i class="fa fa-retweet"></i>
+            </div>
+            <div
+                class="btn btn-outline-secondary boton_resaltado"
+                id="cerrar_buscador"
+                title="Ocultar buscador"
+            >
+                <i class="fas fa-arrow-left"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body texto-normal p-2" style="width: 18rem;">
+
+        <div class="barra-deslizadora" style="overflow: auto; height: 100%;">
+
+            <div class="tab-content" id="myTabContent">
+
+                <div
+                    class="tab-pane fade show active"
+                    id="radio_inm_busq"
+                    role="tabpanel"
+                    aria-labelledby="radio_inm_busq-tab"
+                >
+
+                    <div class="mt-3">
+                        <h6 class="titul texto-link">Tipo de búsqueda</h6>
+                        {{! <div class="d-flex justify-content-between mx-1"> }}
+                        <div class="mx-1">
+
+                            <label class="d-block">
+                                <input
+                                    type="radio"
+                                    name="name_radio_inm_busq"
+                                    class="radio_tipo_busqueda"
+                                    value="inmueble"
+                                />
+                                Inmueble
+                            </label>
+
+                            <label class="d-block">
+                                <input
+                                    type="radio"
+                                    name="name_radio_inm_busq"
+                                    class="radio_tipo_busqueda"
+                                    value="proyecto"
+                                />
+                                Proyecto
+                            </label>
+
+                            <label class="d-block">
+                                <input
+                                    type="radio"
+                                    name="name_radio_inm_busq"
+                                    class="radio_tipo_busqueda"
+                                    value="requerimiento"
+                                />
+                                Requerimiento
+                            </label>
+
+                        </div>
+                    </div>
+
+                    {{! para busqueda de REQUERIMIENTOS }}
+                    <form
+                        id="formulario_busqueda_requerimiento"
+                        class="mx-1"
+                        action="/requerimientos/resultados"
+                        method="POST"
+                    >
+
+                        <input
+                            type="search"
+                            name="html_palabras_requerimiento"
+                            class="form-control"
+                            placeholder="Buscar requerimiento"
+                        />
+
+                        <div class="mt-3 mx-1">
+                            <h6 class="titul texto-link">Selecciona ciudad</h6>
+
+                            <div>
+                                <select
+                                    name="selectorCiudad"
+                                    id="selector_ciudad_busq_req"
+                                    title="Selecciona una ciudad"
+                                    class="form-control"
+                                >
+                                    <option value="Todos">Todos</option>
+                                    <option value="Beni">Beni</option>
+                                    <option value="Chuquisaca">Chuquisaca</option>
+                                    <option value="Cochabamba">Cochabamba</option>
+                                    <option value="La Paz">La Paz</option>
+                                    <option value="Oruro">Oruro</option>
+                                    <option value="Pando">Pando</option>
+                                    <option value="Potosí">Potosí</option>
+                                    <option value="Santa Cruz">Santa Cruz</option>
+                                    <option value="Tarija">Tarija</option>
+                                </select>
+                            </div>
+                            <input
+                                type="text"
+                                name="name_ciudad_busq_req"
+                                id="ciudad_elegida_req"
+                                value="Todos"
+                                class="form-control"
+                                hidden
+                            />
+                        </div>
+
+                        <div class="text-center mt-3">
+                            <input type="submit" value="Buscar" class="btn btn-primary" />
+                        </div>
+
+                    </form>
+
+                    {{! para busqueda de PROYECTOS }}
+                    <form
+                        id="formulario_busqueda_proyectos"
+                        class="mx-1"
+                        action="/proyectos/resultados"
+                        method="POST"
+                    >
+
+                        <input
+                            type="search"
+                            name="html_palabras_proyecto"
+                            class="form-control"
+                            placeholder="Buscar proyecto"
+                        />
+
+                        <div class="mt-3 mx-1">
+                            <h6 class="titul texto-link">Selecciona ciudad</h6>
+
+                            <div>
+                                <select
+                                    name="selectorCiudad"
+                                    id="selector_ciudad_busq_py"
+                                    title="Selecciona una ciudad"
+                                    class="form-control"
+                                >
+                                    <option value="Todos">Todos</option>
+                                    <option value="Beni">Beni</option>
+                                    <option value="Chuquisaca">Chuquisaca</option>
+                                    <option value="Cochabamba">Cochabamba</option>
+                                    <option value="La Paz">La Paz</option>
+                                    <option value="Oruro">Oruro</option>
+                                    <option value="Pando">Pando</option>
+                                    <option value="Potosí">Potosí</option>
+                                    <option value="Santa Cruz">Santa Cruz</option>
+                                    <option value="Tarija">Tarija</option>
+                                </select>
+                            </div>
+                            <input
+                                type="text"
+                                name="name_ciudad_busq_py"
+                                id="ciudad_elegida_py"
+                                value="Todos"
+                                class="form-control"
+                                hidden
+                            />
+                        </div>
+
+                        <div class="mt-3">
+                            <h6 class="titul texto-link">Tipo de proyecto</h6>
+                            <div class="mx-1">
+                                <label class="d-block">
+                                    <input
+                                        type="radio"
+                                        name="name_radio_py_busq"
+                                        class="radio_py_busq"
+                                        value="reservacion"
+                                        data-seleccionada="no"
+                                        required
+                                    />
+                                    Reserva
+                                </label>
+                                <label class="d-block">
+                                    <input
+                                        type="radio"
+                                        name="name_radio_py_busq"
+                                        class="radio_py_busq"
+                                        value="pago"
+                                        data-seleccionada="no"
+                                        required
+                                    />
+                                    Pago
+                                </label>
+                                <label class="d-block">
+                                    <input
+                                        type="radio"
+                                        name="name_radio_py_busq"
+                                        class="radio_py_busq"
+                                        value="aprobacion"
+                                        data-seleccionada="no"
+                                        required
+                                    />
+                                    Aprobación
+                                </label>
+                                <label class="d-block">
+                                    <input
+                                        type="radio"
+                                        name="name_radio_py_busq"
+                                        class="radio_py_busq"
+                                        value="construccion"
+                                        data-seleccionada="no"
+                                        required
+                                    />
+                                    Construcción
+                                </label>
+                                <label class="d-block">
+                                    <input
+                                        type="radio"
+                                        name="name_radio_py_busq"
+                                        class="radio_py_busq"
+                                        value="construido"
+                                        data-seleccionada="no"
+                                        required
+                                    />
+                                    Construido
+                                </label>
+                                <label class="d-block">
+                                    <input
+                                        type="radio"
+                                        name="name_radio_py_busq"
+                                        class="radio_py_busq"
+                                        value="convocatoria"
+                                        data-seleccionada="no"
+                                        required
+                                    />
+                                    Convocatoria (Terreno)
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-3">
+                            <input type="submit" value="Buscar" class="btn btn-primary" />
+                        </div>
+
+                    </form>
+
+                    {{! Para busqueda de inmuebles }}
+                    <form
+                        id="formulario_busqueda_cli"
+                        class="mx-1"
+                        action="/inmuebles/resultados"
+                        method="POST"
+                    >
+
+                        <input
+                            type="search"
+                            name="html_palabras_busq"
+                            class="form-control"
+                            placeholder="Buscar inmueble"
+                        />
+
+                        <div class="mt-3 mx-1">
+                            <h6 class="titul texto-link">Selecciona ciudad</h6>
+
+                            <div>
+                                <select
+                                    name="selectorCiudad"
+                                    id="selector_ciudad_busq"
+                                    title="Selecciona una ciudad"
+                                    class="form-control"
+                                >
+                                    <option value="Todos">Todos</option>
+                                    <option value="Beni">Beni</option>
+                                    <option value="Chuquisaca">Chuquisaca</option>
+                                    <option value="Cochabamba">Cochabamba</option>
+                                    <option value="La Paz">La Paz</option>
+                                    <option value="Oruro">Oruro</option>
+                                    <option value="Pando">Pando</option>
+                                    <option value="Potosí">Potosí</option>
+                                    <option value="Santa Cruz">Santa Cruz</option>
+                                    <option value="Tarija">Tarija</option>
+                                </select>
+                            </div>
+                            <input
+                                type="text"
+                                name="name_ciudad_busq"
+                                id="ciudad_elegida"
+                                value="Todos"
+                                class="form-control"
+                                hidden
+                            />
+                        </div>
+
+                        <div class="mt-3">
+                            <h6 class="titul texto-link">Estado del inmueble</h6>
+                            <div class="mx-1">
+                                <label class="d-block">
+                                    <input
+                                        type="radio"
+                                        name="name_radio_inm_busq"
+                                        class="radio_inm_py_busq"
+                                        value="disponible"
+                                        data-seleccionada="si"
+                                    />
+                                    Disponible
+                                </label>
+                                <label class="d-block" title="Pago pendiente">
+                                    <input
+                                        type="radio"
+                                        name="name_radio_inm_busq"
+                                        class="radio_inm_py_busq"
+                                        value="pendiente_pago"
+                                        data-seleccionada="no"
+                                    />
+                                    Pago
+                                </label>
+                                <label class="d-block" title="Aprobación pendiente">
+                                    <input
+                                        type="radio"
+                                        name="name_radio_inm_busq"
+                                        class="radio_inm_py_busq"
+                                        value="pendiente_aprobacion"
+                                        data-seleccionada="no"
+                                        
+                                    />
+                                    Aprobación
+                                </label>
+                                <label class="d-block">
+                                    <input
+                                        type="radio"
+                                        name="name_radio_inm_busq"
+                                        class="radio_inm_py_busq"
+                                        value="remate"
+                                        data-seleccionada="no"
+                                    />
+                                    Remate
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="contenedor_disponible_busq mx-1">
+                            <div class="mt-2">
+                                <h6 class="titul texto-link">Precio min.</h6>
+
+                                <div class="d-flex justify-content-between">
+                                    <div class="limite_min">0 $us</div>
+                                    <div class="limite_max">+ 100.000 $us</div>
+                                </div>
+
+                                <input
+                                    type="range"
+                                    id="range_precio_disponible_busq"
+                                    name="html_range_precio_disponible_busq"
+                                    min="0"
+                                    max="100000"
+                                    step="10000"
+                                    value="100000"
+                                    class="w-100"
+                                />
+
+                                <div class="input-group">
+                                    <input
+                                        type="number"
+                                        name="html_input_precio_disponible_busq"
+                                        id="input_precio_disponible_busq"
+                                        value="100000"
+                                        min="0"
+                                        class="form-control"
+                                    />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">$us</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="contenedor_pendiente_apro_busq mx-1">
+                            <div class="mt-2">
+                                <h6 class="titul texto-link">Precio min.</h6>
+
+                                <div class="d-flex justify-content-between">
+                                    <div class="limite_min">0 $us</div>
+                                    <div class="limite_max">+ 100.000 $us</div>
+                                </div>
+
+                                <input
+                                    type="range"
+                                    name="html_range_precio_pendiente_apro_busq"
+                                    id="range_precio_pendiente_apro_busq"
+                                    min="0"
+                                    max="100000"
+                                    step="10000"
+                                    value="100000"
+                                    class="w-100"
+                                />
+
+                                <div class="input-group">
+                                    <input
+                                        type="number"
+                                        name="html_input_precio_pendiente_apro_busq"
+                                        id="input_precio_pendiente_apro_busq"
+                                        value="200000"
+                                        class="form-control"
+                                        min="0"
+                                    />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">$us</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="contenedor_pendiente_pago_busq mx-1">
+                            <div class="mt-2">
+                                <h6 class="titul texto-link">Precio min.</h6>
+
+                                <div class="d-flex justify-content-between">
+                                    <div class="limite_min">0 $us</div>
+                                    <div class="limite_max">+ 100.000 $us</div>
+                                </div>
+
+                                <input
+                                    type="range"
+                                    name="html_range_precio_pendiente_pago_busq"
+                                    id="range_precio_pendiente_pago_busq"
+                                    min="0"
+                                    max="100000"
+                                    step="10000"
+                                    value="100000"
+                                    class="w-100"
+                                />
+
+                                <div class="input-group">
+                                    <input
+                                        type="number"
+                                        name="html_input_precio_pendiente_pago_busq"
+                                        id="input_precio_pendiente_pago_busq"
+                                        value="200000"
+                                        class="form-control"
+                                        min="0"
+                                    />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">$us</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="contenedor_remate_busq mx-1">
+                            <div class="mt-2">
+                                <h6 class="titul texto-link">Precio min.</h6>
+
+                                <div class="d-flex justify-content-between">
+                                    <div class="limite_min">0 $us</div>
+                                    <div class="limite_max">+ 100.000 $us</div>
+                                </div>
+
+                                <input
+                                    type="range"
+                                    name="html_range_precio_remate_busq"
+                                    id="range_precio_remate_busq"
+                                    min="0"
+                                    max="100000"
+                                    step="10000"
+                                    value="100000"
+                                    class="w-100"
+                                />
+
+                                <div class="input-group">
+                                    <input
+                                        type="number"
+                                        name="html_input_precio_remate_busq"
+                                        id="input_precio_remate_busq"
+                                        value="1000"
+                                        class="form-control"
+                                        min="0"
+                                    />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">$us</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="mt-3">
+                            <h6 class="titul texto-link">Tipo</h6>
+
+                            <div class="contenedor_tipo_inmueble_busqueda">
+
+                                <div
+                                    class="form-check d-flex justify-content-between align-items-center"
+                                >
+                                    {{! "form-check" HACE QUE EL ELEMENTO NO ESTE CHOCANDO A LOS LATERALES, LE PONE ESPACIOS A LOS CASTADOS }}
+                                    <label>
+                                        <input
+                                            type="checkbox"
+                                            name="html_tipo_inmueble"
+                                            class="form-check-input casilla_inm_py"
+                                            seleccionado="no"
+                                            value="departamento"
+                                        />Departamento
+                                    </label>
+                                </div>
+
+                                <div
+                                    class="form-check d-flex justify-content-between align-items-center"
+                                >
+                                    {{! "form-check" HACE QUE EL ELEMENTO NO ESTE CHOCANDO A LOS LATERALES, LE PONE ESPACIOS A LOS CASTADOS }}
+                                    <label>
+                                        <input
+                                            type="checkbox"
+                                            name="html_tipo_inmueble"
+                                            class="form-check-input casilla_inm_py"
+                                            seleccionado="no"
+                                            value="casa"
+                                        />Casa
+                                    </label>
+                                </div>
+
+                                <div
+                                    class="form-check d-flex justify-content-between align-items-center"
+                                >
+                                    <label>
+                                        <input
+                                            type="checkbox"
+                                            name="html_tipo_inmueble"
+                                            class="form-check-input casilla_inm_py"
+                                            seleccionado="no"
+                                            value="local comercial"
+                                        />Comercial
+                                    </label>
+                                </div>
+
+                                <div
+                                    class="form-check d-flex justify-content-between align-items-center"
+                                >
+                                    <label>
+                                        <input
+                                            type="checkbox"
+                                            name="html_tipo_inmueble"
+                                            class="form-check-input casilla_inm_py"
+                                            seleccionado="no"
+                                            value="oficina"
+                                        />Oficina
+                                    </label>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="mt-3 mx-1">
+                            <h6 class="titul texto-link">Superficie min.</h6>
+
+                            <div class="d-flex justify-content-between">
+                                <div class="limite_min">0 m2</div>
+                                <div class="limite_max">+ 500 m2</div>
+                            </div>
+
+                            <input
+                                type="range"
+                                id="range_superficie_busq"
+                                min="0"
+                                max="500"
+                                step="50"
+                                value="500"
+                                class="w-100"
+                                name="html_range_superficie"
+                            />
+
+                            <div class="input-group">
+                                <input
+                                    type="number"
+                                    value="500"
+                                    class="form-control"
+                                    id="input_superficie_busq"
+                                    min="0"
+                                    name="html_input_superficie"
+                                />
+                                <div class="input-group-append">
+                                    <span class="input-group-text">m2</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 mx-1">
+                            <h6 class="titul texto-link">Dormitorios min.</h6>
+                            <div
+                                class="btn-group ref_numero_habitaciones d-flex justify-content-between"
+                            >
+                                <button
+                                    numero="1"
+                                    class="texto-normal numero_habitaciones btn border rounded-0"
+                                >1</button>
+                                <button
+                                    numero="2"
+                                    class="texto-normal numero_habitaciones btn border"
+                                >2</button>
+                                <button
+                                    numero="3"
+                                    class="texto-normal numero_habitaciones btn border"
+                                >3</button>
+                                <button
+                                    numero="4"
+                                    class="texto-normal numero_habitaciones btn border"
+                                >4</button>
+                                <button
+                                    numero="5"
+                                    class="texto-normal numero_habitaciones btn border rounded-0"
+                                >+5</button>
+                            </div>
+                            {{! este hidden para envio con el formulari al servidor }}
+                            <input
+                                type="number"
+                                name="html_numero_habitaciones"
+                                id="id_numero_habitaciones"
+                                value="5"
+                                hidden
+                            />
+                        </div>
+
+                        <div class="mt-3 mx-1">
+                            <h6 class="titul texto-link">Baños min.</h6>
+                            <div class="btn-group ref_numero_banos d-flex justify-content-between">
+                                <button
+                                    numero="1"
+                                    class="texto-normal numero_banos btn border rounded-0"
+                                >1</button>
+                                <button
+                                    numero="2"
+                                    class="texto-normal numero_banos btn border"
+                                >2</button>
+                                <button
+                                    numero="3"
+                                    class="texto-normal numero_banos btn border"
+                                >3</button>
+                                <button
+                                    numero="4"
+                                    class="texto-normal numero_banos btn border"
+                                >4</button>
+                                <button
+                                    numero="5"
+                                    class="texto-normal numero_banos btn border rounded-0"
+                                >+5</button>
+                            </div>
+                            {{! este hidden para envio con el formulari al servidor }}
+                            <input
+                                type="number"
+                                name="html_numero_banos"
+                                id="id_numero_banos"
+                                value="5"
+                                hidden
+                            />
+                        </div>
+
+                        <div class="form-check mt-3">
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    name="name_garaje_busq"
+                                    class="form-check-input"
+                                    value="garaje_seleccionado"
+                                    id="id_garaje_busq"
+                                    seleccionado="no"
+                                />Garaje propio
+                            </label>
+                        </div>
+
+                        <div class="text-center mt-2">
+                            <input type="submit" value="Buscar" class="btn btn-primary" />
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{{! "modal fade" convierte toda la pantalla en oscuro }}
+{{! data-backdrop="static"  es para evitar que la ventana se cierre cuando se haga click fuera de la ventana modal }}
+
+<form class="modal fade" id="ventanaModalAccesoInversor" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content estilo-modal">
+
+            {{! para el encabezado de la ventana }}
+            <div class="modal-header">
+                <h4 class="modal-title texto-resaltado">Claves de acceso</h4>
+
+                {{! BOTON PARA CERRAR la ventana modal }}
+                <button
+                    type="button"
+                    class="cerrar_modal_acceso close boton_resaltado"
+                    data-dismiss="modal"
+                    aria-hidden="true"
+                >&times;</button>
+            </div>
+
+            {{! para el contenido de la ventana modal }}
+            <div class="modal-body estilo-modal">
+
+                <div class="form-group">
+                    {{! <label for="html_usuario_inversor" class="texto-normal">Usuario</label> }}
+                    <label for="id_usuario_modal" class="texto-normal">Usuario</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text texto-resaltado">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        </div>
+
+                        <input
+                            type="text"
+                            name="usuario"
+                            class="form-control borrador_1"
+                            id="id_usuario_modal"
+                            required
+                        />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_clave_modal" class="texto-normal">Contraseña</label>
+                    {{! <label for="html_clave_inversor" class="texto-normal">Contraseña</label> }}
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text texto-resaltado">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                        </div>
+
+                        <input
+                            type="password"
+                            name="clave"
+                            class="form-control borrador_1"
+                            id="id_clave_modal"
+                            required
+                        />
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <input type="submit" class="ref_boton_acceder btn btn-primary" value="Acceder" />
+                </div>
+
+            </div>
+        </div>
+    </div>
+    {{! FIN DE VENTANA MODAL }}
+</form>
+
+{{! formulario auxiliar invisible que permitira al inversor el acceso a su cuenta privada }}
+<form id="id_form_acceso_cuenta_inversor" method="GET" action="" hidden></form>

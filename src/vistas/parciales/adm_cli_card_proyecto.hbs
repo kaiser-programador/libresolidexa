@@ -1,0 +1,202 @@
+{{! CARD de PROYECTO para vistas EXTERNAS, INTERNAS lado ADMINISTRADOR Y CLIENTE }}
+
+{{! solo en la etapa a partir de CONSTRUCCION se eliminaran los demas proyectos, y solo se mostrara el proyecto ganaodor }}
+
+<div class="card_un_inm_py mb-3 col-12 col-sm-6 col-md-4 col-lg-3">
+
+    <div class="card">
+
+        <div class="card-header" style="overflow: hidden;">
+            <div class="card-cabeza">
+                {{nombre_proyecto}}
+            </div>
+
+            {{#if card_externo}}
+                <div style="display: flex;">
+                    <div style="width: 85%;">
+                        <div class="card-ciudad-provincia-direccion">
+                            {{ciudad}}
+                            /
+                            {{provincia}}
+                        </div>
+                        <div class="card-ciudad-provincia-direccion">
+                            {{direccion}}
+                        </div>
+                    </div>
+                    <div style="width: 15%;margin-top: 0.25em; margin-left: 0.25em;">
+                        <img
+                            src="/rutavirtualpublico/imagenes/{{bandera_ciudad}}"
+                            title="Bandera ciudad"
+                            style="width: 100%;"
+                        />
+                    </div>
+                </div>
+            {{/if}}
+
+        </div>
+
+        <div class="contenedor_imagen">
+            <a href="{{laapirest}}proyecto/{{codigo_proyecto}}/descripcion">
+                {{#if imagen_encontrado}}
+                    <img
+                        src="/rutavirtualpublico/subido/{{imagen_proyecto}}"
+                        title="{{nombre_imagen}}"
+                        alt="Imagen principal proyecto"
+                        class="estilo_imagen card-img-top"
+                    />
+                {{else}}
+                    <img
+                        src="/rutavirtualpublico/imagenes/sinimagen.png"
+                        alt="Imagen principal proyecto"
+                        class="estilo_imagen card-img-top"
+                    />
+                {{/if}}
+
+                <div class="contenedor-card-iconos-vertical">
+                    <div title="Facebook">
+                        <a href="{{link_facebook_proyecto}}" target="_blank">
+                            <i class="icono_card fab fa-facebook"></i>
+                        </a>
+                    </div>
+                    <div class="mt-2" title="Instagram">
+                        <a href="{{link_instagram_proyecto}}" target="_blank">
+                            <i class="icono_card fab fa-instagram"></i>
+                        </a>
+                    </div>
+                    <div class="mt-2" title="Youtube">
+                        <a href="{{link_youtube_proyecto}}" target="_blank"><i
+                                class="icono_card fab fa-youtube"
+                            ></i></a>
+                    </div>
+                    <div class="mt-2" title="TikTok">
+                        <a href="{{link_tiktok_proyecto}}" target="_blank">
+                            <svg
+                                class="tiktok-icono"
+                                xmlns="http://www.w3.org/2000/svg"
+                                aria-hidden="true"
+                                data-prefix="fab"
+                                data-icon="tiktok"
+                                viewBox="0 0 448 512"
+                            >
+                                <path
+                                    d="M448 209.91a210.06 210.06 0 01-122.77-39.25v178.72A162.55 162.55 0 11185 188.31v89.89a74.62 74.62 0 1052.23 71.18V0h88a121.18 121.18 0 001.86 22.17A122.18 122.18 0 00381 102.39a121.43 121.43 0 0067 20.14z"
+                                ></path>
+                            </svg>
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <a class="capa" href="{{laapirest}}proyecto/{{codigo_proyecto}}/descripcion">
+                    <h1>Ver +</h1>
+                </a>
+            </a>
+        </div>
+
+        <div class="card-body py-2">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <div class="h6">Financiado</div>
+                    <div class="h6">
+                        <b>
+                            <span class="v_financiado" valor="{{financiado_num}}">{{financiado}}</span>
+                            <span>$us</span>
+                        </b>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div class="h6">Meta</div>
+                    <div class="h6">
+                        <span class="v_meta" valor="{{meta_num}}"><b>{{meta}} $us</b></span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="position: relative;">
+                <div class="progress" style="height: 1.5rem;">
+                    <div class="progress-bar" role="progressbar" style="width: {{porcentaje}}%;"></div>
+                </div>
+                <div class="css-val-porcentaje-celda">
+                    <span>{{porcentaje_render}}</span>
+                    <span>%</span>
+                </div>
+            </div>
+
+            {{#if card_externo}}
+                <div class="d-flex justify-content-between my-2">
+                    <div>
+                        <i class="fas fa-clock texto-resaltado"></i>
+                        <span class="h6">{{factor_tiempo_titulo}}</span>
+                    </div>
+                    <div>
+                        <span class="h6"><b>{{factor_tiempo_tiempo}}</b></span>
+                    </div>
+                </div>
+            {{/if}}
+
+            <div
+                class="d-flex justify-content-between my-2"
+                title="Número de inmuebles disponibles en el proyecto"
+            >
+                <div>
+                    <i class="fas fa-house-user texto-resaltado"></i>
+                    <span class="h6">Disponibles</span>
+                </div>
+                <div>
+                    <span class="h6"><b>{{n_disponibles}}</b></span>
+                    <span class="h6">de</span>
+                    <span class="h6"><b>{{n_inmuebles}}</b></span>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between mt-1">
+                <div class="linea-v text-center w-50">
+                    <div class="mb-1">
+                        <span class="h6">Plazo</span>
+                    </div>
+                    <div>
+                        <div class="h6">
+                            <b>
+                                <span class="v_meses_construccion">
+                                    {{meses_construccion}}
+                                </span>
+                                <span>Meses</span>
+                            </b>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center w-50">
+                    <div class="mb-1">
+                        <span class="h6">Ahorro</span>
+                    </div>
+                    <div>
+                        <div class="h6">
+                            <b>
+                                <span class="v_ahorro" valor="{{ahorro_num}}">{{ahorro}}</span>
+                                <span>$us</span>
+                            </b>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="linea-h"></div>
+
+            <span class="v_vencimiento" valor="{{vencimiento}}" hidden></span>
+        </div>
+
+        {{!-- <div class="card-footer mx-3 mb-2" title="Código del proyecto">
+            {{codigo_proyecto}}
+        </div> --}}
+
+        <div class="card-footer mx-3 mb-2" title="Código del proyecto">
+            <a href="{{laapirest}}proyecto/{{codigo_proyecto}}/descripcion">
+                {{codigo_proyecto}}
+            </a>
+        </div>
+
+    </div>
+
+</div>

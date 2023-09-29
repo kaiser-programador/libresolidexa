@@ -1,0 +1,458 @@
+{{! para pestaña RESPONSABILIDAD SOCIAL del lado del ADMINISTRADOR }}
+
+<div class="contenido container-fluid mt-4 cuadro_estandart p-3">
+
+    <div class="row d-block mx-2 py-2">
+        <h5>RESPONSABILIDAD SOCIAL</h5>
+        <p class="text-left"><b>Nota: </b>A continuación se detalle un informe de RESPONSABILIDAD SOCIAL
+            lograda con la ejecución del presente proyecto</p>
+    </div>
+
+    <form
+        action=""
+        method=""
+        enctype="multipart/form-data"
+        id="guardar_formulario_rs"
+        class="row mx-2 p-3"
+    >
+
+        <div class="col-12 col-sm-6">
+
+            <div class="form-check d-flex justify-content-between align-items-center ml-2 mb-2">
+                <label>
+                    {{! "data-marcado" le pondremos por defecto en "false" }}
+                    <input
+                        type="checkbox"
+                        class="form-check-input casilla_rs_visible"
+                        data-marcado="false"
+                        style="zoom: 1.4;"
+                    />Visible
+                </label>
+            </div>
+            <input
+                type="text"
+                class="input_visibilidad_rs"
+                value="{{contenido_proyecto.existe_rs}}"
+                name="visibilidad_rs"
+                hidden
+            />
+
+            <div class="form-group row">
+                <label
+                    for="label_beneficiario_rs"
+                    class="col-sm-12 col-lg-4 col-form-label"
+                >Beneficiario</label>
+                <div class="col-sm-12 col-lg-8">
+                    <input
+                        type="text"
+                        name="beneficiario_rs"
+                        class="form-control"
+                        id="label_beneficiario_rs"
+                        value="{{contenido_proyecto.beneficiario_rs}}"
+                        required
+                    />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label
+                    for="label_descripcion_rs"
+                    class="col-sm-12 col-lg-4 col-form-label"
+                >Descripción</label>
+                <div class="col-sm-12 col-lg-8">
+                    <textarea
+                        name="descripcion_rs"
+                        class="form-control"
+                        id="label_descripcion_rs"
+                        rows="5"
+                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                        placeholder="Para saltos de línea use: <br> u otras etiquetas html"
+                        required
+                    >{{contenido_proyecto.descripcion_rs}}</textarea>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-12 col-sm-6">
+            <div class="form-group row">
+                <label for="label_monto_dinero_rs" class="col-sm-12 col-lg-4 col-form-label">Monto
+                    recaudado $us</label>
+                <div class="col-sm-12 col-lg-8">
+                    <input
+                        type="number"
+                        name="monto_dinero_rs"
+                        class="form-control"
+                        id="label_monto_dinero_rs"
+                        value="{{contenido_proyecto.monto_dinero_rs}}"
+                        step="0.01"
+                        required
+                    />
+                </div>
+            </div>
+            <p class="text-left">
+                Este valor debe ser igual a la sumatoria de todos los ITEMs de la tabla: DETALLE DEL BENEFICIO ENTREGADO.
+            </p>
+
+            <div class="form-group row">
+                <label for="idFechaEntregaDonacion" class="col-sm-12 col-lg-4 col-form-label">Fecha
+                    entrega</label>
+                <div class="col-sm-12 col-lg-8">
+                    <input
+                        name="fecha_entrega_rs"
+                        type="date"
+                        id="idFechaEntregaDonacion"
+                        value="{{contenido_proyecto.fecha_entrega_rs}}"
+                        class="form-control"
+                        required
+                    />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="label_link_youtube_rs" class="col-sm-12 col-lg-4 col-form-label">Link video (Opcional)</label>
+                <div class="col-sm-12 col-lg-8">
+                    <input
+                        type="text"
+                        name="link_youtube_rs"
+                        class="form-control"
+                        id="label_link_youtube_rs"
+                        value="{{contenido_proyecto.link_youtube_rs}}"
+                        placeholder="Dentro el iframe el valor de width debe ser 100%"
+                        title="Dentro el iframe el valor de width debe ser 100%"
+                    />
+                </div>
+            </div>
+
+        </div>
+
+        <div class="ref_boton_rs col-12 text-center">
+            <button class="mx-3 btn btn-primary">Guardar</button>
+        </div>
+    </form>
+</div>
+
+<div class="contenido container-fluid madre_tabla mt-4 cuadro_estandart p-3">
+
+    <h5>DETALLE DEL BENEFICIO ENTREGADO</h5>
+    <p class="text-left"><b>Nota: </b>Introducir esta información solo en caso de que exista</p>
+
+    <div class="row">
+        <div class="col-12 ref_botones_tabla">
+            <div class="d-inline-block p-3">
+                <button class="btn btn-primary mr-3" id="id_guardar_tabla">Guardar tabla</button>
+
+                <button class="btn btn-danger" id="id_eliminar_tabla">Eliminar tabla</button>
+            </div>
+        </div>
+        <div id="tipo_tabla_objetivo" data-id="py_social"></div>
+    </div>
+
+    {{! aqui la tabla con el boton de eliminar }}
+    <div class="row mt-3">
+        <div class="col-12">
+            <div class="d-flex">
+                <h5>Unidad Monetaria: &nbsp;</h5>
+                <h5 class="texto-resaltado">$us</h5>
+            </div>
+
+            <div class="table-responsive">
+                <table class="text-primary table table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="text-center">#</th>
+                            <th class="text-center">ÍTEM</th>
+                            <th class="text-center">UNIDAD</th>
+                            <th class="text-center">PRECIO UNITARIO</th>
+                            <th class="text-center">CANTIDAD</th>
+                            <th class="text-center">TOTAL</th>
+                            <th class="text-center">ACCIÓN</th>
+                        </tr>
+                    </thead>
+                    {{! clase "cuerpo_filas" como referencia para agregar una nueva fila despues de
+                        esta clase como HIJO con "append" }}
+                    <tbody class="cuerpo_filas">
+
+                        {{#if contenido_proyecto.tabla_rs_proyecto}}
+
+                            {{#each contenido_proyecto.tabla_rs_proyecto}}
+
+                                <tr class="fila_fila">
+                                    <td class="text-center numero_fila" data-id="{{0}}">{{0}}</td>
+
+                                    <td><input
+                                            type="text"
+                                            class="form-control fila_input"
+                                            data-tipo="texto"
+                                            style="min-width: 8em;"
+                                            value="{{1}}"
+                                        />
+                                    </td>
+
+                                    <td><input
+                                            type="text"
+                                            class="form-control fila_input"
+                                            data-tipo="texto"
+                                            style="min-width: 8em;"
+                                            value="{{2}}"
+                                        />
+                                    </td>
+
+                                    <td><input
+                                            type="number"
+                                            class="form-control fila_input"
+                                            data-tipo="numero"
+                                            step="0.01"
+                                            style="min-width: 5em;"
+                                            value="{{3}}"
+                                        />
+                                    </td>
+
+                                    <td><input
+                                            type="number"
+                                            class="form-control fila_input"
+                                            data-tipo="numero"
+                                            step="0.01"
+                                            style="min-width: 5em;"
+                                            value="{{4}}"
+                                        />
+                                    </td>
+
+                                    <td><input
+                                            type="number"
+                                            class="form-control fila_input"
+                                            data-tipo="numero"
+                                            step="0.01"
+                                            style="min-width: 5em;"
+                                            value="{{5}}"
+                                        />
+                                    </td>
+
+                                    <td>
+                                        <div class="d-flex">
+                                            <button
+                                                class="boton_fila_arriba d-block btn p-1"
+                                                data-id="{{0}}"
+                                            ><i class="fas fa-arrow-circle-up size_iconos"></i></button>
+                                            <button
+                                                class="boton_fila_abajo d-block btn mx-1 p-1"
+                                                data-id="{{0}}"
+                                            ><i
+                                                    class="fas fa-arrow-circle-down size_iconos"
+                                                ></i></button>
+                                            <button
+                                                class="boton_fila_eliminar d-block btn p-1"
+                                                data-id="{{0}}"
+                                            ><i class="fas fa-window-close size_iconos"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                            {{/each}}
+
+                        {{else}}
+
+                            <tr class="fila_fila">
+                                <td class="text-center numero_fila" data-id="1">1</td>
+
+                                <td><input
+                                        type="text"
+                                        class="form-control fila_input"
+                                        data-tipo="texto"
+                                        style="min-width: 8em;"
+                                    />
+                                </td>
+
+                                <td><input
+                                        type="text"
+                                        class="form-control fila_input"
+                                        data-tipo="texto"
+                                        style="min-width: 8em;"
+                                    />
+                                </td>
+
+                                <td><input
+                                        type="number"
+                                        class="form-control fila_input"
+                                        data-tipo="numero"
+                                        step="0.01"
+                                        style="min-width: 5em;"
+                                    />
+                                </td>
+
+                                <td><input
+                                        type="number"
+                                        class="form-control fila_input"
+                                        data-tipo="numero"
+                                        step="0.01"
+                                        style="min-width: 5em;"
+                                    />
+                                </td>
+
+                                <td><input
+                                        type="number"
+                                        class="form-control fila_input"
+                                        data-tipo="numero"
+                                        step="0.01"
+                                        style="min-width: 5em;"
+                                    />
+                                </td>
+
+                                <td>
+                                    <div class="d-flex">
+                                        <button class="boton_fila_arriba d-block btn p-1" data-id="1"><i
+                                                class="fas fa-arrow-circle-up size_iconos"
+                                            ></i></button>
+                                        <button
+                                            class="boton_fila_abajo d-block btn mx-1 p-1"
+                                            data-id="1"
+                                        ><i class="fas fa-arrow-circle-down size_iconos"></i></button>
+                                        <button
+                                            class="boton_fila_eliminar d-block btn p-1"
+                                            data-id="1"
+                                        ><i class="fas fa-window-close size_iconos"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        {{/if}}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="contenido container-fluid mt-4">
+
+    <div class="ref_formulario_imagen_rs row">
+        <div class="col-12">
+
+            <div class="card my-3" style="max-width: 40rem;">
+                <div class="card-header">
+                    <h5>SUBIR ARCHIVO IMAGEN</h5>
+                </div>
+
+                <div class="card-body text-primary">
+
+                    <form enctype="multipart/form-data" id="idSubirImagen">
+
+                        <div class="form-group row">
+                            {{! "subirArchivoNavegador" debe ser el mismo nombre que el que se puso en
+                                configuracion para subir archivos desde el formulario del navegador }}
+                            <label for="id_input_subir_imagen" class="col-12 col-sm-4">Seleccionar imagén</label>
+
+                            <input
+                                type="file"
+                                name="subirArchivoNavegador"
+                                class="clase_input_subir_imagen form-control col-12 col-sm-5"
+                                id="id_input_subir_imagen"
+                                required
+                            />
+
+                        </div>
+
+                        {{! campo para escribir el titulo de la imagen }}
+
+                        <div class="form-group row">
+                            <label for="id_titulo_imagen" class="col-12 col-sm-4">Título de la imagen</label>
+
+                            <input
+                                type="text"
+                                name="nombreImagenHtml"
+                                class="form-control col-12 col-sm-5"
+                                placeholder="Titulo de la imagen"
+                                id="id_titulo_imagen"
+                                required
+                            />
+                        </div>
+
+                        {{! auxiliar para guardado de imagen para envio por jquery }}
+                        <input
+                            type="text"
+                            name="tipo_imagen"
+                            value="proyecto"
+                            id="tipo_objetivo"
+                            hidden
+                        />
+                        {{! codigo_objetivo, dependiendo, puede ser de terreno o proyecto }}
+                        <input
+                            type="text"
+                            name="codigo_objetivo"
+                            class="input_codigo_proyecto"
+                            value="{{codigo_proyecto}}"
+                            hidden
+                        />
+                        {{! codigo_terreno, para determinar si este esta bloqueado o no para efectuar cambios }}
+                        <input
+                            type="text"
+                            name="codigo_terreno"
+                            value="{{cabezera_adm.codigo_terreno}}"
+                            hidden
+                        />
+                        {{! tipo imagen proyecto, como estamos en proyecto responsabilidad social, entonces sera: "py_rs" }}
+                        <input type="text" name="tipo_imagen_py" value="py_rs" id="tipo_py_rs" hidden />
+
+                        <input
+                            type="submit"
+                            class="ref_subir_img btn btn-primary offset-4"
+                            value="Subir Imagen"
+                        />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="contenido container-fluid contenedor_imagenes_subidas mt-4">
+
+    <div class="row">
+
+        <div class="ref_titulo_imagen col-12">
+            <h5 class="cuadro_estandart p-2 text-center">
+                IMAGENES RESPONSABILIDAD SOCIAL
+            </h5>
+        </div>
+
+        {{#each contenido_proyecto.imagenes_py_rs}}
+
+            <div class="cuadro_contenedor_imagen imagenes mb-3 col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card">
+
+                    <div class="card-header p-0">
+                        <div class="d-flex p-0 m-0">
+
+                            <div class="align-self-center w-75 py-2 ml-2 text-primary">
+                                <h6>{{nombre_imagen}}</h6>
+                            </div>
+
+                            <div
+                                class="boton_eliminar_imagen_jquery text-center ir_rojo w-25 align-self-center border-left"
+                                data-id="{{codigo_imagen}}"
+                                style="color: red;"
+                            >
+                                <i class="fas fa-window-close py-1" style="font-size: 2em;"></i>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <img
+                            src="/rutavirtualpublico/subido/{{codigo_imagen}}{{extension_imagen}}"
+                            alt="{{nombre_imagen}}"
+                            title="{{codigo_imagen}}"
+                            class="estilo_imagen card-img-top"
+                        />
+
+                    </div>
+                </div>
+            </div>
+
+        {{/each}}
+
+    </div>
+</div>

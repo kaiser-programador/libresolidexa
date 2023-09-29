@@ -1,0 +1,485 @@
+{{! Descripción del TERRENO lado del ADMINISTRADOR }}
+
+<form
+    class="contenido container-fluid my-4 cuadro_estandart p-4"
+    id="guardar_descripcion_terreno"
+    data-id="{{codigo_terreno}}"
+>
+
+    {{! ********************************************************************* }}
+
+    <div class="row">
+
+        <div class="col-12 col-sm-6">
+
+            <h5>INFORMACIÓN BÁSICA</h5>
+
+            <div class="form-group row">
+                <label for="selector_ciudad" class="col-sm-12 col-lg-4 col-form-label">Elige ciudad</label>
+                <div class="col-sm-12 col-lg-8">
+                    <select
+                        name="selectorCiudad"
+                        id="selector_ciudad"
+                        title="Selecciona una ciudad"
+                        class="form-control"
+                    >
+                        <option data-bandera_ciudad="beni.png" value="Beni">Beni</option>
+                        <option
+                            data-bandera_ciudad="chuquisaca.png"
+                            value="Chuquisaca"
+                        >Chuquisaca</option>
+                        <option
+                            data-bandera_ciudad="cochabamba.png"
+                            value="Cochabamba"
+                        >Cochabamba</option>
+                        <option data-bandera_ciudad="la_paz.png" value="La Paz">La Paz</option>
+                        <option data-bandera_ciudad="oruro.png" value="Oruro">Oruro</option>
+                        <option data-bandera_ciudad="pando.png" value="Pando">Pando</option>
+                        <option data-bandera_ciudad="potosi.png" value="Potosí">Potosí</option>
+                        <option data-bandera_ciudad="santa_cruz.png" value="Santa Cruz">Santa Cruz</option>
+                        <option data-bandera_ciudad="tarija.png" value="Tarija">Tarija</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-12 col-lg-4 col-form-label">Ciudad</label>
+                <label class="col-sm-12 col-lg-8 col-form-label" id="label_ciudad">
+                    {{contenido_terreno.ciudad}}
+                </label>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-12 col-lg-4 col-form-label">Proyecto ganador</label>
+                <label class="col-sm-12 col-lg-8 col-form-label">
+                    {{contenido_terreno.proyecto_ganador}}
+                </label>
+            </div>
+
+            <input
+                type="text"
+                name="ciudad"
+                id="ciudad_elegida"
+                value="{{contenido_terreno.ciudad}}"
+                class="form-control"
+                hidden
+            />
+
+            <input
+                type="text"
+                name="bandera_ciudad"
+                id="bandera_ciudad_elegida"
+                value="{{contenido_terreno.bandera_ciudad}}"
+                class="form-control"
+                hidden
+            />
+
+            <div class="form-group row">
+                <label for="label_provincia" class="col-sm-12 col-lg-4 col-form-label">Provincia</label>
+                <div class="col-sm-12 col-lg-8">
+                    <input
+                        type="text"
+                        name="provincia"
+                        value="{{contenido_terreno.provincia}}"
+                        class="form-control"
+                        id="label_provincia"
+                    />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="label_direccion" class="col-sm-12 col-lg-4 col-form-label">Dirección</label>
+                <div class="col-sm-12 col-lg-8">
+                    <input
+                        type="text"
+                        name="direccion"
+                        value="{{contenido_terreno.direccion}}"
+                        class="form-control"
+                        id="label_direccion"
+                    />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="label_precio_sus" class="col-sm-12 col-lg-4 col-form-label">Precio</label>
+                <div class="col-sm-12 col-lg-8 input-group">
+                    <input
+                        name="precio_sus"
+                        type="number"
+                        step="0.01"
+                        value="{{contenido_terreno.precio_sus}}"
+                        class="form-control"
+                        id="label_precio_sus"
+                        min="0"
+                        required
+                    />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg-warning">$us</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="label_superficie" class="col-sm-12 col-lg-4 col-form-label">Superficie</label>
+                <div class="col-sm-12 col-lg-8 input-group">
+                    <input
+                        name="superficie"
+                        type="number"
+                        step="0.01"
+                        value="{{contenido_terreno.superficie}}"
+                        class="form-control"
+                        id="label_superficie"
+                        min="0"
+                        required
+                    />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg-warning">M2</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="label_anteproyectos_maximo" class="col-sm-12 col-lg-4 col-form-label">Número
+                    anteproyectos</label>
+                <div class="col-sm-12 col-lg-8">
+                    <input
+                        type="number"
+                        name="anteproyectos_maximo"
+                        value="{{contenido_terreno.anteproyectos_maximo}}"
+                        class="form-control"
+                        id="label_anteproyectos_maximo"
+                    />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="label_maximo_pisos" class="col-sm-12 col-lg-4 col-form-label">Número Max. Pisos</label>
+                <div class="col-sm-12 col-lg-8">
+                    <input
+                        type="number"
+                        name="maximo_pisos"
+                        value="{{contenido_terreno.maximo_pisos}}"
+                        class="form-control"
+                        id="label_maximo_pisos"
+                    />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="label_convocatoria" class="col-sm-12 col-lg-4 col-form-label">Texto convocatoria</label>
+                <div class="col-sm-12 col-lg-8">
+                    <textarea
+                        name="convocatoria"
+                        class="form-control"
+                        id="label_convocatoria"
+                        rows="5"
+                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                        placeholder="Para saltos de línea use: <br> u otras etiquetas html"
+                    >{{contenido_terreno.convocatoria}}</textarea>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="label_importante" class="col-sm-12 col-lg-4 col-form-label">Texto Importante</label>
+                <div class="col-sm-12 col-lg-8">
+                    <textarea
+                        name="importante"
+                        class="form-control"
+                        id="label_importante"
+                        rows="5"
+                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                        placeholder="Para saltos de línea use: <br> u otras etiquetas html"
+                    >{{contenido_terreno.importante}}</textarea>
+                </div>
+            </div>
+
+            <h5>FECHAS TERRENO</h5>
+
+            <div class="form-group row">
+                <label for="label_fecha_inicio_reserva" class="col-sm-12 col-lg-4 col-form-label">Fecha
+                    inicio reservaciones</label>
+                <div class="col-sm-12 col-lg-8">
+                    <input
+                        name="fecha_inicio_reserva"
+                        type="date"
+                        value="{{contenido_terreno.fecha_inicio_reserva}}"
+                        class="form-control"
+                        id="label_fecha_inicio_reserva"
+                    />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="label_fecha_fin_reserva" class="col-sm-12 col-lg-4 col-form-label">Fecha fin
+                    reservaciones</label>
+                <div class="col-sm-12 col-lg-8">
+                    <input
+                        name="fecha_fin_reserva"
+                        type="date"
+                        value="{{contenido_terreno.fecha_fin_reserva}}"
+                        class="form-control"
+                        id="label_fecha_fin_reserva"
+                    />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="label_fecha_inicio_pago" class="col-sm-12 col-lg-4 col-form-label">Fecha
+                    inicio pago</label>
+                <div class="col-sm-12 col-lg-8">
+                    <input
+                        name="fecha_inicio_pago"
+                        type="date"
+                        value="{{contenido_terreno.fecha_inicio_pago}}"
+                        class="form-control"
+                        id="label_fecha_inicio_pago"
+                    />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="label_fecha_fin_pago" class="col-sm-12 col-lg-4 col-form-label">Fecha fin
+                    pago</label>
+                <div class="col-sm-12 col-lg-8">
+                    <input
+                        name="fecha_fin_pago"
+                        type="date"
+                        value="{{contenido_terreno.fecha_fin_pago}}"
+                        class="form-control"
+                        id="label_fecha_fin_pago"
+                    />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="label_fecha_inicio_aprobacion" class="col-sm-12 col-lg-4 col-form-label">Fecha
+                    inicio aprobación</label>
+                <div class="col-sm-12 col-lg-8">
+                    <input
+                        name="fecha_inicio_aprobacion"
+                        type="date"
+                        value="{{contenido_terreno.fecha_inicio_aprobacion}}"
+                        class="form-control"
+                        id="label_fecha_inicio_aprobacion"
+                    />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="label_fecha_fin_aprobacion" class="col-sm-12 col-lg-4 col-form-label">Fecha fin
+                    aprobación</label>
+                <div class="col-sm-12 col-lg-8">
+                    <input
+                        name="fecha_fin_aprobacion"
+                        type="date"
+                        value="{{contenido_terreno.fecha_fin_aprobacion}}"
+                        class="form-control"
+                        id="label_fecha_fin_aprobacion"
+                    />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label
+                    for="label_fecha_inicio_construccion"
+                    class="col-sm-12 col-lg-4 col-form-label"
+                >Fecha inicio construcción</label>
+                <div class="col-sm-12 col-lg-8">
+                    <input
+                        name="fecha_inicio_construccion"
+                        type="date"
+                        value="{{contenido_terreno.fecha_inicio_construccion}}"
+                        class="form-control"
+                        id="label_fecha_inicio_construccion"
+                    />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="label_fecha_fin_construccion" class="col-sm-12 col-lg-4 col-form-label">Fecha
+                    fin construcción</label>
+                <div class="col-sm-12 col-lg-8">
+                    <input
+                        name="fecha_fin_construccion"
+                        type="date"
+                        value="{{contenido_terreno.fecha_fin_construccion}}"
+                        class="form-control"
+                        id="label_fecha_fin_construccion"
+                    />
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-12 col-sm-6">
+            <h5>UBICACIÓN Y PROXIMIDADES</h5>
+
+            <div class="form-group row">
+                <label for="label_descri_ubi_terreno" class="col-sm-12 col-lg-4 col-form-label">Ubicación
+                    y proximidades</label>
+                <div class="col-sm-12 col-lg-8">
+                    <textarea
+                        name="descri_ubi_terreno"
+                        class="form-control"
+                        id="label_descri_ubi_terreno"
+                        rows="5"
+                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                        placeholder="Para saltos de línea use: <br> u otras etiquetas html"
+                    >{{contenido_terreno.descri_ubi_terreno}}</textarea>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="label_titulo_ubi_otros_1" class="col-sm-12 col-lg-4 col-form-label">
+                    <input
+                        name="titulo_ubi_otros_1"
+                        type="text"
+                        placeholder="Avenidas principales"
+                        value="{{contenido_terreno.titulo_ubi_otros_1}}"
+                        title="Avenidas principales"
+                        class="form-control"
+                        id="label_titulo_ubi_otros_1"
+                    />
+                </label>
+
+                <div class="col-sm-12 col-lg-8">
+                    <textarea
+                        name="ubi_otros_1"
+                        class="form-control"
+                        rows="5"
+                        placeholder="*Avenida principal 1.*Avenida principal 2.*Avenida principal 3.*..."
+                        title="*Avenida principal 1.*Avenida principal 2.*Avenida principal 3.*..."
+                    >{{contenido_terreno.ubi_otros_1}}</textarea>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="label_titulo_ubi_otros_2" class="col-sm-12 col-lg-4 col-form-label">
+                    <input
+                        name="titulo_ubi_otros_2"
+                        type="text"
+                        placeholder="Puntos de interes"
+                        value="{{contenido_terreno.titulo_ubi_otros_2}}"
+                        title="Puntos de interes"
+                        class="form-control"
+                        id="label_titulo_ubi_otros_2"
+                    />
+                </label>
+                <div class="col-sm-12 col-lg-8">
+                    <textarea
+                        name="ubi_otros_2"
+                        class="form-control"
+                        rows="5"
+                        placeholder="*Punto de interes 1.*Punto de interes 2.*Punto de interes 3.*..."
+                        title="*Punto de interes 1.*Punto de interes 2.*Punto de interes 3.*..."
+                    >{{contenido_terreno.ubi_otros_2}}</textarea>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="label_titulo_ubi_otros_3" class="col-sm-12 col-lg-4 col-form-label">
+                    <input
+                        name="titulo_ubi_otros_3"
+                        type="text"
+                        placeholder="Plazas comerciales"
+                        value="{{contenido_terreno.titulo_ubi_otros_3}}"
+                        title="Plazas comerciales"
+                        class="form-control"
+                        id="label_titulo_ubi_otros_3"
+                    />
+                </label>
+                <div class="col-sm-12 col-lg-8">
+                    <textarea
+                        name="ubi_otros_3"
+                        class="form-control"
+                        rows="5"
+                        placeholder="*Plaza comercial 1.*Plaza comercial 2.*Plaza comercial 3.*..."
+                        title="*Plaza comercial 1.*Plaza comercial 2.*Plaza comercial 3.*..."
+                    >{{contenido_terreno.ubi_otros_3}}</textarea>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    {{! *********************************************************************** }}
+
+    <div class="row">
+
+        <div class="col-12 col-sm-6">
+
+            {{! *********************************************************************** }}
+            {{! UBICACION MAPA }}
+            <h5>UBICACIÓN DEL TERRENO https://</h5>
+            <div class="form-group">
+                <input
+                    type="text"
+                    name="link_googlemap"
+                    placeholder="Dentro el iframe los valores de width y height deberan estar al 100%"
+                    value="{{contenido_terreno.link_googlemap}}"
+                    class="form-control"
+                    title="Dentro el iframe los valores de width y height deberan estar al 100%"
+                />
+            </div>
+            {{! *********************************************************************** }}
+            {{! VIDEO YOUTUBE RECORRIDO VIRTUAL }}
+            {{! para mostrar vista aereo del terreno y alrededores, topografos tomando medidas }}
+            <h5>YOUTUBE TERRENO https://</h5>
+            <div class="form-group">
+                <input
+                    type="text"
+                    name="link_youtube"
+                    placeholder="Link recorrido virtual proyecto https://"
+                    value="{{contenido_terreno.link_youtube}}"
+                    class="form-control"
+                    title="Importante escribirlo con: https://"
+                />
+            </div>
+            {{! redes sociales para dar a conocer por este medio la convocatoria para anteproyectos sobre este terreno
+            y para comunicar los anteproyectos que se bayan subiendo }}
+            <h5>FACEBOOK TERRENO https://</h5>
+            <div class="form-group">
+                <input
+                    type="text"
+                    name="link_facebook"
+                    placeholder="Link facebook proyecto https://"
+                    value="{{contenido_terreno.link_facebook}}"
+                    class="form-control"
+                    title="Importante escribirlo con: https://"
+                />
+            </div>
+
+            <h5>INSTAGRAM TERRENO https://</h5>
+            <div class="form-group">
+                <input
+                    type="text"
+                    name="link_instagram"
+                    placeholder="Link instagram proyecto https://"
+                    value="{{contenido_terreno.link_instagram}}"
+                    class="form-control"
+                    title="Importante escribirlo con: https://"
+                />
+            </div>
+
+            <h5>TIKTOK TERRENO https://</h5>
+            <div class="form-group">
+                <input
+                    type="text"
+                    name="link_tiktok"
+                    placeholder="Link tik tok proyecto https://"
+                    value="{{contenido_terreno.link_tiktok}}"
+                    class="form-control"
+                    title="Importante escribirlo con: https://"
+                />
+            </div>
+
+        </div>
+
+    </div>
+
+    {{! ********************************************************************* }}
+
+    <div class="form-group boton_guardado">
+        <button class="btn btn-primary">Guardar datos Terreno</button>
+    </div>
+
+</form>

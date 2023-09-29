@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+{{!-- <html lang="en"> --}}
+
+<head>
+    {{!-- UTF-8 es para poder escribir libremente caracteres españoles (ñ, acentos y que puedan ser vistos asi en
+    diferentes configuracioes de navegadores) --}}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    {{!-- para que sea compatible con el navegador EXPLORER Y ADGE --}}
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <title>SOLIDEXA</title>
+
+    {{!-- foncybox --}}
+    <link rel="stylesheet" href="/rutavirtualpublico/css/jquery.fancybox.min.css">
+
+    {{!-- bootstrap 4 --}}
+    <link rel="stylesheet" href="/rutavirtualpublico/css/bootstrap.min.css">
+
+    {{!-- MIS PROPIOS ESTILOS DE CSS --}}
+    {{!-- recuerde que "rutavirtualpublico" contiene la direccion hasta la carpeta "publico" (esta ruta virtual fue
+    definido en "configuracion.js" ) --}}
+    <link rel="stylesheet" href="/rutavirtualpublico/css/estilos.css">
+
+    <link rel="stylesheet" href="/rutavirtualpublico/css/resoluciones.css">
+
+    <link rel="stylesheet" href="/rutavirtualpublico/css/animaciones.css">
+
+    {{!-- para LOS ICONOS DE FONTAWESOME --}}
+    <link rel="stylesheet" href="/rutavirtualpublico/css/all.min.css">
+
+
+</head>
+
+
+{{!--
+
+<body oncontextmenu="return false" onkeydown="return false"> --}}
+
+    <body class="barra-deslizadora" id="id_body">
+
+
+        {{{body}}}
+
+        {{#if navegador_cliente}}
+
+        {{!-- ubicacion del JQUERY que ejecutara la logica de nuestra aplicacion --}}
+        <script src="/rutavirtualpublico/jquerys/jquery.js"></script>
+
+        {{!-- PLUGIN JQUERY grafico de barra progreso circular --}}
+        <script src="/rutavirtualpublico/jquerys/jquery.knob.js"></script>
+
+        {{!-- fancybox --}}
+        <script src="/rutavirtualpublico/jquerys/jquery.fancybox.min.js"></script>
+
+        {{!-- el CHART JS , este "Chart.min.js" se extrajo de una web descargado que usaba chart, por tanto no venia en
+        la carpeta SRC--}}
+        <script src="/rutavirtualpublico/jquerys/src/Chart.min.js"></script>
+
+        {{!-- el theder o popper para bootstrap 4 --}}
+        <script src="/rutavirtualpublico/jquerys/popper.min.js"></script>
+
+        {{!-- el js de bootstrap 4 --}}
+        <script src="/rutavirtualpublico/jquerys/bootstrap.min.js"></script>
+
+
+        {{!-- JQUERYS propios para el lado del CLIENTE --}}
+        <script src="/rutavirtualpublico/jquerys/jqy_cli_inicio.js"></script>
+        <script src="/rutavirtualpublico/jquerys/jqy_adm_cli.js"></script>
+        <script src="/rutavirtualpublico/jquerys/jqy_cli_generales.js"></script>
+        <script src="/rutavirtualpublico/jquerys/jqy_cli_propietario.js"></script>
+        <script src="/rutavirtualpublico/jquerys/jqy_cli_proyecto.js"></script>
+        <script src="/rutavirtualpublico/jquerys/jqy_cli_inmueble.js"></script>
+
+        {{else}}
+
+        {{!-- ubicacion del JQUERY que ejecutara la logica de nuestra aplicacion --}}
+        <script src="/rutavirtualpublico/jquerys/jquery.js"></script>
+
+        {{!-- PLUGIN JQUERY grafico de barra progreso circular --}}
+        <script src="/rutavirtualpublico/jquerys/jquery.knob.js"></script>
+
+        {{!-- el CHART JS , este "Chart.min.js" se extrajo de una web descargado que usaba chart, por tanto no venia en
+        la carpeta SRC--}}
+        <script src="/rutavirtualpublico/jquerys/src/Chart.min.js"></script>
+
+        {{!-- el theder o popper para bootstrap 4 --}}
+        <script src="/rutavirtualpublico/jquerys/popper.min.js"></script>
+
+        {{!-- el js de bootstrap 4 --}}
+        <script src="/rutavirtualpublico/jquerys/bootstrap.min.js"></script>
+
+
+
+        {{!-- MI PROPIO CODIGO ESCRITO EN JQUERY : --}}
+
+        {{!-- BARRA DE NAVEGACION Y ADMINISTRADORES DEL SISTEMA --}}
+        <script src="/rutavirtualpublico/jquerys/jqy_adm_generales.js"></script>
+
+        {{!-- relacionado con solo INICIOS (proyecto, inmueble) --}}
+        <script src="/rutavirtualpublico/jquerys/jqy_adm_inicio.js"></script>
+
+        <script src="/rutavirtualpublico/jquerys/jqy_adm_cli.js"></script>
+
+        {{!-- relacionado don TERRENO --}}
+        <script src="/rutavirtualpublico/jquerys/jqy_adm_terreno.js"></script>
+
+        {{!-- relacionado con solo PROYECTO --}}
+        <script src="/rutavirtualpublico/jquerys/jqy_adm_proyecto.js"></script>
+
+        {{!-- relacionado con solo INMUEBLE --}}
+        <script src="/rutavirtualpublico/jquerys/jqy_adm_inmueble.js"></script>
+
+        {{!-- relacionado con solo PROYECTO, INMUEBLE --}}
+        {{!-- <script src="/rutavirtualpublico/jquerys/jqy_adm_inm_py.js"></script> --}}
+
+        {{!-- relacionado con solo INVERSOR desde el lado del GESTIONADOR --}}
+        <script src="/rutavirtualpublico/jquerys/jqy_adm_propietario.js"></script>
+
+        {{!-- relacionado ADMINISTRADOR (empleado o maestro) desde el lado del GESTIONADOR --}}
+        <script src="/rutavirtualpublico/jquerys/logica_cuenta_administrador.js"></script>
+
+        {{/if}}
+
+    </body>
+
+</html>

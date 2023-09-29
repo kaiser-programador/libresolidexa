@@ -1,0 +1,78 @@
+{{! para pestaña DOCUMENTOS del PROPIETARIO lado del CLIENTE }}
+
+<div class="contenido container-fluid">
+    <h4 class="mt-4 texto-resaltado">DOCUMENTOS PRIVADOS</h4>
+    <div class="row mt-4 mb-2">
+        <div class="col-12 col-sm-3">
+            <div class="referencia_alerta input-group">
+                <input
+                    type="text"
+                    id="codigo_inmueble_inv"
+                    class="form-control"
+                    placeholder="Código inmueble"
+                />
+
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary boton_resaltado" id="buscar_inmueble_inv">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+
+        <div class="col-lg-7">
+
+            <div class="tabla_caracteristicas barra-deslizadora-mob table-responsive cuadro_estandart p-3 mt-4">
+
+                {{!-- <table class="text-primary tabla_contenedora_doc_priv table table-bordered"> --}}
+                <table class="text-primary tabla_contenedora_doc_priv table">
+                    <thead>
+                        <tr>
+                            <th class="texto-resaltado">PDF</th>
+                            <th class="texto-resaltado">TÍTULO DOCUMENTO</th>
+                            <th class="texto-resaltado">CÓDIGO INMUEBLE</th>
+                            <th class="texto-resaltado">OPERACIÓN</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="ref_cuerpo_doc_priv">
+
+                        {{#each contenido_propietario}}
+                            {{! con este class que tiene el codigo del documento, se podra identificarlo para REMOVE en el JQUERY }}
+                            <tr class="fila_registro">
+                                <td class="text-center">
+                                    <i
+                                        class="texto-link fas fa-file-pdf"
+                                        style="font-size: 2em;"
+                                    ></i>
+                                </td>
+                                <td class="nom_doc texto-normal" data-id="{{nombre_documento}}">
+                                    {{nombre_documento}}
+                                </td>
+                                <td class="cod_inm texto-normal" data-id="{{codigo_inmueble}}">
+                                    {{codigo_inmueble}}
+                                </td>
+                                <td>
+                                    <div class="contenedor_ver_eliminar_documento">
+                                        <a
+                                            href="/rutavirtualpublico/subido/{{codigo_documento}}.pdf"
+                                            target="_blank"
+                                            class="btn btn-success"
+                                        >Ver</a>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        {{/each}}
+
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>

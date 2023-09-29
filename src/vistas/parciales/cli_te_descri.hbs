@@ -1,0 +1,185 @@
+{{!-- PARTE DESCRIPCION DEL TERRENO DEL LADO DEL CLIENTE PUBLICO --}}
+
+{{> segu_esta_te_py_inm_prop}}
+
+<div class="row cuadro_estandart py-3 mt-5">
+
+    <div class="col-12 d-flex">
+        <div class="mr-3 contenedor-detalle-icono">
+            {{!-- <i class="fas fa-broadcast-tower"></i> --}}
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+
+        <div class="container-fluid contenedor-detalle-texto">
+            <h4 class="texto-resaltado">Importante</h4>
+            <p class="escritura" style="text-align: justify;">
+                {{informacion.importante}}
+            </p>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="row cuadro_estandart py-3 mt-5">
+
+    <div class="col-12 d-flex">
+        <div class="mr-3 contenedor-detalle-icono">
+            <i class="fas fa-map-marked"></i>
+        </div>
+
+        <div class="container-fluid contenedor-detalle-texto">
+            <h4 class="texto-resaltado">Ubicación y proximidades</h4>
+            <p class="text-left">
+                <span class="texto-resaltado"><b>Dirección:</b></span>
+                <span>{{informacion.direccion}}</span>
+            </p>
+            <p class="text-left">
+                <span class="texto-resaltado"><b>Provincia:</b></span>
+                <span>{{informacion.provincia}}</span>
+            </p>
+            <p class="text-left">
+                <span class="texto-resaltado"><b>Ciudad:</b></span>
+                <span>{{informacion.ciudad}}</span>
+            </p>
+            <p class="escritura" style="text-align: justify;">
+                {{informacion.descri_ubi_terreno}}
+            </p>
+
+            <div id="mapa-vista">
+                {{informacion.link_googlemap}}
+            </div>
+
+            <div class="row mt-2">
+
+                {{#if informacion.titulo_up_a}}
+                <div class="col-12 col-md-6 mt-3">
+                    <div class="table-responsive mt-2">
+                        <table class="text-primary w-100" cellpadding="6">
+                            <thead>
+                                <tr>
+                                    <th class="text-left h4 texto-resaltado" colspan="3">{{informacion.titulo_up_a}}</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {{#each informacion.puntos_up_a}}
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td class="m-0 p-0">
+                                        <i class="d-inline-block fas fa-check estilo-check"></i>
+                                    </td>
+
+                                    <td class="texto-normal">
+                                        {{punto}}
+                                    </td>
+                                </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {{/if}}
+
+
+                {{#if informacion.titulo_up_b}}
+                <div class="col-12 col-md-6 mt-3">
+                    <div class="table-responsive mt-2">
+                        <table class="text-primary w-100" cellpadding="6">
+                            <thead>
+                                <tr>
+                                    <th class="text-left h4 texto-resaltado" colspan="3">{{informacion.titulo_up_b}}</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {{#each informacion.puntos_up_b}}
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td class="m-0 p-0">
+                                        <i class="d-inline-block fas fa-check estilo-check"></i>
+                                    </td>
+
+                                    <td class="texto-normal">
+                                        {{punto}}
+                                    </td>
+                                </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {{/if}}
+
+
+                {{#if informacion.titulo_up_c}}
+                <div class="col-12 col-md-6 mt-3">
+                    <div class="table-responsive mt-2">
+                        <table class="text-primary w-100" cellpadding="6">
+                            <thead>
+                                <tr>
+                                    <th class="text-left h4 texto-resaltado" colspan="3">{{informacion.titulo_up_c}}</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {{#each informacion.puntos_up_c}}
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td class="m-0 p-0">
+                                        <i class="d-inline-block fas fa-check estilo-check"></i>
+                                    </td>
+
+                                    <td class="texto-normal">
+                                        {{punto}}
+                                    </td>
+                                </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {{/if}}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{{#if informacion.documentos_descripcion}}
+<div class="row cuadro_estandart py-3 mt-5">
+    <div class="col-12 d-flex">
+
+        <div class="mr-3 contenedor-detalle-icono">
+            <i class="fas fa-folder-open"></i>
+        </div>
+
+        <div class="contenedor-detalle-texto">
+            <h4 class="texto-resaltado">Documentos</h4>
+
+            <div class="ml-4">
+
+                {{#each informacion.documentos_descripcion}}
+                <div class="mt-3">
+                    <i class="fas fa-file-pdf estilo-pdf-garantia"></i>
+                    <a class="ml-3" href="/rutavirtualpublico/subido/{{codigo_documento}}.pdf" target="_blank">
+                        {{titulo_documento}}
+                    </a>
+                </div>
+                {{/each}}
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{{/if}}
+
+<div class="text-right mt-4" title="Numero de visualizaciones">
+    <span><i class="fas fa-glasses icono_visualizaciones"></i></span>
+    <span class="numero_visualizaciones"><b>{{nv_ventana}}</b></span>
+</div>

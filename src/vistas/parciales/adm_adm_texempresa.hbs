@@ -1,0 +1,635 @@
+{{! para la pestaña de ver los TEXTO EMPRESA en administrador maestro }}
+
+<div class="contenido container-fluid">
+    <div class="container-fluid">
+        <div class="row mt-3">
+
+            <div class="col-12 col-md-6">
+                <div class="card my-3" style="max-width: 40rem;">
+                    <div class="card-header">
+                        <h5 class="text-center">ENCABEZADOS</h5>
+                    </div>
+
+                    <div class="card-body text-primary">
+
+                        <form id="form_encabezados_empresa">
+
+                            <h5 class="text-center"><b>Terreno GUARDADO</b></h5>
+
+                            <div class="form-group">
+                                <label
+                                    for="label_encabezado_guardado_terreno"
+                                    class="form-label"
+                                >Encabezado</label>
+                                <div>
+                                    <input
+                                        type="text"
+                                        name="encabezado_guardado_terreno"
+                                        class="form-control"
+                                        id="label_encabezado_guardado_terreno"
+                                        value="{{contenido_administrador.encabezado_guardado_terreno}}"
+                                    />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="label_texto_guardado_terreno" class="form-label">Breve texto</label>
+                                <div>
+                                    <textarea
+                                        name="texto_guardado_terreno"
+                                        class="form-control"
+                                        id="label_texto_guardado_terreno"
+                                        rows="5"
+                                    >{{contenido_administrador.texto_guardado_terreno}}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="label_inexistente_guardado_terreno" class="form-label">Mensaje de
+                                    inexistencia</label>
+                                <div>
+                                    <textarea
+                                        name="inexistente_guardado_terreno"
+                                        class="form-control"
+                                        id="label_inexistente_guardado_terreno"
+                                        rows="5"
+                                    >{{contenido_administrador.inexistente_guardado_terreno}}</textarea>
+                                </div>
+                            </div>
+
+                            <h5 class="text-center"><b>Proyecto GUARDADO</b></h5>
+
+                            <div class="form-group">
+                                <label
+                                    for="label_encabezado_guardado_proyecto"
+                                    class="form-label"
+                                >Encabezado</label>
+                                <div>
+                                    <input
+                                        type="text"
+                                        name="encabezado_guardado_proyecto"
+                                        class="form-control"
+                                        id="label_encabezado_guardado_proyecto"
+                                        value="{{contenido_administrador.encabezado_guardado_proyecto}}"
+                                    />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="label_texto_guardado_proyecto" class="form-label">Breve texto</label>
+                                <div>
+                                    <textarea
+                                        name="texto_guardado_proyecto"
+                                        class="form-control"
+                                        id="label_texto_guardado_proyecto"
+                                        rows="5"
+                                    >{{contenido_administrador.texto_guardado_proyecto}}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="label_inexistente_guardado_proyecto" class="form-label">Mensaje de
+                                    inexistencia</label>
+                                <div>
+                                    <textarea
+                                        name="inexistente_guardado_proyecto"
+                                        class="form-control"
+                                        id="label_inexistente_guardado_proyecto"
+                                        rows="5"
+                                    >{{contenido_administrador.inexistente_guardado_proyecto}}</textarea>
+                                </div>
+                            </div>
+
+                            <h5 class="text-center"><b>Inmueble GUARDADO</b></h5>
+
+                            <div class="form-group">
+                                <label
+                                    for="label_encabezado_guardado_inmueble"
+                                    class="form-label"
+                                >Encabezado</label>
+                                <div>
+                                    <input
+                                        type="text"
+                                        name="encabezado_guardado_inmueble"
+                                        class="form-control"
+                                        id="label_encabezado_guardado_inmueble"
+                                        value="{{contenido_administrador.encabezado_guardado_inmueble}}"
+                                    />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="label_texto_guardado_inmueble" class="form-label">Breve texto</label>
+                                <div>
+                                    <textarea
+                                        name="texto_guardado_inmueble"
+                                        class="form-control"
+                                        id="label_texto_guardado_inmueble"
+                                        rows="5"
+                                    >{{contenido_administrador.texto_guardado_inmueble}}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="label_inexistente_guardado_inmueble" class="form-label">Mensaje de
+                                    inexistencia</label>
+                                <div>
+                                    <textarea
+                                        name="inexistente_guardado_inmueble"
+                                        class="form-control"
+                                        id="label_inexistente_guardado_inmueble"
+                                        rows="5"
+                                    >{{contenido_administrador.inexistente_guardado_inmueble}}</textarea>
+                                </div>
+                            </div>
+
+                            <h5 class="text-center"><b>Terreno CONVOCATORIA</b></h5>
+
+                            <div class="form-group">
+                                <label
+                                    for="label_encabezado_convocatoria"
+                                    class="form-label"
+                                >Encabezado</label>
+                                <div>
+                                    <input
+                                        type="text"
+                                        name="encabezado_convocatoria"
+                                        class="form-control"
+                                        id="label_encabezado_convocatoria"
+                                        value="{{contenido_administrador.encabezado_convocatoria}}"
+                                    />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="label_texto_convocatoria" class="form-label">Breve texto</label>
+                                <div>
+                                    <textarea
+                                        name="texto_convocatoria"
+                                        class="form-control"
+                                        id="label_texto_convocatoria"
+                                        rows="5"
+                                    >{{contenido_administrador.texto_convocatoria}}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="label_inexistente_convocatoria" class="form-label">Mensaje de
+                                    inexistencia</label>
+                                <div>
+                                    <textarea
+                                        name="inexistente_convocatoria"
+                                        class="form-control"
+                                        id="label_inexistente_convocatoria"
+                                        rows="5"
+                                    >{{contenido_administrador.inexistente_convocatoria}}</textarea>
+                                </div>
+                            </div>
+
+                            <h5 class="text-center"><b>Proyecto RESERVA</b></h5>
+
+                            <div class="form-group">
+                                <label for="label_encabezado_reserva" class="form-label">Encabezado</label>
+                                <div>
+                                    <input
+                                        type="text"
+                                        name="encabezado_reserva"
+                                        class="form-control"
+                                        id="label_encabezado_reserva"
+                                        value="{{contenido_administrador.encabezado_reserva}}"
+                                    />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="label_texto_reserva" class="form-label">Breve texto</label>
+                                <div>
+                                    <textarea
+                                        name="texto_reserva"
+                                        class="form-control"
+                                        id="label_texto_reserva"
+                                        rows="5"
+                                    >{{contenido_administrador.texto_reserva}}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="label_inexistente_reserva" class="form-label">Mensaje de
+                                    inexistencia</label>
+                                <div>
+                                    <textarea
+                                        name="inexistente_reserva"
+                                        class="form-control"
+                                        id="label_inexistente_reserva"
+                                        rows="5"
+                                    >{{contenido_administrador.inexistente_reserva}}</textarea>
+                                </div>
+                            </div>
+
+                            <h5 class="text-center"><b>Proyecto APROBACIÓN</b></h5>
+
+                            <div class="form-group">
+                                <label for="label_encabezado_aprobacion" class="form-label">Encabezado</label>
+                                <div>
+                                    <input
+                                        type="text"
+                                        name="encabezado_aprobacion"
+                                        class="form-control"
+                                        id="label_encabezado_aprobacion"
+                                        value="{{contenido_administrador.encabezado_aprobacion}}"
+                                    />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="label_texto_aprobacion" class="form-label">Breve texto</label>
+                                <div>
+                                    <textarea
+                                        name="texto_aprobacion"
+                                        class="form-control"
+                                        id="label_texto_aprobacion"
+                                        rows="5"
+                                    >{{contenido_administrador.texto_aprobacion}}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="label_inexistente_aprobacion" class="form-label">Mensaje de
+                                    inexistencia</label>
+                                <div>
+                                    <textarea
+                                        name="inexistente_aprobacion"
+                                        class="form-control"
+                                        id="label_inexistente_aprobacion"
+                                        rows="5"
+                                    >{{contenido_administrador.inexistente_aprobacion}}</textarea>
+                                </div>
+                            </div>
+
+                            <h5 class="text-center"><b>Proyecto PAGO</b></h5>
+
+                            <div class="form-group">
+                                <label for="label_encabezado_pago" class="form-label">Encabezado</label>
+                                <div>
+                                    <input
+                                        type="text"
+                                        name="encabezado_pago"
+                                        class="form-control"
+                                        id="label_encabezado_pago"
+                                        value="{{contenido_administrador.encabezado_pago}}"
+                                    />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="label_texto_pago" class="form-label">Breve texto</label>
+                                <div>
+                                    <textarea
+                                        name="texto_pago"
+                                        class="form-control"
+                                        id="label_texto_pago"
+                                        rows="5"
+                                    >{{contenido_administrador.texto_pago}}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="label_inexistente_pago" class="form-label">Mensaje de
+                                    inexistencia</label>
+                                <div>
+                                    <textarea
+                                        name="inexistente_pago"
+                                        class="form-control"
+                                        id="label_inexistente_pago"
+                                        rows="5"
+                                    >{{contenido_administrador.inexistente_pago}}</textarea>
+                                </div>
+                            </div>
+
+                            <h5 class="text-center"><b>Proyecto CONSTRUCCIÓN</b></h5>
+
+                            <div class="form-group">
+                                <label
+                                    for="label_encabezado_construccion"
+                                    class="form-label"
+                                >Encabezado</label>
+                                <div>
+                                    <input
+                                        type="text"
+                                        name="encabezado_construccion"
+                                        class="form-control"
+                                        id="label_encabezado_construccion"
+                                        value="{{contenido_administrador.encabezado_construccion}}"
+                                    />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="label_texto_construccion" class="form-label">Breve texto</label>
+                                <div>
+                                    <textarea
+                                        name="texto_construccion"
+                                        class="form-control"
+                                        id="label_texto_construccion"
+                                        rows="5"
+                                    >{{contenido_administrador.texto_construccion}}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="label_inexistente_construccion" class="form-label">Mensaje de
+                                    inexistencia</label>
+                                <div>
+                                    <textarea
+                                        name="inexistente_construccion"
+                                        class="form-control"
+                                        id="label_inexistente_construccion"
+                                        rows="5"
+                                    >{{contenido_administrador.inexistente_construccion}}</textarea>
+                                </div>
+                            </div>
+
+                            <h5 class="text-center"><b>Proyecto CONSTRUIDO</b></h5>
+
+                            <div class="form-group">
+                                <label for="label_encabezado_construido" class="form-label">Encabezado</label>
+                                <div>
+                                    <input
+                                        type="text"
+                                        name="encabezado_construido"
+                                        class="form-control"
+                                        id="label_encabezado_construido"
+                                        value="{{contenido_administrador.encabezado_construido}}"
+                                    />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="label_texto_construido" class="form-label">Breve texto</label>
+                                <div>
+                                    <textarea
+                                        name="texto_construido"
+                                        class="form-control"
+                                        id="label_texto_construido"
+                                        rows="5"
+                                    >{{contenido_administrador.texto_construido}}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="label_inexistente_construido" class="form-label">Mensaje de
+                                    inexistencia</label>
+                                <div>
+                                    <textarea
+                                        name="inexistente_construido"
+                                        class="form-control"
+                                        id="label_inexistente_construido"
+                                        rows="5"
+                                    >{{contenido_administrador.inexistente_construido}}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="text-center">
+                                <input
+                                    type="submit"
+                                    value="Guardar encabezados"
+                                    class="ref_boton_encabezados btn btn-primary"
+                                />
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+                <div class="card my-3" style="max-width: 40rem;">
+                    <div class="card-header">
+                        <h5 class="text-center">SIGNIFICADOS EMPLEOS</h5>
+                    </div>
+
+                    <div class="card-body text-primary">
+                        <p class="text-left"><strong>Nota: </strong>Agrege las /abreviaturas/ donde crea
+                            adecuadas, estas luego seran reemplazadas automaticamente por el valor al que
+                            hacen referencia.</p>
+                        <p class="text-left">Para los saltos de línea use: &lt;br&gt; también puede
+                            emplear otras etiquetas html</p>
+                        <br />
+                        <p class="text-left">
+                            <strong>/nom_empre/:</strong>
+                            Nombre de la empresa
+                        </p>
+                        <p class="text-left">
+                            <strong>/py_nfp/:</strong>
+                            Proyecto. Familias de los propietarios, número
+                        </p>
+                        <p class="text-left">
+                            <strong>/py_dfp/:</strong>
+                            Proyecto. Familias de los propietarios, dinero
+                        </p>
+                        <p class="text-left">
+                            <strong>/inm_nfp/:</strong>
+                            Inmueble. Familias de los propietarios, número. Automaticamente se considera como 1, ya que no es posible contar con el dato real del numero de personas que integran la familia de un propietario y por discresión esta información queda reservada.
+                        </p>
+                        <p class="text-left">
+                            <strong>/inm_dfp/:</strong>
+                            Inmueble. Familias de los propietarios, dinero. Es la plusvalía del inmueble.
+                        </p>
+                        <p class="text-left">
+                            <strong>/py_inm_nfe/:</strong>
+                            Proyecto, Inmueble. Familias de los trabajadores directos, número
+                        </p>
+                        <p class="text-left">
+                            <strong>/py_dfe/:</strong>
+                            Proyecto. Familias de los trabajadores directos, dinero
+                        </p>
+                        <p class="text-left">
+                            <strong>/inm_dfe/:</strong>
+                            Inmueble. Familias de los trabajadores directos, dinero
+                        </p>
+                        <p class="text-left">
+                            <strong>/py_inm_nfb/:</strong>
+                            Proyecto, Inmueble. Familias de los trabajadores in-directos (país), número
+                        </p>
+                        <p class="text-left">
+                            <strong>/py_dfb/:</strong>
+                            Proyecto. Familias de los trabajadores in-directos (país), dinero
+                        </p>
+                        <p class="text-left">
+                            <strong>/inm_dfb/:</strong>
+                            Inmueble. Familias de los trabajadores in-directos (país), dinero
+                        </p>
+
+                        <form id="form_significados_empleos">
+
+                            <div class="form-group">
+                                <label for="label_significado_py_propietarios" class="form-label">Propietarios
+                                    proyectos</label>
+                                <div>
+                                    <textarea
+                                        name="significado_py_propietarios"
+                                        class="form-control"
+                                        id="label_significado_py_propietarios"
+                                        placeholder="Los /py_nfp/ propietarios que conforman el presente proyecto y sus respectivas familias se benefician con una plusvalía de regalo equivalente a /py_dfp/ $us."
+                                        rows="5"
+                                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                                    >{{contenido_administrador.significado_py_propietarios}}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="label_significado_py_empresa" class="form-label">Empresa proyectos</label>
+                                <div>
+                                    <textarea
+                                        name="significado_py_empresa"
+                                        class="form-control"
+                                        id="label_significado_py_empresa"
+                                        placeholder="Mediante el presente proyecto, /nom_empre/ genera /py_inm_nfe/ trabajos directos, contribuyendo de esta manera a mejorar la situación económica de las familias bolivianas por un valor de /py_dfe/ $us."
+                                        rows="5"
+                                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                                    >{{contenido_administrador.significado_py_empresa}}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="label_significado_py_pais" class="form-label">País proyectos</label>
+                                <div>
+                                    <textarea
+                                        name="significado_py_pais"
+                                        class="form-control"
+                                        id="label_significado_py_pais"
+                                        placeholder="Mediante el presente proyecto, /nom_empre/ genera /py_inm_nfb/ trabajos indirectos, contribuyendo de esta manera en el mejoramiento de la situación económica de nuestro país por un valor de /py_dfb/ $us."
+                                        rows="5"
+                                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                                    >{{contenido_administrador.significado_py_pais}}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="label_significado_inm_propietarios" class="form-label">Propietarios
+                                    inmuebles</label>
+                                <div>
+                                    <textarea
+                                        name="significado_inm_propietarios"
+                                        class="form-control"
+                                        id="label_significado_inm_propietarios"
+                                        placeholder="El propietario del presente inmueble y su respectiva familia se benefician con una  plusvalía de regalo equivalente a /inm_dfp/ $us."
+                                        rows="5"
+                                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                                    >{{contenido_administrador.significado_inm_propietarios}}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="label_significado_inm_empresa" class="form-label">Empresa inmuebles</label>
+                                <div>
+                                    <textarea
+                                        name="significado_inm_empresa"
+                                        class="form-control"
+                                        id="label_significado_inm_empresa"
+                                        placeholder="Mediante el presente inmueble, /nom_empre/ genera /py_inm_nfe/ trabajos directos, contribuyendo de esta manera a mejorar la situación económica de las familias bolivianas por un valor de /inm_dfe/ $us."
+                                        rows="5"
+                                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                                    >{{contenido_administrador.significado_inm_empresa}}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="label_significado_inm_pais" class="form-label">País inmuebles</label>
+                                <div>
+                                    <textarea
+                                        name="significado_inm_pais"
+                                        class="form-control"
+                                        id="label_significado_inm_pais"
+                                        placeholder="Mediante el presente inmueble, /nom_empre/ genera /py_inm_nfb/ trabajos indirectos, contribuyendo de esta manera en el mejoramiento de la situación económica de nuestro país por un valor de /inm_dfb/ $us."
+                                        rows="5"
+                                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                                    >{{contenido_administrador.significado_inm_pais}}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="text-center">
+                                <input
+                                    type="submit"
+                                    value="Guardar significados"
+                                    class="ref_significados_empleos btn btn-primary"
+                                />
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card my-3" style="max-width: 40rem;">
+                    <div class="card-header">
+                        <h5 class="text-center">TEXTOS SEGUNDERO</h5>
+                    </div>
+                    <div class="card-body text-primary">
+                        <form id="textos_segundero">
+
+                            <div class="form-group">
+                                <label for="label_texto_segundero_py" class="form-label">Proyecto Derecho</label>
+                                <div>
+                                    <textarea
+                                        name="texto_segundero_py"
+                                        class="form-control"
+                                        id="label_texto_segundero_py"
+                                        placeholder="Tan solo pagando la suma de <strong>/sus_precio/ $us</strong> obtienes inmueble(s), que en el mercado tendra(n) un valor de <strong>/sus_total/ $us</strong>, obteniendo de esta manera <strong>/sus_plusvalia/ $us</strong> de plusvalía como regalo"
+                                        rows="5"
+                                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                                    >{{contenido_administrador.texto_segundero_py}}</textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="label_texto_segundero_inm" class="form-label">Inmueble Derecho</label>
+                                <div>
+                                    <textarea
+                                        name="texto_segundero_inm"
+                                        class="form-control"
+                                        id="label_texto_segundero_inm"
+                                        placeholder="Tan solo pagando la suma de <strong>/sus_precio/ $us</strong> obtienes inmueble(s), que en el mercado tendra(n) un valor de <strong>/sus_total/ $us</strong>, obteniendo de esta manera <strong>/sus_plusvalia/ $us</strong> de plusvalía como regalo"
+                                        rows="5"
+                                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                                    >{{contenido_administrador.texto_segundero_inm}}</textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="label_texto_segundero_prop" class="form-label">Propietario Derecho</label>
+                                <div>
+                                    <textarea
+                                        name="texto_segundero_prop"
+                                        class="form-control"
+                                        id="label_texto_segundero_prop"
+                                        placeholder="Tan solo pagando la suma de <strong>/sus_precio/ $us</strong> obtienes inmueble(s), que en el mercado tendra(n) un valor de <strong>/sus_total/ $us</strong>, obteniendo de esta manera <strong>/sus_plusvalia/ $us</strong> de plusvalía como regalo"
+                                        rows="5"
+                                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                                    >{{contenido_administrador.texto_segundero_prop}}</textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="label_texto_segundero_prop_iz" class="form-label">Propietario Izquierdo</label>
+                                <div>
+                                    <textarea
+                                        name="texto_segundero_prop_iz"
+                                        class="form-control"
+                                        id="label_texto_segundero_prop_iz"
+                                        placeholder="<strong>/nom_propietario/</strong> el tiempo no se detiene y tus ganancias tampoco, tu inversión genera ganancias para ti segundo a sengundo."
+                                        rows="5"
+                                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                                    >{{contenido_administrador.texto_segundero_prop_iz}}</textarea>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <input
+                                    type="submit"
+                                    value="Guardar textos"
+                                    class="ref_textos_segundero btn btn-primary"
+                                />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

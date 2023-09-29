@@ -1,0 +1,92 @@
+{{! para la pestaña de ver el NÚMERO DE VISITAS A LAS PAGINAS en administrador maestro }}
+{{! Se podran ver las ventanas por: Terreno, Proyecto, Inmueble }}
+{{! en la colunma estara el codigo de: Terreno, Proyecto, Inmueble con el link para verlos en lado modo cliente }}
+{{! tendra una columna de "estado" para: Terreno, Proyecto, Inmueble }}
+{{! tendra una columna donde estara la suma de los totales de vistas }}
+{{! por columna podran ordenarse de mayor a menor y viceversa }}
+
+{{! por defecto estaran ordenados de acuerdo a su "fecha_creacion" del mas reciente al mas antiguo }}
+
+<div class="contenido container-fluid" id="madre_visitas">
+
+    <div class="row">
+        <div class="col-12 col-md-5 col-lg-4">
+            <div class="card mt-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>TIPO</h5>
+                    <i class="d-block fas fa-list size_iconos"></i>
+                </div>
+
+                <div class="card-body text-primary">
+                    <div class="d-flex mx-1">
+                        <label>
+                            <input
+                                type="radio"
+                                class="radio_tipo_vista"
+                                name="name_radio_tipo_vista"
+                                value="terreno"
+                                data-seleccionada="no"
+                            />
+                            Terreno
+                        </label>
+                        <label class="ml-5">
+                            <input
+                                type="radio"
+                                class="radio_tipo_vista"
+                                name="name_radio_tipo_vista"
+                                value="proyecto"
+                                data-seleccionada="no"
+                            />
+                            Proyecto
+                        </label>
+                        <label class="ml-5">
+                            <input
+                                type="radio"
+                                class="radio_tipo_vista"
+                                name="name_radio_tipo_vista"
+                                value="inmueble"
+                                data-seleccionada="no"
+                            />
+                            Inmueble
+                        </label>
+                    </div>
+                    <div class="referencia_mensaje"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4 col-lg-3">
+            <div class="card mt-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>BUSCAR CÓDIGO</h5>
+                    <i class="d-block fas fa-font size_iconos"></i>
+                </div>
+
+                <div class="card-body text-primary">
+
+                    <div class="ref_buscar_visita input-group">
+                        <input
+                            type="search"
+                            class="form-control"
+                            placeholder="Terreno, Proyecto, Inmueble"
+                            id="id_input_visita"
+                            required
+                        />
+
+                        <div class="input-group-append">
+                            <button class="buscar_visita btn btn-outline-secondary boton_resaltado"><i
+                                    class="buscar_visitaxxx fas fa-search"
+                                ></i></button>
+                        </div>
+                    </div>
+                    <div class="ref_mensaje_busc_visitas"></div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="ref_tabla_visitas"></div>
+
+</div>

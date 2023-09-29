@@ -1,0 +1,327 @@
+{{! cabezeras EXTERNAS de lado de ADMINISTRADOR y CLIENTE }}
+{{! valido para TERRENOS, PROYECTOS, INMUEBLES, PROPIETARIOS }}
+
+<div
+    class="cabezera-primario {{estilo_cabezera}} w-100"
+    style="display: flex; align-items: center;"
+>
+
+    <div class="px-2 text-center w-100 py-4">
+        <div style="display: flex; align-items: center;justify-content: center;">
+            <div>
+                <h1><b>{{encabezado_titulo}}</b></h1>
+                <p class="d-none d-md-block">{{encabezado_texto}}</p>
+            </div>
+        </div>
+
+        {{#if ordenador_externo}}
+            <div class="d-flex justify-content-end mr-5">
+                <div class="dropdown mr-4">
+
+                    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                        Ordenar
+                    </button>
+
+                    <div class="dropdown-menu" id="orden_inm_exterior">
+                        {{! PARA ORDENAR PROYECTOS: }}
+                        {{#if proyectos_reserva}}
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="financiamiento"
+                            >Financiamiento
+                            </div>
+
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="meta"
+                            >Meta
+                            </div>
+
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="ahorro"
+                            >Ahorro
+                            </div>
+
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="vencimiento"
+                            >Vencimiento
+                            </div>
+                        {{/if}}
+
+                        {{#if proyectos_aprobacion}}
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="financiamiento"
+                            >Financiamiento
+                            </div>
+
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="meta"
+                            >Meta</div>
+
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="ahorro"
+                            >Ahorro
+                            </div>
+
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="vencimiento"
+                            >Vencimiento
+                            </div>
+                        {{/if}}
+
+                        {{#if proyectos_pago}}
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="financiamiento"
+                            >Financiamiento
+                            </div>
+
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="meta"
+                            >Meta</div>
+
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="ahorro"
+                            >Ahorro
+                            </div>
+
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="vencimiento"
+                            >Vencimiento
+                            </div>
+                        {{/if}}
+
+                        {{#if proyectos_construccion}}
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="financiamiento"
+                            >Financiamiento
+                            </div>
+
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="meta"
+                            >Meta</div>
+
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="ahorro"
+                            >Ahorro
+                            </div>
+
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="vencimiento"
+                            >Vencimiento
+                            </div>
+                        {{/if}}
+
+                        {{#if proyectos_construido}}
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="financiamiento"
+                            >Financiamiento
+                            </div>
+
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="ahorro"
+                            >Ahorro
+                            </div>
+
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="vencimiento"
+                            >Vencimiento
+                            </div>
+                        {{/if}}
+
+                        {{#if terrenos_convocatoria}}
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="precio"
+                            >Precio
+                            </div>
+
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="superficie"
+                            >Superficie
+                            </div>
+
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="disponibles"
+                            >Disponibles
+                            </div>
+
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="vencimiento"
+                            >Vencimiento
+                            </div>
+                        {{/if}}
+
+                        {{! PARA ORDENAR RESULTADOS DE INMUEBLES (esto solo se ve en cabezeras EXTERNAS LADO DEL CLIENTE): }}
+                        {{#if es_disponible}}
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="precio"
+                            >Precio
+                            </div>
+
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="ahorro"
+                            >Ahorro
+                            </div>
+
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="superficie"
+                            >Superficie
+                            </div>
+
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="vencimiento"
+                            >Vencimiento
+                            </div>
+                        {{/if}}
+
+                        {{#if es_pendiente_aprobacion}}
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="precio"
+                            >Precio
+                            </div>
+
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="ahorro"
+                            >Ahorro
+                            </div>
+
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="superficie"
+                            >Superficie
+                            </div>
+
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="vencimiento"
+                            >Vencimiento
+                            </div>
+                        {{/if}}
+
+                        {{#if es_pendiente_pago}}
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="precio"
+                            >Precio
+                            </div>
+
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="ahorro"
+                            >Ahorro
+                            </div>
+
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="superficie"
+                            >Superficie
+                            </div>
+
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="vencimiento"
+                            >Vencimiento
+                            </div>
+                        {{/if}}
+
+                        {{#if es_remate}}
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="precio"
+                            >Precio
+                            </div>
+
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="ahorro"
+                            >Ahorro
+                            </div>
+
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="superficie"
+                            >Superficie
+                            </div>
+                        {{/if}}
+
+                        {{#if es_requerimiento}}
+                            <div
+                                class="dropdown-item orden_gral_inm_py"
+                                el_orden="menor"
+                                tipo_orden="fecha"
+                            >Fecha
+                            </div>
+                        {{/if}}
+
+                    </div>
+                </div>
+            </div>
+        {{/if}}
+
+    </div>
+
+</div>

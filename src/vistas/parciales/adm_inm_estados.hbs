@@ -1,0 +1,159 @@
+{{! PARA LA PESTAÑA DE ESTADOS DEL INMUEBLE lado del ADMINISTRADOR }}
+
+<div class="contenido container-fluid mt-4">
+
+    <div class="row">
+
+        <div class="mb-4 col-12 col-sm-9 col-md-7 col-lg-4 col-xl-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>ESTADO DEL INMUEBLE</h5>
+                </div>
+
+                <div class="card-body">
+
+                    <h6 class="texto-link">Estado actual del inmueble:</h6>
+                    <h6 class="texto_estado_inmueble">{{contenido_inmueble.texto_estado_inmueble}}</h6>
+                    <br />
+                    <h6 class="texto-link">Estados:</h6>
+
+                    <div>
+                        <label>
+                            <input
+                                type="radio"
+                                name="name_estado"
+                                class="gral_radio radio_estado_inmueble"
+                                data-radio_input="radio_input_estado"
+                                value="guardado"
+                                checked
+                            />
+                            Guardado
+                        </label>
+                    </div>
+
+                    <div>
+                        <label>
+                            <input
+                                type="radio"
+                                name="name_estado"
+                                class="gral_radio radio_estado_inmueble"
+                                data-radio_input="radio_input_estado"
+                                value="disponible"
+                            />
+                            Disponible (Resevación)
+                        </label>
+                    </div>
+
+                    <div>
+                        <label>
+                            <input
+                                type="radio"
+                                name="name_estado"
+                                class="gral_radio radio_estado_inmueble"
+                                data-radio_input="radio_input_estado"
+                                value="reservado"
+                            />
+                            Reservado (Resevación)
+                        </label>
+                    </div>
+
+                    <div>
+                        <label>
+                            <input
+                                type="radio"
+                                name="name_estado"
+                                class="gral_radio radio_estado_inmueble"
+                                data-radio_input="radio_input_estado"
+                                value="pendiente_pago"
+                            />
+                            Pendiente (Pago)
+                        </label>
+                    </div>
+
+                    <div>
+                        <label>
+                            <input
+                                type="radio"
+                                name="name_estado"
+                                class="gral_radio radio_estado_inmueble"
+                                data-radio_input="radio_input_estado"
+                                value="pagado_pago"
+                            />
+                            Pagado (Pago)
+                        </label>
+                    </div>
+
+                    <div>
+                        <label>
+                            <input
+                                type="radio"
+                                name="name_estado"
+                                class="gral_radio radio_estado_inmueble"
+                                data-radio_input="radio_input_estado"
+                                value="pendiente_aprobacion"
+                            />
+                            Aprobación
+                        </label>
+                    </div>
+
+                    <div>
+                        <label>
+                            <input
+                                type="radio"
+                                name="name_estado"
+                                class="gral_radio radio_estado_inmueble"
+                                data-radio_input="radio_input_estado"
+                                value="pagos"
+                            />
+                            Construcción
+                        </label>
+                    </div>
+
+                    <div>
+                        <label>
+                            <input
+                                type="radio"
+                                name="name_estado"
+                                class="gral_radio radio_estado_inmueble"
+                                data-radio_input="radio_input_estado"
+                                value="remate"
+                            />
+                            Remate
+                        </label>
+                    </div>
+
+                    <div>
+                        <label>
+                            <input
+                                type="radio"
+                                name="name_estado"
+                                class="gral_radio radio_estado_inmueble"
+                                data-radio_input="radio_input_estado"
+                                value="completado"
+                            />
+                            Construido
+                        </label>
+                    </div>
+
+                    <input
+                        type="text"
+                        class="radio_seleccionado radio_input_estado"
+                        value="{{contenido_inmueble.estado_inmueble}}"
+                        data-input_radio="radio_estado_inmueble"
+                        hidden
+                    />
+
+                    <div class="text-center mt-2">
+                        <button
+                            class="btn btn-primary"
+                            id="guardar_estado_inmueble"
+                            data-boton_radio="radio_input_estado"
+                        >Guardar estado</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

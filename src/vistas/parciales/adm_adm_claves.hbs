@@ -1,0 +1,121 @@
+{{! para la pestaña de CAMBIAR CLAVES en administrador Empleado Y maestro }}
+
+<div class="contenido container-fluid">
+    <div class="card my-3" style="max-width: 40rem;">
+        <div class="card-header">
+            <h5>Cambiar claves</h5>
+        </div>
+
+        <div class="card-body text-primary">
+            <h6 class="text-center">Claves actuales</h6>
+            <form id="form_cambiar_claves">
+
+                <div class="form-group">
+                    <label for="id_act_usuario" class="form-label">Usuario</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text texto-resaltado">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        </div>
+
+                        <input
+                            type="text"
+                            name="act_usuario"
+                            id="id_act_usuario"
+                            class="ref_limpiar_nuevas_claves form-control"
+                            required
+                        />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_act_clave" class="form-label">Contraseña</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text texto-resaltado">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                        </div>
+
+                        <input
+                            type="password"
+                            name="act_clave"
+                            id="id_act_clave"
+                            class="ref_limpiar_nuevas_claves form-control"
+                            required
+                        />
+                    </div>
+                </div>
+
+                <h6 class="text-center">Claves nuevas</h6>
+
+                <div class="form-group">
+                    <label for="id_nue_usuario" class="form-label">Usuario</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text texto-resaltado">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        </div>
+
+                        <input
+                            type="text"
+                            name="nue_usuario"
+                            id="id_nue_usuario"
+                            class="ref_limpiar_nuevas_claves form-control"
+                            required
+                        />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_nue_clave_1" class="form-label">Contraseña</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text texto-resaltado">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                        </div>
+
+                        <input
+                            type="password"
+                            name="nue_clave_1"
+                            id="id_nue_clave_1"
+                            class="ref_limpiar_nuevas_claves form-control"
+                            required
+                        />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_nue_clave_2" class="form-label">Repita la contraseña</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text texto-resaltado">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                        </div>
+
+                        <input
+                            type="password"
+                            name="nue_clave_2"
+                            id="id_nue_clave_2"
+                            class="ref_limpiar_nuevas_claves form-control"
+                            required
+                        />
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <input
+                        type="submit"
+                        value="Cambiar claves"
+                        class="ref_boton_cambiar_claves btn btn-primary"
+                    />
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

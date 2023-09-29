@@ -1,0 +1,212 @@
+{{!-- pagina de PROYECTO --}}
+{{!-- "> opciones_nav" NO DEBE ESTAR APEGADO A LA LINEA CODIGO "1", DE ESTARLO, DARIA UN ERROR --}}
+
+{{!-- ------------------------- --}}
+{{!-- datos elementales --}}
+{{!-- id_tipo_ventana esta especificado (ver en la parte inferior, dependiendo segun cada ventana de proyecto  --}}
+{{!-- <div id="id_tipo_ventana" data-tipo_ventana="normal"></div> --}}
+<div id="id_objetivo_tipo" data-objetivo_tipo="proyecto"></div>
+<div id="id_objetivo_codigo" data-objetivo_codigo="{{codigo_proyecto}}"></div>
+{{!-- ------------------------- --}}
+
+{{> opciones_nav}}
+
+{{> adm_cabezeras_internas}}
+
+<div class="pestanas_navegacion">
+    <ul class="nav nav-tabs" id="tab_proyecto" role="tablist">
+        {{!-- de todos los tabs se eliminao el atributo data-toggle="tab" , esto para que funcionen los HREF y nos
+        redireccionen a la ventana correspondiente al tab elegido --}}
+
+        {{#if descripcion_proyecto}}
+        <li class="nav-item">
+            <a href="/laapirest/proyecto/{{codigo_proyecto}}/descripcion" class="nav-link active"
+                id="descripcion_py-tab" role="tab" aria-controls="descripcion_py"
+                aria-selected="true">Descripción</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/proyecto/{{codigo_proyecto}}/descripcion" class="nav-link" id="descripcion_py-tab"
+                role="tab" aria-controls="descripcion_py" aria-selected="false">Descripción</a>
+        </li>
+        {{/if}}
+
+        {{#if imagenes_proyecto}}
+        <li class="nav-item">
+            <a href="/laapirest/proyecto/{{codigo_proyecto}}/imagenes" class="nav-link active" id="imagenes_py-tab"
+                role="tab" aria-controls="imagenes_py" aria-selected="true">Imágenes</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/proyecto/{{codigo_proyecto}}/imagenes" class="nav-link" id="imagenes_py-tab"
+                role="tab" aria-controls="imagenes_py" aria-selected="false">Imágenes</a>
+        </li>
+        {{/if}}
+
+        {{#if documentos_proyecto}}
+        <li class="nav-item">
+            <a href="/laapirest/proyecto/{{codigo_proyecto}}/documentos" class="nav-link active"
+                id="documentos_py-tab" role="tab" aria-controls="documentos_py" aria-selected="true">Documentos</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/proyecto/{{codigo_proyecto}}/documentos" class="nav-link" id="documentos_py-tab"
+                role="tab" aria-controls="documentos_py" aria-selected="false">Documentos</a>
+        </li>
+        {{/if}}
+
+        {{#if inmuebles_proyecto}}
+        <li class="nav-item">
+            <a href="/laapirest/proyecto/{{codigo_proyecto}}/inmuebles" class="nav-link active" id="inmuebles_py-tab"
+                role="tab" aria-controls="inmuebles_py" aria-selected="true">Inmuebles
+                {{#if existe_n_inmuebles}}
+                <span class="badge badge-success ml-1">{{n_inmuebles}}</span>
+                {{/if}}
+            </a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/proyecto/{{codigo_proyecto}}/inmuebles" class="nav-link" id="inmuebles_py-tab"
+                role="tab" aria-controls="inmuebles_py" aria-selected="false">Inmuebles
+                {{#if existe_n_inmuebles}}
+                <span class="badge badge-success ml-1">{{n_inmuebles}}</span>
+                {{/if}}
+            </a>
+        </li>
+        {{/if}}
+
+        {{#if sociedad_proyecto}}
+        <li class="nav-item">
+            <a href="/laapirest/proyecto/{{codigo_proyecto}}/sociedad" class="nav-link active" id="sociedad_py-tab"
+                role="tab" aria-controls="sociedad_py" aria-selected="true">Sociedad</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/proyecto/{{codigo_proyecto}}/sociedad" class="nav-link" id="sociedad_py-tab"
+                role="tab" aria-controls="sociedad_py" aria-selected="false">Sociedad</a>
+        </li>
+        {{/if}}
+
+        {{#if empleos_proyecto}}
+        <li class="nav-item">
+            <a href="/laapirest/proyecto/{{codigo_proyecto}}/empleos" class="nav-link active" id="empleos_py-tab"
+                role="tab" aria-controls="empleos_py" aria-selected="true">Empleos</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/proyecto/{{codigo_proyecto}}/empleos" class="nav-link" id="empleos_py-tab"
+                role="tab" aria-controls="empleos_py" aria-selected="false">Empleos</a>
+        </li>
+        {{/if}}
+
+        {{#if requerimientos_proyecto}}
+        <li class="nav-item">
+            <a href="/laapirest/proyecto/{{codigo_proyecto}}/requerimientos" class="nav-link active" id="requerimientos_py-tab"
+                role="tab" aria-controls="requerimientos_py" aria-selected="true">Requerimientos
+                {{#if existe_n_requerimientos}}
+                <span class="badge badge-success ml-1">{{n_requerimientos}}</span>
+                {{/if}}
+            </a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/proyecto/{{codigo_proyecto}}/requerimientos" class="nav-link" id="requerimientos_py-tab"
+                role="tab" aria-controls="requerimientos_py" aria-selected="false">Requerimientos
+                {{#if existe_n_requerimientos}}
+                <span class="badge badge-success ml-1">{{n_requerimientos}}</span>
+                {{/if}}
+            </a>
+        </li>
+        {{/if}}
+
+        {{#if estados_proyecto}}
+        <li class="nav-item">
+            <a href="/laapirest/proyecto/{{codigo_proyecto}}/estados" class="nav-link active" id="estados_py-tab"
+                role="tab" aria-controls="estados_py" aria-selected="true">Estados</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/proyecto/{{codigo_proyecto}}/estados" class="nav-link" id="estados_py-tab" role="tab"
+                aria-controls="estados_py" aria-selected="false">Estados</a>
+        </li>
+        {{/if}}
+
+        {{#if textos_proyecto}}
+        <li class="nav-item">
+            <a href="/laapirest/proyecto/{{codigo_proyecto}}/textos" class="nav-link active" id="textos_py-tab"
+                role="tab" aria-controls="textos_py" aria-selected="true">Textos</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/proyecto/{{codigo_proyecto}}/textos" class="nav-link" id="textos_py-tab" role="tab"
+                aria-controls="textos_py" aria-selected="false">Textos</a>
+        </li>
+        {{/if}}
+
+        {{#if eliminar_proyecto}}
+        <li class="nav-item">
+            <a href="/laapirest/proyecto/{{codigo_proyecto}}/eliminar" class="nav-link active" id="eliminar_py-tab"
+                role="tab" aria-controls="eliminar_py" aria-selected="true">Eliminar</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/proyecto/{{codigo_proyecto}}/eliminar" class="nav-link" id="eliminar_py-tab" role="tab"
+                aria-controls="eliminar_py" aria-selected="false">Eliminar</a>
+        </li>
+        {{/if}}
+
+    </ul>
+</div>
+
+
+{{#if descripcion_proyecto}}
+<div id="id_tipo_ventana" data-tipo_ventana="ventana_adm_py_descripcion"></div>
+{{> adm_py_descripcion}}
+{{/if}}
+
+{{#if imagenes_proyecto}}
+<div id="id_tipo_ventana" data-tipo_ventana="normal"></div>
+{{> adm_py_imagenes}}
+{{/if}}
+
+{{#if documentos_proyecto}}
+<div id="id_tipo_ventana" data-tipo_ventana="normal"></div>
+{{> adm_py_documentos}}
+{{/if}}
+
+{{#if inmuebles_proyecto}}
+<div id="id_tipo_ventana" data-tipo_ventana="ventana_adm_py_inmuebles"></div>
+{{> adm_py_inmuebles}}
+{{/if}}
+
+{{#if sociedad_proyecto}}
+<div id="id_tipo_ventana" data-tipo_ventana="ventana_adm_py_rs"></div>
+{{> adm_py_sociedad}}
+{{/if}}
+
+{{#if empleos_proyecto}}
+<div id="id_tipo_ventana" data-tipo_ventana="normal"></div>
+{{> adm_py_empleos}}
+{{/if}}
+
+{{#if requerimientos_proyecto}}
+<div id="id_tipo_ventana" data-tipo_ventana="ventana_adm_py_requerimientos"></div>
+{{> adm_py_requerimientos}}
+{{/if}}
+
+{{#if estados_proyecto}}
+<div id="id_tipo_ventana" data-tipo_ventana="ventana_adm_py_estados"></div>
+{{> adm_py_estados}}
+{{/if}}
+
+{{#if textos_proyecto}}
+<div id="id_tipo_ventana" data-tipo_ventana="normal"></div>
+{{> adm_py_textos}}
+{{/if}}
+
+{{#if eliminar_proyecto}}
+<div id="id_tipo_ventana" data-tipo_ventana="normal"></div>
+{{> adm_py_eliminar}}
+{{/if}}
+
+{{> pie_pagina}}

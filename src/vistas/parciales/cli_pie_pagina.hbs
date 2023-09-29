@@ -1,0 +1,152 @@
+{{! es el pie de pagina de las VENTANAS DEL LADO DEL CLIENTE }}
+
+<footer class="footer_cliente mt-4 px-2">
+
+    <div class="container-fluid">
+
+        <div class="row py-3">
+            <div class="col-12 col-sm-4">
+                <div class="contenedor_pie_pagina">
+                    <h6 class="mb-3 texto-resaltado">
+                        <span class="sub-titulo-pie">Información empresa</span>
+                    </h6>
+
+                    <p>
+                        <a
+                            class="texto-claro"
+                            href="/empresa/quienes_somos"
+                            style="text-decoration: none;"
+                        >
+                            <i class="fas fa-info-circle size_iconos mr-2"></i>
+                            ¿Quiénes somos?
+                        </a>
+                    </p>
+
+                    <p>
+                        <a
+                            class="texto-claro"
+                            href="/empresa/como_funciona"
+                            style="text-decoration: none;"
+                        >
+                            <i class="fas fa-cogs size_iconos mr-2"></i>
+                            ¿Cómo funciona?
+                        </a>
+                    </p>
+
+                    <p>
+                        <a
+                            class="texto-claro"
+                            href="/empresa/preguntas_frecuentes"
+                            style="text-decoration: none;"
+                        >
+                            <i class="fas fa-comments size_iconos mr-2"></i>
+                            Preguntas frecuentes
+                        </a>
+                    </p>
+
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-4 d-sm-flex justify-content-center">
+                <div class="contenedor_pie_pagina">
+                    <h6 class="mb-3 texto-resaltado">
+                        <span class="sub-titulo-pie">Contactos</span>
+                    </h6>
+
+                    <p class="texto-claro">
+                        <i class="fas fa-directions size_iconos mr-2"></i>
+                        {{pie_pagina_cli.direccion}}
+                    </p>
+
+                    <p class="texto-claro">
+                        <i class="fab fa-whatsapp size_iconos mr-2"></i>
+                        {{pie_pagina_cli.whatsapp}}
+                    </p>
+
+                    <p class="texto-claro">
+                        <i class="fas fa-phone-square size_iconos mr-2"></i>
+                        {{pie_pagina_cli.telefono_fijo}}
+                    </p>
+
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-4 d-sm-flex justify-content-end">
+
+                <div class="contenedor_pie_pagina">
+                    <h6 class="mb-3 texto-resaltado">
+                        <span class="sub-titulo-pie">Redes sociales</span>
+                    </h6>
+                    <p title="Facebook">
+                        <a
+                            class="texto-claro"
+                            href="{{pie_pagina_cli.facebook}}"
+                            target="_blank"
+                            style="text-decoration: none;"
+                        >
+                            <i class="fab fa-facebook size_iconos mr-2"></i>
+                            Siguenos
+                        </a>
+                    </p>
+
+                    <p title="Instagram">
+                        <a
+                            class="texto-claro"
+                            href="{{pie_pagina_cli.instagram}}"
+                            target="_blank"
+                            style="text-decoration: none;"
+                        >
+                            <i class="fab fa-instagram size_iconos mr-2"></i>
+                            Míranos
+                        </a>
+                    </p>
+
+                    <p title="Youtube">
+                        <a
+                            class="texto-claro"
+                            href="{{pie_pagina_cli.youtube}}"
+                            target="_blank"
+                            style="text-decoration: none;"
+                        >
+                            <i class="fab fa-youtube size_iconos mr-1"></i>
+                            Visitanos
+                        </a>
+                    </p>
+
+                    <p title="TikTok">
+                        <a
+                            class="texto-claro"
+                            href="{{pie_pagina_cli.tiktok}}"
+                            target="_blank"
+                            style="text-decoration: none;"
+                        >
+                            <svg
+                                class="tiktok-icono mr-1"
+                                xmlns="http://www.w3.org/2000/svg"
+                                aria-hidden="true"
+                                data-prefix="fab"
+                                data-icon="tiktok"
+                                viewBox="0 0 448 512"
+                            >
+                                <path
+                                    d="M448 209.91a210.06 210.06 0 01-122.77-39.25v178.72A162.55 162.55 0 11185 188.31v89.89a74.62 74.62 0 1052.23 71.18V0h88a121.18 121.18 0 001.86 22.17A122.18 122.18 0 00381 102.39a121.43 121.43 0 0067 20.14z"
+                                ></path>
+                            </svg>
+                            Míranos
+                        </a>
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="col-12 text-center texto-claro mt-4">
+                <h5 class="mb-3 texto-resaltado">Misión, Visión</h5>
+                <h6>{{pie_pagina_cli.mision_vision}}</h6>
+                <h6 class="mt-4">Copyright © {{pie_pagina_cli.year_derecho}} | Todos los derechos reservados</h6>
+            </div>
+        </div>
+
+    </div>
+
+</footer>

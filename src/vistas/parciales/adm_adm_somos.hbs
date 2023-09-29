@@ -1,0 +1,226 @@
+{{! para la pestaña de ver COMO FUNCIONA en administrador maestro }}
+
+<div class="contenido container-fluid">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-12 col-md-6 mt-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="text-center">QUIENES SOMOS</h5>
+                    </div>
+
+                    <div class="card-body text-primary">
+
+                        <form id="form_encabezado_somos">
+
+                            <div class="form-group">
+                                <label for="label_encabezado_somos" class="form-label">Encabezado</label>
+                                <div>
+                                    <input
+                                        type="text"
+                                        name="encabezado_somos"
+                                        class="form-control"
+                                        id="label_encabezado_somos"
+                                        value="{{contenido_administrador.encabezado_somos}}"
+                                        placeholder="Lo hacemos fácil para tí"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="label_texto_somos" class="form-label">Texto</label>
+                                <div>
+                                    <textarea
+                                        name="texto_somos"
+                                        class="form-control"
+                                        id="label_texto_somos"
+                                        rows="5"
+                                        required
+                                    >{{contenido_administrador.texto_somos}}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="text-center">
+                                <input
+                                    type="submit"
+                                    value="Guardar encabezados"
+                                    class="ref_boton_somos btn btn-primary"
+                                />
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 mt-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="text-center">SUBIR INFORMACIÓN</h5>
+                    </div>
+
+                    <div class="card-body text-primary">
+
+                        <p class="mb-3 text-left">
+                            <span class="texto-resaltado"><b>Importante: </b></span>
+                            <span class="texto-normal">Todas las imagenes subidas deben ser de las mismas
+                                dimensiones</span>
+                        </p>
+
+                        <form enctype="multipart/form-data" id="idSubirImagen">
+
+                            <div class="form-group">
+
+                                {{! name="subirArchivoNavegador" este "name" deve coincidir con el dado en el
+                                MIDDLEWARE "multer" en el "configuracion.js" }}
+
+                                <label for="id_input_subir_imagen" class="form-label">Seleccionar imagen</label>
+
+                                <input
+                                    type="file"
+                                    name="subirArchivoNavegador"
+                                    class="clase_input_subir_imagen form-control"
+                                    id="id_input_subir_imagen"
+                                    required
+                                />
+
+                            </div>
+
+                            <div class="form-group">
+                                <label for="id_orden_imagen" class="form-label">Orden</label>
+
+                                <input
+                                    type="number"
+                                    min="1"
+                                    name="orden_imagen"
+                                    class="form-control"
+                                    placeholder="Orden de numeración"
+                                    id="id_orden_imagen"
+                                    required
+                                />
+
+                            </div>
+
+                            <div class="form-group">
+                                <label for="id_titulo_imagen" class="form-label">Título</label>
+
+                                <input
+                                    type="text"
+                                    name="titulo_imagen"
+                                    class="form-control"
+                                    placeholder="Título de la imagen"
+                                    id="id_titulo_imagen"
+                                    required
+                                />
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <label for="id_texto_imagen" class="form-label">Texto</label>
+
+                                <textarea
+                                    name="texto_imagen"
+                                    class="form-control"
+                                    rows="5"
+                                    placeholder="Para saltos de línea use: <br> u otras etiquetas html"
+                                    id="id_texto_imagen"
+                                    title="Para saltos de línea use: <br> u otras etiquetas html"
+                                    required
+                                ></textarea>
+
+                            </div>
+
+                            {{! auxiliar para guardado de imagen para envio por jquery }}
+                            <input
+                                type="text"
+                                name="tipo_imagen"
+                                value="empresa_somos"
+                                id="tipo_objetivo"
+                                hidden
+                            />
+                            {{! codigo_objetivo, dependiendo, puede ser de terreno o proyecto o "ninguno" en caso de que sea imagen pertneciente a empresa }}
+                            <input type="text" name="codigo_objetivo" value="ninguno" hidden />
+                            {{! codigo_terreno, para determinar si este esta bloqueado o no para efectuar cambios }}
+                            <input type="text" name="codigo_terreno" value="ninguno" hidden />
+                            {{! tipo imagen proyecto, como estamos en "empresa", entonces sera: "ninguno" }}
+                            <input
+                                type="text"
+                                name="tipo_imagen_py"
+                                value="ninguno"
+                                id="tipo_py_rs"
+                                hidden
+                            />
+
+                            <div class="text-center">
+                                <input
+                                    type="submit"
+                                    class="ref_subir_img btn btn-primary"
+                                    value="Subir Imagen"
+                                />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="contenido container-fluid contenedor_imagenes_subidas mt-3">
+
+    <div class="row">
+
+        <div class="ref_titulo_imagen col-12">
+            <h5 class="cuadro_estandart p-2 rounded text-center">
+                ITEMS SOMOS
+            </h5>
+        </div>
+
+        {{#each contenido_administrador.lista_somos}}
+
+            <div class="cuadro_contenedor_imagen imagenes mb-3 col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card">
+
+                    <div class="card-header p-0">
+                        <div class="d-flex p-0 m-0">
+
+                            <div class="align-self-center w-75 py-2 ml-2 text-primary">
+                                <h6>{{orden_imagen}}</h6>
+                            </div>
+
+                            <div
+                                class="boton_eliminar_imagen_jquery text-center ir_rojo w-25 align-self-center border-left"
+                                data-id="{{codigo_imagen}}"
+                                style="color: red;"
+                            >
+                                <i class="fas fa-window-close py-1" style="font-size: 2em;"></i>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <img
+                            src="/rutavirtualpublico/subido/{{codigo_imagen}}{{extension_imagen}}"
+                            alt="{{orden_imagen}}"
+                            title="{{orden_imagen}}"
+                            class="estilo_imagen card-img-top"
+                        />
+                        <h5 class="text-center mt-2">{{titulo_imagen}}</h5>
+                        <p class="mt-2">{{texto_imagen}}</p>
+
+                    </div>
+                </div>
+            </div>
+
+        {{/each}}
+
+    </div>
+
+</div>

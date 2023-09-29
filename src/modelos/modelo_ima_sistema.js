@@ -1,0 +1,13 @@
+// IMAGENES PROPIOS DEL SISTEMA
+// esta BD es importante porque asi no se necesitara revisar en la carpeta contenedora la existencia de las imagenes del sistema
+const mongoose = require("mongoose");
+
+const { Schema } = mongoose;
+
+const imagenesSistemaEsquema = new Schema({
+    imagen: { type: String, default: "" }, // EJ/  Cabecera convocatoria, Inicio horizontal
+    tipo_imagen: { type: String, default: "" }, // EJ/  cabecera_convocatoria, inicio_horizontal, etc
+    completo: { type: String, default: "" }, // EJ/  "cabecera_convocatoria.jpg", "inicio_horizontal.jpg"
+});
+
+module.exports = mongoose.model("imagenesSistemaModelo", imagenesSistemaEsquema);

@@ -1,0 +1,99 @@
+{{! para pestaña INFORMACION del PROPIETARIO del lado ADMINISTRADOR }}
+
+<div class="contenido container-fluid">
+    <div class="row">
+        <div class="p-3 col-12 col-sm-6">
+
+            <div class="p-3 cuadro_estandart">
+                {{> adm_propietario_datos}}
+
+                <div class="text-center ref_boton_datos_pagos_propietario">
+                    {{!-- data-id="guardar_datos_pagos_a"  o "guardar_datos_pagos_b" o  "guardar_datos" --}}
+                    <button
+                        type="button"
+                        class="btn btn-primary btn-lg mr-3"
+                        id="guardar_datos_pagos_propietario"
+                        data-id="guardar_datos"
+                        data-ci="{{codigo_propietario}}"
+                    >
+                        Guardar
+                    </button>
+
+                </div>
+                
+            </div>
+
+        </div>
+        
+        <div class="p-3 col-12 col-sm-6">
+            <div class="contenedor_nuevas_claves_acceso cuadro_estandart">
+                <div class="p-3">
+                    <h5>GENERADOR CLAVES DE ACCESO CUENTA PROPIETARIO</h5>
+                    <p class="text-left">
+                        <b>Nota: </b>
+                        Debe asegurarse que los datos del propietario sean los correctos, los nuevos
+                        codigos generados son entregados al propietario que lo solicita cuando
+                        este olvida sus claves de acceso a su cuenta.
+                    </p>
+
+                    <div class="form-group row">
+                        <label
+                            for="id_usuario_maestro"
+                            class="col-sm-12 col-lg-4 col-form-label"
+                        >Usuario maestro</label>
+
+                        <div class="input-group col-sm-12 col-lg-8">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text texto-resaltado">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                            </div>
+
+                            <input
+                                type="text"
+                                name="usuario_maestro"
+                                id="id_usuario_maestro"
+                                class="form-control borrador_1"
+                                required
+                            />
+                        </div>
+
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="id_clave_maestro" class="texto-resaltado col-sm-12 col-lg-4 col-form-label">Clave
+                            maestro</label>
+
+                        <div class="input-group col-sm-12 col-lg-8">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text texto-resaltado">
+                                    <i class="fas fa-lock"></i>
+                                </div>
+                            </div>
+                            <input
+                                type="password"
+                                name="clave_maestro"
+                                class="form-control borrador_1"
+                                id="id_clave_maestro"
+                                required
+                            />
+                        </div>
+
+                    </div>
+
+                    <div id="ci_propietario_reclaves" data-ci="{{codigo_propietario}}"></div>
+
+                    <div class="form-group text-center referencia_2">
+                        <input
+                            type="button"
+                            value="Generar"
+                            class="btn btn-primary btn-lg"
+                            id="generar_nuevas_claves_inversor"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

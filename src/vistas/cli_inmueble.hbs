@@ -1,0 +1,160 @@
+{{!-- la ventana del INMUEBLE desde el lado del cliente PUBLICO --}}
+
+{{!-- ------------------------- --}}
+{{!-- datos elementales --}}
+<div id="id_tipo_ventana" data-tipo_ventana="normal"></div>
+
+{{!-- data-objetivo_tipo = terreno, inmueble, proyecto, propietario --}}
+<div id="id_objetivo_tipo" data-objetivo_tipo="inmueble"></div>
+<div id="id_objetivo_codigo" data-objetivo_codigo="{{codigo_inmueble}}"></div>
+{{!-- ------------------------- --}}
+
+{{!-- "> cli_opciones_nav"  NO DEBE ESTAR APEGADO A LA LINEA CODIGO "1", DE ESTARLO, DARIA UN ERROR --}}
+{{> cli_opciones_nav}}
+
+{{> cli_cabezeras_internas}}
+
+<div class="wrapper" id="contenedor_imagenes_inm" hidden>
+    {{!-- solo indicamos la ruta "href" para visualizar la imagen (aun no la cargamos visualmente) --}}
+    {{#each global_inm.imagenes_inm_principal}}
+    <a href="/rutavirtualpublico/subido/{{inmueble_imagen}}" data-fancybox="gallery"
+        data-caption="{{nombre_imagen}}"><img src="/rutavirtualpublico/subido/{{inmueble_imagen}}"
+            alt="{{nombre_imagen}}"></a>
+    {{/each}}
+
+    {{#each global_inm.imagenes_inm_exclusiva}}
+    <a href="/rutavirtualpublico/subido/{{inmueble_imagen}}" data-fancybox="gallery"
+        data-caption="{{nombre_imagen}}"><img src="/rutavirtualpublico/subido/{{inmueble_imagen}}"
+            alt="{{nombre_imagen}}"></a>
+    {{/each}}
+</div>
+
+<ul class="nav nav-tabs" id="tab_proyecto" role="tablist">
+    {{!-- de todos los tabs se eliminao el atributo  data-toggle="tab" , esto para que funcionen los HREF y nos redireccionen a la ventana correspondiente al tab elegido --}}
+
+    {{#if descripcion_inm}}
+    <li class="nav-item">
+        <a href="/inmueble/{{codigo_inmueble}}/descripcion" class="nav-link active" id="descripcion_inm-tab"
+            role="tab" aria-controls="descripcion_inm" aria-selected="true">Descripción</a>
+    </li>
+    {{else}}
+    <li class="nav-item">
+        <a href="/inmueble/{{codigo_inmueble}}/descripcion" class="nav-link" id="descripcion_inm-tab" role="tab"
+            aria-controls="descripcion_inm" aria-selected="false">Descripción</a>
+    </li>
+    {{/if}}
+
+
+    {{#if garantias_inm}}
+    <li class="nav-item">
+        <a href="/inmueble/{{codigo_inmueble}}/garantias" class="nav-link active" id="garantias_inm-tab"
+            role="tab" aria-controls="garantias_inm" aria-selected="true">Garantías</a>
+    </li>
+    {{else}}
+    <li class="nav-item">
+        <a href="/inmueble/{{codigo_inmueble}}/garantias" class="nav-link" id="garantias_inm-tab" role="tab"
+            aria-controls="garantias_inm" aria-selected="false">Garantías</a>
+    </li>
+    {{/if}}
+
+
+    {{#if beneficios_inm}}
+    <li class="nav-item">
+        <a href="/inmueble/{{codigo_inmueble}}/beneficios" class="nav-link active" id="beneficios_inm-tab"
+            role="tab" aria-controls="beneficios_inm" aria-selected="true">Beneficios</a>
+    </li>
+    {{else}}
+    <li class="nav-item">
+        <a href="/inmueble/{{codigo_inmueble}}/beneficios" class="nav-link" id="beneficios_inm-tab" role="tab"
+            aria-controls="beneficios_inm" aria-selected="false">Beneficios</a>
+    </li>
+    {{/if}}
+
+
+    {{#if informe_economico}}
+    <li class="nav-item">
+        <a href="/inmueble/{{codigo_inmueble}}/info_economico" class="nav-link active"
+            id="informe_economico-tab" role="tab" aria-controls="informe_economico" aria-selected="true">Presupuesto</a>
+    </li>
+    {{else}}
+    <li class="nav-item">
+        <a href="/inmueble/{{codigo_inmueble}}/info_economico" class="nav-link" id="informe_economico-tab"
+            role="tab" aria-controls="informe_economico" aria-selected="false">Presupuesto</a>
+    </li>
+    {{/if}}
+
+    {{#if empleos_inm}}
+    <li class="nav-item">
+        <a href="/inmueble/{{codigo_inmueble}}/empleos" class="nav-link active"
+            id="empleos_inm-tab" role="tab" aria-controls="empleos_inm" aria-selected="true">Empleos</a>
+    </li>
+    {{else}}
+    <li class="nav-item">
+        <a href="/inmueble/{{codigo_inmueble}}/empleos" class="nav-link" id="empleos_inm-tab"
+            role="tab" aria-controls="empleos_inm" aria-selected="false">Empleos</a>
+    </li>
+    {{/if}}
+
+    {{#if global_inm.existe_inversor_inmueble}}
+    {{#if inversor_inmueble}}
+    <li class="nav-item">
+        <a href="/inmueble/{{codigo_inmueble}}/inversor" class="nav-link active" id="inversor_inmueble-tab"
+            role="tab" aria-controls="inversor_inmueble" aria-selected="true">Propietario</a>
+    </li>
+    {{else}}
+    <li class="nav-item">
+        <a href="/inmueble/{{codigo_inmueble}}/inversor" class="nav-link" id="inversor_inmueble-tab" role="tab"
+            aria-controls="inversor_inmueble" aria-selected="false">Propietario</a>
+    </li>
+    {{/if}}
+    {{/if}}
+
+</ul>
+
+{{#if descripcion_inm}}
+<span id="tipo_pestana_inm" data-id="descripcion_inm"></span>
+<div class="container mt-3">
+    {{> cli_inm_descri}}
+</div>
+{{/if}}
+
+{{#if garantias_inm}}
+<span id="tipo_pestana_inm" data-id="normal"></span>
+<div class="container">
+    {{> cli_inm_garan}}
+</div>
+{{/if}}
+
+
+{{#if beneficios_inm}}
+<span id="tipo_pestana_inm" data-id="beneficios_inm"></span>
+<div class="container">
+    {{> cli_inm_benefi}}
+</div>
+{{/if}}
+
+
+{{#if informe_economico}}
+<span id="tipo_pestana_inm" data-id="normal"></span>
+<div class="container">
+    {{> cli_inm_economico}}
+</div>
+{{/if}}
+
+{{#if empleos_inm}}
+<span id="tipo_pestana_inm" data-id="normal"></span>
+<div class="container">
+    {{> cli_inm_empleos}}
+</div>
+{{/if}}
+
+
+{{#if inversor_inmueble}}
+<span id="tipo_pestana_inm" data-id="normal"></span>
+<div class="container">
+    {{> cli_inm_inversor}}
+</div>
+{{/if}}
+
+
+{{> cli_pie_pagina}}

@@ -1,0 +1,112 @@
+{{! para pestaña RESUMEN del PROPIETARIO del lado ADMINISTRADOR y CLIENTE }}
+<div
+    id="min_fecha_inicio"
+    data-min_fecha_inicio="{{informacion.val_segundero_cajas.min_fecha_inicio}}"
+></div>
+
+<div
+    id="max_fecha_fin"
+    data-max_fecha_fin="{{informacion.val_segundero_cajas.max_fecha_fin}}"
+></div>
+
+<div id="r_plusSum" data-r_plusSum="{{informacion.val_segundero_cajas.r_plusSum}}"></div>
+
+<div id="plusGeneranCompleta" data-plusGeneranCompleta="{{informacion.val_segundero_cajas.plusGeneranCompleta}}"></div>
+
+{{!-- este es util solo para la pestaña RESUMEN del propietario, para la pestaña de DESCRIPCION DE inmueble y proyecto, esto ya viene predefinido con valor de cero --}}
+<div id="plusvalia_construida" data-plusvalia_construida="{{informacion.val_cajas.plusvalia_construida}}"></div>
+
+<div class="contenido container">
+    
+    {{> segu_esta_te_py_inm_prop}}
+
+    <div class="row my-4 cuadro_estandart">
+        <div class="col-12">
+            {{! table }}
+            <h5 class="my-3 text-center"><b>Historial de propiedades</b></h5>
+            <div class="table-responsive barra-deslizadora-mob cuadro_estandart p4">
+
+                <table class="table tabla_contenedora">
+                    <thead>
+                        <tr>
+                            <th class="text-right texto-resaltado">#</th>
+                            <th class="text-right texto-resaltado">Fecha pago</th>
+                            <th class="text-right texto-resaltado">Proyecto</th>
+                            <th class="text-right texto-resaltado">Precio justo $us</th>
+                            <th class="text-right texto-resaltado">Plusvalía $us</th>
+                            <th class="text-right texto-resaltado">Inmueble</th>
+                            {{! A ESTADO COMERCIAL CON EL CODIGO DE COLORES }}
+                            <th class="text-right texto-resaltado">Estado</th>
+                            {{! BARRA %, LOS CONSTRUIDOS SERAN 100% }}
+                            <th class="text-center texto-resaltado">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Obra&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="texto-normal">
+
+                        {{#each informacion.historial_inversiones}}
+                            {{! con este class que tiene el codigo del documento, se podra identificarlo para REMOVE en el JQUERY }}
+                            <tr class="fila_registro">
+
+                                <td class="text-right">
+                                    {{numero_fila}}
+                                </td>
+
+                                <td class="text-right">
+                                    {{fecha_estado_inversion}}
+                                </td>
+
+                                <td class="text-right">
+                                    <a href="{{laapirest}}proyecto/{{codigo_proyecto}}/descripcion">
+                                        {{nombre_proyecto}}
+                                    </a>
+                                </td>
+
+                                <td class="text-right">
+                                    <span>{{precio_actual_inm}}</span>
+                                </td>
+
+                                <td class="text-right">
+                                    {{! en caso de que sea un entero entregado, la ganancia que se pondra sera la PLUSVALÍA }}
+                                    <span>{{ahorro}}</span>
+                                </td>
+
+                                <td class="text-right">
+                                    <a
+                                        href="{{laapirest}}inmueble/{{codigo_inmueble}}/descripcion"
+                                        style="letter-spacing: 0.1em;"
+                                    >
+                                        {{codigo_inmueble}}
+                                    </a>
+                                </td>
+
+                                <td class="color_estado_comercial text-right">
+                                    {{estado_inmueble}}
+                                </td>
+
+                                <td>
+                                    <div style="position: relative;">
+                                        <div class="progress" style="height: 1.5rem;">
+                                            <div
+                                                class="progress-bar"
+                                                role="progressbar"
+                                                style="width: {{porcentaje_obra_inm}}%;"
+                                            ></div>
+                                        </div>
+                                        <div class="css-val-porcentaje-celda">
+                                            <b>{{porcentaje_obra_inm_render}}%</b>
+                                        </div>
+                                    </div>
+                                </td>
+
+                            </tr>
+
+                        {{/each}}
+
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

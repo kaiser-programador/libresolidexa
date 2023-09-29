@@ -1,0 +1,264 @@
+{{!-- valido tanto para ADMINISTRADOR SIMPLE/JEFE COMO MAESTRO --}}
+{{!-- "> opciones_nav" NO DEBE ESTAR APEGADO A LA LINEA CODIGO "1", DE ESTARLO, DARIA UN ERROR --}}
+
+{{!-- ------------------------- --}}
+{{!-- datos elementales --}}
+<div id="id_tipo_ventana" data-tipo_ventana="normal"></div>
+<div id="id_objetivo_tipo" data-objetivo_tipo="administrador"></div>
+<div id="id_objetivo_codigo" data-objetivo_codigo="{{codigo_administrador}}"></div>
+{{!-- ------------------------- --}}
+
+{{> opciones_nav}}
+
+{{> adm_cabezeras_internas}}
+
+<div class="pestanas_navegacion">
+
+    <ul class="nav nav-tabs" id="tab_adminstrador" role="tablist">
+
+        {{#if administrador_maestro}}
+
+            {{#if claves_administrador}}
+            <li class="nav-item">
+                <a href="/laapirest/administrador/claves" class="nav-link active"
+                    id="cambiar_claves-tab" role="tab" aria-controls="cambiar_claves"
+                    aria-selected="true">Cambiar claves</a>
+            </li>
+            {{else}}
+            <li class="nav-item">
+                <a href="/laapirest/administrador/claves" class="nav-link" id="cambiar_claves-tab"
+                    role="tab" aria-controls="cambiar_claves" aria-selected="false">Cambiar claves</a>
+            </li>
+            {{/if}}
+
+            {{#if administrador_administrador}}
+            <li class="nav-item">
+                <a href="/laapirest/administrador/administrador" class="nav-link active" id="gestionar_adm-tab"
+                    role="tab" aria-controls="gestionar_adm" aria-selected="true">Administrador</a>
+            </li>
+            {{else}}
+            <li class="nav-item">
+                <a href="/laapirest/administrador/administrador" class="nav-link" id="gestionar_adm-tab"
+                    role="tab" aria-controls="gestionar_adm" aria-selected="false">Administrador</a>
+            </li>
+            {{/if}}
+
+            {{#if personal_administrador}}
+            <li class="nav-item">
+                <a href="/laapirest/administrador/personal" class="nav-link active"
+                    id="personal-tab" role="tab" aria-controls="personal"
+                    aria-selected="true">Personal</a>
+            </li>
+            {{else}}
+            <li class="nav-item">
+                <a href="/laapirest/administrador/personal" class="nav-link" id="personal-tab"
+                    role="tab" aria-controls="personal" aria-selected="false">Personal</a>
+            </li>
+            {{/if}}
+
+            {{#if historial_administrador}}
+            <li class="nav-item">
+                <a href="/laapirest/administrador/historial" class="nav-link active"
+                    id="historial_acciones-tab" role="tab" aria-controls="historial_acciones"
+                    aria-selected="true">Historial acciones</a>
+            </li>
+            {{else}}
+            <li class="nav-item">
+                <a href="/laapirest/administrador/historial" class="nav-link" id="historial_acciones-tab"
+                    role="tab" aria-controls="historial_acciones" aria-selected="false">Historial acciones</a>
+            </li>
+            {{/if}}
+
+            {{#if genericos_administrador}}
+            <li class="nav-item">
+                <a href="/laapirest/administrador/genericos" class="nav-link active"
+                    id="genericos_empresa-tab" role="tab" aria-controls="genericos_empresa"
+                    aria-selected="true">Empresa</a>
+            </li>
+            {{else}}
+            <li class="nav-item">
+                <a href="/laapirest/administrador/genericos" class="nav-link" id="genericos_empresa-tab"
+                    role="tab" aria-controls="genericos_empresa" aria-selected="false">Empresa</a>
+            </li>
+            {{/if}}
+
+            {{#if textos_administrador}}
+            <li class="nav-item">
+                <a href="/laapirest/administrador/textos" class="nav-link active"
+                    id="textos_empresa-tab" role="tab" aria-controls="textos_empresa"
+                    aria-selected="true">Textos</a>
+            </li>
+            {{else}}
+            <li class="nav-item">
+                <a href="/laapirest/administrador/textos" class="nav-link" id="textos_empresa-tab"
+                    role="tab" aria-controls="textos_empresa" aria-selected="false">Textos</a>
+            </li>
+            {{/if}}
+
+            {{#if somos_administrador}}
+            <li class="nav-item">
+                <a href="/laapirest/administrador/somos" class="nav-link active"
+                    id="quienes_somos-tab" role="tab" aria-controls="quienes_somos"
+                    aria-selected="true">Quienes somos</a>
+            </li>
+            {{else}}
+            <li class="nav-item">
+                <a href="/laapirest/administrador/somos" class="nav-link" id="quienes_somos-tab"
+                    role="tab" aria-controls="quienes_somos" aria-selected="false">Quienes somos</a>
+            </li>
+            {{/if}}
+
+            {{#if funciona_administrador}}
+            <li class="nav-item">
+                <a href="/laapirest/administrador/funciona" class="nav-link active"
+                    id="como_funciona-tab" role="tab" aria-controls="como_funciona"
+                    aria-selected="true">Cómo funciona</a>
+            </li>
+            {{else}}
+            <li class="nav-item">
+                <a href="/laapirest/administrador/funciona" class="nav-link" id="como_funciona-tab"
+                    role="tab" aria-controls="como_funciona" aria-selected="false">Cómo funciona</a>
+            </li>
+            {{/if}}
+
+            {{#if preguntas_administrador}}
+            <li class="nav-item">
+                <a href="/laapirest/administrador/preguntas" class="nav-link active"
+                    id="preguntas_frecuentes-tab" role="tab" aria-controls="preguntas_frecuentes"
+                    aria-selected="true">Preguntas frecuentes</a>
+            </li>
+            {{else}}
+            <li class="nav-item">
+                <a href="/laapirest/administrador/preguntas" class="nav-link" id="preguntas_frecuentes-tab"
+                    role="tab" aria-controls="preguntas_frecuentes" aria-selected="false">Preguntas frecuentes</a>
+            </li>
+            {{/if}}
+            
+            {{#if imagenes_administrador}}
+            <li class="nav-item">
+                <a href="/laapirest/administrador/imagenes" class="nav-link active"
+                    id="imagenes_empresa-tab" role="tab" aria-controls="imagenes_empresa"
+                    aria-selected="true">Imágenes</a>
+            </li>
+            {{else}}
+            <li class="nav-item">
+                <a href="/laapirest/administrador/imagenes" class="nav-link" id="imagenes_empresa-tab"
+                    role="tab" aria-controls="imagenes_empresa" aria-selected="false">Imágenes</a>
+            </li>
+            {{/if}}
+
+            {{#if numeros_administrador}}
+            <li class="nav-item">
+                <a href="/laapirest/administrador/numeros" class="nav-link active"
+                    id="numeros_resumen-tab" role="tab" aria-controls="numeros_resumen"
+                    aria-selected="true">Números resumen</a>
+            </li>
+            {{else}}
+            <li class="nav-item">
+                <a href="/laapirest/administrador/numeros" class="nav-link" id="numeros_resumen-tab"
+                    role="tab" aria-controls="numeros_resumen" aria-selected="false">Números resumen</a>
+            </li>
+            {{/if}}
+
+            {{#if visitas_administrador}}
+            <li class="nav-item">
+                <a href="/laapirest/administrador/visitas" class="nav-link active"
+                    id="visitas_empresa-tab" role="tab" aria-controls="visitas_empresa"
+                    aria-selected="true">Visitas</a>
+            </li>
+            {{else}}
+            <li class="nav-item">
+                <a href="/laapirest/administrador/visitas" class="nav-link" id="visitas_empresa-tab"
+                    role="tab" aria-controls="visitas_empresa" aria-selected="false">Visitas</a>
+            </li>
+            {{/if}}
+
+        {{!-- si es administrador empleado comun --}}
+        {{else}}
+
+            {{#if cuenta_administrador}}
+            <li class="nav-item">
+                <a href="/laapirest/administrador/cuenta" class="nav-link active"
+                    id="cuenta-tab" role="tab" aria-controls="cuenta"
+                    aria-selected="true">Cuenta</a>
+            </li>
+            {{else}}
+            <li class="nav-item">
+                <a href="/laapirest/administrador/cuenta" class="nav-link" id="cuenta-tab"
+                    role="tab" aria-controls="cuenta" aria-selected="false">Cuenta</a>
+            </li>
+            {{/if}}
+
+            {{#if claves_administrador}}
+            <li class="nav-item">
+                <a href="/laapirest/administrador/claves" class="nav-link active"
+                    id="cambiar_claves-tab" role="tab" aria-controls="cambiar_claves"
+                    aria-selected="true">Cambiar claves</a>
+            </li>
+            {{else}}
+            <li class="nav-item">
+                <a href="/laapirest/administrador/claves" class="nav-link" id="cambiar_claves-tab"
+                    role="tab" aria-controls="cambiar_claves" aria-selected="false">Cambiar claves</a>
+            </li>
+            {{/if}}
+
+        {{/if}}
+
+    </ul>
+
+</div>
+
+{{#if cuenta_administrador}}
+{{> adm_adm_cuenta}}
+{{/if}}
+
+{{#if claves_administrador}}
+{{> adm_adm_claves}}
+{{/if}}
+
+{{#if administrador_administrador}}
+{{> adm_adm_gestadm}}
+{{/if}}
+
+{{#if personal_administrador}}
+{{> adm_adm_personal}}
+{{/if}}
+
+{{#if historial_administrador}}
+{{> adm_adm_histacciones}}
+{{/if}}
+
+{{#if genericos_administrador}}
+{{> adm_adm_genempresa}}
+{{/if}}
+
+{{#if textos_administrador}}
+{{> adm_adm_texempresa}}
+{{/if}}
+
+{{#if funciona_administrador}}
+{{> adm_adm_funciona}}
+{{/if}}
+
+{{#if somos_administrador}}
+{{> adm_adm_somos}}
+{{/if}}
+
+{{#if preguntas_administrador}}
+{{> adm_adm_preguntas}}
+{{/if}}
+
+{{#if imagenes_administrador}}
+{{> adm_adm_imagenes}}
+{{/if}}
+
+{{#if numeros_administrador}}
+{{> adm_adm_numeros}}
+{{/if}}
+
+{{#if visitas_administrador}}
+{{> adm_adm_visitas}}
+{{/if}}
+
+
+{{> pie_pagina}}

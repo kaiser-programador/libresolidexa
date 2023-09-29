@@ -1,0 +1,76 @@
+{{!-- LADO CLIENTE PARA RENDERIZAR VISTAS DE PROYECTOS: RESERVA, PAGO, CONTRUCCION, CONTRUIDO Y TERRENOS CONVOCATORIA --}}
+
+{{!-- ------------------------- --}}
+{{!-- datos elementales --}}
+<div id="id_tipo_ventana" data-tipo_ventana="normal"></div>
+
+{{!-- data-objetivo_tipo = terreno, inmueble, proyecto, propietario, cards_proyectos --}}
+<div id="id_objetivo_tipo" data-objetivo_tipo="cards_proyectos"></div>
+<div id="id_objetivo_codigo" data-objetivo_codigo="{{codigo_propietario}}"></div>
+{{!-- ------------------------- --}}
+
+<div class="tipo_ventana" data-tipo_ventana="cliente-proyectos"></div>
+
+{{> cli_opciones_nav}}
+
+{{> adm_cli_cabezeras_externas}}
+
+{{#if no_existe}}
+
+<div class="container mt-5">
+    <div class="contenedor-inexistentes jumbotron">
+        <div class="texto-resaltado text-center">
+            <i class="fas fa-hard-hat" style="font-size: 5rem;"></i>
+        </div>
+        <h1>¡Estamos trabajamos en ello!</h1>
+        <br>
+        <p class="h5">{{mensaje_inexistente}}</p>
+
+        <div class="contenedor-carga">
+            <div class="dot-container">
+                <div class="dot dot-1"></div>
+                <div class="dot dot-2"></div>
+                <div class="dot dot-3"></div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{{else}}
+
+<div class="container-fluid p-4">
+    <div class="row" id="contenedor_py_inm_render">
+        <div class="ref_tipo_py_inm"></div>
+        {{!-- debajo de esta ref, es que se renderizaran los CARD EXTERNOS (lado ADMINISTRADOR) de: te, py, inm --}}
+
+        {{#each adm_cli_reserva}}
+        {{> adm_cli_card_proyecto}}
+        {{/each}}
+
+        {{#each adm_cli_pago}}
+        {{> adm_cli_card_proyecto}}
+        {{/each}}
+
+        {{#each adm_cli_aprobacion}}
+        {{> adm_cli_card_proyecto}}
+        {{/each}}
+
+        {{#each adm_cli_construccion}}
+        {{> adm_cli_card_proyecto}}
+        {{/each}}
+
+        {{#each adm_cli_construido}}
+        {{> adm_cli_card_proyecto}}
+        {{/each}}
+
+        {{#each adm_cli_convocatoria}}
+        {{> adm_cli_card_terreno}}
+        {{/each}}
+
+    </div>
+</div>
+
+{{/if}}
+
+{{> cli_pie_pagina}}

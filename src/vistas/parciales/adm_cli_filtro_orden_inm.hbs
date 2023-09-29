@@ -1,0 +1,364 @@
+{{! filtro orden DESLIZADOR de inmuebles que esten dentro de PROYECTO valido para lado CLIENTE y ADMINISTRADOR }}
+
+{{! <div class="modal fade" id="ventanaModalFiltros" data-backdrop="static"> }}
+<div class="modal fade" id="ventanaModalFiltros">
+    <div class="modal-dialog">
+        <div class="modal-content fondo_secundario">
+            {{! <form id="id_crear_terreno"> }}
+            <form>
+
+                {{! para el encabezado de la ventana }}
+                <div class="modal-header">
+
+                    <div class="d-flex justify-content-between">
+
+                        <ul class="nav nav-pills" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <a
+                                    href="#tipo_radio_inm_py"
+                                    class="nav-link active"
+                                    id="tipo_radio_inm_py-tab"
+                                    data-toggle="tab"
+                                    role="tab"
+                                    aria-controls="tipo_radio_inm_py"
+                                    aria-selected="true"
+                                >
+                                    <i class="fas fa-filter size_iconos_filtros"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a
+                                    href="#orden_inm_interior"
+                                    class="nav-link"
+                                    id="orden_inm_interior-tab"
+                                    data-toggle="tab"
+                                    role="tab"
+                                    aria-controls="orden_inm_interior"
+                                    aria-selected="false"
+                                >
+                                    <i class="fas fa-list-ol size_iconos_filtros"></i>
+                                </a>
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+                    {{! BOTON PARA CERRAR la ventana modal }}
+                    <button
+                        type="button"
+                        class="aux_cerrar_np close texto-resaltado"
+                        data-dismiss="modal"
+                        aria-hidden="true"
+                    >&times;</button>
+                </div>
+
+                {{! para el contenido de la ventana modal }}
+                <div class="modal-body">
+
+                    <div class="barra-deslizadora card-body text-primary p-2" style="overflow: auto;">
+
+                        <div class="tab-content w-100" id="myTabContent">
+                            <div
+                                class="tab-pane fade show active"
+                                id="tipo_radio_inm_py"
+                                role="tabpanel"
+                                aria-labelledby="tipo_radio_inm_py-tab"
+                            >
+
+                                <div class="cuerpo texto-normal">
+                                    <h6 class="texto-link titul">Estado</h6>
+                                    <div class="contenedor_estado_comercial">
+
+                                        {{! para aquellos que se desea tener todas las opciones de los botones, se pondran a todos la opcion de TRUE }}
+
+                                        {{#if estado_py_todos}}
+                                            <div class="align-items-center">
+                                                <label>
+                                                    <input
+                                                        type="radio"
+                                                        name="name_radio_inm_py"
+                                                        class="radio_inm_py"
+                                                        data-id="Todos"
+                                                        value="todos"
+                                                        checked
+                                                    />
+                                                    Todos
+                                                </label>
+                                                {{#if badge_todos}}
+                                                    <span
+                                                        class="ml-2 badge badge-primary"
+                                                    >{{n_todos}}</span>
+                                                {{/if}}
+                                            </div>
+                                        {{/if}}
+
+                                        {{#if estado_py_reserva}}
+                                            <div class="align-items-center">
+                                                <label>
+                                                    <input
+                                                        type="radio"
+                                                        name="name_radio_inm_py"
+                                                        class="radio_inm_py"
+                                                        data-id="Disponible"
+                                                        value="disponible"
+                                                    />
+                                                    Disponible
+                                                </label>
+                                                {{#if badge_disponible}}
+                                                    <span
+                                                        class="ml-2 badge badge-primary"
+                                                    >{{n_disponible}}</span>
+                                                {{/if}}
+                                            </div>
+                                            <div class="align-items-center">
+                                                <label>
+                                                    <input
+                                                        type="radio"
+                                                        name="name_radio_inm_py"
+                                                        class="radio_inm_py"
+                                                        data-id="Reservado"
+                                                        value="reservado"
+                                                    />
+                                                    Reservado
+                                                </label>
+                                                {{#if badge_reservado}}
+                                                    <span
+                                                        class="ml-2 badge badge-primary"
+                                                    >{{n_reservado}}</span>
+                                                {{/if}}
+                                            </div>
+                                        {{/if}}
+
+                                        {{#if estado_py_pago}}
+                                            <div class="align-items-center">
+                                                <label title="Pago pendiente">
+                                                    <input
+                                                        type="radio"
+                                                        name="name_radio_inm_py"
+                                                        class="radio_inm_py"
+                                                        data-id="Pendiente"
+                                                        value="pendiente_pago"
+                                                    />
+                                                    Pendiente
+                                                </label>
+                                                {{#if badge_pendiente_pago}}
+                                                    <span
+                                                        class="ml-2 badge badge-primary"
+                                                    >{{n_pendiente_pago}}</span>
+                                                {{/if}}
+                                            </div>
+                                            <div class="align-items-center">
+                                                <label>
+                                                    <input
+                                                        type="radio"
+                                                        name="name_radio_inm_py"
+                                                        class="radio_inm_py"
+                                                        data-id="Pagado"
+                                                        value="pagado_pago"
+                                                    />
+                                                    Pagado
+                                                </label>
+                                                {{#if badge_pagado_pago}}
+                                                    <span
+                                                        class="ml-2 badge badge-primary"
+                                                    >{{n_pagado_pago}}</span>
+                                                {{/if}}
+                                            </div>
+                                        {{/if}}
+
+                                        {{#if estado_py_aprobacion}}
+                                            <div class="align-items-center">
+                                                <label title="Aprobación pendiente">
+                                                    <input
+                                                        type="radio"
+                                                        name="name_radio_inm_py"
+                                                        class="radio_inm_py"
+                                                        data-id="Pendiente"
+                                                        value="pendiente_aprobacion"
+                                                    />
+                                                    Aprobación
+                                                </label>
+                                                {{#if badge_pendiente_aprobacion}}
+                                                    <span
+                                                        class="ml-2 badge badge-primary"
+                                                    >{{n_pendiente_aprobacion}}</span>
+                                                {{/if}}
+                                            </div>
+                                        {{/if}}
+
+                                        {{#if estado_py_construccion}}
+                                            <div class="align-items-center">
+                                                <label>
+                                                    <input
+                                                        type="radio"
+                                                        name="name_radio_inm_py"
+                                                        class="radio_inm_py"
+                                                        data-id="En pago"
+                                                        value="pagos"
+                                                    />
+                                                    Construcción
+                                                </label>
+                                                {{#if badge_en_pago}}
+                                                    <span
+                                                        class="ml-2 badge badge-primary"
+                                                    >{{n_en_pago}}</span>
+                                                {{/if}}
+                                            </div>
+                                            <div class="align-items-center">
+                                                <label>
+                                                    <input
+                                                        type="radio"
+                                                        name="name_radio_inm_py"
+                                                        class="radio_inm_py"
+                                                        data-id="Remate"
+                                                        value="remate"
+                                                    />
+                                                    Remate
+                                                </label>
+                                                {{#if badge_remate}}
+                                                    <span
+                                                        class="ml-2 badge badge-primary"
+                                                    >{{n_remate}}</span>
+                                                {{/if}}
+                                            </div>
+                                        {{/if}}
+
+                                        {{#if estado_py_construido}}
+                                            <div class="align-items-center">
+                                                <label>
+                                                    <input
+                                                        type="radio"
+                                                        name="name_radio_inm_py"
+                                                        class="radio_inm_py"
+                                                        data-id="Completado"
+                                                        value="completado"
+                                                    />
+                                                    Construido
+                                                </label>
+                                                {{#if badge_completado}}
+                                                    <span
+                                                        class="ml-2 badge badge-primary"
+                                                    >{{n_completado}}</span>
+                                                {{/if}}
+                                            </div>
+                                        {{/if}}
+
+                                        {{! la siguiente opcion es solo para el propietario }}
+                                        {{#if estado_rematado}}
+                                            <div class="align-items-center">
+                                                <label>
+                                                    <input
+                                                        type="radio"
+                                                        name="name_radio_inm_py"
+                                                        class="radio_inm_py"
+                                                        data-id="Rematado"
+                                                        value="rematado"
+                                                    />
+                                                    Rematado
+                                                </label>
+                                                {{#if badge_rematado}}
+                                                    <span
+                                                        class="ml-2 badge badge-primary"
+                                                    >{{n_rematado}}</span>
+                                                {{/if}}
+                                            </div>
+                                        {{/if}}
+
+                                    </div>
+                                </div>
+
+                                {{#if tipo_py_edificio}}
+                                    <div class="cuerpo texto-normal">
+
+                                        <h6 class="texto-link titul">Tipo</h6>
+                                        <div class="contenedor_tipo_inmueble_busqueda">
+
+                                            <div
+                                                class="form-check d-flex justify-content-between align-items-center"
+                                            >
+                                                {{! "form-check" HACE QUE EL ELEMENTO NO ESTE CHOCANDO A LOS LATERALES, LE
+                                                    PONE ESPACIOS A LOS CASTADOS }}
+                                                <label>
+                                                    <input
+                                                        type="checkbox"
+                                                        name="name_tipo"
+                                                        class="form-check-input casilla_inm_py"
+                                                        seleccionado="no"
+                                                        value="departamento"
+                                                    />Departamento
+                                                </label>
+                                            </div>
+
+                                            <div
+                                                class="form-check d-flex justify-content-between align-items-center"
+                                            >
+                                                <label>
+                                                    <input
+                                                        type="checkbox"
+                                                        name="name_tipo"
+                                                        class="form-check-input casilla_inm_py"
+                                                        seleccionado="no"
+                                                        value="oficina"
+                                                    />Oficina
+                                                </label>
+                                            </div>
+
+                                            <div
+                                                class="form-check d-flex justify-content-between align-items-center"
+                                            >
+                                                <label>
+                                                    <input
+                                                        type="checkbox"
+                                                        name="name_tipo"
+                                                        class="form-check-input casilla_inm_py"
+                                                        seleccionado="no"
+                                                        value="comercial"
+                                                    />Comercial
+                                                </label>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                {{/if}}
+                            </div>
+
+                            <div
+                                class="tab-pane fade"
+                                id="orden_inm_interior"
+                                role="tabpanel"
+                                aria-labelledby="orden_inm_interior-tab"
+                            >
+                                {{! Para ordenamiento }}
+
+                                <ul class="list-group ul_ordenadores_inm_py">
+                                    <li
+                                        class="list-group-item o_inm_py"
+                                        el_orden="menor"
+                                        tipo_orden="precio"
+                                    >Precio</li>
+                                    <li
+                                        class="list-group-item o_inm_py"
+                                        el_orden="menor"
+                                        tipo_orden="ahorro"
+                                    >Ahorro</li>
+                                    <li
+                                        class="list-group-item o_inm_py"
+                                        el_orden="menor"
+                                        tipo_orden="superficie"
+                                    >Superficie</li>
+                                </ul>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+    {{! FIN DE VENTANA MODAL }}
+</div>

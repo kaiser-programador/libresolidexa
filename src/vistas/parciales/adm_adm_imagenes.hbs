@@ -1,0 +1,636 @@
+{{! para pestaña IMAGENES de la EMPRESA SISTEMA }}
+
+<div class="contenido container-fluid">
+
+    <div class="row">
+
+        {{!-- <div class="col-12 col-sm-10 col-md-10 col-lg-5"> --}}
+        <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-4">
+
+            <div class="card my-4">
+
+                <h5 class="card-header">Subir imagen</h5>
+
+                <div class="card-body text-primary">
+                    <p>
+                        <strong>Tipo archivo permitido:&nbsp;</strong>
+                        JPG
+                    </p>
+                    <form enctype="multipart/form-data" id="idSubirImagenEmpresa">
+
+                        <div class="form-group row">
+
+                            {{! name="subirArchivoNavegador" este "name" deve coincidir con el dado en el
+                            MIDDLEWARE "multer" en el "configuracion.js" }}
+
+                            <label for="id_input_subir_imagen" class="col-12">Seleccionar imagen</label>
+
+                            <input
+                                type="file"
+                                name="subirArchivoNavegador"
+                                class="clase_input_subir_imagen form-control col-12"
+                                id="id_input_subir_imagen"
+                                required
+                            />
+
+                        </div>
+
+                        <p class="text-left"><strong>Nota:</strong>Le sugerimos cambiar las imagenes de "Inicio horizontal" e "Inicio vertical" dependiendo de los eventos o dias festivos que desea destacar en el sistema.</p>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <table class="text-primary table table-bordered">
+
+                                    <thead>
+                                        <tr>
+                                            <th class="texto-resaltado">Tipo</th>
+                                            <th class="texto-resaltado">Tamaño píxeles</th>
+                                            <th class="texto-resaltado">Existe</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+
+                                        <tr>
+                                            <td>
+                                                <label>
+                                                    <input
+                                                        type="radio"
+                                                        name="name_radio_tipo_img_emp"
+                                                        value="inicio_horizontal"
+                                                        required
+                                                    />
+                                                    Inicio horizontal
+                                                </label>
+                                            </td>
+
+                                            <td>
+                                                2000 x 980
+                                            </td>
+
+                                            <td>
+                                                {{#if contenido_administrador.inicio_horizontal}}
+                                                    <i
+                                                        class="fas fa-check"
+                                                        style="color: rgb(13, 247, 13);"
+                                                    ></i>
+                                                {{else}}
+                                                    <i
+                                                        class="fas fa-window-close"
+                                                        style="color: rgb(250, 26, 26);"
+                                                    ></i>
+                                                {{/if}}
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>
+                                                <label>
+                                                    <input
+                                                        type="radio"
+                                                        name="name_radio_tipo_img_emp"
+                                                        value="inicio_vertical"
+                                                        required
+                                                    />
+                                                    Inicio vertical
+                                                </label>
+                                            </td>
+
+                                            <td>
+                                                768 x 800
+                                            </td>
+
+                                            <td>
+                                                {{#if contenido_administrador.inicio_vertical}}
+                                                    <i
+                                                        class="fas fa-check"
+                                                        style="color: rgb(13, 247, 13);"
+                                                    ></i>
+                                                {{else}}
+                                                    <i
+                                                        class="fas fa-window-close"
+                                                        style="color: rgb(250, 26, 26);"
+                                                    ></i>
+                                                {{/if}}
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>
+                                                <label>
+                                                    <input
+                                                        type="radio"
+                                                        name="name_radio_tipo_img_emp"
+                                                        value="cabecera_convocatoria"
+                                                        required
+                                                    />
+                                                    Cabecera convocatoria
+                                                </label>
+                                            </td>
+
+                                            <td>
+                                                2000 x 300
+                                            </td>
+
+                                            <td>
+                                                {{#if contenido_administrador.cabecera_convocatoria}}
+                                                    <i
+                                                        class="fas fa-check"
+                                                        style="color: rgb(13, 247, 13);"
+                                                    ></i>
+                                                {{else}}
+                                                    <i
+                                                        class="fas fa-window-close"
+                                                        style="color: rgb(250, 26, 26);"
+                                                    ></i>
+                                                {{/if}}
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>
+                                                <label>
+                                                    <input
+                                                        type="radio"
+                                                        name="name_radio_tipo_img_emp"
+                                                        value="cabecera_reserva"
+                                                        required
+                                                    />
+                                                    Cabecera reserva
+                                                </label>
+                                            </td>
+
+                                            <td>
+                                                2000 x 300
+                                            </td>
+
+                                            <td>
+                                                {{#if contenido_administrador.cabecera_reserva}}
+                                                    <i
+                                                        class="fas fa-check"
+                                                        style="color: rgb(13, 247, 13);"
+                                                    ></i>
+                                                {{else}}
+                                                    <i
+                                                        class="fas fa-window-close"
+                                                        style="color: rgb(250, 26, 26);"
+                                                    ></i>
+                                                {{/if}}
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>
+                                                <label>
+                                                    <input
+                                                        type="radio"
+                                                        name="name_radio_tipo_img_emp"
+                                                        value="cabecera_aprobacion"
+                                                        required
+                                                    />
+                                                    Cabecera aprobación
+                                                </label>
+                                            </td>
+
+                                            <td>
+                                                2000 x 300
+                                            </td>
+
+                                            <td>
+                                                {{#if contenido_administrador.cabecera_aprobacion}}
+                                                    <i
+                                                        class="fas fa-check"
+                                                        style="color: rgb(13, 247, 13);"
+                                                    ></i>
+                                                {{else}}
+                                                    <i
+                                                        class="fas fa-window-close"
+                                                        style="color: rgb(250, 26, 26);"
+                                                    ></i>
+                                                {{/if}}
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>
+                                                <label>
+                                                    <input
+                                                        type="radio"
+                                                        name="name_radio_tipo_img_emp"
+                                                        value="cabecera_pago"
+                                                        required
+                                                    />
+                                                    Cabecera pago
+                                                </label>
+                                            </td>
+
+                                            <td>
+                                                2000 x 300
+                                            </td>
+
+                                            <td>
+                                                {{#if contenido_administrador.cabecera_pago}}
+                                                    <i
+                                                        class="fas fa-check"
+                                                        style="color: rgb(13, 247, 13);"
+                                                    ></i>
+                                                {{else}}
+                                                    <i
+                                                        class="fas fa-window-close"
+                                                        style="color: rgb(250, 26, 26);"
+                                                    ></i>
+                                                {{/if}}
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>
+                                                <label>
+                                                    <input
+                                                        type="radio"
+                                                        name="name_radio_tipo_img_emp"
+                                                        value="cabecera_construccion"
+                                                        required
+                                                    />
+                                                    Cabecera construcción
+                                                </label>
+                                            </td>
+
+                                            <td>
+                                                2000 x 300
+                                            </td>
+
+                                            <td>
+                                                {{#if contenido_administrador.cabecera_construccion}}
+                                                    <i
+                                                        class="fas fa-check"
+                                                        style="color: rgb(13, 247, 13);"
+                                                    ></i>
+                                                {{else}}
+                                                    <i
+                                                        class="fas fa-window-close"
+                                                        style="color: rgb(250, 26, 26);"
+                                                    ></i>
+                                                {{/if}}
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>
+                                                <label>
+                                                    <input
+                                                        type="radio"
+                                                        name="name_radio_tipo_img_emp"
+                                                        value="cabecera_construido"
+                                                        required
+                                                    />
+                                                    Cabecera construido
+                                                </label>
+                                            </td>
+
+                                            <td>
+                                                2000 x 300
+                                            </td>
+
+                                            <td>
+                                                {{#if contenido_administrador.cabecera_construido}}
+                                                    <i
+                                                        class="fas fa-check"
+                                                        style="color: rgb(13, 247, 13);"
+                                                    ></i>
+                                                {{else}}
+                                                    <i
+                                                        class="fas fa-window-close"
+                                                        style="color: rgb(250, 26, 26);"
+                                                    ></i>
+                                                {{/if}}
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>
+                                                <label>
+                                                    <input
+                                                        type="radio"
+                                                        name="name_radio_tipo_img_emp"
+                                                        value="cabecera_administrador"
+                                                        required
+                                                    />
+                                                    Cabecera administrador
+                                                </label>
+                                            </td>
+
+                                            <td>
+                                                2000 x 300
+                                            </td>
+
+                                            <td>
+                                                {{#if contenido_administrador.cabecera_administrador}}
+                                                    <i
+                                                        class="fas fa-check"
+                                                        style="color: rgb(13, 247, 13);"
+                                                    ></i>
+                                                {{else}}
+                                                    <i
+                                                        class="fas fa-window-close"
+                                                        style="color: rgb(250, 26, 26);"
+                                                    ></i>
+                                                {{/if}}
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>
+                                                <label>
+                                                    <input
+                                                        type="radio"
+                                                        name="name_radio_tipo_img_emp"
+                                                        value="cabecera_propietario"
+                                                        required
+                                                    />
+                                                    Cabecera propietario
+                                                </label>
+                                            </td>
+
+                                            <td>
+                                                2000 x 300
+                                            </td>
+
+                                            <td>
+                                                {{#if contenido_administrador.cabecera_propietario}}
+                                                    <i
+                                                        class="fas fa-check"
+                                                        style="color: rgb(13, 247, 13);"
+                                                    ></i>
+                                                {{else}}
+                                                    <i
+                                                        class="fas fa-window-close"
+                                                        style="color: rgb(250, 26, 26);"
+                                                    ></i>
+                                                {{/if}}
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>
+                                                <label>
+                                                    <input
+                                                        type="radio"
+                                                        name="name_radio_tipo_img_emp"
+                                                        value="cabecera_terreno"
+                                                        required
+                                                    />
+                                                    Cabecera terreno
+                                                </label>
+                                            </td>
+
+                                            <td>
+                                                2000 x 300
+                                            </td>
+
+                                            <td>
+                                                {{#if contenido_administrador.cabecera_terreno}}
+                                                    <i
+                                                        class="fas fa-check"
+                                                        style="color: rgb(13, 247, 13);"
+                                                    ></i>
+                                                {{else}}
+                                                    <i
+                                                        class="fas fa-window-close"
+                                                        style="color: rgb(250, 26, 26);"
+                                                    ></i>
+                                                {{/if}}
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>
+                                                <label>
+                                                    <input
+                                                        type="radio"
+                                                        name="name_radio_tipo_img_emp"
+                                                        value="cabecera_proyecto"
+                                                        required
+                                                    />
+                                                    Cabecera proyecto
+                                                </label>
+                                            </td>
+
+                                            <td>
+                                                2000 x 300
+                                            </td>
+
+                                            <td>
+                                                {{#if contenido_administrador.cabecera_proyecto}}
+                                                    <i
+                                                        class="fas fa-check"
+                                                        style="color: rgb(13, 247, 13);"
+                                                    ></i>
+                                                {{else}}
+                                                    <i
+                                                        class="fas fa-window-close"
+                                                        style="color: rgb(250, 26, 26);"
+                                                    ></i>
+                                                {{/if}}
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>
+                                                <label>
+                                                    <input
+                                                        type="radio"
+                                                        name="name_radio_tipo_img_emp"
+                                                        value="cabecera_inmueble"
+                                                        required
+                                                    />
+                                                    Cabecera inmueble
+                                                </label>
+                                            </td>
+
+                                            <td>
+                                                2000 x 300
+                                            </td>
+
+                                            <td>
+                                                {{#if contenido_administrador.cabecera_inmueble}}
+                                                    <i
+                                                        class="fas fa-check"
+                                                        style="color: rgb(13, 247, 13);"
+                                                    ></i>
+                                                {{else}}
+                                                    <i
+                                                        class="fas fa-window-close"
+                                                        style="color: rgb(250, 26, 26);"
+                                                    ></i>
+                                                {{/if}}
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>
+                                                <label>
+                                                    <input
+                                                        type="radio"
+                                                        name="name_radio_tipo_img_emp"
+                                                        value="cabecera_empresa"
+                                                        required
+                                                    />
+                                                    Cabecera empresa
+                                                </label>
+                                            </td>
+
+                                            <td>
+                                                2000 x 300
+                                            </td>
+
+                                            <td>
+                                                {{#if contenido_administrador.cabecera_empresa}}
+                                                    <i
+                                                        class="fas fa-check"
+                                                        style="color: rgb(13, 247, 13);"
+                                                    ></i>
+                                                {{else}}
+                                                    <i
+                                                        class="fas fa-window-close"
+                                                        style="color: rgb(250, 26, 26);"
+                                                    ></i>
+                                                {{/if}}
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>
+                                                <label>
+                                                    <input
+                                                        type="radio"
+                                                        name="name_radio_tipo_img_emp"
+                                                        value="cabecera_resultados_inmuebles"
+                                                        required
+                                                    />
+                                                    Cabecera resultados inmuebles
+                                                </label>
+                                            </td>
+
+                                            <td>
+                                                2000 x 300
+                                            </td>
+
+                                            <td>
+                                                {{#if contenido_administrador.cabecera_resultados_inmuebles}}
+                                                    <i
+                                                        class="fas fa-check"
+                                                        style="color: rgb(13, 247, 13);"
+                                                    ></i>
+                                                {{else}}
+                                                    <i
+                                                        class="fas fa-window-close"
+                                                        style="color: rgb(250, 26, 26);"
+                                                    ></i>
+                                                {{/if}}
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>
+                                                <label>
+                                                    <input
+                                                        type="radio"
+                                                        name="name_radio_tipo_img_emp"
+                                                        value="cabecera_resultados_requerimientos"
+                                                        required
+                                                    />
+                                                    Cabecera resultados requerimientos
+                                                </label>
+                                            </td>
+
+                                            <td>
+                                                2000 x 300
+                                            </td>
+
+                                            <td>
+                                                {{#if contenido_administrador.cabecera_resultados_requerimientos}}
+                                                    <i
+                                                        class="fas fa-check"
+                                                        style="color: rgb(13, 247, 13);"
+                                                    ></i>
+                                                {{else}}
+                                                    <i
+                                                        class="fas fa-window-close"
+                                                        style="color: rgb(250, 26, 26);"
+                                                    ></i>
+                                                {{/if}}
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <input
+                            type="submit"
+                            class="ref_subir_img btn btn-primary offset-4"
+                            value="Subir Imagen"
+                        />
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<hr />
+
+<div class="contenido container-fluid contenedor_imagenes_subidas">
+
+    <div class="row">
+
+        <div class="ref_titulo_imagen col-12">
+            <h5 class="cuadro_estandart p-2 rounded text-center">
+                <b>IMÁGENES</b>
+            </h5>
+        </div>
+
+        {{#each contenido_administrador.lista_imagenes}}
+
+            <div class="cuadro_contenedor_imagen imagenes mb-3 col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card">
+
+                    <div class="card-header p-0">
+                        <div class="d-flex justify-content-between p-0 m-0">
+
+                            <div class="align-self-center py-2 px-3 text-primary">
+                                <h6>{{imagen}}</h6>
+                            </div>
+
+                            <div
+                                class="boton_eliminar_imagen_jquery text-center ir_rojo align-self-center border-left mr-2"
+                                data-id="{{tipo_imagen}}"
+                                style="color: red;"
+                            >
+                                <i class="fas fa-window-close py-1" style="font-size: 2em;"></i>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <img
+                            src="/rutavirtualpublico/imagenes/imagenes_sistema/{{completo}}"
+                            alt="{{imagen}}"
+                            title="{{imagen}}"
+                            class="estilo_imagen card-img-top"
+                        />
+                    </div>
+
+                </div>
+            </div>
+
+        {{/each}}
+
+    </div>
+
+</div>

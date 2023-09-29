@@ -1,0 +1,184 @@
+{{! PARTE BENEFICIOS DEL PROYECTO DEL LADO DEL CLIENTE PUBLICO }}
+<span id="tipo_pestana_py" data-id="beneficios_py"></span>
+
+<div id="contenedor_constructoras" hidden>
+    {{! usamos data-  para no tener problemas con nombre que tengan añadidos espacios largos o saltos de lineas provocados por handlebars }}
+    {{#each contenido_proyecto.constructoras}}
+        <div class="cuerpo">
+            <span class="nombre" data-nombre="{{nombre}}"></span>
+            <span class="dolar_m2" data-dolarm2="{{contructora_dolar_m2}}"></span>
+            <span class="costo" data-costo="{{costo_constructora}}"></span>
+            <span class="sobreprecio" data-sobreprecio="{{sobreprecio}}"></span>
+        </div>
+    {{/each}}
+</div>
+
+<div id="contenedor_plusvalia" hidden>
+    <span class="costo" data-costo="{{contenido_proyecto.costo_volterra}}"></span>
+    <span class="plusvalia" data-plusvalia="{{contenido_proyecto.plusvalias_total}}"></span>
+</div>
+
+<div class="row mt-5 cuadro_estandart py-3">
+    <div class="col-12 d-flex">
+        <div class="mr-3 contenedor-detalle-icono">
+            <i class="fas fa-gift"></i>
+        </div>
+
+        <div class="container-fluid contenedor-detalle-texto">
+            <h4 class="texto-resaltado">{{contenido_proyecto.titulo_plusvalia_py}}</h4>
+            <p class="escritura" style="text-align: justify;">
+                {{contenido_proyecto.texto_plusvalia_py}}
+            </p>
+            <p style="text-align: justify;">
+                Para conocer la plusvalía específica de un inmueble, ingrese a la página de este, y
+                diríjase a la sección de "Beneficios".
+            </p>
+
+            <div class="row mt-2">
+                <div class="col-12 text-center">
+                    <h5 class="texto-link">Plusvalía del proyecto</h5>
+                    <div class="row texto-normal mb-3">
+                        <div class="col-12 col-md-6 text-center text-md-right">
+                            <span>
+                                Precio justo:
+                                <b>{{contenido_proyecto.costo_volterra_render}} $us</b>
+                            </span>
+                        </div>
+                        <div class="col-12 col-md-6 text-center text-md-left">
+                            <span>
+                                Plusvalía regalo:
+                                <b>{{contenido_proyecto.plusvalias_total_render}} $us</b>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 d-flex justify-content-center mb-3">
+                    <div class="contendor_graf_plusvalia barra-deslizadora-mob" style="overflow: auto;">
+                        {{! width: 50rem; }}
+                        <div style="width: 40rem;">
+                            <canvas id="graficoPlusvalia"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="escritura">
+                        {{contenido_proyecto.nota_plusvalia_py}}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="row mt-5 cuadro_estandart py-3">
+    <div class="col-12 d-flex">
+        <div class="mr-3 contenedor-detalle-icono">
+            <i class="fas fa-hard-hat"></i>
+        </div>
+
+        <div class="container-fluid contenedor-detalle-texto">
+            <h4 class="texto-resaltado">{{contenido_proyecto.titulo_construccion_py}}</h4>
+            <p class="escritura" style="text-align: justify;">
+                {{contenido_proyecto.texto_construccion_py}}
+            </p>
+            <p style="text-align: justify;">
+                Para más información, ponemos a disposicion de nuestros potenciales clientes los detalles
+                del Presupuesto de contruccion del proyecto, en la pestaña "Informe económico".
+            </p>
+
+            <div class="row mt-2">
+                <div class="col-12 text-center">
+                    <h5 class="texto-link">SOLIDEXA VS Constructoras tradicionales</h5>
+                </div>
+
+                <div class="col-12 d-flex justify-content-center mb-3">
+                    <div class="contendor_graf_sobrep barra-deslizadora-mob" style="overflow: auto;">
+                        <div style="width: 40rem;">
+                            <canvas id="graficoSobreprecios"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 mb-3">
+                    <h5
+                        class="text-center mb-2 texto-resaltado"
+                    >{{contenido_proyecto.nombre_proyecto}}</h5>
+                    <div class="row mb-3 texto-normal">
+                        <div class="col-12 col-md-6 col-lg-4 text-center">
+                            <span>
+                                Construcción:
+                                <b>{{contenido_proyecto.area_construida_render}}
+                                    m<sup>2</sup></b>&nbsp;<sup class="texto-link"><b>a</b></sup>
+                            </span>
+                        </div>
+                        <div class="col-12 col-md-6 col-lg-4 text-center">
+                            <span>
+                                Precio justo:
+                                <b>{{contenido_proyecto.volterra_dolar_m2_render}} $us/m<sup>2</sup></b>
+                            </span>
+                        </div>
+                        <div class="col-12 col-md-12 col-lg-4 text-center">
+                            <span>
+                                Precio justo:
+                                <b>{{contenido_proyecto.costo_volterra_render}} $us</b>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-center">
+                        {{! para un centrado correcto ambos deben tener el msmo valor de width }}
+                        <div
+                            class="table-responsive barra-deslizadora-mob"
+                            id="constructoras_sobreprecios"
+                            style="width: 40rem;"
+                        >
+                            <table class="text-primary" style="width: 40rem;" cellpadding="7">
+                                <thead>
+                                    <tr>
+                                        <th>Otras constructoras</th>
+                                        <th>Precio $us/m<sup>2</sup></th>
+                                        <th>Precio $us</th>
+                                        <th>Sobreprecio $us</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody class="cuerpo_filas">
+                                    {{#each contenido_proyecto.constructoras_render}}
+                                        <tr class="fila_ref">
+                                            <td>{{nombre}}</td>
+                                            <td>{{contructora_dolar_m2}}</td>
+                                            <td>{{costo_constructora}}</td>
+                                            <td style="color: rgb(233, 66, 15);">{{sobreprecio}}</td>
+                                        </tr>
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-12">
+                    <p style="text-align: justify;">
+                        <sup class="texto-link"><b>a</b></sup>&nbsp;Este valor corresponde netamente a la
+                        sumatoria de las superficies de todos los INMUEBLES que conforman el presente
+                        proyecto.
+                    </p>
+
+                    <div class="escritura">
+                        {{contenido_proyecto.nota_construccion_py}}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="text-right mt-4" title="Numero de visualizaciones">
+    <span><i class="fas fa-glasses icono_visualizaciones"></i></span>
+    <span class="numero_visualizaciones"><b>{{nv_ventana}}</b></span>
+</div>

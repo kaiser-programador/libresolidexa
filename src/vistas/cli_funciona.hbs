@@ -1,0 +1,91 @@
+{{!-- COMO FUNCIONA lado del cliente --}}
+
+{{!-- "> cli_opciones_nav"  NO DEBE ESTAR APEGADO A LA LINEA CODIGO "1", DE ESTARLO, DARIA UN ERROR --}}
+
+{{!-- ------------------------- --}}
+{{!-- datos elementales --}}
+<div id="id_tipo_ventana" data-tipo_ventana="normal"></div>
+
+{{!-- data-objetivo_tipo = terreno, inmueble, proyecto, propietario, cards_proyectos --}}
+<div id="id_objetivo_tipo" data-objetivo_tipo="info_empresa"></div>
+<div id="id_objetivo_codigo" data-objetivo_codigo="{{codigo_propietario}}"></div>
+{{!-- ------------------------- --}}
+
+{{> cli_opciones_nav}}
+
+{{> adm_cli_cabezeras_externas}}
+
+<div class="container">
+
+    <div class="row mt-4">
+
+        <h2 class="col-12 mb-5 text-center"></h2>
+
+        {{#each lista_funciona}}
+
+            <div class="mb-5 col-12 col-md-6">
+                <h3 class="text-center mt-4 mb-3 texto-resaltado">{{titulo_imagen}}</h3>
+                <div class="text-center">
+                    <div class="d-inline-block" style="position: relative;">
+                        <div class="css-numerador">{{orden_imagen}}</div>
+                        <div class="contenedor-inicio-icono texto-resaltado">
+                            <img class="d-block w-100" src="/rutavirtualpublico/subido/{{codigo_imagen}}{{extension_imagen}}" alt="{{codigo_imagen}}">
+                        </div>
+                    </div>
+                    <p class="escritura mt-3 css_textos">
+                        {{texto_imagen}}
+                    </p>
+                </div>
+                
+                <div class="d-flex justify-content-center">
+
+                    {{!-- en el orden: 1. Manual, 2. Modelo, 3. Beneficios, 4. Video --}}
+
+                    {{#each lista_documentos}}
+                        <div class="m-2">
+                            <div class="text-center">
+                                <a
+                                    class="btn btn-{{color}}"
+                                    href="/rutavirtualpublico/subido/{{codigo_documento}}.{{extension}}"
+                                    target="_blank"
+                                    style="color: white;"
+                                >
+                                    <i
+                                        class="texto-link fas fa-file-{{tipo_archivo}} btn pl-0 pr-1 py-1"
+                                        style="font-size: 2em; color: white;"
+                                    ></i>
+                                    {{tipo_documento}}
+                                </a>
+                            </div>
+                        </div> 
+                    {{/each}}
+
+                    {{#if video_funciona}}
+                        <div class="m-2">
+                            <div class="text-center">
+                                <a
+                                    class="btn btn-success"
+                                    href="{{url_video}}"
+                                    target="_blank"
+                                    style="color: white;"
+                                >
+                                    <i
+                                        class="texto-link fas fa-video btn pl-0 pr-1 py-1"
+                                        style="font-size: 2em; color: white;"
+                                    ></i>
+                                    Video
+                                </a>
+                            </div>
+                        </div> 
+                    {{/if}}
+
+                </div>
+
+            </div>
+
+        {{/each}}
+    </div>
+
+</div>
+
+{{> cli_pie_pagina}}

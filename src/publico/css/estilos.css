@@ -1,0 +1,1231 @@
+/*------------------------------------------*/
+/* LOS TIPOS DE FUENTES DEL PROYECTO */
+
+@font-face {
+    font-family: "Montserrat";
+    src: url(../fuentes/Montserrat-Regular.ttf);
+}
+@font-face {
+    font-family: "Montserrat";
+    font-weight: bold;
+    src: url(../fuentes/Montserrat-Bold.ttf);
+}
+
+@font-face {
+    font-family: "M PLUS 2";
+    src: url(../fuentes/MPLUS2-Regular.ttf);
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+/*------------------------------------------*/
+/* VARIABLES CSS COLORES PRINCIPALES */
+:root {
+    /* --color_fondo_principal: rgb(3, 0, 39); */
+
+    /* usaba esta */
+    --color_fondo_principal: rgb(255, 255, 255);
+
+    /* --color_fondo_secundario: rgb(248, 248, 248); */
+
+    /* usaba esta */
+    --color_fondo_secundario: rgb(233, 236, 239);
+
+    /* antes usaba esta */
+    --color_texto_normal: rgb(3, 12, 32);
+
+    
+    --color_texto_resalte: rgb(254, 93, 21);
+    --color_texto_link: rgb(0, 123, 255);
+    --color_texto_inputs: rgb(0, 0, 0);
+
+    --color_bordes_card: rgb(214, 209, 209);
+    /* --color_bordes_card: rgb(172, 165, 165); */
+    --redondeo_borde: 0.6em;
+
+    /* ambos aplicables para lado ADMINISTRADOR y CLIENTE */
+    --alto-conten-anima-inic: 20em;
+    --alto-anima-inic: 25em;
+    --duracion-anima-inic: 38s;
+
+    /* tamaño de letra de las cabezeras */
+    --letra_cabezera: 1.1rem;
+}
+
+/* COLOR MAGENTA ORIGINAL */
+/* --color_texto_resalte:rgb(100, 255, 218); */
+
+/* COLOR AZUL INICIO */
+/* --color_texto_resalte:rgb(0, 86, 179); */
+
+/*------------------------------------------*/
+
+html {
+    font-size: 15px;
+    /* font-size: 14px; */
+}
+
+body {
+    background: var(--color_fondo_principal);
+    color: var(--color_texto_normal);
+
+    /* agregado para que el footer se posiciones en la parte inferior de la ventana */
+    display: flex;
+
+    /* para obligar a los hijos a permaneces en la misma linea */
+    flex-wrap: wrap;
+
+    min-height: 100vh;
+
+    /* para usar las letras de fuentes descargadas de google font */
+    /* font-family: "Montserrar", sans-serif; */
+    font-family: "M PLUS 2", sans-serif;
+
+    /* espaciado entre caracteres de las letras */
+    letter-spacing: 0.008em;
+    /* letter-spacing: 0.025em; */
+
+    /* espaciado entre lineas verticales */
+    /* line-height: 2em; */
+
+    /* font-family: 'Lexend Giga', sans-serif; */
+
+    /* font-family: 'Lexend Exa', sans-serif; */
+    /* font-family: 'Lexend Deca', sans-serif; */
+}
+
+.body-imagen-fondo {
+    background-image: linear-gradient(rgba(5, 5, 54, 0.8), rgba(5, 5, 54, 0.8)),
+        url(/rutavirtualpublico/imagenes/metropoli_2.jpg);
+    /* background-image: url(/rutavirtualpublico/imagenes/metropoli_2.jpg); */
+    background-repeat: no-repeat;
+
+    /* para que cubra todo el ancho del contenedor */
+    background-size: cover;
+    /* para centrarlo verticalmente */
+    background-position: center;
+}
+/* -------------------------------------------------------------*/
+.card-footer {
+    background-color: var(--color_fondo_secundario) !important;
+}
+.progress {
+    background-color: var(--color_fondo_principal) !important;
+}
+
+.linea-h {
+    border-top: 1px solid var(--color_bordes_card);
+    margin-top: 0.8rem;
+}
+.linea-v {
+    border-right: 1px solid var(--color_bordes_card);
+    /* margin-top: 0.8rem; */
+}
+/* -------------------------------------------------------------*/
+/* la barra delizadora, los estilos no son soportados en FIREFOX*/
+/* el fondo de la barra */
+.barra-deslizadora::-webkit-scrollbar {
+    width: 0.7em;
+    /* width: 7px; */
+    background: rgb(3, 0, 24);
+}
+
+/* la barrita deslizadora */
+.barra-deslizadora::-webkit-scrollbar-thumb {
+    width: 7px;
+    background: var(--color_texto_resalte);
+    border-radius: 5px;
+}
+
+/* -------------------------------------------------------------*/
+/* la barra delizadora PARA TAMAÑO REDUCIDO DISPOSITIVOS MOBILES, los estilos no son soportados en FIREFOX*/
+/* el fondo de la barra */
+.barra-deslizadora-mob::-webkit-scrollbar {
+    width: 0.7em;
+    height: 0.3em;
+    /* width: 7px; */
+    background: var(--color_texto_normal);;
+    /* background: rgb(3, 0, 24); */
+}
+
+/* la barrita deslizadora */
+.barra-deslizadora-mob::-webkit-scrollbar-thumb {
+    width: 7px;
+    height: 0.3em;
+    background: var(--color_texto_resalte);
+    border-radius: 5px;
+}
+
+/* --------------------------------------------------------------------------- */
+/* ESTILO DE CABEZERAS (INT, EXT) (ADM, CLI) */
+.cabezera_estilo_convocatoria {
+    background-image: linear-gradient(rgba(5, 5, 54, 0.8), rgba(5, 5, 54, 0.8)),
+        url(/rutavirtualpublico/imagenes/imagenes_sistema/cabecera_convocatoria.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+.cabezera_estilo_reserva {
+    background-image: linear-gradient(rgba(5, 5, 54, 0.8), rgba(5, 5, 54, 0.8)),
+        url(/rutavirtualpublico/imagenes/imagenes_sistema/cabecera_reserva.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+.cabezera_estilo_aprobacion {
+    background-image: linear-gradient(rgba(5, 5, 54, 0.8), rgba(5, 5, 54, 0.8)),
+        url(/rutavirtualpublico/imagenes/imagenes_sistema/cabecera_aprobacion.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+.cabezera_estilo_pago {
+    background-image: linear-gradient(rgba(5, 5, 54, 0.8), rgba(5, 5, 54, 0.8)),
+        url(/rutavirtualpublico/imagenes/imagenes_sistema/cabecera_pago.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+.cabezera_estilo_construccion {
+    background-image: linear-gradient(rgba(5, 5, 54, 0.8), rgba(5, 5, 54, 0.8)),
+        url(/rutavirtualpublico/imagenes/imagenes_sistema/cabecera_construccion.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+.cabezera_estilo_construido {
+    background-image: linear-gradient(rgba(5, 5, 54, 0.8), rgba(5, 5, 54, 0.8)),
+        url(/rutavirtualpublico/imagenes/imagenes_sistema/cabecera_construido.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+.cabezera_estilo_administrador {
+    background-image: linear-gradient(rgba(5, 5, 54, 0.8), rgba(5, 5, 54, 0.8)),
+        url(/rutavirtualpublico/imagenes/imagenes_sistema/cabecera_administrador.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+.cabezera_estilo_propietario {
+    background-image: linear-gradient(rgba(5, 5, 54, 0.8), rgba(5, 5, 54, 0.8)),
+        url(/rutavirtualpublico/imagenes/imagenes_sistema/cabecera_propietario.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+.cabezera_estilo_terreno {
+    background-image: linear-gradient(rgba(5, 5, 54, 0.8), rgba(5, 5, 54, 0.8)),
+        url(/rutavirtualpublico/imagenes/imagenes_sistema/cabecera_terreno.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+.cabezera_estilo_proyecto {
+    background-image: linear-gradient(rgba(5, 5, 54, 0.8), rgba(5, 5, 54, 0.8)),
+        url(/rutavirtualpublico/imagenes/imagenes_sistema/cabecera_proyecto.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+.cabezera_estilo_inmueble {
+    background-image: linear-gradient(rgba(5, 5, 54, 0.8), rgba(5, 5, 54, 0.8)),
+        url(/rutavirtualpublico/imagenes/imagenes_sistema/cabecera_inmueble.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+.cabezera_estilo_empresa {
+    background-image: linear-gradient(rgba(5, 5, 54, 0.8), rgba(5, 5, 54, 0.8)),
+        url(/rutavirtualpublico/imagenes/imagenes_sistema/cabecera_empresa.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+/* para resultados de busqueda de inmuebles */
+.cabezera_estilo_resultados {
+    background-image: linear-gradient(rgba(5, 5, 54, 0.8), rgba(5, 5, 54, 0.8)),
+        url(/rutavirtualpublico/imagenes/imagenes_sistema/cabecera_resultados_inmuebles.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+.cabezera_estilo_requerimientos {
+    background-image: linear-gradient(rgba(5, 5, 54, 0.8), rgba(5, 5, 54, 0.8)),
+        url(/rutavirtualpublico/imagenes/imagenes_sistema/cabecera_resultados_requerimientos.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+/* --------------------------------------------------------------------------- */
+.inicio_h_v {
+    /* background-image: linear-gradient(rgba(5, 5, 54, 0.8), rgba(5, 5, 54, 0.8)),
+        url(/rutavirtualpublico/imagenes/imagenes_sistema/inicio_horizontal.jpg); */
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+/* --------------------------------------------------------------------------- */
+/* para visualizar la mano al momento de acercar el cursor a este icono */
+.guardar_si_no {
+    cursor: pointer;
+}
+/* --------------------------------------------------------------------------- */
+.form-control {
+    color: var(--color_texto_inputs);
+}
+/* --------------------------------------------------------------------------- */
+
+.cabezera-primario,
+.cabezera-secundario,
+.contenedor-icono-info-madre {
+    margin-top: 3.5rem;
+}
+
+/* .cabezera-primario, .cabezera-secundario{
+    border: 1px solid red;
+    height: 9rem;
+} */
+
+#id_contenedor_filtro_orden .card {
+    border-radius: 0rem !important;
+}
+
+.numero_banos,
+.numero_habitaciones {
+    border: 0.12rem solid var(--color_texto_link) !important;
+}
+
+.n_bano_seleccionado,
+.n_dormitorio_seleccionado {
+    background-color: var(--color_texto_link) !important;
+    color: var(--color_fondo_principal) !important;
+}
+
+/* .card_un_inm_py .card-footer:hover { */
+.card_un_inm_py .card-footer {
+    /* cursor: pointer; */
+    background: var(--color_texto_link) !important;
+    color: var(--color_fondo_principal) !important;
+    font-weight: 400 !important;
+
+    padding: 0;
+}
+
+.card_un_inm_py .card-footer a{
+    display: block;
+    color: var(--color_fondo_principal);
+    padding: 0.8rem 0rem;
+    text-decoration: none;
+}
+
+
+#id_contenedor_busqueda_orden {
+    border-right: 1px solid var(--color_bordes_card);
+}
+
+.cabezera-primario h1 {
+    color: var(--color_texto_resalte);
+}
+.cabezera-primario p {
+    color: var(--color_fondo_principal);
+}
+
+.contenedor-inexistentes {
+    background: var(--color_fondo_secundario);
+    border: 2px solid var(--color_bordes_card);
+    color: var(--color_texto_normal);
+}
+.contenedor-inexistentes h1,
+p {
+    text-align: center;
+}
+.contenedor-inexistentes h1 {
+    color: var(--color_texto_resalte);
+}
+.contenedor-inexistentes p {
+    color: var(--color_texto_normal);
+}
+
+main {
+    width: 100%;
+}
+
+footer {
+    align-self: flex-end;
+    width: 100%;
+    padding: 2rem;
+    background: #e0f803;
+}
+
+.texto-resaltado {
+    color: var(--color_texto_resalte);
+
+    /* para usar las letras de fuentes descargadas de google font */
+
+    font-family: "Montserrar", sans-serif;
+    /* font-family: "M PLUS 2", sans-serif; */
+
+    /* espaciado entre caracteres de las letras */
+    letter-spacing: 0em;
+}
+
+.texto-link {
+    color: var(--color_texto_link);
+}
+
+.texto-claro {
+    color: var(--color_fondo_principal);
+}
+
+/* ----------------------------------------------------------- */
+/* segundero */
+.dolar_seg_social {
+    color: var(--color_fondo_principal);
+    padding: 0.25rem 0.5rem 0.25rem 0.5rem;
+    text-align: center;
+    align-self: center;
+    border-right: 2px solid var(--color_texto_resalte);
+    font-size: 2.5rem;
+    font-weight: 500;
+    background: var(--color_texto_resalte);
+}
+/* segundero para digitos decimales */
+.cd {
+    display: inline-block;
+    width: 2rem;
+    text-align: right;
+}
+/* ----------------------------------------------------------- */
+/* para los submenus interiores de: te, py, inm, propietario */
+.nav-tabs .nav-link.active {
+    border: 1px solid var(--color_texto_link) !important;
+    /* border: none!important; */
+    color: var(--color_fondo_principal) !important;
+    background: var(--color_texto_link) !important;
+}
+.nav-tabs .nav-link:hover {
+    background: var(--color_texto_link) !important;
+    color: var(--color_fondo_principal) !important;
+}
+
+/* Para que las filas de las tablas esten intercaladas con colores */
+.tabla_caracteristicas tr:nth-child(even) {
+    background: var(--color_fondo_principal);
+}
+
+/* --color_fondo_principal */
+/* --color_fondo_secundario */
+/* --color_bordes_card */
+/* ----------------------------------------------------------- */
+
+/* .texto-resaltado-secundario {
+    color: var(--color_bordes_card);
+} */
+
+.texto-normal {
+    color: var(--color_texto_normal);
+}
+
+.fondo_principal {
+    background: var(--color_fondo_principal);
+}
+.fondo_secundario {
+    background: var(--color_fondo_secundario);
+}
+
+.boton_resaltado {
+    border: 1px solid var(--color_texto_resalte);
+    color: var(--color_texto_resalte);
+}
+.boton_resaltado:hover {
+    border: 1px solid var(--color_texto_resalte);
+    background: var(--color_texto_resalte);
+    color: var(--color_fondo_principal);
+}
+
+.pestana_navegador {
+    color: var(--color_texto_resalte);
+}
+.pestana_navegador:hover {
+    border: 0.1px solid var(--color_texto_resalte);
+    background: var(--color_texto_resalte);
+    color: var(--color_fondo_principal);
+}
+
+.sub_pestana_navegador {
+    color: var(--color_texto_link);
+}
+.sub_pestana_navegador:hover {
+    border: 0.1px solid var(--color_texto_link);
+    background: var(--color_texto_link);
+    color: var(--color_texto_normal);
+}
+
+table td {
+    vertical-align: 0 !important;
+}
+
+/* ------------------------------------------------------- */
+/* para el ordenador de cabezeras exteriores (cli, adm) */
+#orden_inm_exterior {
+    background: var(--color_fondo_secundario);
+    border: 0.1px solid var(--color_fondo_principal);
+}
+#orden_inm_exterior div {
+    color: var(--color_texto_link);
+}
+#orden_inm_exterior div:hover {
+    border: 0.1px solid var(--color_texto_link);
+    background: var(--color_texto_link);
+    color: var(--color_fondo_principal);
+}
+/* ------------------------------------------------------- */
+/* para el ordenador filtrador de inmuebles dentro de py, propietario*/
+.ul_ordenadores_inm_py li {
+    background: var(--color_fondo_secundario);
+    color: var(--color_texto_resalte);
+}
+.ul_ordenadores_inm_py li:hover {
+    border: 0.1px solid var(--color_texto_resalte);
+    background: var(--color_texto_resalte);
+    color: var(--color_fondo_principal);
+    /* color: var(--color_fondo_secundario); */
+    /* color: var(--color_texto_normal); */
+}
+/* +++++++++++++++++++++++++++++++++++++++++++++++++++++  */
+/* !important es para que sobreescriba un estilo que estaba definido previamente en bootstrap*/
+.boton_principal {
+    background: none !important;
+    color: var(--color_texto_resalte) !important;
+    border: 1.5px solid var(--color_texto_resalte);
+}
+
+/* +++++++++++++++++++++++++++++++++++++++++++++++++++++  */
+/* ESTILOS GENERALES */
+.size_iconos {
+    font-size: 1.5rem;
+    color: var(--color_texto_resalte);
+}
+.size_iconos_filtros {
+    font-size: 1.5rem;
+}
+/* para icono de VISUALIZACIONES */
+.icono_visualizaciones {
+    font-size: 1.4rem;
+    color: var(--color_texto_link);
+    margin-right: 0.5rem;
+}
+.numero_visualizaciones{
+    color: var(--color_texto_link);
+}
+
+.size_icono_card_header {
+    font-size: 2.5em;
+    color: var(--color_texto_resalte);
+}
+
+.contenido div label {
+    color: var(--color_texto_normal) !important;
+}
+.contenido h5 {
+    color: var(--color_texto_resalte);
+}
+
+.letras_cabezera {
+    font-size: var(--letra_cabezera);
+    color: var(--color_texto_resalte);
+    font-weight: 500;
+}
+
+/* ------------------------------------------ */
+/* COLORES DEL CUADRO PRECIO CARD DEL INMUEBLE */
+
+.en_gris {
+    color: rgb(255, 255, 255);
+}
+.en_verde {
+    /* color: rgb(0, 255, 0); */
+    color: rgb(0, 206, 0);
+}
+.en_amarillo {
+    color: rgb(255, 255, 0);
+}
+.en_azul {
+    color: rgb(0, 123, 255);
+    /* color: rgb(84, 149, 247); */
+}
+
+
+/* .progress-bar{
+    transition: width 6s ease !important;
+} */
+
+/* ------------------------------------------ */
+/* 
+
+.circulo_resplandor___ {
+
+
+    background: rgba(29, 171, 209, 1);
+    padding: 50px 40px;
+    text-transform: uppercase;
+    border-radius: 50%;
+    animation: la_animacion 2s linear infinite;
+}
+
+@keyframes la_animacion {
+    0% {
+        box-shadow: 0 0 0 0 rgba(29, 171, 209, 0.6), 0 0 0 0 rgba(29, 171, 209, 0.6);
+    }
+    30% {
+        box-shadow: 0 0 0 100px rgba(29, 171, 209, 0), 0 0 0 0 rgba(29, 171, 209, 0.6);
+    }
+    65% {
+        box-shadow: 0 0 0 100px rgba(29, 171, 209, 0), 0 0 0 30px rgba(29, 171, 209, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(29, 171, 209, 0), 0 0 0 30px rgba(29, 171, 209, 0);
+    }
+}
+*/
+/* ------------------------------------------ */
+
+/* PARA TODAS LAS IMAGENES QUE ESTARAN DENTRO DE LAS CARD */
+.estilo_imagen {
+    width: 100%;
+    height: 14rem;
+    /* "cover", permite que la imagen ocupe todo el espacio disponible sin deformarlo, unque deba cortar algunas dimensiones */
+    object-fit: cover;
+}
+
+/* para los codigos que esten en las cabezeras */
+.codigo-cabezera {
+    /* el espaciado entre caracteres */
+    letter-spacing: 0.1em;
+}
+/* OK ESTILO DEL CODIGO INFERIOR EN EN TODOS LOS CARDS */
+.card-footer {
+    text-align: center;
+    /* el grosor de los caracteres */
+    font-weight: 600;
+    /* el espaciado entre caracteres */
+    letter-spacing: 0.1em;
+}
+
+.card-cabeza {
+    text-align: center;
+    /* el grosor de los caracteres */
+    font-weight: 600;
+    font-size: 1.4em;
+}
+
+.card-footer {
+    border-top: none !important;
+}
+
+.card-ciudad-provincia-direccion {
+    /* para evitar que el texto salgue fuera de la caja */
+    overflow: hidden;
+    white-space: nowrap;
+    /* para que en caso de que el texto sea extenso, se añadiran puntos suspensivos ... */
+    text-overflow: ellipsis;
+}
+/* +++++++++++++++++++++++++++++++++++++++++++++++++++++  */
+/* CARD INVERSIONISTAS DE UN PROYECTO */
+.ir_azul:hover {
+    background: blue;
+    /* !important es para que sobreescriba un estilo que estaba definido previamente en bootstrap*/
+    color: rgb(255, 255, 255) !important;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+/* PARA ELIMINAR: CARD INVERSIONISTA DE UN PROYECTO o IMAGEN PROYECTO */
+.ir_rojo:hover {
+    background: red;
+    /* !important es para que sobreescriba un estilo que estaba definido previamente en bootstrap*/
+    color: white !important;
+    cursor: pointer;
+}
+
+/* +++++++++++++++++++++++++++++++++++++++++++++++++++++  */
+/* ESTILOS DE VENTANA DE ACCESO SISTEMA */
+.bg-naranja {
+    background: rgb(187, 29, 2);
+}
+
+.logo_acceso {
+    color: rgb(100, 255, 218);
+}
+
+.contenedor_acceso {
+    background: url(/rutavirtualpublico/imagenes/acceso_imagen.jpg);
+    /* background-size: cover; */
+    /* width: 100%; */
+    /* height: 100%; */
+}
+
+.contenedor_hija {
+    /* background: rgba(29, 70, 82,0.7); */
+    background: rgba(5, 5, 54, 0.7);
+    height: 100%;
+}
+
+.displayy-1 {
+    font-size: 2rem;
+}
+
+.bg_oscuro {
+    background: rgba(2, 2, 20, 0.7);
+}
+/* PARA LOS TAMAÑOS DE LOS ICONOS*/
+/* .size_iconos_acceso {
+    font-size: 2rem !important;
+    color: tomato;
+} */
+
+/* +++++++++++++++++++++++++++++++++++++++++++++++++++++  */
+/* PARA VENTANA DE ¿QUIENES SOMOS? */
+
+.contenedor_hija_somos {
+    background: rgba(5, 5, 54, 0.7);
+    height: 100%;
+}
+
+/* +++++++++++++++++++++++++++++++++++++++++++++++++++++  */
+/* PARA LEYENDA DEL SEGUNDERO (Inmueble Guardado, Inmueble Disponible, Inmueble Reservado, Inmueble Pendiente, Inmueble Pagado, Inmueble En pago (Cambiar por: Inmueble en construcción), Inmueble Remate, */
+
+.envolvente{
+    padding: 0.8rem;
+    background: var(--color_texto_normal);
+    display: inline-block;
+    border-radius: 50%;
+    border: 0.1em solid var(--color_texto_normal);
+}
+/* +++++++++++++++++++++++++++++++++++++++++++++++++++++  */
+
+.contenedor_imagen {
+    position: relative; /* para que los elementos hijos se puedan acomodar con posicion "absolute"*/
+
+    /* nuevo */
+    overflow: hidden;
+}
+
+/* para CUADRO DE PRECIOS EN CARD INMUEBLES */
+.inm-card-leyenda-precio {
+    position: absolute;
+    background: rgb(0, 0, 0, 0.58);
+    color: rgb(255, 255, 255);
+    text-align: left;
+    top: 0.5rem;
+    left: 0rem;
+}
+
+/* para barra circular en TERRENOS */
+.contenedor_barra_circular {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: absolute;
+    top: 0rem;
+    left: 0rem;
+    width: 100%;
+    height: 100%;
+}
+
+.texto-te-disponibles {
+    color: var(--color_texto_resalte);
+    position: absolute;
+    top: 0rem;
+    left: 0rem;
+    width: 100%;
+    height: 100%;
+
+    font-size: 1.5rem;
+    /* text-align: center; */
+    font-weight: 700;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* .texto-te-disponibles {
+    color: var(--color_texto_resalte);
+    position: absolute;
+    top: 40%;
+    font-size: 1.5rem;
+    width: 100%;
+    text-align: center;
+    font-weight: 700;
+} */
+
+.capa_te {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(5, 5, 54, 0.55);
+    /* background: rgba(0, 0, 0, 0.58); */
+}
+
+.capa {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(5, 5, 54, 0.5);
+    /* background: rgba(0, 0, 0, 0.5); */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* color: #fff; */
+    transform: scale(0);
+    transition: 0.3s ease;
+    /* text-decoration: none; */
+}
+
+.contenedor_imagen:hover .capa {
+    transform: scale(1);
+    /* z-index: 200; */
+    text-decoration: none;
+    color: #fff;
+}
+
+/* para que la capa_te desaparesca */
+/* .contenedor_imagen:hover .capa_te {
+    display: none;
+} */
+
+/* para que el contenedor de los iconos de las redes sociales tengan un mayor z-index que la capa que los cubrira y asi puedan estar disponibles para hacerles click cuando aparesca la capa */
+.contenedor_imagen:hover .contenedor-card-iconos-vertical {
+    z-index: 500;
+}
+
+.contenedor_imagen:hover img {
+    /* object-fit: cover; */
+    transition: 1.7s ease;
+    /* transition: .3s ease; */
+    transform: scale(1.2);
+}
+
+.social_guardar {
+    position: absolute;
+    color: rgb(255, 255, 255);
+    top: 0.5rem;
+    right: 0rem;
+}
+.social_guardado_propiedad {
+    position: absolute;
+    color: rgb(255, 255, 255);
+    top: 0.5rem;
+    right: 0rem;
+}
+
+.basicas_inmueble {
+    position: absolute;
+    color: rgb(255, 255, 255);
+    bottom: 0rem;
+    left: 0rem;
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+    /* background: rgba(5, 5, 54, 0.7); */
+    background: rgba(0, 0, 0, 0.58);
+}
+
+.menor {
+    font-size: 0.8rem;
+}
+
+/* ---------------------------------------- */
+.menu-navegacion-adm {
+    background: var(--color_texto_normal);
+    align-self: flex-start;
+    width: 100%;
+
+    /* position: fixed;
+    top: 0px;
+    left: 0px; */
+}
+/* ---------------------------------------- */
+.footer_cliente {
+    background: var(--color_texto_normal);
+    color: var(--color_fondo_principal);
+
+    padding: 1rem 0;
+    /* width: 100%; */
+    align-self: flex-end;
+    z-index: 2000;
+}
+
+/* ---------------------------------------- */
+/* para ventana de COMO FUNCIONA */
+.css_textos {
+    font-size: 1.15rem;
+}
+
+.css-numerador {
+    position: absolute;
+    height: 4rem;
+    width: 4rem;
+    background: var(--color_texto_resalte);
+    color: var(--color_fondo_principal);
+    font-size: 2rem;
+    font-weight: bold;
+    padding: 0.5rem;
+    top: 0%;
+    left: 10%;
+    /* left: 0%; */
+    border-radius: 50%;
+}
+
+/* ---------------------------------------- */
+/* para los cuadros de PRECIO VENTA de las cajas dentro de las DESCRIPCIONES  DE INMUEBLE LADO CLIENTE */
+
+.cuadro_gris {
+    background: rgb(114, 121, 114);
+    color: rgb(255, 255, 255);
+}
+
+.cuadro_verde {
+    background: green;
+    color: rgb(255, 255, 255);
+}
+
+/* ---------------------------------------- */
+
+/* para estilo de los iconos de guardado, invertido que van arriba extremo derecho en las imagenes de los inmuebles de los cards*/
+.estilo_colorido {
+    color: blue;
+    font-size: 1.8em;
+}
+.estilo_gris {
+    color: rgb(219, 205, 205);
+    font-size: 1.8em;
+}
+/*----------------------------------------*/
+
+/* +++++++++++++++++++++++++++++++++++++++++++++++++++++  */
+/* PARA CUENTA INVERSIONISTA GESTIONADOR */
+.css-val-porcentaje-celda {
+    position: absolute;
+    top: 0%;
+    width: 100%;
+    text-align: center;
+    z-index: 1000;
+    color: var(--color_texto_normal);
+    font-weight: 700;
+}
+
+.css-val-porcentaje-segundero {
+    position: absolute;
+    top: 0%;
+    /* top: 10%; */
+
+    /* left: 40%; */
+    width: 100%;
+    text-align: center;
+    
+    /* z-index: 1000; */
+    color: var(--color_texto_normal);
+    font-size: 1.4rem;
+}
+
+.progress-bar {
+    background-color: var(--color_texto_resalte) !important;
+    transition: width 4s ease !important;
+    /* background-color: var(--color_texto_link)!important; */
+}
+/* +++++++++++++++++++++++++++++++++++++++++++++++++++++  */
+/* PARA MOSTRAR LA MANO EN LOS MENUS DE ORDENAMIENTOS */
+
+/* inmuebles del proyecto lado CLIENTE */
+.ul_ordenadores_inm_py li {
+    cursor: pointer;
+}
+
+/* inversiones del inversor lado CLIENTE */
+.ul_ordenadores li {
+    cursor: pointer;
+}
+
+/* p_proyectos lado CLIENTE */
+/* INMUEBLES RESULTADO BUSQUEDA LADO CLIENTE */
+.orden_gral_inm_py,
+.orden_tabla_activos {
+    cursor: pointer;
+}
+
+/* +++++++++++++++++++++++++++++++++++++++++++++++++++++  */
+
+/* para superiores a  >= 768 px */
+@media screen and (min-width: 768px) {
+    #menu_propios {
+        display: none !important;
+        color: green;
+    }
+
+    #opciones_administrador {
+        display: none !important;
+    }
+}
+
+/* para el alto del contenedor card que contiene las opciones de busqueda maestra del lado del cliente cliente */
+/* EN ALTURA de 0px hasta maximo 500px */
+@media screen and (max-height: 500px) {
+    #id_contenedor_busqueda_orden {
+        top: 0 !important;
+        height: 100% !important;
+    }
+
+    #id_contenedor_filtro_orden {
+        top: 0 !important;
+        height: 100% !important;
+    }
+}
+
+/* EN ANCHURA de 0px hasta maximo 767px */
+@media screen and (max-width: 767px) {
+    /* para las marcas inferiores de los menus desplegables cuando el menu esta en ventanas comprimidas */
+    #menu_propios,
+    #menu_navegacion,
+    #opciones_administrador {
+        border-bottom: 1px solid var(--color_texto_link);
+    }
+}
+
+/* +++++++++++++++++++++++++++++++++++++++++++++++++++++  */
+/* BOOTSTRAP*/
+
+.card,
+.estilo-modal,
+.cuadro_estandart {
+    background: var(--color_fondo_secundario);
+    border: 0.1em solid var(--color_bordes_card);
+    border-radius: var(--redondeo_borde);
+}
+
+/* +++++++++++++++++++++++++++++++++++++++++++++++++++++  */
+/* FAMILIA PADRE HIJO MADRE MAYOR */
+/* .contenedor .caja span:nth-child(1) */
+.familia {
+    fill: var(--color_texto_resalte);
+    width: 5rem;
+    height: 5rem;
+}
+
+.familia-menor {
+    fill: var(--color_texto_resalte);
+    width: 1.9rem;
+    height: 1.9rem;
+}
+
+/* ------------------------ */
+.tiktok-icono {
+    fill: var(--color_texto_resalte);
+    width: 1.6rem;
+    height: 1.6rem;
+
+    /* 29px */
+}
+
+/* ------------------------ */
+.icono-empleos {
+    /* width: 10%; */
+    font-size: 1.5rem;
+    color: var(--color_texto_resalte);
+}
+
+/* +++++++++++++++++++++++++++++++++++++++++++++++++++++  */
+/* GRALES LADO DEL CLIENTE PUBLICO */
+
+.contenedor-detalle-icono {
+    /* width: 10%; */
+    font-size: 5rem;
+    color: var(--color_texto_resalte);
+}
+.contenedor-detalle-texto {
+    width: 90%;
+}
+
+.estilo-pdf-garantia {
+    color: var(--color_texto_link);
+    font-size: 2em;
+}
+
+.icono_py_grales {
+    font-size: 1.3rem;
+    margin-right: 1rem;
+    /* talvez borrar color si afecta a iconos que no deseamos este color  */
+    color: var(--color_texto_resalte);
+}
+
+.estilo-check {
+    font-size: 1.3rem;
+    /* padding: 0; */
+    /* margin: 0; */
+    /* margin-right: 0rem; */
+    color: var(--color_texto_link);
+}
+
+.puntos-lista {
+    /* para quitarle las viñetas a las listas */
+    list-style: none;
+}
+
+/* para iconos de la vista de INICIO */
+.contenedor-inicio-icono {
+    font-size: 6rem;
+    border: 0.3rem solid var(--color_texto_resalte);
+    border-radius: 50%;
+    width: 20rem;
+    height: 20rem;
+    /* padding: 3rem; */
+}
+
+.contenedor-inicio-icono img {
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
+    /* "cover", permite que la imagen ocupe todo el espacio disponible sin deformarlo, unque deba cortar algunas dimensiones */
+    object-fit: cover;
+}
+
+/* para iconos de la vista de INICIO */
+.propietario-resumen-icono {
+    font-size: 4rem;
+    padding-bottom: 1rem;
+    color: var(--color_texto_resalte);
+}
+
+/* para iconos footer de segundero */
+.propietario-resumen-icono-footer {
+    font-size: 3rem;
+    padding-bottom: 1rem;
+    color: var(--color_texto_resalte);
+}
+/* .propietario-resumen-icono-footer:nth-child(1){
+    padding-left: 2rem;
+    padding-right: 2rem;
+} */
+.propietario-resumen-bandera-footer {
+    width: 60px;
+}
+
+/* para iconos de cabezeras PY, INM lado cliente*/
+/* facebo, instag, yt */
+.contenedor-cabezera-icono {
+    font-size: 2rem;
+    color: var(--color_texto_resalte);
+}
+.contenedor-cabezera-icono_tiktok {
+    fill: var(--color_texto_resalte);
+    width: 1.67rem;
+    height: 1.67rem;
+}
+
+.contenedor-card-iconos-vertical {
+    position: absolute;
+    top: 0;
+    right: 0;
+    text-align: right;
+    margin: 1em 1.2em;
+}
+
+.icono_card {
+    font-size: 1.8em;
+    color: var(--color_texto_resalte);
+}
+
+#mapa-vista {
+    width: 100%;
+    height: 400px;
+    /* height: 25rem; */
+    /* border: honeydew; */
+    border: var(--color_bordes_card);
+    /* border-radius: var(--redondeo_borde); */
+}
+
+#video-rs {
+    width: 100%;
+    height: 315px;
+    /* height: 25rem; */
+    /* border: honeydew; */
+    border: var(--color_bordes_card);
+    /* border-radius: var(--redondeo_borde); */
+}
+
+#id_contenedor_filtro_orden {
+    width: 19rem;
+    height: 25rem;
+    z-index: 600;
+    position: fixed;
+    /* bottom: 0%; */
+    bottom: 0;
+    left: -17.9rem;
+}
+
+/* ---------------------------------------------- */
+/* SEGUNDERO */
+.borde_decimal,
+.borde_entero {
+    border: 2px solid var(--color_texto_resalte);
+    border-radius: var(--redondeo_borde);
+}
+
+/* ---------------------------------------------- */
+/* para: QUIENES SOMOS*/
+.contenedor_somos_impar,
+.contenedor_somos_par {
+    /* usamos "padding" porque con "margin" se entrecruzan el button on el top del siguiente */
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+}
+
+.contenedor_somos {
+    /* font-size: 6rem; */
+    /* border: 0.3rem solid var(--color_texto_resalte); */
+    /* border-radius: 50%; */
+    /* width: 30rem; */
+    /* height: 30rem; */
+    padding: 3rem;
+}
+
+.contenedor-imagen-somos img {
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
+    /* "cover", permite que la imagen ocupe todo el espacio disponible sin deformarlo, unque deba cortar algunas dimensiones */
+    object-fit: cover;
+}
+
+/* ---------------------------------------------- */
+/* QUIENES SOMOS */
+
+.titulo_somos {
+    color: var(--color_texto_resalte);
+    /* font-family: 'Lexend Peta', sans-serif; */
+}
+
+/* ---------------------------------------------- */
+/* PARA TABLA DE: ORDEN DE PERSONAL Y VISITAS */
+/* para visualizar la mano al momento de acercar el cursor a este icono */
+.orden_tabla_activos,
+.orden_tabla_visitas {
+    cursor: pointer;
+}
+
+/* PARA EL CARD QUE ENGLOBA: "COMO SE CALCULA" */
+
+.borde_como_calcula{
+    border: 0.1rem solid #28a745;
+    /* border: 0.1rem solid var(--color_texto_link); */
+    border-radius: 0.25rem;
+}

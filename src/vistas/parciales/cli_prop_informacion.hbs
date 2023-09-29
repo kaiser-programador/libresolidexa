@@ -1,0 +1,258 @@
+{{! para pestaña INFORMACION del PROPIETARIO lado del CLIENTE }}
+
+<div class="contenido container-fluid">
+    <div class="row">
+        <div class="p-4 col-12 col-sm-6">
+            <div class="contenedor_datos_inversionista">
+                <div class="p-2 cuadro_estandart">
+
+                    <div class="table-responsive">
+                        <table class="text-primary col-12" cellpadding="8">
+                            <thead>
+                                <tr>
+                                    <th class="h5 texto-resaltado" colspan="2">Datos propietario</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                <tr>
+                                    <td class="h6">
+                                        Estado:
+                                    </td>
+
+                                    <td class="text-left h5" style="text-transform: capitalize;">
+                                        {{contenido_propietario.propietario_datos.estado_inversionista}}
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="h6">
+                                        Nombres:
+                                    </td>
+
+                                    <td
+                                        class="text-left texto-normal"
+                                        style="text-transform: capitalize;"
+                                    >
+                                        {{contenido_propietario.propietario_datos.nombres_propietario}}
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="h6">
+                                        Apellidos:
+                                    </td>
+
+                                    <td
+                                        class="text-left texto-normal"
+                                        style="text-transform: capitalize;"
+                                    >
+                                        {{contenido_propietario.propietario_datos.apellidos_propietario}}
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="h6">
+                                        C.I.:
+                                    </td>
+
+                                    <td class="text-left texto-normal">
+                                        {{contenido_propietario.propietario_datos.ci_propietario}}
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="h6">
+                                        Fecha nacimiento:
+                                    </td>
+
+                                    <td class="text-left texto-normal">
+                                        {{contenido_propietario.propietario_datos.nacimiento_propietario_render}}
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="h6">
+                                        Telefonos contacto:
+                                    </td>
+
+                                    <td class="text-left texto-normal">
+                                        {{contenido_propietario.propietario_datos.telefonos_propietario}}
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="h6">
+                                        Domicilio:
+                                    </td>
+
+                                    <td class="text-left texto-normal">
+                                        {{contenido_propietario.propietario_datos.domicilio_propietario}}
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="h6">
+                                        Provincia:
+                                    </td>
+
+                                    <td
+                                        class="text-left texto-normal"
+                                        style="text-transform: capitalize;"
+                                    >
+                                        {{contenido_propietario.propietario_datos.provincia_propietario}}
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="h6">
+                                        Ciudad:
+                                    </td>
+
+                                    <td
+                                        class="text-left texto-normal"
+                                        style="text-transform: capitalize;"
+                                    >
+                                        {{contenido_propietario.propietario_datos.departamento_propietario}}
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="p-4 col-12 col-sm-6">
+
+            <div class="card">
+                <div class="card-header">
+                    <h5>Cambiar claves</h5>
+                </div>
+
+                <div class="card-body text-primary">
+                    <h6 class="text-center">Claves actuales</h6>
+                    <form id="form_cambiar_claves_inversor">
+
+                        <div class="form-group">
+                            <label for="id_act_usuario" class="form-label">Usuario</label>
+
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text texto-resaltado">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                </div>
+
+                                <input
+                                    type="text"
+                                    name="act_usuario"
+                                    id="id_act_usuario"
+                                    class="ref_limpiar_inputs form-control"
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="id_act_clave" class="form-label">Contraseña</label>
+
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text texto-resaltado">
+                                        <i class="fas fa-lock"></i>
+                                    </div>
+                                </div>
+
+                                <input
+                                    type="password"
+                                    name="act_clave"
+                                    id="id_act_clave"
+                                    class="ref_limpiar_inputs form-control"
+                                    required
+                                />
+                            </div>
+
+                        </div>
+
+                        <h6 class="text-center">Claves nuevas</h6>
+
+                        <div class="form-group">
+                            <label for="id_nue_usuario" class="form-label">Usuario</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text texto-resaltado">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                </div>
+
+                                <input
+                                    type="text"
+                                    name="nue_usuario"
+                                    id="id_nue_usuario"
+                                    class="ref_limpiar_inputs form-control"
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="id_nue_clave_1" class="form-label">Contraseña</label>
+
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text texto-resaltado">
+                                        <i class="fas fa-lock"></i>
+                                    </div>
+                                </div>
+
+                                <input
+                                    type="password"
+                                    name="nue_clave_1"
+                                    id="id_nue_clave_1"
+                                    class="ref_limpiar_inputs form-control"
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="id_nue_clave_2" class="form-label">Repita la contraseña</label>
+
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text texto-resaltado">
+                                        <i class="fas fa-lock"></i>
+                                    </div>
+                                </div>
+
+                                <input
+                                    type="password"
+                                    name="nue_clave_2"
+                                    id="id_nue_clave_2"
+                                    class="ref_limpiar_inputs form-control"
+                                    required
+                                />
+                            </div>
+
+                        </div>
+
+                        <div class="text-center">
+                            <input
+                                type="submit"
+                                value="Cambiar claves"
+                                class="ref_boton_inversor btn btn-primary"
+                            />
+                        </div>
+                        
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>

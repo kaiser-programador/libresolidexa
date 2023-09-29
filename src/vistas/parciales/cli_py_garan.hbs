@@ -1,0 +1,83 @@
+{{!-- para la garantia del inmueble vista del lado del cliente publico --}}
+
+{{#if contenido_proyecto.titulo_garantia_1}}
+<div class="row mt-5 cuadro_estandart py-3">
+    <div class="col-12 d-flex">
+        <div class="mr-3 contenedor-detalle-icono">
+            <i class="fas fa-handshake"></i>
+        </div>
+
+        <div class="contenedor-detalle-texto">
+            <h4 class="texto-resaltado">{{contenido_proyecto.titulo_garantia_1}}</h4>
+            <p class="escritura" style="text-align: justify;">
+                {{contenido_proyecto.garantia_1}}
+            </p>
+        </div>
+    </div>
+</div>
+{{/if}}
+
+{{#if contenido_proyecto.titulo_garantia_2}}
+<div class="row mt-5 cuadro_estandart py-3">
+    <div class="col-12 d-flex">
+        <div class="mr-3 contenedor-detalle-icono">
+            <i class="fas fa-file-signature"></i>
+        </div>
+
+        <div class="contenedor-detalle-texto">
+            <h4 class="texto-resaltado">{{contenido_proyecto.titulo_garantia_2}}</h4>
+            <p class="escritura" style="text-align: justify;">
+                {{contenido_proyecto.garantia_2}}
+            </p>
+        </div>
+    </div>
+</div>
+{{/if}}
+
+{{#if contenido_proyecto.titulo_garantia_3}}
+<div class="row mt-5 cuadro_estandart py-3">
+    <div class="col-12 d-flex">
+        <div class="mr-3 contenedor-detalle-icono">
+            <i class="fas fa-shield-alt"></i>
+        </div>
+
+        <div class="contenedor-detalle-texto">
+            <h4 class="texto-resaltado">{{contenido_proyecto.titulo_garantia_3}}</h4>
+            <p class="escritura" style="text-align: justify;">
+                {{contenido_proyecto.garantia_3}}
+            </p>
+        </div>
+    </div>
+</div>
+{{/if}}
+
+{{#if contenido_proyecto.documentacion}}
+<div class="row mt-5 cuadro_estandart py-3">
+    <div class="col-12 d-flex">
+
+        <div class="mr-3 contenedor-detalle-icono">
+            <i class="fas fa-folder-open"></i>
+        </div>
+
+        <div class="contenedor-detalle-texto">
+            <h4 class="texto-resaltado">Documentos garantía</h4>
+            <div class="ml-4">
+                {{#each contenido_proyecto.documentacion}}
+                <div class="mt-3">
+                    <i class="fas fa-file-pdf estilo-pdf-garantia"></i>
+                    <a class="ml-3" href="/rutavirtualpublico/subido/{{codigo_documento}}.pdf" target="_blank">
+                        {{titulo_documento}}
+                    </a>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+
+    </div>
+</div>
+{{/if}}
+
+<div class="text-right mt-4" title="Numero de visualizaciones">
+    <span><i class="fas fa-glasses icono_visualizaciones"></i></span>
+    <span class="numero_visualizaciones"><b>{{nv_ventana}}</b></span>
+</div>

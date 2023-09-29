@@ -1,0 +1,194 @@
+{{! para la pestaña de ver PREGUNTAS FRECUENTES en administrador maestro }}
+
+<div class="contenido container-fluid">
+    <div class="container">
+        <div class="row mt-3">
+
+            <div class="col-12 col-md-6">
+                <div class="card my-3">
+                    <div class="card-header">
+                        <h5 class="text-center">PREGUNTAS FRECUENTES</h5>
+                    </div>
+
+                    <div class="card-body text-primary">
+
+                        <form id="form_encabezado_preguntas">
+
+                            <div class="form-group">
+                                <label
+                                    for="label_encabezado_preguntas_html"
+                                    class="form-label"
+                                >Encabezado</label>
+                                <div>
+                                    <input
+                                        type="text"
+                                        name="encabezado_preguntas_html"
+                                        class="form-control"
+                                        id="label_encabezado_preguntas_html"
+                                        value="{{contenido_administrador.encabezado_preguntas}}"
+                                        placeholder="Respondemos tus preguntas"
+                                    />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="label_texto_preguntas_html" class="form-label">Texto</label>
+                                <div>
+                                    <textarea
+                                        name="texto_preguntas_html"
+                                        class="form-control"
+                                        id="label_texto_preguntas_html"
+                                        rows="5"
+                                    >{{contenido_administrador.texto_preguntas}}</textarea>
+                                </div>
+                            </div>
+
+                            <input
+                                type="submit"
+                                value="Guardar encabezados"
+                                class="ref_boton_preguntas btn btn-primary"
+                            />
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row mt-3 cuadro_estandart">
+            <div class="col-12 ref_botones_tabla_preguntas">
+                <div class="d-inline-block p-3">
+                    <button class="btn btn-primary mr-3" id="id_guardar_tabla_preguntas">Guardar
+                        tabla</button>
+
+                    <button class="btn btn-danger" id="id_eliminar_tabla_preguntas">Eliminar tabla</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row cuadro_estandart mb-4">
+            <p class="texto-link m-3"><strong>Nota: </strong>Para la parte de las respuestas puede usar etiquetas html como saltos de linea &lt;br&gt; u otras que desee</p>
+
+            <div class="col-12">
+
+                <div class="table-responsive">
+                    <table class="text-primary table table-bordered" style="width: 60rem;">
+                        <thead>
+                            <tr>
+                                <th class="text-center">#</th>
+                                <th class="text-center">PREGUNTA</th>
+                                <th class="text-center">RESPUESTA</th>
+                                <th class="text-center">ACCIÓN</th>
+                            </tr>
+                        </thead>
+                        {{! clase "cuerpo_filas_preguntas" como referencia para agregar una nueva fila despues de esta clase como HIJO con "append" }}
+                        <tbody class="cuerpo_filas_preguntas">
+
+                            {{#if contenido_administrador.existen_preguntas}}
+
+                                {{#each contenido_administrador.tabla_preguntas}}
+
+                                    <tr class="fila_preguntas">
+                                        <td
+                                            class="numero_preguntas text-center"
+                                        >{{numero_preguntas}}</td>
+                                        <td>
+                                            <textarea
+                                                class="form-control campo_pregunta_preguntas"
+                                                rows="5"
+                                            >{{pregunta_preguntas}}</textarea>
+                                        </td>
+                                        <td>
+                                            <textarea
+                                                class="form-control campo_respuesta_preguntas"
+                                                rows="5"
+                                                title="Para saltos de línea use: <br> u otras etiquetas html"
+                                                placeholder="Para saltos de línea use: <br> u otras etiquetas html"
+                                            >{{respuesta_preguntas}}</textarea>
+                                        </td>
+
+                                        <td>
+                                            <div class="d-flex">
+                                                <button
+                                                    class="preguntas_arriba d-block btn p-1 m-1"
+                                                    data-id="{{numero_preguntas}}"
+                                                ><i
+                                                        class="fas fa-arrow-circle-up size_iconos"
+                                                    ></i></button>
+                                                <button
+                                                    class="preguntas_abajo d-block btn p-1 m-1"
+                                                    data-id="{{numero_preguntas}}"
+                                                ><i
+                                                        class="fas fa-arrow-circle-down size_iconos"
+                                                    ></i></button>
+                                                <button
+                                                    class="preguntas_eliminar d-block btn p-1 m-1"
+                                                    data-id="{{numero_preguntas}}"
+                                                ><i
+                                                        class="fas fa-window-close size_iconos"
+                                                    ></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                {{/each}}
+
+                            {{else}}
+
+                                <tr class="fila_preguntas">
+
+                                    <td class="numero_preguntas text-center">1</td>
+                                    <td>
+                                        <textarea
+                                            class="form-control campo_pregunta_preguntas"
+                                            rows="5"
+                                        ></textarea>
+                                    </td>
+
+                                    <td>
+                                        <textarea
+                                            class="form-control campo_respuesta_preguntas"
+                                            rows="5"
+                                            title="Para saltos de línea use: <br> u otras etiquetas html"
+                                            placeholder="Para saltos de línea use: <br> u otras etiquetas html"
+                                        ></textarea>
+                                    </td>
+
+                                    <td>
+                                        <div class="d-flex">
+                                            <button
+                                                class="preguntas_arriba d-block btn p-1 m-1"
+                                                data-id="1"
+                                            ><i
+                                                    class="fas fa-arrow-circle-up size_iconos"
+                                                ></i></button>
+                                            <button
+                                                class="preguntas_abajo d-block btn p-1 m-1"
+                                                data-id="1"
+                                            ><i
+                                                    class="fas fa-arrow-circle-down size_iconos"
+                                                ></i></button>
+                                            <button
+                                                class="preguntas_eliminar d-block btn p-1 m-1"
+                                                data-id="1"
+                                            ><i
+                                                    class="fas fa-window-close size_iconos"
+                                                ></i></button>
+                                        </div>
+                                    </td>
+
+                                </tr>
+
+                            {{/if}}
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>

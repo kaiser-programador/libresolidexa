@@ -1,0 +1,214 @@
+{{!-- la ventana del PROYECTO desde el lado del cliente PUBLICO --}}
+
+{{!-- ------------------------- --}}
+{{!-- datos elementales --}}
+
+{{!-- data-objetivo_tipo = terreno, inmueble, proyecto, propietario, cards_proyectos --}}
+<div id="id_objetivo_tipo" data-objetivo_tipo="proyecto"></div>
+<div id="id_objetivo_codigo" data-objetivo_codigo="{{codigo_proyecto}}"></div>
+{{!-- ------------------------- --}}
+
+{{!-- "> cli_opciones_nav"  NO DEBE ESTAR APEGADO A LA LINEA CODIGO "1", DE ESTARLO, DARIA UN ERROR --}}
+{{> cli_opciones_nav}}
+
+{{> cli_cabezeras_internas}}
+
+
+<div class="wrapper" id="contenedor_imagenes_py" hidden>
+    {{!-- solo indicamos la ruta "href" para visualizar la imagen (aun no la cargamos visualmente) --}}
+    {{#each global_py.imagenes_py_principal}}
+    <a href="/rutavirtualpublico/subido/{{proyecto_imagen}}" data-fancybox="gallery"
+        data-caption="{{nombre_imagen}}"><img src="/rutavirtualpublico/subido/{{proyecto_imagen}}"
+            alt="{{nombre_imagen}}"></a>
+    {{/each}}
+
+    {{#each global_py.imagenes_py_exclusiva}}
+    <a href="/rutavirtualpublico/subido/{{proyecto_imagen}}" data-fancybox="gallery"
+        data-caption="{{nombre_imagen}}"><img src="/rutavirtualpublico/subido/{{proyecto_imagen}}"
+            alt="{{nombre_imagen}}"></a>
+    {{/each}}
+</div>
+
+
+
+<ul class="nav nav-tabs" id="tab_proyecto" role="tablist">
+    {{!-- de todos los tabs se eliminao el atributo  data-toggle="tab" , esto para que funcionen los HREF y nos redireccionen a la ventana correspondiente al tab elegido --}}
+
+    {{#if descripcion_py}}
+    <li class="nav-item">
+        <a href="/proyecto/{{codigo_proyecto}}/descripcion" class="nav-link active" id="descripcion_py-tab"
+            role="tab" aria-controls="descripcion_py" aria-selected="true">Descripción</a>
+    </li>
+    {{else}}
+    <li class="nav-item">
+        <a href="/proyecto/{{codigo_proyecto}}/descripcion" class="nav-link" id="descripcion_py-tab" role="tab"
+            aria-controls="descripcion_py" aria-selected="false">Descripción</a>
+    </li>
+    {{/if}}
+
+    {{#if inmuebles_py}}
+    <li class="nav-item">
+        <a href="/proyecto/{{codigo_proyecto}}/inmuebles" class="nav-link active" id="inmuebles_py-tab"
+            role="tab" aria-controls="inmuebles_py" aria-selected="true">Inmuebles
+            {{#if existe_n_inmuebles}}
+            <span class="badge badge-success ml-1">{{n_inmuebles}}</span>
+            {{/if}}
+            </a>
+    </li>
+    {{else}}
+    <li class="nav-item">
+        <a href="/proyecto/{{codigo_proyecto}}/inmuebles" class="nav-link" id="inmuebles_py-tab" role="tab"
+            aria-controls="inmuebles_py" aria-selected="false">Inmuebles
+            {{#if existe_n_inmuebles}}
+            <span class="badge badge-success ml-1">{{n_inmuebles}}</span>
+            {{/if}}
+            </a>
+    </li>
+    {{/if}}
+
+
+    {{#if garantias_py}}
+    <li class="nav-item">
+        <a href="/proyecto/{{codigo_proyecto}}/garantias" class="nav-link active" id="garantias_py-tab"
+            role="tab" aria-controls="garantias_py" aria-selected="true">Garantías</a>
+    </li>
+    {{else}}
+    <li class="nav-item">
+        <a href="/proyecto/{{codigo_proyecto}}/garantias" class="nav-link" id="garantias_py-tab" role="tab"
+            aria-controls="garantias_py" aria-selected="false">Garantías</a>
+    </li>
+    {{/if}}
+
+
+    {{#if beneficios_py}}
+    <li class="nav-item">
+        <a href="/proyecto/{{codigo_proyecto}}/beneficios" class="nav-link active" id="beneficios_py-tab"
+            role="tab" aria-controls="beneficios_py" aria-selected="true">Beneficios</a>
+    </li>
+    {{else}}
+    <li class="nav-item">
+        <a href="/proyecto/{{codigo_proyecto}}/beneficios" class="nav-link" id="beneficios_py-tab" role="tab"
+            aria-controls="beneficios_py" aria-selected="false">Beneficios</a>
+    </li>
+    {{/if}}
+
+    {{#if informe_economico}}
+    <li class="nav-item">
+        <a href="/proyecto/{{codigo_proyecto}}/info_economico" class="nav-link active"
+            id="informe_economico-tab" role="tab" aria-controls="informe_economico" aria-selected="true">Presupuesto</a>
+    </li>
+    {{else}}
+    <li class="nav-item">
+        <a href="/proyecto/{{codigo_proyecto}}/info_economico" class="nav-link" id="informe_economico-tab"
+            role="tab" aria-controls="informe_economico" aria-selected="false">Presupuesto</a>
+    </li>
+    {{/if}}
+
+    {{#if empleos_py}}
+    <li class="nav-item">
+        <a href="/proyecto/{{codigo_proyecto}}/empleos" class="nav-link active"
+            id="empleos_py-tab" role="tab" aria-controls="empleos_py" aria-selected="true">Empleos</a>
+    </li>
+    {{else}}
+    <li class="nav-item">
+        <a href="/proyecto/{{codigo_proyecto}}/empleos" class="nav-link" id="empleos_py-tab"
+            role="tab" aria-controls="empleos_py" aria-selected="false">Empleos</a>
+    </li>
+    {{/if}}
+
+    {{#if requerimientos_py}}
+    <li class="nav-item">
+        <a href="/proyecto/{{codigo_proyecto}}/requerimientos" class="nav-link active"
+            id="requerimientos_py-tab" role="tab" aria-controls="requerimientos_py" aria-selected="true">Requerimientos
+            {{#if existe_n_requerimientos}}
+            <span class="badge badge-success ml-1">{{n_requerimientos}}</span>
+            {{/if}}
+            </a>
+    </li>
+    {{else}}
+    <li class="nav-item">
+        <a href="/proyecto/{{codigo_proyecto}}/requerimientos" class="nav-link" id="requerimientos_py-tab"
+            role="tab" aria-controls="requerimientos_py" aria-selected="false">Requerimientos
+            {{#if existe_n_requerimientos}}
+            <span class="badge badge-success ml-1">{{n_requerimientos}}</span>
+            {{/if}}
+            </a>
+    </li>
+    {{/if}}
+
+    {{#if global_py.existe_res_soc}}
+    {{#if responsabilidad_social}}
+    <li class="nav-item">
+        <a href="/proyecto/{{codigo_proyecto}}/resp_social" class="nav-link active"
+            id="responsabilidad_social-tab" role="tab" aria-controls="responsabilidad_social"
+            aria-selected="true">Responsabilidad
+            social</a>
+    </li>
+    {{else}}
+    <li class="nav-item">
+        <a href="/proyecto/{{codigo_proyecto}}/resp_social" class="nav-link" id="responsabilidad_social-tab"
+            role="tab" aria-controls="responsabilidad_social" aria-selected="false">Responsabilidad
+            social</a>
+    </li>
+    {{/if}}
+    {{/if}}
+
+</ul>
+
+{{#if descripcion_py}}
+<span id="tipo_pestana_py" data-id="descripcion_py"></span>
+<div class="container">
+    {{> cli_py_descri}}
+</div>
+{{/if}}
+
+{{#if inmuebles_py}}
+<span id="tipo_pestana_py" data-id="inmuebles_py"></span>
+<div class="container-fluid">
+    {{> cli_py_inmuebles}}
+</div>
+{{/if}}
+
+{{#if garantias_py}}
+<span id="tipo_pestana_py" data-id="normal"></span>
+<div class="container">
+    {{> cli_py_garan}}
+</div>
+{{/if}}
+
+{{#if beneficios_py}}
+<span id="tipo_pestana_py" data-id="beneficios_py"></span>
+<div class="container">
+    {{> cli_py_benefi}}
+</div>
+{{/if}}
+
+{{#if informe_economico}}
+<span id="tipo_pestana_py" data-id="normal"></span>
+<div class="container">
+    {{> cli_py_economico}}
+</div>
+{{/if}}
+
+{{#if empleos_py}}
+<span id="tipo_pestana_py" data-id="normal"></span>
+<div class="container">
+    {{> cli_py_empleos}}
+</div>
+{{/if}}
+
+{{#if requerimientos_py}}
+<span id="tipo_pestana_py" data-id="normal"></span>
+<div class="container">
+    {{> cli_py_requerimientos}}
+</div>
+{{/if}}
+
+{{#if responsabilidad_social}}
+<span id="tipo_pestana_py" data-id="normal"></span>
+<div class="container">
+    {{> cli_py_social}}
+</div>
+{{/if}}
+
+{{> cli_pie_pagina}}

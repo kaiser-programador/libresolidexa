@@ -1,0 +1,39 @@
+{{! proyectos del TERRENO lado del ADMINISTRADOR }}
+
+<div class="contenido container-fluid my-3">
+    <div class="card" style="max-width: 36rem;">
+        <h5 class="card-header">CREAR NUEVO PROYECTO</h5>
+        <div class="card-body text-primary">
+            {{! importante es que tenga el METODO DESEADO, en este caso sera "post" , el
+                            "action" se le dara en su jquery de su boton "crear nuevo proyecto" }}
+            <form target="_blank" id="formulario_creador_proyecto" method="post">
+                {{! mantenemos este "FORM", porque necesitamos de su "_blank" para que habra
+                                la ventana del proyecto creado en una NUEVA VENTANA }}
+            </form>
+
+            {{! el boton tipo "button" deve estar fuera del FORM }}
+            <input
+                type="button"
+                id="creador_nuevo_proyecto"
+                value="Crear proyecto"
+                data-id="{{codigo_terreno}}"
+                class="btn btn-primary"
+            />
+        </div>
+    </div>
+</div>
+
+{{! boton para crear nuevo inmueble }}
+
+<div class="contenido container-fluid">
+    <div class="row">
+        <div class="ref_titulo_imagen col-12">
+            <h5 class="cuadro_estandart p-2 text-center">
+                PROYECTO TERRENO
+            </h5>
+        </div>
+        {{#each contenido_terreno}}
+        {{> adm_cli_card_proyecto}}
+        {{/each}}
+    </div>
+</div>

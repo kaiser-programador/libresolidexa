@@ -1,0 +1,105 @@
+{{!-- PARA VENTANA DE TERRENO LADO ADMINISTRADOR --}}
+
+{{!-- ------------------------- --}}
+{{!-- datos elementales --}}
+<div id="id_tipo_ventana" data-tipo_ventana="normal"></div>
+<div id="id_objetivo_tipo" data-objetivo_tipo="terreno"></div>
+<div id="id_objetivo_codigo" data-objetivo_codigo="{{codigo_terreno}}"></div>
+{{!-- ------------------------- --}}
+
+{{> opciones_nav}}
+
+{{> adm_cabezeras_internas}}
+
+{{!-- <div class="pestanas_navegacion"> --}}
+<div class="pestanas_navegacion">
+    <ul class="nav nav-tabs" id="tab_proyecto" role="tablist">
+        {{!-- de todos los tabs se eliminao el atributo data-toggle="tab" , esto para que funcionen los HREF y nos
+        redireccionen a la ventana correspondiente al tab elegido --}}
+
+        {{#if descripcion_terreno}}
+        <li class="nav-item">
+            <a href="/laapirest/terreno/{{codigo_terreno}}/descripcion" class="nav-link active"
+                id="descripcion_te-tab" role="tab" aria-controls="descripcion_te"
+                aria-selected="true">Descripción</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/terreno/{{codigo_terreno}}/descripcion" class="nav-link" id="descripcion_te-tab"
+                role="tab" aria-controls="descripcion_te" aria-selected="false">Descripción</a>
+        </li>
+        {{/if}}
+
+        {{#if imagenes_terreno}}
+        <li class="nav-item">
+            <a href="/laapirest/terreno/{{codigo_terreno}}/imagenes" class="nav-link active" id="imagenes_te-tab"
+                role="tab" aria-controls="imagenes_te" aria-selected="true">Imágenes</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/terreno/{{codigo_terreno}}/imagenes" class="nav-link" id="imagenes_te-tab"
+                role="tab" aria-controls="imagenes_te" aria-selected="false">Imágenes</a>
+        </li>
+        {{/if}}
+
+
+        {{#if documentos_terreno}}
+        <li class="nav-item">
+            <a href="/laapirest/terreno/{{codigo_terreno}}/documentos" class="nav-link active"
+                id="documentos_te-tab" role="tab" aria-controls="documentos_te" aria-selected="true">Documentos</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/terreno/{{codigo_terreno}}/documentos" class="nav-link" id="documentos_te-tab"
+                role="tab" aria-controls="documentos_te" aria-selected="false">Documentos</a>
+        </li>
+        {{/if}}
+
+        {{#if proyectos_terreno}}
+        <li class="nav-item">
+            <a href="/laapirest/terreno/{{codigo_terreno}}/proyectos" class="nav-link active" id="proyectos_te-tab"
+                role="tab" aria-controls="proyectos_te" aria-selected="true">Proyectos</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/terreno/{{codigo_terreno}}/proyectos" class="nav-link" id="proyectos_te-tab"
+                role="tab" aria-controls="proyectos_te" aria-selected="false">Proyectos</a>
+        </li>
+        {{/if}}
+
+        {{#if estados_terreno}}
+        <li class="nav-item">
+            <a href="/laapirest/terreno/{{codigo_terreno}}/estados" class="nav-link active" id="estados_te-tab"
+                role="tab" aria-controls="estados_te" aria-selected="true">Estados</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/terreno/{{codigo_terreno}}/estados" class="nav-link" id="estados_te-tab" role="tab"
+                aria-controls="estados_te" aria-selected="false">Estados</a>
+        </li>
+        {{/if}}
+
+    </ul>
+</div>
+
+{{#if descripcion_terreno}}
+{{> adm_te_descripcion}}
+{{/if}}
+
+{{#if imagenes_terreno}}
+{{> adm_te_imagenes}}
+{{/if}}
+
+{{#if documentos_terreno}}
+{{> adm_te_documentos}}
+{{/if}}
+
+{{#if proyectos_terreno}}
+{{> adm_te_proyectos}}
+{{/if}}
+
+{{#if estados_terreno}}
+{{> adm_te_estados}}
+{{/if}}
+
+{{> pie_pagina}}

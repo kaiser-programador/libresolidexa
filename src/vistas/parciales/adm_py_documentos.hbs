@@ -1,0 +1,172 @@
+{{! para pestaña DOCUMENTOS del PROYECTO lado del ADMINISTRADOR }}
+
+<div class="contenido container-fluid mt-4">
+
+    <div class="card" style="max-width: 36rem;">
+        <h5 class="card-header">SUBIR ARCHIVO DOCUMENTO</h5>
+        <div class="card-body text-primary">
+            <p class="text-center">Los documentos subidos, seran de caracter público</p>
+            <form enctype="multipart/form-data" id="idSubirDocumento" data-tipo_doc="te_py_inm">
+
+                {{! campo para seleccionar UN DOCUMENTO desde la pc }}
+                <div class="form-group row">
+                    <label
+                        for="id_input_subir_documento"
+                        class="col-form-label text-md-right col-md-5"
+                    >Seleccione archivo PDF</label>
+                    <div class="col-md-6">
+                        <input
+                            type="file"
+                            name="subirArchivoNavegador"
+                            class="clase_input_subir_documento form-control"
+                            id="id_input_subir_documento"
+                            required
+                        />
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label
+                        for="id_nombre_documento"
+                        class="col-form-label text-md-right col-md-5"
+                    >Título del documento</label>
+                    <div class="col-md-6">
+                        <input
+                            type="text"
+                            name="nombre_documento"
+                            placeholder="Título del documento"
+                            class="form-control"
+                            id="id_nombre_documento"
+                            required
+                        />
+                    </div>
+                </div>
+
+                <div class="text-center mb-3">
+                    <p>Tipo documento</p>
+
+                    <label class="mr-2">
+                        <input
+                            type="radio"
+                            name="html_tipo_documento_py"
+                            class="gral_radio radio_tipo_doc_py"
+                            data-radio_input="radio_input_tipo_doc_py"
+                            value="General"
+                            checked
+                        />
+                        General
+                    </label>
+
+                    <label class="mr-2">
+                        <input
+                            type="radio"
+                            name="html_tipo_documento_py"
+                            class="gral_radio radio_tipo_doc_py"
+                            data-radio_input="radio_input_tipo_doc_py"
+                            value="Garantía"
+                        />
+                        Garantía
+                    </label>
+
+                    <label>
+                        <input
+                            type="radio"
+                            name="html_tipo_documento_py"
+                            class="gral_radio radio_tipo_doc_py"
+                            data-radio_input="radio_input_tipo_doc_py"
+                            value="Económico"
+                        />
+                        Económico
+                    </label>
+
+                </div>
+
+                {{! auxiliar para guardado de documento para envio por jquery }}
+                {{!-- el que no corresponda a esta ventana, entonces se le dejara vacio --}}
+                <input type="text" name="codigo_proyecto" value="{{codigo_proyecto}}" hidden />
+                <input type="text" name="codigo_inmueble" value="" hidden />
+
+                {{! para la clase de documento sera dependiendo del radio ques e elija, pero por defecto sera "General" }}
+                <input
+                    type="text"
+                    name="clase_documento"
+                    class="radio_seleccionado radio_input_tipo_doc_py"
+                    value="General"
+                    data-input_radio="radio_tipo_doc_py"
+                    hidden
+                />
+
+                {{! codigo_objetivo, dependiendo, puede ser de terreno, proyecto, inmueble o propietario }}
+                <input type="text" name="codigo_objetivo" value="{{codigo_proyecto}}" hidden />
+
+                {{! codigo_terreno, para determinar si este esta bloqueado o no para efectuar cambios }}
+                <input type="text" name="codigo_terreno" value="{{cabezera_adm.codigo_terreno}}" hidden />
+                {{! ci_propietario, util para documentos privados del PROPIETARIO (aqui estara vacio) }}
+                <input type="text" name="ci_propietario" value="" hidden />
+
+                <div class="form-group ref_subir_doc text-center">
+                    <button class="btn btn-primary">Subir Documento</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid my-4">
+    <div class="row">
+
+        <div class="col-12 col-lg-7">
+
+            {{! "table-responsive" es para que tenga un scroll en tamaños muy pequeños }}
+            <div class="table-responsive cuadro_estandart p-4">
+
+                <table class="tabla_contenedora table">
+                    <thead>
+                        <tr>
+                            <th class="texto-resaltado">PDF</th>
+                            <th class="texto-resaltado">TÍTULO DOCUMENTO</th>
+                            <th class="texto-resaltado">TIPO</th>
+                            <th class="texto-resaltado">OPERACIÓN</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="cuerpo_filas texto-normal">
+
+                        {{#each contenido_proyecto}}
+                            {{! con este class que tiene el codigo del documento, se podra identificarlo para
+                            REMOVE en el JQUERY }}
+                            <tr class="fila_registro">
+                                <td class="text-center">
+                                    <i
+                                        class="texto-link fas fa-file-pdf"
+                                        style="font-size: 2em;"
+                                    ></i>
+                                </td>
+                                <td>{{nombre_documento}}</td>
+                                <td>{{clase_documento}}</td>
+                                <td>
+                                    <div class="contenedor_ver_eliminar_documento">
+                                        <button
+                                            class="boton_eliminar_documento_jquery btn btn-danger"
+                                            data-id="{{codigo_documento}}"
+                                        >Eliminar</button>
+                                        <a
+                                            href="/rutavirtualpublico/subido/{{codigo_documento}}.pdf"
+                                            target="_blank"
+                                            class="btn btn-success"
+                                        >Ver</a>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        {{/each}}
+
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>

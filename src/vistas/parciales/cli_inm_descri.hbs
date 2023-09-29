@@ -1,0 +1,374 @@
+{{! PARTE DESCRIPCION DEL INMUEBLE DEL LADO DEL CLIENTE PUBLICO }}
+
+{{!-- ------------------------------------------------------- --}}
+<div
+    id="min_fecha_inicio"
+    data-min_fecha_inicio="{{informacion.val_segundero_cajas.min_fecha_inicio}}"
+></div>
+
+<div
+    id="max_fecha_fin"
+    data-max_fecha_fin="{{informacion.val_segundero_cajas.max_fecha_fin}}"
+></div>
+<div id="r_plusSum" data-r_plusSum="{{informacion.val_segundero_cajas.r_plusSum}}"></div>
+<div id="plusGeneranCompleta" data-plusGeneranCompleta="{{informacion.val_segundero_cajas.plusGeneranCompleta}}"></div>
+
+{{!-- este es util solo para la pestaña RESUMEN del propietario, para la pestaña de DESCRIPCION DE inmueble y proyecto, esto ya viene predefinido con valor de cero --}}
+<div id="plusvalia_construida" data-plusvalia_construida="{{informacion.val_cajas.plusvalia_construida}}"></div>
+{{!-- ------------------------------------------------------- --}}
+
+{{> segu_esta_te_py_inm_prop}}
+
+<div class="row mt-5 cuadro_estandart py-3">
+
+    <div class="col-12 d-flex">
+        <div class="mr-3 contenedor-detalle-icono">
+            <i class="fas fa-house-user"></i>
+        </div>
+
+        <div class="container-fluid contenedor-detalle-texto">
+            <h4 class="texto-resaltado">El inmueble</h4>
+            <p class="escritura" style="text-align: justify;">
+                {{informacion.inmueble_descripcion}}
+            </p>
+
+            <div class="row mt-2">
+
+                {{#if informacion.titulo_descrip_1}}
+                    <div class="col-12 col-md-6 mt-3">
+                        <div class="table-responsive mt-2">
+                            <table class="texto-normal w-100" cellpadding="6">
+                                <thead>
+                                    <tr>
+                                        <th
+                                            class="text-left h4 texto-resaltado"
+                                            colspan="3"
+                                        >{{informacion.titulo_descrip_1}}</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {{#each informacion.puntos_descrip_1}}
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td class="m-0 p-0">
+                                                <i
+                                                    class="d-inline-block fas fa-check estilo-check"
+                                                ></i>
+                                            </td>
+
+                                            <td>
+                                                {{punto}}
+                                            </td>
+                                        </tr>
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                {{/if}}
+
+                {{#if informacion.titulo_descrip_2}}
+                    <div class="col-12 col-md-6 mt-3">
+                        <div class="table-responsive mt-2">
+                            <table class="texto-normal w-100" cellpadding="6">
+                                <thead>
+                                    <tr>
+                                        <th
+                                            class="text-left h4 texto-resaltado"
+                                            colspan="3"
+                                        >{{informacion.titulo_descrip_2}}</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {{#each informacion.puntos_descrip_2}}
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td class="m-0 p-0">
+                                                <i
+                                                    class="d-inline-block fas fa-check estilo-check"
+                                                ></i>
+                                            </td>
+
+                                            <td>
+                                                {{punto}}
+                                            </td>
+                                        </tr>
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                {{/if}}
+
+                {{#if informacion.titulo_descrip_3}}
+                    <div class="col-12 col-md-6 mt-3">
+                        <div class="table-responsive mt-2">
+                            <table class="texto-normal w-100" cellpadding="6">
+                                <thead>
+                                    <tr>
+                                        <th
+                                            class="text-left h4 texto-resaltado"
+                                            colspan="3"
+                                        >{{informacion.titulo_descrip_3}}</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {{#each informacion.puntos_descrip_3}}
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td class="m-0 p-0">
+                                                <i
+                                                    class="d-inline-block fas fa-check estilo-check"
+                                                ></i>
+                                            </td>
+
+                                            <td>
+                                                {{punto}}
+                                            </td>
+                                        </tr>
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                {{/if}}
+
+                {{#if informacion.titulo_descrip_4}}
+                    <div class="col-12 col-md-6 mt-3">
+                        <div class="table-responsive mt-2">
+                            <table class="texto-normal w-100" cellpadding="6">
+                                <thead>
+                                    <tr>
+                                        <th
+                                            class="text-left h4 texto-resaltado"
+                                            colspan="3"
+                                        >{{informacion.titulo_descrip_4}}</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {{#each informacion.puntos_descrip_4}}
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td class="m-0 p-0">
+                                                <i
+                                                    class="d-inline-block fas fa-check estilo-check"
+                                                ></i>
+                                            </td>
+
+                                            <td>
+                                                {{punto}}
+                                            </td>
+                                        </tr>
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                {{/if}}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{{! DEL PROYECTO QUE CONTIENE A ESTE INMUEBLE }}
+<div class="row mt-5 cuadro_estandart py-3">
+
+    <div class="col-12 d-flex">
+        <div class="mr-3 contenedor-detalle-icono">
+            <i class="fas fa-map-marked"></i>
+        </div>
+
+        <div class="container-fluid contenedor-detalle-texto">
+            <h4 class="texto-resaltado">Ubicación y proximidades</h4>
+            <p class="text-left">
+                <span class="texto-resaltado"><b>Dirección:</b></span>
+                <span>{{informacion.direccion}}</span>
+            </p>
+            <p class="text-left">
+                <span class="texto-resaltado"><b>Provincia:</b></span>
+                <span>{{informacion.provincia}}</span>
+            </p>
+            <p class="text-left">
+                <span class="texto-resaltado"><b>Ciudad:</b></span>
+                <span>{{informacion.ciudad}}</span>
+            </p>
+
+            {{!-- <p style="text-align: justify;">
+                ubicacion
+            </p> --}}
+
+            <div id="mapa-vista">
+                {{informacion.link_googlemap}}
+            </div>
+
+            <div class="row mt-2">
+
+                {{#if informacion.titulo_up_a}}
+                    <div class="col-12 col-md-6 mt-3">
+                        <div class="table-responsive mt-2">
+                            <table class="texto-normal w-100" cellpadding="6">
+                                <thead>
+                                    <tr>
+                                        <th class="text-left h4 texto-resaltado" colspan="3">{{informacion.titulo_up_a}}</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {{#each informacion.puntos_up_a}}
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td class="m-0 p-0">
+                                                <i
+                                                    class="d-inline-block fas fa-check estilo-check"
+                                                ></i>
+                                            </td>
+
+                                            <td>
+                                                {{punto}}
+                                            </td>
+                                        </tr>
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                {{/if}}
+
+                {{#if informacion.titulo_up_b}}
+                    <div class="col-12 col-md-6 mt-3">
+                        <div class="table-responsive mt-2">
+                            <table class="texto-normal w-100" cellpadding="6">
+                                <thead>
+                                    <tr>
+                                        <th class="text-left h4 texto-resaltado" colspan="3">{{informacion.titulo_up_b}}</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {{#each informacion.puntos_up_b}}
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td class="m-0 p-0">
+                                                <i
+                                                    class="d-inline-block fas fa-check estilo-check"
+                                                ></i>
+                                            </td>
+
+                                            <td>
+                                                {{punto}}
+                                            </td>
+                                        </tr>
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                {{/if}}
+
+                {{#if informacion.titulo_up_c}}
+                    <div class="col-12 col-md-6 mt-3">
+                        <div class="table-responsive mt-2">
+                            <table class="texto-normal w-100" cellpadding="6">
+                                <thead>
+                                    <tr>
+                                        <th class="text-left h4 texto-resaltado" colspan="3">{{informacion.titulo_up_c}}</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {{#each informacion.puntos_up_c}}
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td class="m-0 p-0">
+                                                <i
+                                                    class="d-inline-block fas fa-check estilo-check"
+                                                ></i>
+                                            </td>
+
+                                            <td>
+                                                {{punto}}
+                                            </td>
+                                        </tr>
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                {{/if}}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{{#if informacion.titulo_descrip_5}}
+    <div class="row mt-5 cuadro_estandart py-3">
+
+        <div class="col-12 d-flex">
+            <div class="mr-3 contenedor-detalle-icono">
+                <i class="fas fa-lightbulb"></i>
+            </div>
+
+            <div class="contenedor-detalle-texto">
+                <h4 class="texto-resaltado">{{informacion.titulo_descrip_5}}</h4>
+                <p class="escritura texto-normal" style="text-align: justify;">
+                    {{informacion.descripcion_5}}
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+{{/if}}
+
+{{! documentos PROPIOS DEL INMUEBLE PUBLICOS }}
+
+{{#if informacion.documentos_descripcion}}
+    <div class="row mt-5 cuadro_estandart py-3">
+        <div class="col-12 d-flex">
+
+            <div class="mr-3 contenedor-detalle-icono">
+                <i class="fas fa-folder-open"></i>
+            </div>
+
+            <div class="contenedor-detalle-texto">
+                <h4 class="texto-resaltado">Documentos</h4>
+
+                <div class="ml-4">
+
+                    {{#each informacion.documentos_descripcion}}
+                        <div class="mt-3">
+                            <i class="fas fa-file-pdf estilo-pdf-garantia"></i>
+                            <a
+                                class="ml-3"
+                                href="/rutavirtualpublico/subido/{{codigo_documento}}.pdf"
+                                target="_blank"
+                            >
+                                {{titulo_documento}}
+                            </a>
+                        </div>
+                    {{/each}}
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+{{/if}}
+
+<div class="text-right mt-4" title="Numero de visualizaciones">
+    <span><i class="fas fa-glasses icono_visualizaciones"></i></span>
+    <span class="numero_visualizaciones"><b>{{nv_ventana}}</b></span>
+</div>

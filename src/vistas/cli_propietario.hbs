@@ -1,0 +1,133 @@
+{{!-- pagina de PROPIETARIO lado CLIENTE--}}
+
+{{!-- ------------------------- --}}
+{{!-- datos elementales --}}
+<div id="id_tipo_ventana" data-tipo_ventana="normal"></div>
+
+{{!-- data-objetivo_tipo = terreno, inmueble, proyecto, propietario --}}
+<div id="id_objetivo_tipo" data-objetivo_tipo="propietario"></div>
+<div id="id_objetivo_codigo" data-objetivo_codigo="{{codigo_propietario}}"></div>
+{{!-- ------------------------- --}}
+
+{{!-- "> opciones_nav"  NO DEBE ESTAR APEGADO A LA LINEA CODIGO "1", DE ESTARLO, DARIA UN ERROR --}}
+{{> cli_opciones_nav}}
+
+{{> cli_cabezeras_internas}}
+
+<div class="pestanas_navegacion">
+    <ul class="nav nav-tabs" id="tab_propietario" role="tablist">
+        {{!-- de todos los tabs se eliminao el atributo data-toggle="tab" , esto para que funcionen los HREF y nos
+        redireccionen a la ventana correspondiente al tab elegido --}}
+
+        {{#if resumen_propietario}}
+        <li class="nav-item">
+            <a href="/propietario/{{codigo_propietario}}/resumen" class="nav-link active" id="resumen_prop-tab"
+                role="tab" aria-controls="resumen_prop" aria-selected="true">Resumén</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/propietario/{{codigo_propietario}}/resumen" class="nav-link" id="resumen_prop-tab"
+                role="tab" aria-controls="resumen_prop" aria-selected="false">Resumén</a>
+        </li>
+        {{/if}}
+
+
+        {{#if propiedades_propietario}}
+        <li class="nav-item">
+            <a href="/propietario/{{codigo_propietario}}/propiedades" class="nav-link active"
+                id="propiedades_prop-tab" role="tab" aria-controls="propiedades_prop" aria-selected="true">Propiedades
+                {{#if existe_n_propiedades}}
+                <span class="badge badge-success ml-1">{{n_propiedades}}</span>
+                {{/if}}
+                </a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/propietario/{{codigo_propietario}}/propiedades" class="nav-link" id="propiedades_prop-tab"
+                role="tab" aria-controls="propiedades_prop" aria-selected="false">Propiedades
+                {{#if existe_n_propiedades}}
+                <span class="badge badge-success ml-1">{{n_propiedades}}</span>
+                {{/if}}
+                </a>
+        </li>
+        {{/if}}
+
+        {{#if documentos_propietario}}
+        <li class="nav-item">
+            <a href="/propietario/{{codigo_propietario}}/documentos" class="nav-link active"
+                id="documentos_prop-tab" role="tab" aria-controls="documentos_prop" aria-selected="true">Documentos</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/propietario/{{codigo_propietario}}/documentos" class="nav-link" id="documentos_prop-tab"
+                role="tab" aria-controls="documentos_prop" aria-selected="false">Documentos</a>
+        </li>
+        {{/if}}
+
+        {{#if guardados_propietario}}
+        <li class="nav-item">
+            <a href="/propietario/{{codigo_propietario}}/guardados" class="nav-link active" id="guardados_prop-tab"
+                role="tab" aria-controls="guardados_prop" aria-selected="true">Guardados
+                {{#if existe_n_guardados}}
+                <span class="badge badge-success ml-1">{{n_guardados}}</span>
+                {{/if}}
+                </a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/propietario/{{codigo_propietario}}/guardados" class="nav-link" id="guardados_prop-tab" role="tab"
+                aria-controls="guardados_prop" aria-selected="false">Guardados
+                {{#if existe_n_guardados}}
+                <span class="badge badge-success ml-1">{{n_guardados}}</span>
+                {{/if}}
+                </a>
+        </li>
+        {{/if}}
+
+        {{#if informacion_propietario}}
+        <li class="nav-item">
+            <a href="/propietario/{{codigo_propietario}}/informacion" class="nav-link active"
+                id="informacion_prop-tab" role="tab" aria-controls="informacion_prop"
+                aria-selected="true">Información</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/propietario/{{codigo_propietario}}/informacion" class="nav-link" id="informacion_prop-tab"
+                role="tab" aria-controls="informacion_prop" aria-selected="false">Información</a>
+        </li>
+        {{/if}}        
+
+    </ul>
+</div>
+
+{{#if resumen_propietario}}
+<span id="tipo_pestana_prop" data-id="resumen_propietario"></span>
+<span class="segundero_propietario" data-segundero="si"></span>
+{{> adm_cli_prop_resumen}}
+{{/if}}
+
+{{#if propiedades_propietario}}
+<span id="tipo_pestana_prop" data-id="propiedades_propietario"></span>
+<span class="segundero_propietario" data-segundero="no"></span>
+{{> adm_cli_prop_propiedades}}
+{{/if}}
+
+{{#if documentos_propietario}}
+<span id="tipo_pestana_prop" data-id="documentos_propietario"></span>
+<span class="segundero_propietario" data-segundero="no"></span>
+{{> cli_prop_documentos}}
+{{/if}}
+
+{{#if guardados_propietario}}
+<span id="tipo_pestana_prop" data-id="guardados_propietario"></span>
+<span class="segundero_propietario" data-segundero="no"></span>
+{{> cli_prop_guardados}}
+{{/if}}
+
+{{#if informacion_propietario}}
+<span id="tipo_pestana_prop" data-id="informacion_propietario"></span>
+<span class="segundero_propietario" data-segundero="no"></span>
+{{> cli_prop_informacion}}
+{{/if}}
+
+{{> cli_pie_pagina}}

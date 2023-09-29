@@ -1,0 +1,68 @@
+{{!-- ventana de QUIÉNES SOMOS lado del CLIENTE --}}
+
+{{!-- "> cli_opciones_nav"  NO DEBE ESTAR APEGADO A LA LINEA CODIGO "1", DE ESTARLO, DARIA UN ERROR --}}
+
+{{!-- ------------------------- --}}
+{{!-- datos elementales --}}
+<div id="id_tipo_ventana" data-tipo_ventana="normal"></div>
+
+{{!-- data-objetivo_tipo = terreno, inmueble, proyecto, propietario, cards_proyectos --}}
+<div id="id_objetivo_tipo" data-objetivo_tipo="info_empresa"></div>
+<div id="id_objetivo_codigo" data-objetivo_codigo="{{codigo_propietario}}"></div>
+{{!-- ------------------------- --}}
+
+<div class="tipo_ventana" data-tipo_ventana="info-empresa"></div>
+
+{{> cli_opciones_nav}}
+
+{{> adm_cli_cabezeras_externas}}
+
+<div class="container">
+
+    {{#each lista_somos}}
+
+        {{#if somos_impar}}
+            <div class="row {{contenedor_somos}}">
+                    <div class="col-12 col-lg-5 somos_imagen">
+                        <div class="contenedor-imagen-somos {{somos_par_impar}}">
+                            <img class="d-block w-100" src="/rutavirtualpublico/subido/{{codigo_imagen}}{{extension_imagen}}" alt="{{codigo_imagen}}">
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-7 somos_texto">
+                        <div class="textos_somos">
+                            <div class="titulo_somos">{{titulo_imagen}}</div>
+                            <p class="escritura parrafo_somos">
+                                {{texto_imagen}}
+                            </p>
+                        </div>
+                    </div>
+            </div>
+        {{/if}}
+
+        {{#if somos_par}}
+            <div class="row {{contenedor_somos}}">
+                <div class="col-12 col-lg-7 somos_texto">
+                    <div class="textos_somos">
+                        <div class="titulo_somos">{{titulo_imagen}}</div>
+                        <p class="escritura parrafo_somos">
+                            {{texto_imagen}}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-5 somos_imagen">
+
+                    <div class="contenedor-imagen-somos {{somos_par_impar}}">
+                        <img class="d-block w-100" src="/rutavirtualpublico/subido/{{codigo_imagen}}{{extension_imagen}}" alt="{{codigo_imagen}}">
+                    </div>
+                    
+                </div>
+            </div>  
+        {{/if}}
+
+    {{/each}}
+
+</div>
+
+{{> cli_pie_pagina}}

@@ -1,0 +1,753 @@
+{{! para pestaña DESCRIPCION del lado del ADMINISTRADOR }}
+
+<form
+    class="contenido container-fluid my-4 cuadro_estandart p-4"
+    id="guardar_datos_formulario_proyecto"
+    data-id="{{codigo_proyecto}}"
+>
+    <div class="row">
+
+        <div class="col-12 col-sm-6">
+
+            <h5>INFORMACIÓN BÁSICA</h5>
+
+            <div class="form-group row">
+
+                <label for="label_nombre_proyecto" class="col-sm-12 col-lg-4 col-form-label">Nombre del
+                    proyecto</label>
+
+                <div class="col-sm-12 col-lg-8">
+                    <input
+                        type="text"
+                        name="nombre_proyecto"
+                        class="form-control"
+                        value="{{contenido_proyecto.nombre_proyecto}}"
+                        id="label_nombre_proyecto"
+                        required
+                    />
+                </div>
+
+            </div>
+
+            <div class="form-group row">
+                <div class="col-sm-12 col-lg-4 col-form-label">Tipo proyecto</div>
+
+                <div class="col-sm-12 col-lg-8">
+                    <label
+                        class="mr-2"
+                        title="Para cuyos inmuebles sean: Departamentos, Comerciales, Oficinas"
+                    >
+                        <input
+                            type="radio"
+                            name="radio_tipo_proyecto"
+                            class="gral_radio radio_tipo_proyecto"
+                            data-radio_input="radio_input_tipo_proyecto"
+                            value="edificio"
+                        />
+                        Edificio
+                    </label>
+
+                    <label class="mr-2" title="Para cuyos inmuebles sean: Casas">
+                        <input
+                            type="radio"
+                            name="radio_tipo_proyecto"
+                            class="gral_radio radio_tipo_proyecto"
+                            data-radio_input="radio_input_tipo_proyecto"
+                            value="condominio"
+                        />
+                        Condominio
+                    </label>
+                </div>
+            </div>
+
+            <input
+                name="tipo_proyecto"
+                class="radio_input_tipo_proyecto"
+                value="{{contenido_proyecto.tipo_proyecto}}"
+                type="text"
+                hidden
+            />
+
+            <div class="form-group row">
+                <label for="label_meta" class="col-sm-12 col-lg-4 col-form-label">Monto requerido</label>
+
+                <div class="col-sm-12 col-lg-8 input-group">
+                    <input
+                        name="meta"
+                        type="number"
+                        step="0.01"
+                        value="{{contenido_proyecto.meta}}"
+                        class="form-control"
+                        id="label_meta"
+                        disabled
+                    />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg-warning">$us</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="label_financiado" class="col-sm-12 col-lg-4 col-form-label">Capital
+                    financiado</label>
+                <div class="col-sm-12 col-lg-8 input-group">
+                    <input
+                        name="financiado"
+                        type="number"
+                        step="0.01"
+                        value="{{contenido_proyecto.financido}}"
+                        class="valor_recaudado form-control"
+                        id="label_financiado"
+                        disabled
+                    />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg-warning">$us</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="label_porcentaje" class="col-sm-12 col-lg-4 col-form-label">Porcentaje
+                    recaudado</label>
+                <div class="col-sm-12 col-lg-8 input-group">
+                    <input
+                        name="porcentaje"
+                        type="number"
+                        step="0.01"
+                        value="{{contenido_proyecto.porcentaje}}"
+                        class="valor_porcentaje form-control form-control"
+                        id="label_porcentaje"
+                        disabled
+                    />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg-warning">%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label
+                    for="label_penalizacion"
+                    class="col-sm-12 col-lg-4 col-form-label"
+                >Penalización</label>
+                <div class="col-sm-12 col-lg-8 input-group">
+                    <input
+                        name="penalizacion"
+                        type="number"
+                        step="0.01"
+                        value="{{contenido_proyecto.penalizacion}}"
+                        class="valor_penalizacion form-control form-control"
+                        id="label_penalizacion"
+                    />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg-warning">%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label
+                    for="label_meses_construccion"
+                    class="col-sm-12 col-lg-4 col-form-label"
+                >Construcción</label>
+
+                <div class="col-sm-12 col-lg-8 input-group">
+                    <input
+                        name="meses_construccion"
+                        type="number"
+                        value="{{contenido_proyecto.meses_construccion}}"
+                        class="form-control"
+                        id="label_meses_construccion"
+                    />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg-warning">Meses</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        {{! ********************************************************************* }}
+
+        <div class="col-12 col-sm-6">
+
+            <h5>GARANTÍA</h5>
+
+            <div class="form-group row">
+                <label class="col-sm-12 col-lg-4 col-form-label">
+                    <input
+                        name="titulo_garantia_1"
+                        type="text"
+                        placeholder="Garantía fiduciaria"
+                        value="{{contenido_proyecto.titulo_garantia_1}}"
+                        class="form-control"
+                    />
+                </label>
+
+                <div class="col-sm-12 col-lg-8">
+                    <textarea
+                        name="garantia_1"
+                        class="form-control"
+                        rows="5"
+                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                        placeholder="Para saltos de línea use: <br> u otras etiquetas html"
+                    >{{contenido_proyecto.garantia_1}}</textarea>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-12 col-lg-4 col-form-label">
+                    <input
+                        name="titulo_garantia_2"
+                        type="text"
+                        placeholder="Garantía hipotecaria"
+                        value="{{contenido_proyecto.titulo_garantia_2}}"
+                        class="form-control"
+                    />
+                </label>
+
+                <div class="col-sm-12 col-lg-8">
+                    <textarea
+                        name="garantia_2"
+                        class="form-control"
+                        rows="5"
+                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                        placeholder="Para saltos de línea use: <br> u otras etiquetas html"
+                    >{{contenido_proyecto.garantia_2}}</textarea>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-12 col-lg-4 col-form-label">
+                    <input
+                        name="titulo_garantia_3"
+                        type="text"
+                        placeholder="Garantía adicional"
+                        value="{{contenido_proyecto.titulo_garantia_3}}"
+                        class="form-control"
+                    />
+                </label>
+
+                <div class="col-sm-12 col-lg-8">
+                    <textarea
+                        name="garantia_3"
+                        class="form-control"
+                        rows="5"
+                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                        placeholder="Para saltos de línea use: <br> u otras etiquetas html"
+                    >{{contenido_proyecto.garantia_3}}</textarea>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    {{! *********************************************************************** }}
+
+    <div class="row">
+
+        <div class="col-12 col-sm-6">
+
+            <h5>DESCRIPCIÓN</h5>
+
+            <div class="form-group row">
+                <label for="label_total_departamentos" class="col-sm-12 col-lg-4 col-form-label">Número
+                    total departamentos</label>
+
+                <div class="col-sm-12 col-lg-8">
+                    <input
+                        type="number"
+                        name="total_departamentos"
+                        class="form-control"
+                        value="{{contenido_proyecto.total_departamentos}}"
+                        id="label_total_departamentos"
+                    />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="label_total_oficinas" class="col-sm-12 col-lg-4 col-form-label">Número total
+                    oficinas</label>
+
+                <div class="col-sm-12 col-lg-8">
+                    <input
+                        type="number"
+                        name="total_oficinas"
+                        class="form-control"
+                        value="{{contenido_proyecto.total_oficinas}}"
+                        id="label_total_oficinas"
+                    />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="label_total_comerciales" class="col-sm-12 col-lg-4 col-form-label">Número
+                    total comerciales</label>
+
+                <div class="col-sm-12 col-lg-8">
+                    <input
+                        type="number"
+                        name="total_comerciales"
+                        class="form-control"
+                        value="{{contenido_proyecto.total_comerciales}}"
+                        id="label_total_comerciales"
+                    />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="label_total_casas" class="col-sm-12 col-lg-4 col-form-label">Número total
+                    casas</label>
+
+                <div class="col-sm-12 col-lg-8">
+                    <input
+                        type="number"
+                        name="total_casas"
+                        class="form-control"
+                        id="label_total_casas"
+                        value="{{contenido_proyecto.total_casas}}"
+                    />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="label_garajes" class="col-sm-12 col-lg-4 col-form-label">Número total garajes</label>
+
+                <div class="col-sm-12 col-lg-8">
+                    <input
+                        type="number"
+                        name="garajes"
+                        class="form-control"
+                        id="label_garajes"
+                        value="{{contenido_proyecto.garajes}}"
+                    />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="label_area_construida" class="col-sm-12 col-lg-4 col-form-label">Área total
+                    construida</label>
+
+                <div class="col-sm-12 col-lg-8 input-group">
+                    <input
+                        name="area_construida"
+                        type="number"
+                        step="0.01"
+                        value="{{contenido_proyecto.area_construida}}"
+                        class="form-control"
+                        id="label_area_construida"
+                    />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg-warning">M2</span>
+                    </div>
+                </div>
+            </div>
+            <div class="text-left mb-3">
+                Este valor corresponde netamente a la sumatoria de las superficies de todos los INMUEBLES
+                que conforman el presente proyecto. No están incluidas las áreas comunes y otras.
+            </div>
+
+            <div class="form-group row">
+                <label for="label_proyecto_descripcion" class="col-sm-12 col-lg-4 col-form-label">El
+                    proyecto</label>
+                <div class="col-sm-12 col-lg-8">
+                    <textarea
+                        name="proyecto_descripcion"
+                        class="form-control"
+                        id="label_proyecto_descripcion"
+                        rows="5"
+                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                        placeholder="Para saltos de línea use: <br> u otras etiquetas html"
+                    >{{contenido_proyecto.proyecto_descripcion}}</textarea>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-12 col-lg-4 col-form-label">
+                    <input
+                        name="titulo_otros_1"
+                        type="text"
+                        placeholder="Áreas comunes"
+                        value="{{contenido_proyecto.titulo_otros_1}}"
+                        title="Posible Áreas comunes"
+                        class="form-control"
+                    />
+                </label>
+                <div class="col-sm-12 col-lg-8">
+                    <textarea
+                        name="otros_1"
+                        class="form-control"
+                        rows="5"
+                        placeholder="*Característica 1.*Caracteristica 2.*Caracteristica 3.*..."
+                        title="*Característica 1.*Caracteristica 2.*Caracteristica 3.*..."
+                    >{{contenido_proyecto.otros_1}}</textarea>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-12 col-lg-4 col-form-label">
+                    <input
+                        name="titulo_otros_2"
+                        type="text"
+                        placeholder="Adicionales"
+                        value="{{contenido_proyecto.titulo_otros_2}}"
+                        title="Posible Adicionales"
+                        class="form-control"
+                    />
+                </label>
+                <div class="col-sm-12 col-lg-8">
+                    <textarea
+                        name="otros_2"
+                        class="form-control"
+                        rows="5"
+                        placeholder="*Adicionales 1.
+*Adicionales 2.*Adicionales 3.*..."
+                        title="*Adicionales 1.*Adicionales 2.*Adicionales 3.*..."
+                    >{{contenido_proyecto.otros_2}}</textarea>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-12 col-lg-4 col-form-label">
+                    <input
+                        name="titulo_otros_3"
+                        type="text"
+                        placeholder="Otros"
+                        value="{{contenido_proyecto.titulo_otros_3}}"
+                        title="Posible Otros"
+                        class="form-control"
+                    />
+                </label>
+                <div class="col-sm-12 col-lg-8">
+                    <textarea
+                        name="otros_3"
+                        class="form-control"
+                        rows="5"
+                        placeholder="*Otros 1.*Otros 2.*Otros 3.*..."
+                        title="*Otros 1.*Otros 2.*Otros 3.*..."
+                    >{{contenido_proyecto.otros_3}}</textarea>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="label_acabados" class="col-sm-12 col-lg-4 col-form-label">Acabados de primera
+                    calidad</label>
+                <div class="col-sm-12 col-lg-8">
+                    <textarea
+                        name="acabados"
+                        class="form-control"
+                        id="label_acabados"
+                        rows="5"
+                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                        placeholder="Para saltos de línea use: <br> u otras etiquetas html"
+                    >{{contenido_proyecto.acabados}}</textarea>
+                </div>
+            </div>
+
+        </div>
+
+        {{! ********************************************************************* }}
+
+        <div class="col-12 col-sm-6">
+
+            {{! VIDEO YOUTUBE RECORRIDO VIRTUAL }}
+            <h5>YOUTUBE PROYECTO https://</h5>
+            <div class="form-group">
+                <input
+                    type="text"
+                    name="link_youtube_proyecto"
+                    placeholder="Link recorrido virtual proyecto https://"
+                    value="{{contenido_proyecto.link_youtube_proyecto}}"
+                    class="form-control"
+                    title="Importante escribirlo con: https://"
+                />
+            </div>
+
+            <h5>FACEBOOK PROYECTO https://</h5>
+            <div class="form-group">
+                <input
+                    type="text"
+                    name="link_facebook_proyecto"
+                    placeholder="Link facebook proyecto https://"
+                    value="{{contenido_proyecto.link_facebook_proyecto}}"
+                    class="form-control"
+                    title="Importante escribirlo con: https://"
+                />
+            </div>
+
+            <h5>INSTAGRAM PROYECTO https://</h5>
+            <div class="form-group">
+                <input
+                    type="text"
+                    name="link_instagram_proyecto"
+                    placeholder="Link instagram proyecto https://"
+                    value="{{contenido_proyecto.link_instagram_proyecto}}"
+                    class="form-control"
+                    title="Importante escribirlo con: https://"
+                />
+            </div>
+
+            <h5>TIKTOK PROYECTO https://</h5>
+            <div class="form-group">
+                <input
+                    type="text"
+                    name="link_tiktok_proyecto"
+                    placeholder="Link tiktok proyecto https://"
+                    value="{{contenido_proyecto.link_tiktok_proyecto}}"
+                    class="form-control"
+                    title="Importante escribirlo con: https://"
+                />
+            </div>
+
+        </div>
+
+    </div>
+    {{! ********************************************************************* }}
+
+    <h5>INFORMACIÓN ECONÓMICA</h5>
+    <p class="text-left">
+        <b>Nota:</b>
+        El valor de
+        <b>SOLIDEXA</b>, debe ser menor que el precio de construccion de las demas constructoras.
+        <br />
+        Para el cálculo de los $us/m2, Primero obtenga el valor del
+        <b>precio de construcción</b>
+        que las otras constructoras cobrarian por construir el proyecto de
+        <b>SOLIDEXA</b>, luego divida dicho valor entre la superficie m2 del proyecto
+        <b>SOLIDEXA</b>.
+        <br />
+        Es importante destacar que aquí solo se considera el precio de construcción del proyecto. El
+        precio que incluya la
+        <b>plusvalía y/o las ganancias de los inversionistas en el mercado tradicional</b>
+        será considerado en la sección de los
+        <b>inmuebles</b>
+        del presente proyecto.
+    </p>
+
+    <div class="row">
+
+        <div class="col-12 col-md-4">
+            <div class="form-group row">
+                <label for="label_contructora_dolar_m2_1" class="col-md-12 col-form-label">Constructora 1</label>
+
+                <div class="col-md-12 input-group">
+                    <input
+                        name="contructora_dolar_m2_1"
+                        type="number"
+                        step="0.01"
+                        value="{{contenido_proyecto.contructora_dolar_m2_1}}"
+                        class="form-control"
+                        id="label_contructora_dolar_m2_1"
+                    />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg-warning">$us/M2</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+            <div class="form-group row">
+                <label for="label_contructora_dolar_m2_2" class="col-md-12 col-form-label">Constructora 2</label>
+
+                <div class="col-md-12 input-group">
+                    <input
+                        name="contructora_dolar_m2_2"
+                        type="number"
+                        step="0.01"
+                        value="{{contenido_proyecto.contructora_dolar_m2_2}}"
+                        class="form-control"
+                        id="label_contructora_dolar_m2_2"
+                    />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg-warning">$us/M2</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+            <div class="form-group row">
+                <label for="label_contructora_dolar_m2_3" class="col-md-12 col-form-label">Constructora 3</label>
+
+                <div class="col-md-12 input-group">
+                    <input
+                        name="contructora_dolar_m2_3"
+                        type="number"
+                        step="0.01"
+                        value="{{contenido_proyecto.contructora_dolar_m2_3}}"
+                        class="form-control"
+                        id="label_contructora_dolar_m2_3"
+                    />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg-warning">$us/M2</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        {{! aqui iva los campos de promedio de constructoras }}
+
+        <div class="col-12 col-md-4">
+            <div class="form-group row">
+                <label for="label_volterra_dolar_m2" class="col-md-12 col-form-label">SOLIDEXA</label>
+
+                <div class="col-md-12 input-group">
+                    <input
+                        name="volterra_dolar_m2"
+                        type="number"
+                        step="0.01"
+                        value="{{contenido_proyecto.volterra_dolar_m2}}"
+                        class="form-control"
+                        id="label_volterra_dolar_m2"
+                    />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg-warning">$us/M2</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="form-group boton_guardado">
+        <button class="btn btn-primary">Guardar datos proyecto</button>
+    </div>
+
+</form>
+
+<div class="container-fluid madre_tabla cuadro_estandart p-4">
+
+    <h5 class="texto-resaltado">RESUMEN PRESUPUESTO ECONÓMICO</h5>
+    <h6>
+        <b>Nota: </b>No incluir la sumatoria TOTAL
+        <p class="text-left mt-2">
+            El resultado de la <b>sumatoria</b> de todos los ítems debe dar exactamente igual al <b>Precio Justo</b> del presente proyecto.
+        </p>
+    </h6>
+
+    <div class="row">
+        <div class="col-12 ref_botones_tabla">
+            <div class="d-inline-block py-3">
+                <button class="btn btn-primary mr-3" id="id_guardar_tabla">Guardar tabla</button>
+
+                <button class="btn btn-danger" id="id_eliminar_tabla">Eliminar tabla</button>
+            </div>
+        </div>
+        <div id="tipo_tabla_objetivo" data-id="py_presupuesto"></div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+
+            <div class="table-responsive">
+                <table class="text-primary table table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="text-center texto-resaltado">#</th>
+                            <th class="text-center texto-resaltado">ITEM</th>
+                            <th class="text-center texto-resaltado">VALOR $us.</th>
+                            <th class="texto-resaltado">ACCIÓN</th>
+                        </tr>
+                    </thead>
+                    {{! clase "cuerpo_filas" como referencia para agregar una nueva fila despues de
+                    esta clase como HIJO con "append" }}
+                    <tbody class="cuerpo_filas">
+
+                        {{#if contenido_proyecto.presupuesto_proyecto}}
+
+                            {{#each contenido_proyecto.presupuesto_proyecto}}
+                                <tr class="fila_fila">
+                                    <td class="text-center numero_fila" data-id="{{0}}">{{0}}</td>
+                                    <td><input
+                                            type="text"
+                                            class="form-control fila_input"
+                                            data-tipo="texto"
+                                            style="min-width: 8em;"
+                                            value="{{1}}"
+                                        />
+                                    </td>
+
+                                    <td><input
+                                            type="number"
+                                            class="form-control fila_input"
+                                            data-tipo="numero"
+                                            step="0.01"
+                                            style="min-width: 5em;"
+                                            value="{{2}}"
+                                        />
+                                    </td>
+
+                                    <td>
+                                        <div class="d-flex">
+                                            <button
+                                                class="boton_fila_arriba d-block btn p-1"
+                                                data-id="{{0}}"
+                                            ><i class="fas fa-arrow-circle-up size_iconos"></i></button>
+                                            <button
+                                                class="boton_fila_abajo d-block btn mx-1 p-1"
+                                                data-id="{{0}}"
+                                            ><i
+                                                    class="fas fa-arrow-circle-down size_iconos"
+                                                ></i></button>
+                                            <button
+                                                class="boton_fila_eliminar d-block btn p-1"
+                                                data-id="{{0}}"
+                                            ><i class="fas fa-window-close size_iconos"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                            {{/each}}
+
+                        {{else}}
+
+                            <tr class="fila_fila">
+                                <td class="text-center numero_fila" data-id="1">1</td>
+                                <td><input
+                                        type="text"
+                                        class="form-control fila_input"
+                                        data-tipo="texto"
+                                        style="min-width: 8em;"
+                                    />
+                                </td>
+
+                                <td><input
+                                        type="number"
+                                        class="form-control fila_input"
+                                        data-tipo="numero"
+                                        step="0.01"
+                                        style="min-width: 5em;"
+                                    />
+                                </td>
+
+                                <td>
+                                    <div class="d-flex">
+                                        <button class="boton_fila_arriba d-block btn p-1" data-id="1"><i
+                                                class="fas fa-arrow-circle-up size_iconos"
+                                            ></i></button>
+                                        <button
+                                            class="boton_fila_abajo d-block btn p-1 mx-1"
+                                            data-id="1"
+                                        ><i class="fas fa-arrow-circle-down size_iconos"></i></button>
+                                        <button
+                                            class="boton_fila_eliminar d-block btn p-1"
+                                            data-id="1"
+                                        ><i class="fas fa-window-close size_iconos"></i></button>
+                                    </div>
+                                </td>
+
+                            </tr>
+
+                        {{/if}}
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{{! PONER EN ESTA MISMA VENTANA, UN ENCIERRO SOLO PARA LA TABLA DE PRESUPUESTOS DEL PROYECTO, CON SU RESPECTIVO BOTON DE GUARDADO  }}

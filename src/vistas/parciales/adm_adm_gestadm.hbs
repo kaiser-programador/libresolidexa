@@ -1,0 +1,238 @@
+{{! para la pestaña de GESTIONAR ADMINISTRADOR en administrador maestro }}
+
+<div class="contenido container-fluid">
+    <div class="card my-4" style="max-width: 40rem;">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5>INSPECCIONAR C.I. ADMINISTRADOR</h5>
+            <i class="d-block fas fa-user size_iconos"></i>
+        </div>
+
+        <form id="id_form_inspeccionar_adm">
+            <div class="card-body text-primary">
+
+                <p class="text-left">La cedula de identidad de un administrador nuevo, debe ser registrada sin espacios</p>
+                <div class="ref_inspeccionar_ci_adm input-group">
+                    <input
+                        type="search"
+                        class="form-control"
+                        name="html_ci_insp_adm"
+                        placeholder="Cedula de identidad"
+                        id="ci_adm_inspeccionar"
+                        required
+                    />
+
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary boton_resaltado"><i
+                                class="fas fa-user"
+                            ></i></button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="card my-4" style="max-width: 40rem;">
+        <div class="card-header">
+            <h5>DATOS ADMINISTRADOR</h5>
+        </div>
+
+        <div class="card-body text-primary">
+            <form id="id_form_administrador">
+
+                <div class="form-group">
+                    <label for="id_estado_adm" class="form-label">Estado admistrador</label>
+                    <div>
+                        <input
+                            type="text"
+                            name="estado_adm"
+                            id="id_estado_adm"
+                            class="form-control ref_limpiar_adm"
+                            required
+                            disabled
+                        />
+                    </div>
+                </div>
+
+                {{! si se pone en disabled el campo de ci administrador, no sera posible su leida en el backend para ser "eliminada o guardada o reclaves" }}
+                <div class="form-group">
+                    <label for="id_ci_adm_aux" class="form-label">C.I. Admistrador</label>
+                    <div>
+                        <input
+                            type="text"
+                            name="ci_adm_aux"
+                            id="id_ci_adm_aux"
+                            class="form-control ref_limpiar_adm"
+                            required
+                            disabled
+                        />
+                    </div>
+                </div>
+                {{!-- este input oculto es el que se tomara en cuenta para las acciones de: guardar, eliminar, re-claves --}}
+                <input
+                    type="text"
+                    name="ci_adm"
+                    id="id_ci_adm"
+                    class="form-control ref_limpiar_adm"
+                    required
+                    hidden
+                />
+                <div class="form-group">
+                    <label for="id_nombres_adm" class="form-label">Nombres</label>
+                    <div>
+                        <input
+                            type="text"
+                            name="nombres_adm"
+                            id="id_nombres_adm"
+                            class="form-control ref_limpiar_adm"
+                            required
+                        />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_apellidos_adm" class="form-label">Apellidos</label>
+                    <div>
+                        <input
+                            type="text"
+                            name="apellidos_adm"
+                            id="id_apellidos_adm"
+                            class="form-control ref_limpiar_adm"
+                            required
+                        />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_nacimiento_adm" class="form-label">Fecha nacimiento</label>
+                    <div>
+                        <input
+                            type="date"
+                            name="nacimiento_adm"
+                            id="id_nacimiento_adm"
+                            class="form-control ref_limpiar_adm"
+                            required
+                        />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_telefonos_adm" class="form-label">Teléfonos contacto</label>
+                    <div>
+                        <input
+                            type="text"
+                            name="telefonos_adm"
+                            id="id_telefonos_adm"
+                            class="form-control ref_limpiar_adm"
+                            required
+                        />
+                    </div>
+                </div>
+
+                <h6 class="text-center"><b>Domicilio:</b></h6>
+
+                <div class="form-group">
+                    <label for="id_departamento_adm" class="form-label">Departamento</label>
+                    <div>
+                        <input
+                            type="text"
+                            name="departamento_adm"
+                            id="id_departamento_adm"
+                            class="form-control ref_limpiar_adm"
+                            required
+                        />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_provincia_adm" class="form-label">Provincia</label>
+                    <div>
+                        <input
+                            type="text"
+                            name="provincia_adm"
+                            id="id_provincia_adm"
+                            class="form-control ref_limpiar_adm"
+                            required
+                        />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_ciudad_adm" class="form-label">Ciudad</label>
+                    <div>
+                        <input
+                            type="text"
+                            name="ciudad_adm"
+                            id="id_ciudad_adm"
+                            class="form-control ref_limpiar_adm"
+                            required
+                        />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="id_direccion_adm" class="form-label">Dirección</label>
+                    <div>
+                        <input
+                            type="text"
+                            name="direccion_adm"
+                            id="id_direccion_adm"
+                            class="form-control ref_limpiar_adm"
+                            required
+                        />
+                    </div>
+                </div>
+
+                <p class="text-left"><b>Nota: </b>El "Administrador jefe" es el solicitante para llevar a cabo alguna
+                    de las acciones (Guardar, Eliminar, Re-claves) para con el administrador
+                    inspeccionado</p>
+
+                <div class="form-group">
+                    <label for="label_ci_reg_jefe" class="form-label">C.I. Admistrador jefe</label>
+                    <div>
+                        <input
+                            type="text"
+                            name="ci_reg_jefe"
+                            class="form-control ref_limpiar_adm"
+                            id="label_ci_reg_jefe"
+                            required
+                        />
+                    </div>
+                </div>
+
+                {{! opciones de accion, elegido GUARDAR por defecto }}
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <input
+                            type="radio"
+                            name="radio_accion_adm"
+                            class="radio_accion_administrador"
+                            value="Guardar"
+                            checked
+                        />
+                        Guardar
+                    </div>
+
+                    <div>
+                        <input
+                            type="radio"
+                            name="radio_accion_adm"
+                            class="radio_accion_administrador"
+                            value="Eliminar"
+                        />
+                        Eliminar
+                    </div>
+
+                    <div>
+                        <input
+                            type="radio"
+                            name="radio_accion_adm"
+                            class="radio_accion_administrador"
+                            value="Re-claves"
+                        />
+                        Re-claves
+                    </div>
+                </div>
+                <input type="text" id="id_aux_radio_adm" value="Guardar" hidden />
+
+                <div id="id_ref_botones_adm" class="text-center mt-3">
+                    <input type="submit" class="btn btn-primary" value="Ejecutar" />
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,140 @@
+{{!-- controlador de guardados 10:07 6/mayo/2022 --}}
+{{!-- controlador de guardados 19:32 6/mayo/2022 --}}
+{{!-- controlador de guardados 00:38 8/mayo/2022 --}}
+{{!-- controlador de guardados 19:06 8/mayo/2022 --}}
+{{!-- controlador de guardados 12:15 10/mayo/2022 --}}
+{{!-- controlador de guardados 21:10 10/mayo/2022 --}}
+{{!-- controlador de guardados 18:16 11/mayo/2022 --}}
+{{!-- controlador de guardados 18:35 13/mayo/2022 --}}
+{{!-- controlador de guardados 17:36 15/mayo/2022 --}}
+{{!-- controlador de guardados 17:54 16/mayo/2022 --}}
+{{!-- controlador de guardados 17:54 17/mayo/2022 --}}
+{{!-- controlador de guardados 18:36 18/mayo/2022 --}}
+{{!-- controlador de guardados 20:13 20/mayo/2022 --}}
+{{!-- controlador de guardados 21:45 21/mayo/2022 --}}
+{{!-- controlador de guardados 22:24 22/mayo/2022 --}}
+{{!-- controlador de guardados 19:22 24/mayo/2022 --}}
+{{!-- controlador de guardados 18:54 25/mayo/2022 --}}
+{{!-- controlador de guardados 17:57 27/mayo/2022 --}}
+{{!-- controlador de guardados 18:33 30/mayo/2022 --}}
+{{!-- controlador de guardados 19:39 01/junio/2022 --}}
+{{!-- controlador de guardados 19:39 02/junio/2022 --}}
+{{!-- controlador de guardados 18:16 03/junio/2022 --}}
+{{!-- controlador de guardados 18:34 04/junio/2022 --}}
+{{!-- controlador de guardados 18:29 06/junio/2022 --}}
+{{!-- controlador de guardados 19:39 08/junio/2022 --}}
+{{!-- controlador de guardados 20:55 09/junio/2022 --}}
+{{!-- controlador de guardados 19:25 13/junio/2022 --}}
+{{!-- controlador de guardados 14:50 14/junio/2022 --}}
+{{!-- controlador de guardados 10:39 15/junio/2022 --}}
+{{!-- controlador de guardados 19:08 15/junio/2022 --}}
+{{!-- controlador de guardados 17:43 16/junio/2022 --}}
+{{!-- controlador de guardados 18:59 17/junio/2022 --}}
+{{!-- controlador de guardados 12:45 19/junio/2022 --}}
+{{!-- controlador de guardados 17:42 19/junio/2022 --}}
+{{!-- controlador de guardados 18:26 20/junio/2022 --}}
+{{!-- controlador de guardados 18:33 21/junio/2022 --}}
+{{!-- controlador de guardados 18:33 22/junio/2022 --}}
+{{!-- controlador de guardados 18:51 23/junio/2022 --}}
+{{!-- controlador de guardados 18:44 24/junio/2022 --}}
+{{!-- controlador de guardados 09:42 26/junio/2022 --}}
+{{!-- controlador de guardados 18:18 27/junio/2022 --}}
+{{!-- controlador de guardados 12:07 29/junio/2022 --}}
+{{!-- controlador de guardados 18:13 29/junio/2022 --}}
+{{!-- controlador de guardados 18:22 30/junio/2022 --}}
+{{!-- controlador de guardados 18:29 02/julio/2022 --}}
+{{!-- controlador de guardados 18:45 03/julio/2022 --}}
+{{!-- controlador de guardados 19:06 12/julio/2022 --}}
+{{!-- controlador de guardados 11:06 10/octubre/2022 --}}
+{{!-- controlador de guardados 19:13 21/noviembre/2022   DE INQUILINO EN PACATA --}} 
+
+
+{{!-- PARA RENDERIZAR VISTAS DE CUADROS EXTERNOS DE PRESENTACION --}}
+{{!-- 
+guardados: terreno || proyecto || inmueble
+reserva: terrenos
+pago: proyectos
+construccion: proyectos
+construido: proyectos
+convocatoria: terrenos
+ --}}
+
+<div class="tipo_ventana" data-tipo_ventana="administrador-proyectos"></div>
+
+{{> opciones_nav}}
+
+{{> adm_cli_cabezeras_externas}}
+
+{{#if no_existe}}
+
+<div class="container mt-5">
+    <div class="contenedor-inexistentes jumbotron">
+
+        <div class="texto-resaltado text-center">
+            <i class="fas fa-hard-hat" style="font-size: 5rem;"></i>
+        </div>
+        <h1>¡Estamos trabajando en ello!</h1>
+        <br>
+        <p class="h5">{{mensaje_inexistente}}</p>
+
+        <div class="contenedor-carga">
+            <div class="dot-container">
+                <div class="dot dot-1"></div>
+                <div class="dot dot-2"></div>
+                <div class="dot dot-3"></div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{{else}}
+
+<div class="container-fluid p-4">
+    <div class="row" id="contenedor_py_inm_render">
+        <div class="ref_tipo_py_inm"></div>
+        {{!-- debajo de esta ref, es que se renderizaran los CARD EXTERNOS (lado ADMINISTRADOR) de: te, py, inm --}}
+
+        {{#each adm_guardado_terreno}}
+        {{> adm_cli_card_terreno}}
+        {{/each}}
+
+        {{#each adm_guardado_proyecto}}
+        {{> adm_cli_card_proyecto}}
+        {{/each}}
+
+        {{#each adm_guardado_inmueble}}
+        {{> adm_cli_card_inmueble}}
+        {{/each}}
+
+        {{#each adm_cli_reserva}}
+        {{> adm_cli_card_proyecto}}
+        {{/each}}
+
+        {{#each adm_cli_pago}}
+        {{> adm_cli_card_proyecto}}
+        {{/each}}
+
+        {{#each adm_cli_aprobacion}}
+        {{> adm_cli_card_proyecto}}
+        {{/each}}
+
+        {{#each adm_cli_construccion}}
+        {{> adm_cli_card_proyecto}}
+        {{/each}}
+
+        {{#each adm_cli_construido}}
+        {{> adm_cli_card_proyecto}}
+        {{/each}}
+
+        {{#each adm_cli_convocatoria}}
+        {{> adm_cli_card_terreno}}
+        {{/each}}
+
+    </div>
+</div>
+
+{{/if}}
+
+{{> pie_pagina}}

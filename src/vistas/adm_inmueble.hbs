@@ -1,0 +1,137 @@
+{{!-- PARA VENTANA DE INMUEBLE ENTERO --}}
+{{!-- recuerde que terminos como "> opciones_nav" no deben ponerse al principio linea codigo "1", porque de hacerlo genera un ERROR --}}
+
+{{!-- ------------------------- --}}
+{{!-- datos elementales --}}
+<div id="id_tipo_ventana" data-tipo_ventana="normal"></div>
+<div id="id_objetivo_tipo" data-objetivo_tipo="inmueble"></div>
+<div id="id_objetivo_codigo" data-objetivo_codigo="{{codigo_inmueble}}"></div>
+{{!-- ------------------------- --}}
+
+{{> opciones_nav}}
+
+{{> adm_cabezeras_internas}}
+
+<div class="pestanas_navegacion">
+    <ul class="nav nav-tabs" id="tab_inmueble" role="tablist">
+        {{!-- de todos los tabs se eliminao el atributo data-toggle="tab" , esto para que funcionen los HREF y nos
+        redireccionen a la ventana correspondiente al tab elegido --}}
+
+        {{#if descripcion_inmueble}}
+        <li class="nav-item">
+            <a href="/laapirest/inmueble/{{codigo_inmueble}}/descripcion" class="nav-link active"
+                id="descripcion_inm-tab" role="tab" aria-controls="descripcion_inm"
+                aria-selected="true">Descripción</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/inmueble/{{codigo_inmueble}}/descripcion" class="nav-link" id="descripcion_inm-tab"
+                role="tab" aria-controls="descripcion_inm" aria-selected="false">Descripción</a>
+        </li>
+        {{/if}}
+
+        {{#if imagenes_inmueble}}
+        <li class="nav-item">
+            <a href="/laapirest/inmueble/{{codigo_inmueble}}/imagenes" class="nav-link active" id="imagenes_inm-tab"
+                role="tab" aria-controls="imagenes_inm" aria-selected="true">Imágenes</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/inmueble/{{codigo_inmueble}}/imagenes" class="nav-link" id="imagenes_inm-tab"
+                role="tab" aria-controls="imagenes_inm" aria-selected="false">Imágenes</a>
+        </li>
+        {{/if}}
+
+
+        {{#if documentos_inmueble}}
+        <li class="nav-item">
+            <a href="/laapirest/inmueble/{{codigo_inmueble}}/documentos" class="nav-link active"
+                id="documentos_inm-tab" role="tab" aria-controls="documentos_inm" aria-selected="true">Documentos</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/inmueble/{{codigo_inmueble}}/documentos" class="nav-link" id="documentos_inm-tab"
+                role="tab" aria-controls="documentos_inm" aria-selected="false">Documentos</a>
+        </li>
+        {{/if}}
+
+        {{#if estados_inmueble}}
+        <li class="nav-item">
+            <a href="/laapirest/inmueble/{{codigo_inmueble}}/estados" class="nav-link active" id="estados_inm-tab"
+                role="tab" aria-controls="estados_inm" aria-selected="true">Estados</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/inmueble/{{codigo_inmueble}}/estados" class="nav-link" id="estados_inm-tab" role="tab"
+                aria-controls="estados_inm" aria-selected="false">Estados</a>
+        </li>
+        {{/if}}
+
+        {{#if propietario_inmueble}}
+        <li class="nav-item">
+            <a href="/laapirest/inmueble/{{codigo_inmueble}}/propietario" class="nav-link active" id="propietario_inm-tab"
+                role="tab" aria-controls="propietario_inm" aria-selected="true">Propietario</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/inmueble/{{codigo_inmueble}}/propietario" class="nav-link" id="propietario_inm-tab"
+                role="tab" aria-controls="propietario_inm" aria-selected="false">Propietario</a>
+        </li>
+        {{/if}}
+
+        {{#if pagos_inmueble}}
+        <li class="nav-item">
+            <a href="/laapirest/inmueble/{{codigo_inmueble}}/pagos" class="nav-link active" id="pagos_inm-tab"
+                role="tab" aria-controls="pagos_inm" aria-selected="true">Pagos</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/inmueble/{{codigo_inmueble}}/pagos" class="nav-link" id="pagos_inm-tab" role="tab"
+                aria-controls="pagos_inm" aria-selected="false">Pagos</a>
+        </li>
+        {{/if}}
+
+        {{#if eliminar_inmueble}}
+        <li class="nav-item">
+            <a href="/laapirest/inmueble/{{codigo_inmueble}}/eliminar" class="nav-link active" id="eliminar_inm-tab"
+                role="tab" aria-controls="eliminar_inm" aria-selected="true">Eliminar</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/inmueble/{{codigo_inmueble}}/eliminar" class="nav-link" id="eliminar_inm-tab" role="tab"
+                aria-controls="eliminar_inm" aria-selected="false">Eliminar</a>
+        </li>
+        {{/if}}
+        
+    </ul>
+</div>
+
+{{#if descripcion_inmueble}}
+{{> adm_inm_descripcion}}
+{{/if}}
+
+{{#if imagenes_inmueble}}
+{{> adm_inm_imagenes}}
+{{/if}}
+
+{{#if documentos_inmueble}}
+{{> adm_inm_documentos}}
+{{/if}}
+
+{{#if estados_inmueble}}
+{{> adm_inm_estados}}
+{{/if}}
+
+{{#if propietario_inmueble}}
+{{> adm_inm_propietario}}
+{{/if}}
+
+{{#if pagos_inmueble}}
+{{> adm_inm_pagos}}
+{{/if}}
+
+{{#if eliminar_inmueble}}
+{{> adm_inm_eliminar}}
+{{/if}}
+
+{{> pie_pagina}}

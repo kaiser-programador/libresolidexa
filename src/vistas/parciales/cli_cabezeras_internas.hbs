@@ -1,0 +1,171 @@
+{{! cabezeras INTERNAS de lado de CLIENTE, EJ/ cuando estamos en la ventana propia del terreno }}
+{{! valido para TERRENOS, PROYECTOS, INMUEBLES, PROPIETARIOS }}
+
+<div class="cabezera-secundario {{estilo_cabezera}} w-100">
+
+    <div class="letras_cabezera p-3" style="display: flex; justify-content: space-between;">
+
+        {{#if cab_te_cli}}
+            <div>
+                <div>
+                    <span>{{cabezera_cli.ciudad}}</span>
+                    <span class="d-none d-sm-inline-block">&nbsp;/&nbsp;</span>
+                    <span class="d-none d-sm-inline-block">{{cabezera_cli.provincia}}</span>
+                </div>
+                <div class="py-2 codigo-cabezera">{{cabezera_cli.codigo}}</div>
+                <div>
+                    <button class="btn btn-primary" id="ver_fotos_te"><i class="fas fa-binoculars"></i><span class="ml-2">Fotos</span></button>
+                </div>
+            </div>
+
+            <div style="text-align: right;">
+                <div class="text-right mt-2">
+                    <a href="{{cabezera_cli.facebook}}" title="Facebook" target="_blank"><i
+                            class="mr-3 contenedor-cabezera-icono fab fa-facebook"
+                        ></i></a>
+                    <a href="{{cabezera_cli.instagram}}" title="Instagram" target="_blank"><i
+                            class="mr-3 contenedor-cabezera-icono fab fa-instagram"
+                        ></i></a>
+                    <a href="{{cabezera_cli.youtube}}" title="Youtube" target="_blank"><i
+                            class="mr-2 contenedor-cabezera-icono fab fa-youtube"
+                        ></i></a>
+                    <a href="{{cabezera_cli.tiktok}}" title="TikTok" target="_blank">
+                        <svg
+                                class="mr-3 mb-3 contenedor-cabezera-icono_tiktok"
+                                xmlns="http://www.w3.org/2000/svg"
+                                aria-hidden="true"
+                                data-prefix="fab"
+                                data-icon="tiktok"
+                                viewBox="0 0 448 512"
+                            >
+                                <path
+                                    d="M448 209.91a210.06 210.06 0 01-122.77-39.25v178.72A162.55 162.55 0 11185 188.31v89.89a74.62 74.62 0 1052.23 71.18V0h88a121.18 121.18 0 001.86 22.17A122.18 122.18 0 00381 102.39a121.43 121.43 0 0067 20.14z"
+                                ></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        {{/if}}
+
+        {{#if cab_py_cli}}
+            <div>
+                <div>
+                    <span>{{cabezera_cli.nombre_proyecto}}</span>
+                </div>
+                <div class="py-2 codigo-cabezera">{{cabezera_cli.codigo}}</div>
+                <div>
+                    <button class="btn btn-primary" id="ver_fotos_py"><i class="fas fa-binoculars"></i><span class="ml-2">Fotos</span></button>
+                </div>
+            </div>
+
+            <div style="text-align: right;">
+                <div class="text-right mt-2">
+                    <a href="{{cabezera_cli.facebook}}" title="Facebook" target="_blank"><i
+                            class="mr-3 contenedor-cabezera-icono fab fa-facebook"
+                        ></i></a>
+                    <a href="{{cabezera_cli.instagram}}" title="Instagram" target="_blank"><i
+                            class="mr-3 contenedor-cabezera-icono fab fa-instagram"
+                        ></i></a>
+                    <a href="{{cabezera_cli.youtube}}" title="Youtube" target="_blank"><i
+                            class="mr-2 contenedor-cabezera-icono fab fa-youtube"
+                        ></i></a>
+                    <a href="{{cabezera_cli.tiktok}}" title="TikTok" target="_blank">
+                        <svg
+                                class="mr-3 mb-3 contenedor-cabezera-icono_tiktok"
+                                xmlns="http://www.w3.org/2000/svg"
+                                aria-hidden="true"
+                                data-prefix="fab"
+                                data-icon="tiktok"
+                                viewBox="0 0 448 512"
+                            >
+                                <path
+                                    d="M448 209.91a210.06 210.06 0 01-122.77-39.25v178.72A162.55 162.55 0 11185 188.31v89.89a74.62 74.62 0 1052.23 71.18V0h88a121.18 121.18 0 001.86 22.17A122.18 122.18 0 00381 102.39a121.43 121.43 0 0067 20.14z"
+                                ></path>
+                        </svg>
+                    </a>
+                </div>
+
+                {{#if cabezera_cli.ver_propuestas}}
+                    <div class="text-right mt-2">
+                        <a
+                            class="btn btn-primary"
+                            href="/terreno/{{cabezera_cli.codigo_terreno}}/proyectos"
+                        ><i class="fas fa-map-marked"></i><span class="ml-2">Propuestas</span></a>
+                    </div>
+                {{/if}}
+            </div>
+        {{/if}}
+
+        {{#if cab_inm_cli}}
+            <div>
+                <div>
+                    <span>{{cabezera_cli.tipo_inmueble}}</span>
+                </div>
+                <div class="py-2 codigo-cabezera">{{cabezera_cli.codigo}}</div>
+                <div>
+                    <button class="btn btn-primary" id="ver_fotos_inm"><i class="fas fa-binoculars"></i><span class="ml-2">Fotos</span></button>
+                </div>
+            </div>
+
+            <div style="text-align: right;">
+
+                <div class="text-right mt-2">
+                    <a href="{{cabezera_cli.facebook}}" title="Facebook" target="_blank"><i
+                            class="mr-3 contenedor-cabezera-icono fab fa-facebook"
+                        ></i></a>
+                    <a href="{{cabezera_cli.instagram}}" title="Instagram" target="_blank"><i
+                            class="mr-3 contenedor-cabezera-icono fab fa-instagram"
+                        ></i></a>
+                    <a href="{{cabezera_cli.youtube}}" title="Youtube" target="_blank"><i
+                            class="mr-2 contenedor-cabezera-icono fab fa-youtube"
+                        ></i></a>
+                    <a href="{{cabezera_cli.tiktok}}" title="TikTok" target="_blank">
+                        <svg
+                                class="mr-2 mb-3 contenedor-cabezera-icono_tiktok"
+                                xmlns="http://www.w3.org/2000/svg"
+                                aria-hidden="true"
+                                data-prefix="fab"
+                                data-icon="tiktok"
+                                viewBox="0 0 448 512"
+                            >
+                                <path
+                                    d="M448 209.91a210.06 210.06 0 01-122.77-39.25v178.72A162.55 162.55 0 11185 188.31v89.89a74.62 74.62 0 1052.23 71.18V0h88a121.18 121.18 0 001.86 22.17A122.18 122.18 0 00381 102.39a121.43 121.43 0 0067 20.14z"
+                                ></path>
+                        </svg>
+                    </a>
+                </div>
+
+                <div class="text-right mt-2">
+                    <a
+                        class="btn btn-primary"
+                        href="/proyecto/{{cabezera_cli.codigo_proyecto}}/descripcion"
+                    ><i class="fas fa-door-open"></i><span class="ml-2">Proyecto</span></a>
+                </div>
+
+                {{#if cabezera_cli.ver_propuestas}}
+                    <div class="text-right mt-2">
+                        <a
+                            class="btn btn-primary"
+                            href="/terreno/{{cabezera_cli.codigo_terreno}}/proyectos"
+                        ><i class="fas fa-map-marked"></i><span class="ml-2">Propuestas</span></a>
+                    </div>
+                {{/if}}
+
+            </div>
+        {{/if}}
+
+        {{#if cab_prop_cli}}
+            <div>
+                <div>
+                    <span style="text-transform: capitalize;">Propietario</span>
+                </div>
+                <div class="py-2">
+                    <span>{{cabezera_cli.prop_nombres}}</span>
+                </div>
+                <div class="codigo-cabezera">{{cabezera_cli.ci_propietario}}</div>
+            </div>
+        {{/if}}
+
+    </div>
+
+</div>

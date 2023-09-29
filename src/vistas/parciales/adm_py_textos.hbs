@@ -1,0 +1,468 @@
+{{! para pestaña TEXTOS del lado del ADMINISTRADOR }}
+
+{{! PARA MENSAJES DEL PROYECTO (ICLUYE A PARA SUS INMUEBLES) }}
+
+<div class="contenido container-fluid my-3">
+    <div class="row">
+
+        <div class="col-12 col-sm-6 col-lg-4">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h5><b>PROYECTO</b></h5>
+                </div>
+
+                <div class="card-body">
+
+                    <form id="form_textos_proyecto">
+                        <h5 class="text-center">Beneficios</h5>
+
+                        <h5>Construcción</h5>
+                        <div class="ml-3">
+
+                            <div class="form-group">
+                                <label
+                                    for="label_titulo_construccion_py_html"
+                                    class="form-label"
+                                >Título</label>
+                                <div>
+                                    <input
+                                        type="text"
+                                        name="titulo_construccion_py_html"
+                                        class="form-control"
+                                        id="label_titulo_construccion_py_html"
+                                        value="{{contenido_proyecto.titulo_construccion_py}}"
+                                        placeholder="Construcción sin sobreprecios"
+                                    />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="label_texto_construccion_py_html" class="form-label">Texto</label>
+                                <div>
+                                    <textarea
+                                        name="texto_construccion_py_html"
+                                        class="form-control"
+                                        id="label_texto_construccion_py_html"
+                                        rows="4"
+                                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                                        placeholder="Para saltos de línea use: <br> u otras etiquetas html"
+                                    >{{contenido_proyecto.texto_construccion_py}}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="label_nota_construccion_py_html" class="form-label">Nota</label>
+                                <div>
+                                    <textarea
+                                        name="nota_construccion_py_html"
+                                        class="form-control"
+                                        id="label_nota_construccion_py_html"
+                                        rows="4"
+                                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                                        placeholder="Para saltos de línea use: <br> u otras etiquetas html"
+                                    >{{contenido_proyecto.nota_construccion_py}}</textarea>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <h5>Plusvalía</h5>
+                        <div class="ml-3">
+
+                            <div class="form-group">
+                                <label for="label_titulo_plusvalia_py_html" class="form-label">Título</label>
+                                <div>
+                                    <input
+                                        type="text"
+                                        name="titulo_plusvalia_py_html"
+                                        class="form-control"
+                                        id="label_titulo_plusvalia_py_html"
+                                        value="{{contenido_proyecto.titulo_plusvalia_py}}"
+                                        placeholder="Construcción sin sobreplusvalias"
+                                    />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="label_texto_plusvalia_py_html" class="form-label">Texto</label>
+                                <div>
+                                    <textarea
+                                        name="texto_plusvalia_py_html"
+                                        class="form-control"
+                                        id="label_texto_plusvalia_py_html"
+                                        rows="4"
+                                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                                        placeholder="Para saltos de línea use: <br> u otras etiquetas html"
+                                    >{{contenido_proyecto.texto_plusvalia_py}}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="label_nota_plusvalia_py_html" class="form-label">Nota</label>
+                                <div>
+                                    <textarea
+                                        name="nota_plusvalia_py_html"
+                                        class="form-control"
+                                        id="label_nota_plusvalia_py_html"
+                                        rows="4"
+                                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                                        placeholder="Para saltos de línea use: <br> u otras etiquetas html"
+                                    >{{contenido_proyecto.nota_plusvalia_py}}</textarea>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <h5 class="text-center">Resumen económico</h5>
+
+                        <div class="form-group">
+                            <label for="label_titulo_economico_py_html" class="form-label">Título</label>
+                            <div>
+                                <input
+                                    type="text"
+                                    name="titulo_economico_py_html"
+                                    class="form-control"
+                                    id="label_titulo_economico_py_html"
+                                    value="{{contenido_proyecto.titulo_economico_py}}"
+                                />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="label_texto_economico_py_html" class="form-label">Texto</label>
+                            <div>
+                                <textarea
+                                    name="texto_economico_py_html"
+                                    class="form-control"
+                                    id="label_texto_economico_py_html"
+                                    rows="4"
+                                    title="Para saltos de línea use: <br> u otras etiquetas html"
+                                    placeholder="Para saltos de línea use: <br> u otras etiquetas html"
+                                >{{contenido_proyecto.texto_economico_py}}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="label_nota_economico_py_html" class="form-label">Nota</label>
+                            <div>
+                                <textarea
+                                    name="nota_economico_py_html"
+                                    class="form-control"
+                                    id="label_nota_economico_py_html"
+                                    rows="4"
+                                    title="Para saltos de línea use: <br> u otras etiquetas html"
+                                    placeholder="Para saltos de línea use: <br> u otras etiquetas html"
+                                >{{contenido_proyecto.nota_economico_py}}</textarea>
+                            </div>
+                        </div>
+
+                        <input
+                            type="text"
+                            name="codigo_proyecto_py_html"
+                            value="{{codigo_proyecto}}"
+                            hidden
+                        />
+
+                        <div class="text-center">
+                            <input
+                                type="submit"
+                                value="Guardar"
+                                class="ref_boton_textos_py btn btn-primary"
+                            />
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-4">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h5><b>INMUEBLE</b></h5>
+                </div>
+
+                <div class="card-body">
+
+                    <form id="form_textos_inmueble">
+                        <h5 class="text-center">Beneficios</h5>
+
+                        <h5>Construcción</h5>
+                        <div class="ml-3">
+
+                            <div class="form-group">
+                                <label
+                                    for="label_titulo_construccion_inm_html"
+                                    class="form-label"
+                                >Título</label>
+                                <div>
+                                    <input
+                                        type="text"
+                                        name="titulo_construccion_inm_html"
+                                        class="form-control"
+                                        id="label_titulo_construccion_inm_html"
+                                        value="{{contenido_proyecto.titulo_construccion_inm}}"
+                                        placeholder="Construcción sin sobreprecios"
+                                    />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="label_texto_construccion_inm_html" class="form-label">Texto</label>
+                                <div>
+                                    <textarea
+                                        name="texto_construccion_inm_html"
+                                        class="form-control"
+                                        id="label_texto_construccion_inm_html"
+                                        rows="4"
+                                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                                        placeholder="Para saltos de línea use: <br> u otras etiquetas html"
+                                    >{{contenido_proyecto.texto_construccion_inm}}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="label_nota_construccion_inm_html" class="form-label">Nota</label>
+                                <div>
+                                    <textarea
+                                        name="nota_construccion_inm_html"
+                                        class="form-control"
+                                        id="label_nota_construccion_inm_html"
+                                        rows="4"
+                                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                                        placeholder="Para saltos de línea use: <br> u otras etiquetas html"
+                                    >{{contenido_proyecto.nota_construccion_inm}}</textarea>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <h5>Precio económico</h5>
+                        <div class="ml-3">
+
+                            <div class="form-group">
+                                <label for="label_titulo_precio_inm_html" class="form-label">Título</label>
+                                <div>
+                                    <input
+                                        type="text"
+                                        name="titulo_precio_inm_html"
+                                        class="form-control"
+                                        id="label_titulo_precio_inm_html"
+                                        value="{{contenido_proyecto.titulo_precio_inm}}"
+                                        placeholder="Precio económico"
+                                    />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="label_texto_precio_inm_html" class="form-label">Texto</label>
+                                <div>
+                                    <textarea
+                                        name="texto_precio_inm_html"
+                                        class="form-control"
+                                        id="label_texto_precio_inm_html"
+                                        rows="4"
+                                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                                        placeholder="Para saltos de línea use: <br> u otras etiquetas html"
+                                    >{{contenido_proyecto.texto_precio_inm}}</textarea>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <h5>Plusvalía</h5>
+                        <div class="ml-3">
+
+                            <div class="form-group">
+                                <label for="label_titulo_plusvalia_inm_html" class="form-label">Título</label>
+                                <div>
+                                    <input
+                                        type="text"
+                                        name="titulo_plusvalia_inm_html"
+                                        class="form-control"
+                                        id="label_titulo_plusvalia_inm_html"
+                                        value="{{contenido_proyecto.titulo_plusvalia_inm}}"
+                                        placeholder="Construcción sin sobreplusvalias"
+                                    />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="label_texto_plusvalia_inm_html" class="form-label">Texto</label>
+                                <div>
+                                    <textarea
+                                        name="texto_plusvalia_inm_html"
+                                        class="form-control"
+                                        id="label_texto_plusvalia_inm_html"
+                                        rows="4"
+                                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                                        placeholder="Para saltos de línea use: <br> u otras etiquetas html"
+                                    >{{contenido_proyecto.texto_plusvalia_inm}}</textarea>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <h5 class="text-center">Resumen económico</h5>
+                        <div class="form-group">
+                            <label for="label_titulo_economico_inm_html" class="form-label">Título</label>
+                            <div>
+                                <input
+                                    type="text"
+                                    name="titulo_economico_inm_html"
+                                    class="form-control"
+                                    id="label_titulo_economico_inm_html"
+                                    value="{{contenido_proyecto.titulo_economico_inm}}"
+                                />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="label_texto_economico_inm_html" class="form-label">Texto</label>
+                            <div>
+                                <textarea
+                                    name="texto_economico_inm_html"
+                                    class="form-control"
+                                    id="label_texto_economico_inm_html"
+                                    rows="4"
+                                    title="Para saltos de línea use: <br> u otras etiquetas html"
+                                    placeholder="Para saltos de línea use: <br> u otras etiquetas html"
+                                >{{contenido_proyecto.texto_economico_inm}}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="label_nota_economico_inm_html" class="form-label">Nota</label>
+                            <div>
+                                <textarea
+                                    name="nota_economico_inm_html"
+                                    class="form-control"
+                                    id="label_nota_economico_inm_html"
+                                    rows="4"
+                                    title="Para saltos de línea use: <br> u otras etiquetas html"
+                                    placeholder="Para saltos de línea use: <br> u otras etiquetas html"
+                                >{{contenido_proyecto.nota_economico_inm}}</textarea>
+                            </div>
+                        </div>
+
+                        <input
+                            type="text"
+                            name="codigo_proyecto_inm_html"
+                            value="{{codigo_proyecto}}"
+                            hidden
+                        />
+
+                        <div class="text-center">
+                            <input
+                                type="submit"
+                                value="Guardar"
+                                class="ref_boton_textos_inm btn btn-primary"
+                            />
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-4">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h5><b>PROYECTO E INMUEBLES</b></h5>
+                </div>
+
+                <div class="card-body">
+                    <p>
+                        <span><b>Nota: </b></span>
+                        <span>El texto debe contar con una redaccion que incluya tanto al proyecto como a
+                            sus inmuebles.</span>
+                    </p>
+                    <form id="form_segunderos_justo">
+                        <h5 class="text-center">SEGUNDERO Reserva, Pago, Aprobación, Construcción</h5>
+                        <div class="ml-3">
+
+                            <div class="form-group">
+                                <label
+                                    for="label_mensaje_segundero_py_inm_a_html"
+                                    class="form-label texto-resaltado"
+                                >Mensaje para las etapas de:
+                                    <b>Reserva, Pago, Aprobación y Construcción</b></label>
+                                <div>
+                                    <textarea
+                                        name="mensaje_segundero_py_inm_a_html"
+                                        class="form-control"
+                                        id="label_mensaje_segundero_py_inm_a_html"
+                                        rows="4"
+                                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                                        placeholder="Para saltos de línea use: <br> u otras etiquetas html"
+                                    >{{contenido_proyecto.mensaje_segundero_py_inm_a}}</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h5 class="text-center">SEGUNDERO Construido</h5>
+                        <div class="ml-3">
+
+                            <div class="form-group">
+                                <label for="label_mensaje_segundero_py_inm_b_html" class="form-label">Mensaje
+                                    para la etapa de:
+                                    <b>Construido</b></label>
+                                <div>
+                                    <textarea
+                                        name="mensaje_segundero_py_inm_b_html"
+                                        class="form-control"
+                                        id="label_mensaje_segundero_py_inm_b_html"
+                                        rows="4"
+                                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                                        placeholder="Para saltos de línea use: <br> u otras etiquetas html"
+                                    >{{contenido_proyecto.mensaje_segundero_py_inm_b}}</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h5 class="text-center">Nota PRECIO JUSTO</h5>
+                        <div class="ml-3">
+
+                            <div class="form-group">
+                                <label for="label_nota_precio_justo" class="form-label">Nota que acompañara al valor de Precio Justo</label>
+                                <div>
+                                    <textarea
+                                        name="nota_precio_justo"
+                                        class="form-control"
+                                        id="label_nota_precio_justo"
+                                        rows="4"
+                                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                                        placeholder="Para saltos de línea use: <br> u otras etiquetas html"
+                                    >{{contenido_proyecto.nota_precio_justo}}</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <input
+                            type="text"
+                            name="codigo_proyecto_seg_html"
+                            value="{{codigo_proyecto}}"
+                            hidden
+                        />
+
+                        <div class="text-center">
+                            <input
+                                type="submit"
+                                value="Guardar"
+                                class="ref_boton_segunderos_justo btn btn-primary"
+                            />
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>

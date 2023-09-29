@@ -1,0 +1,642 @@
+{{! PARA LA PESTAÑA DE DESCRIPCION DEL INMUEBLE lado del ADMINISTRADOR }}
+{{!-- NO DAR FORMATO A ESTA VENTANA, PORQUE LOS ARRAY [ ] DEJARAN DE FUNCIONAR --}}
+<form
+    class="contenido container-fluid my-4"
+    id="guardar_datos_formulario_inmueble"
+    data-id="{{codigo_inmueble}}"
+>
+    <div class="row cuadro_estandart p-3">
+
+        <div class="col-12 col-sm-6 cuadro_estandartT p-3">
+
+            {{! ********************************************************************* }}
+            <h5>DESCRIPCIÓN DEL INMUEBLE</h5>
+
+            <div class="form-group row">
+
+                <label for="label_torre" class="col-sm-12 col-lg-4 col-form-label">Torre</label>
+
+                <div class="col-sm-12 col-lg-8">
+                    <input
+                        type="text"
+                        name="torre"
+                        class="form-control"
+                        id="label_torre"
+                        placeholder="(solo si existe)"
+                        value="{{contenido_inmueble.torre}}"
+                    />
+                </div>
+
+            </div>
+
+            <div class="form-group row">
+
+                <label for="label_piso" class="col-sm-12 col-lg-4 col-form-label">Piso</label>
+
+                <div class="col-sm-12 col-lg-8">
+                    <input
+                        type="number"
+                        name="piso"
+                        class="form-control"
+                        id="label_piso"
+                        value="{{contenido_inmueble.piso}}"
+                    />
+                </div>
+
+            </div>
+
+            <div class="form-group row">
+
+                <label for="label_puerta_inmueble" class="col-sm-12 col-lg-4 col-form-label">Número
+                    Inmueble</label>
+
+                <div class="col-sm-12 col-lg-8">
+                    <input
+                        type="text"
+                        name="puerta_inmueble"
+                        class="form-control"
+                        id="label_puerta_inmueble"
+                        placeholder="Puerta, ej/ 5B"
+                        value="{{contenido_inmueble.puerta_inmueble}}"
+                    />
+                </div>
+
+            </div>
+
+            <div class="form-group row">
+                <label for="label_precio_construccion" class="col-sm-12 col-lg-4 col-form-label">Precio justo</label>
+                <div class="col-sm-12 col-lg-8 input-group">
+                    <input
+                        name="precio_construccion"
+                        type="number"
+                        step="0.01"
+                        class="form-control"
+                        id="label_precio_construccion"
+                        title="Incluye el costo derecho de terreno y el valor de Reserva si es que existiese"
+                        value="{{contenido_inmueble.precio_construccion}}"
+                        min="1"
+                        required
+                    />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg-warning">$us</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label
+                    for="label_superficie_inmueble_m2"
+                    class="col-sm-12 col-lg-4 col-form-label"
+                >Superficie inmueble</label>
+                <div class="col-sm-12 col-lg-8 input-group">
+                    <input
+                        name="superficie_inmueble_m2"
+                        type="number"
+                        step="0.01"
+                        class="form-control"
+                        id="label_superficie_inmueble_m2"
+                        value="{{contenido_inmueble.superficie_inmueble_m2}}"
+                        required
+                    />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg-warning">M2</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="label_dormitorios_inmueble" class="col-sm-12 col-lg-4 col-form-label">Número
+                    de dormitorios</label>
+                <div class="col-sm-12 col-lg-8 input-group">
+                    <input
+                        name="dormitorios_inmueble"
+                        type="number"
+                        class="form-control"
+                        id="label_dormitorios_inmueble"
+                        value="{{contenido_inmueble.dormitorios_inmueble}}"
+                    />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="label_banos_inmueble" class="col-sm-12 col-lg-4 col-form-label">Número de
+                    baños</label>
+                <div class="col-sm-12 col-lg-8 input-group">
+                    <input
+                        name="banos_inmueble"
+                        type="number"
+                        class="form-control"
+                        id="label_banos_inmueble"
+                        value="{{contenido_inmueble.banos_inmueble}}"
+                    />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="label_garaje_inmueble" class="col-sm-12 col-lg-4 col-form-label">Número de
+                    garajes</label>
+                <div class="col-sm-12 col-lg-8 input-group">
+                    <input
+                        name="garaje_inmueble"
+                        type="number"
+                        class="form-control"
+                        id="label_garaje_inmueble"
+                        value="{{contenido_inmueble.garaje_inmueble}}"
+                    />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="label_inmueble_descripcion" class="col-sm-12 col-lg-4 col-form-label">El
+                    proyecto</label>
+                <div class="col-sm-12 col-lg-8">
+                    <textarea
+                        name="inmueble_descripcion"
+                        class="form-control"
+                        id="label_inmueble_descripcion"
+                        placeholder="Recomendamos a nuestra poblacion verificar los permisos de construccion pertinentes en vista de contructoras que vienen infringiendo las normativas vigentes"
+                        rows="5"
+                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                    >{{contenido_inmueble.inmueble_descripcion}}</textarea>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-12 col-lg-4 col-form-label">
+                    <input
+                        name="titulo_descripcion_1"
+                        type="text"
+                        placeholder="Información general"
+                        value="{{contenido_inmueble.titulo_descripcion_1}}"
+                        class="form-control"
+                    />
+                </label>
+                <div class="col-sm-12 col-lg-8">
+                    <textarea
+                        name="varios_descripcion_1"
+                        class="form-control"
+                        rows="5"
+                        placeholder="*Informacion gral 1.*Informacion gral 2.*Informacion gral 3.*..."
+                        title="*Informacion gral 1.*Informacion gral 2.*Informacion gral 3.*..."
+                    >{{contenido_inmueble.varios_descripcion_1}}</textarea>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-12 col-lg-4 col-form-label">
+                    <input
+                        name="titulo_descripcion_2"
+                        type="text"
+                        placeholder="Servicios"
+                        value="{{contenido_inmueble.titulo_descripcion_2}}"
+                        class="form-control"
+                    />
+                </label>
+                <div class="col-sm-12 col-lg-8">
+                    <textarea
+                        name="varios_descripcion_2"
+                        class="form-control"
+                        rows="5"
+                        placeholder="*Servicio 1.*Servicio 2.*Servicio 3.*..."
+                        title="*Servicio 1.*Servicio 2.*Servicio 3.*..."
+                    >{{contenido_inmueble.varios_descripcion_2}}</textarea>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-12 col-lg-4 col-form-label">
+                    <input
+                        name="titulo_descripcion_3"
+                        type="text"
+                        placeholder="Áreas comunes"
+                        value="{{contenido_inmueble.titulo_descripcion_3}}"
+                        class="form-control"
+                    />
+                </label>
+                <div class="col-sm-12 col-lg-8">
+                    <textarea
+                        name="varios_descripcion_3"
+                        class="form-control"
+                        rows="5"
+                        placeholder="*Área comun 1.*Área comun 2.*Área comun 3.*..."
+                        title="*Área comun 1.*Área comun 2.*Área comun 3.*..."
+                    >{{contenido_inmueble.varios_descripcion_3}}</textarea>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-12 col-lg-4 col-form-label">
+                    <input
+                        name="titulo_descripcion_4"
+                        type="text"
+                        placeholder="Adicionales"
+                        value="{{contenido_inmueble.titulo_descripcion_4}}"
+                        class="form-control"
+                    />
+                </label>
+                <div class="col-sm-12 col-lg-8">
+                    <textarea
+                        name="varios_descripcion_4"
+                        class="form-control"
+                        rows="5"
+                        placeholder="*Adicional 1.*Adicional 2.*Adicional 3.*..."
+                        title="*Adicional 1.*Adicional 2.*Adicional 3.*..."
+                    >{{contenido_inmueble.varios_descripcion_4}}</textarea>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-12 col-lg-4 col-form-label">
+                    <input
+                        name="titulo_descripcion_5"
+                        type="text"
+                        placeholder="Acabados de Calidad"
+                        value="{{contenido_inmueble.titulo_descripcion_5}}"
+                        class="form-control"
+                    />
+                </label>
+                <div class="col-sm-12 col-lg-8">
+                    <textarea
+                        name="varios_descripcion_5"
+                        class="form-control"
+                        rows="5"
+                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                        placeholder="Para saltos de línea use: <br> u otras etiquetas html"
+                    >{{contenido_inmueble.varios_descripcion_5}}</textarea>
+                </div>
+            </div>
+
+        </div>
+        {{! *********************************************************************** }}
+
+        <div class="col-12 col-sm-6 cuadro_estandartt p-3">
+
+            <h5>RESERVA</h5>
+            {{! calculado del promedio de los inmuebles similares a este inmueble }}
+            <div class="form-group row">
+                <label for="label_valor_reserva" class="col-sm-12 col-lg-4 col-form-label">Valor reserva</label>
+                <div class="col-sm-12 col-lg-8 input-group">
+                    <input
+                        name="valor_reserva"
+                        type="number"
+                        step="0.01"
+                        class="form-control"
+                        id="label_valor_reserva"
+                        value="{{contenido_inmueble.valor_reserva}}"
+                        min="1"
+                    />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg-warning">$us</span>
+                    </div>
+                </div>
+            </div>
+
+            <h5>TIPO DE INMUEBLE</h5>
+
+            <div>
+                <label>
+                    <input
+                        type="radio"
+                        name="tipoInmueble"
+                        class="gral_radio radio_tipo_inmueble"
+                        data-radio_input="radio_input_tipo_inmueble"
+                        value="Departamento"
+                    />
+                    Departamento
+                </label>
+            </div>
+
+            <div>
+                <label>
+                    <input
+                        type="radio"
+                        name="tipoInmueble"
+                        class="gral_radio radio_tipo_inmueble"
+                        data-radio_input="radio_input_tipo_inmueble"
+                        value="Casa"
+                    />
+                    Casa
+                </label>
+            </div>
+
+            <div>
+                <label>
+                    <input
+                        type="radio"
+                        name="tipoInmueble"
+                        class="gral_radio radio_tipo_inmueble"
+                        data-radio_input="radio_input_tipo_inmueble"
+                        value="Comercial"
+                    />
+                    Comercial
+
+                </label>
+            </div>
+
+            <div>
+                <label>
+                    <input
+                        type="radio"
+                        name="tipoInmueble"
+                        class="gral_radio radio_tipo_inmueble"
+                        data-radio_input="radio_input_tipo_inmueble"
+                        value="Oficina"
+                    />
+                    Oficina
+
+                </label>
+            </div>
+
+            <input
+                type="text"
+                name="tipo_inmueble"
+                class="radio_seleccionado radio_input_tipo_inmueble"
+                value="{{contenido_inmueble.tipo_inmueble}}"
+                data-input_radio="radio_tipo_inmueble"
+                hidden
+            />
+
+            <h5>PRECIO VENTA COMPETENCIA</h5>
+            {{! calculado del promedio de los inmuebles similares a este inmueble }}
+            <div class="form-group row">
+                <label for="label_precio_competencia" class="col-sm-12 col-lg-4 col-form-label">Pv
+                    competencia</label>
+                <div class="col-sm-12 col-lg-8 input-group">
+                    <input
+                        name="precio_competencia"
+                        type="number"
+                        step="0.01"
+                        class="form-control"
+                        id="label_precio_competencia"
+                        value="{{contenido_inmueble.precio_competencia}}"
+                        min="1"
+                        disabled
+                    />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg-warning">$us</span>
+                    </div>
+                </div>
+            </div>
+            <p class="text-left"><b>Nota: </b>El precio de venta de la COMPETENCIA debe ser por lo menos MAYOR que el
+                PRECIO JUSTO DE SOLIDEXA E IGUAL AL PROMEDIO DE LOS PRECIOS COMPARTIVOS DE MERCADO DE LOS 5 INMUEBLES SIMILARES AL PRESENTE INMUEBLE
+            </p>
+
+            <h5>GARANTÍA INMUEBLE</h5>
+
+            <div class="form-group row">
+                <label class="col-sm-12 col-lg-4 col-form-label">
+                    <input
+                        name="titulo_garantia_1"
+                        type="text"
+                        placeholder="Garantía fiduciaria"
+                        value="{{contenido_inmueble.titulo_garantia_1}}"
+                        class="form-control"
+                    />
+                </label>
+                <div class="col-sm-12 col-lg-8">
+                    <textarea
+                        name="garantia_1"
+                        class="form-control"
+                        rows="5"
+                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                        placeholder="Para saltos de línea use: <br> u otras etiquetas html"
+                    >{{contenido_inmueble.garantia_1}}</textarea>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-12 col-lg-4 col-form-label">
+                    <input
+                        name="titulo_garantia_2"
+                        type="text"
+                        placeholder="Garantía hipotecaria"
+                        value="{{contenido_inmueble.titulo_garantia_2}}"
+                        class="form-control"
+                    />
+                </label>
+                <div class="col-sm-12 col-lg-8">
+                    <textarea
+                        name="garantia_2"
+                        class="form-control"
+                        rows="5"
+                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                        placeholder="Para saltos de línea use: <br> u otras etiquetas html"
+                    >{{contenido_inmueble.garantia_2}}</textarea>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-12 col-lg-4 col-form-label">
+                    <input
+                        name="titulo_garantia_3"
+                        type="text"
+                        placeholder="Garantía Adicional"
+                        value="{{contenido_inmueble.titulo_garantia_3}}"
+                        class="form-control"
+                    />
+                </label>
+                <div class="col-sm-12 col-lg-8">
+                    <textarea
+                        name="garantia_3"
+                        class="form-control"
+                        rows="5"
+                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                        placeholder="Para saltos de línea use: <br> u otras etiquetas html"
+                    >{{contenido_inmueble.garantia_3}}</textarea>
+                </div>
+            </div>
+
+            <h5>VIDEO RECORRIDO VIRTUAL INMUEBLE</h5>
+
+            <div class="form-group row">
+                <label for="label_link_youtube_inmueble" class="col-sm-12 col-lg-4 col-form-label">Link
+                    video (obligatorio) https://</label>
+                <div class="col-sm-12 col-lg-8 input-group">
+                    <input
+                        name="link_youtube_inmueble"
+                        type="text"
+                        class="form-control"
+                        id="label_link_youtube_inmueble"
+                        value="{{contenido_inmueble.link_youtube_inmueble}}"
+                        placeholder="Escribirlo con https://"
+                        title="Importante escribirlo con: https://"
+                    />
+                </div>
+            </div>
+
+            {{! EL SERVICIO INMOBILIARO DE 0% COMISION, SERA EL MISMO QUE EL QUE SE PUSO EN LA DEL PROYECTO, POR TANTO YA NO SERA NECESARIO ESCRIBIRLO NUEVAMENTE, SINO QUE SERA COPIADO DIRECTAMENTE EN LA BASE DE DATOS, EXTRAYENDOLO DEL INMUEBLE }}
+
+        </div>
+
+    </div>
+    {{! ********************************************************************* }}
+    {{! las rentabilidades % y el tiempo en meses de recuperacion de la inversion, seran las mismas que las ya llenadas en el formulario del proyecto }}
+
+    {{! ********************************************************************* }}
+    
+    {{! <div class="container"> }}
+
+    <div class="table-responsive cuadro_estandart p-3 my-4">
+        <h5>INFORMACIÓN ECONÓMICA</h5>
+        <h6 class="text-danger my-2">¡Llene todos los campos!</h6>
+        <p class="text-left">
+            Los precios de los 5 inmuebles de referencia incluyen el valor de la <b>plusvalía y/o las ganancias de los inversionistas en el mercado tradicional</b>.
+        </p>
+        <table class="text-primary table table-bordered">
+
+            <tr>
+                <th class="text-center">DIRECCIÓN INMUEBLE</th>
+                <th class="text-center">SUPERFICIE M2</th>
+                <th class="text-center">PRECIO $us</th>
+
+            </tr>
+
+            <tr>
+                <td><input
+                        type="text"
+                        name="direccion_1"
+                        value="{{contenido_inmueble.direccion_comparativa.[0]}}"
+                        class="form-control"
+                        required
+                    />
+                </td>
+                <td><input
+                        type="number"
+                        step="0.01"
+                        name="superficie_m2_1"
+                        value="{{contenido_inmueble.m2_comparativa.[0]}}"
+                        class="form-control"
+                        required
+                    /></td>
+                <td><input
+                        type="number"
+                        step="0.01"
+                        name="precio_sus_1"
+                        value="{{contenido_inmueble.precio_comparativa.[0]}}"
+                        class="form-control"
+                        required
+                    /></td>
+
+            </tr>
+            <tr>
+
+                <td><input
+                        type="text"
+                        name="direccion_2"
+                        value="{{contenido_inmueble.direccion_comparativa.[1]}}"
+                        class="form-control"
+                        required
+                    />
+                </td>
+                <td><input
+                        type="number"
+                        step="0.01"
+                        name="superficie_m2_2"
+                        value="{{contenido_inmueble.m2_comparativa.[1]}}"
+                        class="form-control"
+                        required
+                    /></td>
+                <td><input
+                        type="number"
+                        step="0.01"
+                        name="precio_sus_2"
+                        value="{{contenido_inmueble.precio_comparativa.[1]}}"
+                        class="form-control"
+                        required
+                    /></td>
+
+            </tr>
+
+            <tr>
+
+                <td><input
+                        type="text"
+                        name="direccion_3"
+                        value="{{contenido_inmueble.direccion_comparativa.[2]}}"
+                        class="form-control"
+                        required
+                    />
+                </td>
+                <td><input
+                        type="number"
+                        step="0.01"
+                        name="superficie_m2_3"
+                        value="{{contenido_inmueble.m2_comparativa.[2]}}"
+                        class="form-control"
+                        required
+                    /></td>
+                <td><input
+                        type="number"
+                        step="0.01"
+                        name="precio_sus_3"
+                        value="{{contenido_inmueble.precio_comparativa.[2]}}"
+                        class="form-control"
+                        required
+                    /></td>
+
+            </tr>
+
+            <tr>
+
+                <td><input
+                        type="text"
+                        name="direccion_4"
+                        value="{{contenido_inmueble.direccion_comparativa.[3]}}"
+                        class="form-control"
+                        required
+                    />
+                </td>
+                <td><input
+                        type="number"
+                        step="0.01"
+                        name="superficie_m2_4"
+                        value="{{contenido_inmueble.m2_comparativa.[3]}}"
+                        class="form-control"
+                        required
+                    /></td>
+                <td><input
+                        type="number"
+                        step="0.01"
+                        name="precio_sus_4"
+                        value="{{contenido_inmueble.precio_comparativa.[3]}}"
+                        class="form-control"
+                        required
+                    /></td>
+
+            </tr>
+
+            <tr>
+                <td><input
+                        type="text"
+                        name="direccion_5"
+                        value="{{contenido_inmueble.direccion_comparativa.[4]}}"
+                        class="form-control"
+                        required
+                    />
+                </td>
+                <td><input
+                        type="number"
+                        step="0.01"
+                        name="superficie_m2_5"
+                        value="{{contenido_inmueble.m2_comparativa.[4]}}"
+                        class="form-control"
+                        required
+                    /></td>
+                <td><input
+                        type="number"
+                        step="0.01"
+                        name="precio_sus_5"
+                        value="{{contenido_inmueble.precio_comparativa.[4]}}"
+                        class="form-control"
+                        required
+                    /></td>
+
+            </tr>
+
+        </table>
+
+    </div>
+
+    <input type="submit" value="Guardar inmueble" class="boton_guardar_inmueble btn btn-primary" />
+
+</form>

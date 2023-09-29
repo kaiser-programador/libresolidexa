@@ -1,0 +1,115 @@
+{{!-- pagina de PROPIETARIO lado ADMINISTRADOR--}}
+
+{{!-- ------------------------- --}}
+{{!-- datos elementales --}}
+<div id="id_tipo_ventana" data-tipo_ventana="normal"></div>
+<div id="id_objetivo_tipo" data-objetivo_tipo="propietario"></div>
+<div id="id_objetivo_codigo" data-objetivo_codigo="{{codigo_propietario}}"></div>
+{{!-- ------------------------- --}}
+
+{{> opciones_nav}}
+
+{{> adm_cabezeras_internas}}
+
+<div class="pestanas_navegacion">
+    <ul class="nav nav-tabs" id="tab_propietario" role="tablist">
+        {{!-- de todos los tabs se eliminao el atributo data-toggle="tab" , esto para que funcionen los HREF y nos
+        redireccionen a la ventana correspondiente al tab elegido --}}
+
+        {{#if datos_propietario}}
+        <li class="nav-item">
+            <a href="/laapirest/propietario/{{codigo_propietario}}/datos" class="nav-link active"
+                id="datos_prop-tab" role="tab" aria-controls="datos_prop"
+                aria-selected="true">Información</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/propietario/{{codigo_propietario}}/datos" class="nav-link" id="datos_prop-tab"
+                role="tab" aria-controls="datos_prop" aria-selected="false">Información</a>
+        </li>
+        {{/if}}
+
+        {{#if resumen_propietario}}
+        <li class="nav-item">
+            <a href="/laapirest/propietario/{{codigo_propietario}}/resumen" class="nav-link active" id="resumen_prop-tab"
+                role="tab" aria-controls="resumen_prop" aria-selected="true">Resumen</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/propietario/{{codigo_propietario}}/resumen" class="nav-link" id="resumen_prop-tab"
+                role="tab" aria-controls="resumen_prop" aria-selected="false">Resumén</a>
+        </li>
+        {{/if}}
+
+
+        {{#if propiedades_propietario}}
+        <li class="nav-item">
+            <a href="/laapirest/propietario/{{codigo_propietario}}/propiedades" class="nav-link active"
+                id="propiedades_prop-tab" role="tab" aria-controls="propiedades_prop" aria-selected="true">Propiedades</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/propietario/{{codigo_propietario}}/propiedades" class="nav-link" id="propiedades_prop-tab"
+                role="tab" aria-controls="propiedades_prop" aria-selected="false">Propiedades</a>
+        </li>
+        {{/if}}
+
+        {{#if documentos_propietario}}
+        <li class="nav-item">
+            <a href="/laapirest/propietario/{{codigo_propietario}}/documentos" class="nav-link active"
+                id="documentos_prop-tab" role="tab" aria-controls="documentos_prop" aria-selected="true">Documentos</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/propietario/{{codigo_propietario}}/documentos" class="nav-link" id="documentos_prop-tab"
+                role="tab" aria-controls="documentos_prop" aria-selected="false">Documentos</a>
+        </li>
+        {{/if}}
+
+        {{#if eliminar_propietario}}
+        <li class="nav-item">
+            <a href="/laapirest/propietario/{{codigo_propietario}}/eliminar" class="nav-link active" id="eliminar_prop-tab"
+                role="tab" aria-controls="eliminar_prop" aria-selected="true">Eliminar</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/propietario/{{codigo_propietario}}/eliminar" class="nav-link" id="eliminar_prop-tab" role="tab"
+                aria-controls="eliminar_prop" aria-selected="false">Eliminar</a>
+        </li>
+        {{/if}}
+
+    </ul>
+</div>
+
+
+{{#if datos_propietario}}
+<span id="tipo_pestana_prop" data-id="datos_propietario"></span>
+<span class="segundero_propietario" data-segundero="no"></span>
+{{> adm_prop_datos}}
+{{/if}}
+
+{{#if resumen_propietario}}
+<span id="tipo_pestana_prop" data-id="resumen_propietario"></span>
+<span class="segundero_propietario" data-segundero="si"></span>
+{{> adm_cli_prop_resumen}}
+{{/if}}
+
+{{#if propiedades_propietario}}
+<span id="tipo_pestana_prop" data-id="propiedades_propietario"></span>
+<span class="segundero_propietario" data-segundero="no"></span>
+{{> adm_cli_prop_propiedades}}
+{{/if}}
+
+{{#if documentos_propietario}}
+<span id="tipo_pestana_prop" data-id="documentos_propietario"></span>
+<span class="segundero_propietario" data-segundero="no"></span>
+{{> adm_prop_documentos}}
+{{/if}}
+
+{{#if eliminar_propietario}}
+<span id="tipo_pestana_prop" data-id="eliminar_propietario"></span>
+<span class="segundero_propietario" data-segundero="no"></span>
+{{> adm_prop_eliminar}}
+{{/if}}
+
+{{> pie_pagina}}

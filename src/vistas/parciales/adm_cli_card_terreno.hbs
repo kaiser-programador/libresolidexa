@@ -1,0 +1,200 @@
+{{! CARD de TERRENO para vistas EXTERNAS lado ADMINISTRADOR Y CLIENTE }}
+
+<div class="card_un_inm_py mb-3 col-12 col-sm-6 col-md-4 col-lg-3">
+
+    <div class="card">
+
+        <div class="card-header" style="overflow: hidden;">
+
+            <div style="display: flex;">
+
+                <div style="width: 85%;">
+                    <div class="card-ciudad-provincia-direccion">
+                        {{ciudad}}
+                        /
+                        {{provincia}}
+                    </div>
+                    <div class="card-ciudad-provincia-direccion">
+                        {{direccion}}
+                    </div>
+                </div>
+                <div style="width: 15%;margin-top: 0.25em; margin-left: 0.25em;">
+                    {{! <i class="fas fa-location-arrow"></i> }}
+                    <img
+                        src="/rutavirtualpublico/imagenes/{{bandera_ciudad}}"
+                        title="Bandera ciudad"
+                        style="width: 100%;"
+                    />
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="contenedor_imagen">
+
+            <a href="{{laapirest}}terreno/{{codigo_terreno}}/descripcion">
+
+                {{#if imagen_encontrado}}
+                    <img
+                        src="/rutavirtualpublico/subido/{{imagen_terreno}}"
+                        title="{{nombre_imagen}}"
+                        alt="Imagen principal Terreno"
+                        class="estilo_imagen card-img-top"
+                    />
+                {{else}}
+                    <img
+                        src="/rutavirtualpublico/imagenes/sinimagen.png"
+                        alt="Imagen principal Terreno"
+                        class="estilo_imagen card-img-top"
+                    />
+                {{/if}}
+
+                {{! aqui el circulo de ocupacion ej/ 0 de 3 }}
+
+                <div class="contenedor_barra_circular">
+                    {{! data-readOnly=true si no se pone este elemento entonces se dinamizara con el raton }}
+                    {{! data-displayInput=false poner esto oculta el cuadro del numero central, no ponerlo lo hace
+                    visible }}
+                    {{! value="80"  es el valor del circulo que va de 0 a 100 }}
+                    <input
+                        class="knob"
+                        data-width="150"
+                        data-height="150"
+                        data-displayPrevious="true"
+                        data-fgColor="#fe5d15"
+                        data-skin="tron"
+                        data-thickness=".2"
+                        value="{{porcentaje_circular}}"
+                        data-readOnly="true"
+                        data-displayInput="false"
+                    />
+
+                </div>
+
+                <div class="texto-te-disponibles">
+                    <div>
+                        <span>{{anteproyectos_registrados}}</span>
+                        <span>de</span>
+                        <span>{{anteproyectos_maximo}}</span>
+                    </div>
+                </div>
+
+                <div class="contenedor-card-iconos-vertical">
+                    <div title="Facebook">
+                        <a href="{{link_facebook}}" target="_blank"><i
+                                class="icono_card fab fa-facebook"
+                            ></i></a>
+                    </div>
+                    <div class="my-2" title="Instagram">
+                        <a href="{{link_instagram}}" target="_blank"><i
+                                class="icono_card fab fa-instagram"
+                            ></i></a>
+                    </div>
+                    <div title="Youtube">
+                        <a href="{{link_youtube}}" target="_blank"><i
+                                class="icono_card fab fa-youtube"
+                            ></i></a>
+                    </div>
+                    <div class="mt-2" title="TikTok">
+                        <a href="{{link_tiktok}}" target="_blank">
+                            <svg
+                                class="tiktok-icono"
+                                xmlns="http://www.w3.org/2000/svg"
+                                aria-hidden="true"
+                                data-prefix="fab"
+                                data-icon="tiktok"
+                                viewBox="0 0 448 512"
+                            >
+                                <path
+                                    d="M448 209.91a210.06 210.06 0 01-122.77-39.25v178.72A162.55 162.55 0 11185 188.31v89.89a74.62 74.62 0 1052.23 71.18V0h88a121.18 121.18 0 001.86 22.17A122.18 122.18 0 00381 102.39a121.43 121.43 0 0067 20.14z"
+                                ></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <a class="capa" href="{{laapirest}}terreno/{{codigo_terreno}}/descripcion">
+                    <h1>Ver +</h1>
+                </a>
+
+                <a class="capa_te" href="{{laapirest}}terreno/{{codigo_terreno}}/descripcion">
+                </a>
+
+            </a>
+        </div>
+
+        <div class="card-body py-2">
+            <div class="d-flex justify-content-between">
+                {{! antes era: "Finaliza" }}
+                <div class="h6">{{factor_tiempo_titulo}}</div>
+                {{! entre llaves estaba: "factor_tiempo" }}
+                <div class="h6">{{factor_tiempo_tiempo}}</div>
+            </div>
+
+            <div style="position: relative;">
+                <div class="progress" style="height: 1.5rem;">
+                    <div
+                        class="progress-bar"
+                        role="progressbar"
+                        style="width: {{factor_tiempo_porcentaje}}%;"
+                    ></div>
+                </div>
+                <div class="css-val-porcentaje-celda">
+                    <span>{{factor_tiempo_porcentaje_render}}</span>
+                    <span>%</span>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between my-2">
+                <div class="linea-v text-center w-50">
+                    <div class="mb-1">
+                        <span class="h6">Superficie</span>
+                    </div>
+                    <div>
+                        <div class="h6">
+                            <b>
+                                <span class="v_superficie" valor="{{superficie_num}}">
+                                    {{superficie}}
+                                </span>
+                                <span>m<sup>2</sup></span>
+
+                            </b>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center w-50">
+                    <div class="mb-1">
+                        <span class="h6">Precio</span>
+                    </div>
+                    <div>
+                        <div class="h6">
+                            <b>
+                                <span class="v_precio" valor="{{precio_sus_num}}">{{precio_sus}}</span>
+                                <span>$us</span>
+                            </b>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="linea-h"></div>
+        </div>
+
+        {{!-- <div class="card-footer mx-3 mb-2" title="Código terreno">
+            {{codigo_terreno}}
+        </div> --}}
+
+        <div class="card-footer mx-3 mb-2" title="Código del terreno">
+            <a href="{{laapirest}}terreno/{{codigo_terreno}}/descripcion">
+                {{codigo_terreno}}
+            </a>
+        </div>
+
+
+        <span class="v_vencimiento" valor="{{vencimiento}}" hidden></span>
+        <span class="v_disponibles" valor="{{disponibles}}" hidden></span>
+
+    </div>
+
+</div>

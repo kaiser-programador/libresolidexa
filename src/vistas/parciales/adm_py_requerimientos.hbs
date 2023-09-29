@@ -1,0 +1,414 @@
+{{! para pestaña REQUERIMIENTOS del lado del ADMINISTRADOR }}
+
+{{! PARA LOS REQUERIMIENTOS DEL PROYECTO }}
+
+<div class="contenido container-fluid mt-3">
+
+    <div class="row">
+        <div class="mb-3 col-12 col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>VISIBILIDAD</h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-check d-flex justify-content-between align-items-center">
+                        {{! "form-check" HACE QUE EL ELEMENTO NO ESTE CHOCANDO A LOS LATERALES, LE
+                                    PONE ESPACIOS A LOS CASTADOS }}
+                        <label>
+                            {{! "data-marcado" le pondremos por defecto en "false" }}
+                            <input
+                                type="checkbox"
+                                name="proyecto_visible"
+                                class="form-check-input casilla_requerimientos_visible"
+                                seleccionado="no"
+                                value="visible"
+                                data-marcado="false"
+                                style="zoom: 1.4;"
+                            />Requerimientos visibles
+                        </label>
+                    </div>
+                    <input
+                        type="text"
+                        class="input_visibilidad_requerimientos"
+                        value="{{contenido_proyecto.existe_requerimientos}}"
+                        hidden
+                    />
+                    <button
+                        class="mt-3 btn btn-primary"
+                        id="guardar_visibilidad_requerimientos"
+                    >Guardar</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3 col-12 col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>EXISTENTE</h5>
+                </div>
+
+                <div class="card-body">
+
+                    <form id="form_existente_requerimientos">
+
+                        <div class="ml-3">
+
+                            <div class="form-group">
+                                <label for="label_existente_requerimientos_html" class="form-label">Texto
+                                    que acompañara a la existencia de requerimientos para el proyecto</label>
+                                <div>
+                                    <textarea
+                                        name="existente_requerimientos_html"
+                                        placeholder="Deseamos contribuir en el mejoramiento economico de las familias bolivianas, es por ello que presentamos oportunidades de empleo por medio de la adquisicion de servicios, insumos, materiales, etc. Envie su propuesta por medio de WhatsApp al número ####### tambien puede comunicarse a dicho número en caso de que requiera mayor infomación"
+                                        class="form-control"
+                                        id="label_existente_requerimientos_html"
+                                        rows="4"
+                                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                                    >{{contenido_proyecto.nota_si_requerimientos}}</textarea>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <input
+                            type="text"
+                            name="codigo_proyecto_existente_html"
+                            value="{{codigo_proyecto}}"
+                            hidden
+                        />
+
+                        <div class="text-center">
+                            <input
+                                type="submit"
+                                value="Guardar"
+                                class="ref_boton_existente btn btn-primary"
+                            />
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3 col-12 col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>INEXISTENTE</h5>
+                </div>
+
+                <div class="card-body">
+
+                    <form id="form_inexistente_requerimientos">
+
+                        <div class="ml-3">
+
+                            <div class="form-group">
+                                <label
+                                    for="label_inexistente_requerimientos_html"
+                                    class="form-label"
+                                >Único texto visible ante la inexistencia de requerimientos</label>
+                                <div>
+                                    <textarea
+                                        name="inexistente_requerimientos_html"
+                                        placeholder="El presente proyecto actualmente no cuenta con requerimientos, por favor consulte en otros proyectos de la plataforma o bien puede hacerlo a traves del buscador"
+                                        class="form-control"
+                                        id="label_inexistente_requerimientos_html"
+                                        rows="4"
+                                    >{{contenido_proyecto.nota_no_requerimientos}}</textarea>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <input
+                            type="text"
+                            name="codigo_proyecto_inexistente_html"
+                            value="{{codigo_proyecto}}"
+                            hidden
+                        />
+
+                        <div class="text-center">
+                            <input
+                                type="submit"
+                                value="Guardar"
+                                class="ref_boton_inexistente btn btn-primary"
+                            />
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<div class="container-fluid madre_requerimiento">
+    <div class="contenido mt-4 p-4 cuadro_estandart">
+
+        <h5>AGREGAR REQUERIMIENTO</h5>
+        <p class="text-left"><b>Nota: </b>Llenar los campos de la tabla solo en caso de que exista
+            información</p>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="barra-deslizadora-mob table-responsive">
+                    <table class="text-primary table table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="text-center texto-resaltado">Requerimiento</th>
+                                <th class="text-center texto-resaltado">Descripción</th>
+                                <th class="text-center texto-resaltado">Cantidad</th>
+                                <th class="text-center texto-resaltado">Presupuesto Max.</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+
+                                <td>
+                                    <textarea
+                                        placeholder="Cemento / Servicio de Estudio de suelos"
+                                        class="texto_requerimiento form-control"
+                                        rows="4"
+                                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                                        style="min-width: 8em;"
+                                    ></textarea>
+                                </td>
+
+                                <td>
+                                    <textarea
+                                        placeholder="Tipo IP 40 / Elaboración de estudio de suelo"
+                                        class="texto_descripcion form-control"
+                                        rows="4"
+                                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                                        style="min-width: 8em;"
+                                    ></textarea>
+                                </td>
+
+                                <td>
+                                    <textarea
+                                        placeholder="50 Bolsas / 1"
+                                        class="texto_cantidad form-control"
+                                        rows="4"
+                                        style="min-width: 8em;"
+                                    ></textarea>
+                                </td>
+
+                                <td>
+                                    <textarea
+                                        placeholder="1.250,30 Bs / 420 Sus. / Sin especificar / (vacio)"
+                                        class="texto_presupuesto form-control"
+                                        rows="4"
+                                        style="min-width: 8em;"
+                                    ></textarea>
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-12 ref_botones_tabla">
+                <div class="d-inline-block p-3">
+                    <button class="btn btn-primary mr-3" id="id_guardar_requerimiento">+ Agregar</button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="contenido my-4 p-4 cuadro_estandart">
+
+        <div class="row mx-1">
+            <div class="col-12 px-0 mt-3 mb-2">
+                <div class="cuadro_estandart p-2 d-flex justify-content-between">
+                    <div class="mt-1 ref_titulo_py_inm_r_o_b h5 d-none d-sm-block">
+                        <span
+                            class="listado_requerimientos texto-resaltado"
+                            data-id="{{contenido_proyecto.num_requerimientos}}"
+                        >LISTADO {{contenido_proyecto.n_requerimientos}}</span>
+                    </div>
+                    <div>
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="palabras_buscar_py_req"
+                            placeholder="Buscar requerimiento"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{! aqui la tabla con el boton de eliminar }}
+        <div id="lista_requerimientos_render" class="row mt-3">
+            <div class="col-12">
+                <div class="tabla_caracteristicas barra-deslizadora-mob table-responsive">
+                    <table class="text-primary table table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="text-left texto-resaltado">#</th>
+                                <th class="text-left texto-resaltado">Fecha</th>
+                                <th class="text-left texto-resaltado">Código</th>
+                                <th class="text-left texto-resaltado">Requerimiento</th>
+                                <th class="text-left texto-resaltado">Descripción</th>
+                                <th class="text-left texto-resaltado">Cantidad</th>
+                                <th class="text-left texto-resaltado">Presupuesto Max.</th>
+                                <th class="text-left texto-resaltado">Eliminar</th>
+                            </tr>
+                        </thead>
+                        {{! clase "cuerpo_filas" como referencia para agregar una nueva fila despues de
+                        esta clase como HIJO con "append" }}
+                        <tbody class="cuerpo_filas texto-normal">
+
+                            {{#each contenido_proyecto.tabla_requerimientos}}
+
+                                <tr class="fila_registro">
+                                    <td class="text-center numero_fila">{{indice}}</td>
+
+                                    <td>
+                                        <div style="min-width: 8em;">
+                                            {{fecha}}
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div style="min-width: 8em;">
+                                            {{codigo_requerimiento}}
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div style="min-width: 8em;">
+                                            {{requerimiento}}
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div style="min-width: 8em;">
+                                            {{descripcion}}
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div style="min-width: 8em;">
+                                            {{cantidad}}
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div style="min-width: 8em;">
+                                            {{presupuesto_maximo}}
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div class="d-flex">
+                                            <button
+                                                class="boton_fila_eliminar_req d-block btn p-1"
+                                                data-id="{{codigo_requerimiento}}"
+                                            ><i class="fas fa-window-close size_iconos"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                            {{/each}}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="lista_requerimientos_todos" class="row mt-5" hidden>
+
+            <div class="col-12">
+
+                {{! "table-responsive" es para que tenga un scroll en tamaños muy pequeños }}
+                <div class="tabla_caracteristicas table-responsive cuadro_estandart p-4">
+
+                    <table class="tabla_contenedora table">
+                        <thead>
+                            <tr>
+                                <th class="text-left texto-resaltado">#</th>
+                                <th class="text-left texto-resaltado">Fecha</th>
+                                <th class="text-left texto-resaltado">Código</th>
+                                <th class="text-left texto-resaltado">Requerimiento</th>
+                                <th class="text-left texto-resaltado">Descripción</th>
+                                <th class="text-left texto-resaltado">Cantidad</th>
+                                <th class="text-left texto-resaltado">Presupuesto Max.</th>
+                                <th class="text-left texto-resaltado">Eliminar</th>
+                            </tr>
+                        </thead>
+
+                        <tbody class="cuerpo_filas texto-normal">
+
+                            {{#each contenido_proyecto.tabla_requerimientos}}
+                                <tr class="fila_registro">
+                                    <td class="text-center numero_fila">{{indice}}</td>
+
+                                    <td>
+                                        <div style="min-width: 8em;">
+                                            {{fecha}}
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div style="min-width: 8em;">
+                                            {{codigo_requerimiento}}
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div style="min-width: 8em;">
+                                            {{requerimiento}}
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div style="min-width: 8em;">
+                                            {{descripcion}}
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div style="min-width: 8em;">
+                                            {{cantidad}}
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div style="min-width: 8em;">
+                                            {{presupuesto_maximo}}
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div class="d-flex">
+                                            <button
+                                                class="boton_fila_eliminar_req d-block btn p-1"
+                                                data-id="{{codigo_requerimiento}}"
+                                            ><i class="fas fa-window-close size_iconos"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {{/each}}
+
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,186 @@
+{{! PARA LA PESTAÑA DE IMAGENES DEL INMUEBLE lado del ADMINISTRADOR }}
+
+<div class="contenido container-fluid contenedor_imagenes_subidas mt-4">
+
+    <div class="row">
+
+        <div class="col-12 contenedor_titulo_imagen_principal mt-2">
+            <h5 class="cuadro_estandart p-2 text-center">
+                <b>IMAGEN PRINCIPAL DEL INMUEBLE</b></h5>
+        </div>
+
+        {{#each contenido_inmueble.imagenesDelInmueble_principal}}
+            <div
+                class="cuadro_contenedor_imagen la_imagen_principal mb-3 col-12 col-sm-6 col-md-4 col-lg-3"
+            >
+                <div class="card">
+
+                    <div class="card-header p-0">
+                        <div class="d-flex p-0 m-0">
+
+                            <div class="align-self-center w-75 py-2 ml-2 text-primary">
+                                <h6>{{nombre_imagen}}</h6>
+                            </div>
+
+                            <div
+                                class="boton_eliminar_imagen_jquery text-center ir_rojo text-danger w-25 align-self-center border-left"
+                                data-id="{{codigo_imagen}}"
+                            >
+                                <i class="fas fa-window-close py-1" style="font-size: 2em;"></i>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    {{! .h-100 es para que la imagen no se desproporcione cuando se aumente el tamaño de la
+                ventana }}
+                    <img
+                        src="/rutavirtualpublico/subido/{{codigo_imagen}}{{extension_imagen}}"
+                        alt="{{nombre_imagen}}"
+                        title="{{codigo_imagen}}"
+                        class="estilo_imagen card-img-top"
+                    />
+
+                    <div class="card-body">
+
+                        <button
+                            class="boton_seleccionar_deseleccionar_imagen_jquery btn btn-success mb-2"
+                            data-id="{{codigo_imagen}}/{{codigo_inmueble}}"
+                        >Exclusiva</button>
+
+                        <button
+                            class="selec_deselec_imagen_principal btn btn-primary mb-2"
+                            data-id="{{codigo_imagen}}/{{codigo_inmueble}}"
+                        >Principal</button>
+                    </div>
+                </div>
+            </div>
+        {{/each}}
+
+    </div>
+
+    {{! aqui agregar esa linea de HTML que sirve para separar }}
+    {{! linea separadora }}
+    <hr class="border-success mx-3" />
+
+    <div class="row">
+
+        <div class="contenedor_titulo_imagenes_pertenecen col-12">
+            <h5 class="cuadro_estandart p-2 text-center">
+                <b>IMAGENES PERTENECIENTES AL INMUEBLE</b></h5>
+        </div>
+
+        {{#each contenido_inmueble.imagenesDelInmueble_exclusiva}}
+
+            <div class="cuadro_contenedor_imagen col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card">
+
+                    <div class="card-header p-0">
+                        <div class="d-flex p-0 m-0">
+
+                            <div class="align-self-center w-75 py-2 ml-2 text-primary">
+                                <h6>{{nombre_imagen}}</h6>
+                            </div>
+
+                            <div
+                                class="boton_eliminar_imagen_jquery text-center ir_rojo text-danger w-25 align-self-center border-left"
+                                data-id="{{codigo_imagen}}"
+                            >
+                                <i class="fas fa-window-close py-1" style="font-size: 2em;"></i>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    {{! h-100 es para que la imagen no se desproporcione cuando se aumente el tamaño de la
+                ventana }}
+                    <img
+                        src="/rutavirtualpublico/subido/{{codigo_imagen}}{{extension_imagen}}"
+                        alt="{{nombre_imagen}}"
+                        title="{{codigo_imagen}}"
+                        class="estilo_imagen card-img-top"
+                    />
+
+                    <div class="card-body">
+
+                        <button
+                            class="boton_seleccionar_deseleccionar_imagen_jquery btn btn-success mb-2"
+                            data-id="{{codigo_imagen}}/{{codigo_inmueble}}"
+                        >Exclusiva</button>
+
+                        <button
+                            class="selec_deselec_imagen_principal btn btn-primary mb-2"
+                            data-id="{{codigo_imagen}}/{{codigo_inmueble}}"
+                        >Principal</button>
+                    </div>
+                </div>
+            </div>
+        {{/each}}
+
+    </div>
+
+    {{! aqui agregar esa linea de HTML que sirve para separar }}
+    <hr class="border-success mx-3" />
+
+    <div class="row">
+
+        <div class="contenedor_titulo_imagenes_otras col-12">
+            <h5 class="cuadro_estandart p-2 text-center">
+                <b>IMAGENES OTRAS</b></h5>
+        </div>
+
+        {{#each contenido_inmueble.imagenesDelInmueble_otros}}
+
+            <div class="cuadro_contenedor_imagen mb-3 col-12 col-sm-6 col-md-4 col-lg-3">
+
+                <div class="card">
+
+                    <div class="card-header p-0">
+                        <div class="d-flex p-0 m-0">
+
+                            <div class="align-self-center w-75 py-2 ml-2 text-primary">
+                                <h6>{{nombre_imagen}}</h6>
+                            </div>
+
+                            <div
+                                class="boton_eliminar_imagen_jquery text-center ir_rojo text-danger w-25 align-self-center border-left"
+                                data-id="{{codigo_imagen}}"
+                            >
+                                <i class="fas fa-window-close py-1" style="font-size: 2em;"></i>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    {{! h-100 es para que la imagen no se desproporcione cuando se aumente el tamaño de la
+                ventana }}
+                    <img
+                        src="/rutavirtualpublico/subido/{{codigo_imagen}}{{extension_imagen}}"
+                        alt="{{nombre_imagen}}"
+                        title="{{codigo_imagen}}"
+                        class="estilo_imagen card-img-top"
+                    />
+
+                    <div class="card-body">
+
+                        <button
+                            class="boton_seleccionar_deseleccionar_imagen_jquery btn btn-success mb-2"
+                            data-id="{{codigo_imagen}}/{{codigo_inmueble}}"
+                        >Exclusiva</button>
+
+                        <button
+                            class="selec_deselec_imagen_principal btn btn-primary mb-2"
+                            data-id="{{codigo_imagen}}/{{codigo_inmueble}}"
+                        >Principal</button>
+                    </div>
+
+                </div>
+
+            </div>
+        {{/each}}
+
+    </div>
+
+</div>

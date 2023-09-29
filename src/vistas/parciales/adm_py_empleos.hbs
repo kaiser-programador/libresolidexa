@@ -1,0 +1,228 @@
+{{! PARA EMPLEOS }}
+
+<div class="contenido container-fluid mt-4 p-4 cuadro_estandart">
+
+    <div class="row d-block">
+        <div class="col-12">
+            <h5>EMPLEOS GENERADOS</h5>
+            <p class="text-left"><b>Nota: </b>A continuación se detalle un informe de GENERACIÓN DE EMPLEOS lograda
+                con la ejecución del presente proyecto</p>
+            <p class="text-left">
+                La descripción debe ser GENÉRICA pues sera la misma que se vera tanto en el lado del
+                PROYECTO, como en cada uno de sus INMUEBLES
+            </p>
+        </div>
+    </div>
+
+    {{! hacer un guradador de formulario de empleos id="guardar_formulario_empleos" o reutirlizar el codigo de guardador de responsabilidad social, especificando cuando es responsabilidad social y cuando es empleos }}
+    <div class="row">
+        <div class="col-12 col-sm-6">
+            <form
+                action=""
+                method=""
+                enctype="multipart/form-data"
+                id="guardar_formulario_empleos"
+                class="roww mx-2 p-3"
+            >
+
+                <div class="form-group row">
+                    <label
+                        for="label_descripcion_empleo"
+                        class="col-sm-12 col-lg-4 col-form-label"
+                    >Descripción</label>
+                    <div class="col-sm-12 col-lg-8">
+                        <textarea
+                            name="descripcion_empleo"
+                            class="form-control"
+                            id="label_descripcion_empleo"
+                            rows="5"
+                            placeholder="Con la puesta en marcha del proyecto se generaran empleos directos e indirectos dentro nuestra sociedad, para beneficio de las familias bolivianas"
+                            title="Para saltos de línea use: <br> u otras etiquetas html"
+                            required
+                        >{{contenido_proyecto.descripcion_empleo}}</textarea>
+                    </div>
+                </div>
+
+                <div class="ref_boton_rs col-12 text-center">
+                    <button class="mx-3 btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="contenido container-fluid madre_tabla mt-4 p-4 cuadro_estandart">
+
+    <h5>EMPLEOS DETALLES</h5>
+    <p class="text-left"><b>Nota: </b>Llenar los campos de la tabla solo en caso de que exista información</p>
+
+    <div class="row">
+        <div class="col-12 ref_botones_tabla">
+            <div class="d-inline-block p-3">
+                <button class="btn btn-primary mr-3" id="id_guardar_tabla">Guardar tabla</button>
+
+                <button class="btn btn-danger" id="id_eliminar_tabla">Eliminar tabla</button>
+            </div>
+        </div>
+        <div id="tipo_tabla_objetivo" data-id="py_empleos"></div>
+    </div>
+
+    {{! aqui la tabla con el boton de eliminar }}
+    <div class="row mt-3">
+        <div class="col-12">
+            <div class="table-responsive">
+                <table class="text-primary table table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="text-center texto-resaltado">#</th>
+                            <th class="text-center texto-resaltado">BENEFICIARIO</th>
+                            <th class="text-center texto-resaltado">DIRECTO / INDIRECTO</th>
+                            <th class="text-center texto-resaltado">CANTIDAD</th>
+                            <th class="text-center texto-resaltado">BENEFICIO $us</th>
+                            <th class="text-center texto-resaltado">ACCIÓN</th>
+                        </tr>
+                    </thead>
+                    {{! clase "cuerpo_filas" como referencia para agregar una nueva fila despues de
+                        esta clase como HIJO con "append" }}
+                    <tbody class="cuerpo_filas">
+
+                        {{#if contenido_proyecto.tabla_empleos_sociedad}}
+
+                            {{#each contenido_proyecto.tabla_empleos_sociedad}}
+
+                                <tr class="fila_fila">
+                                    <td class="text-center numero_fila" data-id="{{0}}">{{0}}</td>
+
+                                    <td><input
+                                            type="text"
+                                            class="form-control fila_input"
+                                            data-tipo="texto"
+                                            style="min-width: 8em;"
+                                            value="{{1}}"
+                                        />
+                                    </td>
+
+                                    <td><input
+                                            type="text"
+                                            class="form-control fila_input"
+                                            data-tipo="texto"
+                                            style="min-width: 8em;"
+                                            value="{{2}}"
+                                        />
+                                    </td>
+
+                                    <td><input
+                                            type="number"
+                                            class="form-control fila_input"
+                                            data-tipo="numero"
+                                            step="0.01"
+                                            style="min-width: 5em;"
+                                            value="{{3}}"
+                                        />
+                                    </td>
+
+                                    <td><input
+                                            type="number"
+                                            class="form-control fila_input"
+                                            data-tipo="numero"
+                                            step="0.01"
+                                            style="min-width: 5em;"
+                                            value="{{4}}"
+                                        />
+                                    </td>
+
+                                    <td>
+                                        <div class="d-flex">
+                                            <button
+                                                class="boton_fila_arriba d-block btn p-1"
+                                                data-id="{{0}}"
+                                            ><i
+                                                    class="fas fa-arrow-circle-up size_iconos"
+                                                ></i></button>
+                                            <button
+                                                class="boton_fila_abajo d-block btn mx-1 p-1"
+                                                data-id="{{0}}"
+                                            ><i
+                                                    class="fas fa-arrow-circle-down size_iconos"
+                                                ></i></button>
+                                            <button
+                                                class="boton_fila_eliminar d-block btn p-1"
+                                                data-id="{{0}}"
+                                            ><i
+                                                    class="fas fa-window-close size_iconos"
+                                                ></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                            {{/each}}
+
+                        {{else}}
+
+                            <tr class="fila_fila">
+                                <td class="text-center numero_fila" data-id="1">1</td>
+
+                                <td><input
+                                        type="text"
+                                        class="form-control fila_input"
+                                        data-tipo="texto"
+                                        style="min-width: 8em;"
+                                    />
+                                </td>
+
+                                <td><input
+                                        type="text"
+                                        class="form-control fila_input"
+                                        data-tipo="texto"
+                                        style="min-width: 8em;"
+                                    />
+                                </td>
+
+                                <td><input
+                                        type="number"
+                                        class="form-control fila_input"
+                                        data-tipo="numero"
+                                        step="0.01"
+                                        style="min-width: 5em;"
+                                    />
+                                </td>
+
+                                <td><input
+                                        type="number"
+                                        class="form-control fila_input"
+                                        data-tipo="numero"
+                                        step="0.01"
+                                        style="min-width: 5em;"
+                                    />
+                                </td>
+
+                                <td>
+                                    <div class="d-flex">
+                                        <button
+                                            class="boton_fila_arriba d-block btn p-1"
+                                            data-id="1"
+                                        ><i class="fas fa-arrow-circle-up size_iconos"></i></button>
+                                        <button
+                                            class="boton_fila_abajo d-block btn mx-1 p-1"
+                                            data-id="1"
+                                        ><i
+                                                class="fas fa-arrow-circle-down size_iconos"
+                                            ></i></button>
+                                        <button
+                                            class="boton_fila_eliminar d-block btn p-1"
+                                            data-id="1"
+                                        ><i class="fas fa-window-close size_iconos"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        {{/if}}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+</div>

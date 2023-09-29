@@ -1,0 +1,144 @@
+{{! PARA LA PESTAÑA DE PROPIETARIO DEL INMUEBLE lado del ADMINISTRADOR }}
+
+<div class="contenido container-fluid">
+    
+    <div class="row mt-4">
+        {{!-- se muestra el campo para llenar nuevo propietario, solo si no existe propietario activo para este inmueble, es decir cuando "existe_propietario" es FALSE --}}
+        {{#unless contenido_propietario.existe_propietario}}
+            <div class="col-12 col-sm-6 col-lg-4">
+                <div class="card mb-2">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5>AGREGAR PROPIETARIO</h5>
+                        <i class="d-block fas fa-user size_iconos"></i>
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="input-group ref_idCedulaIdentidad">
+                            <input
+                                type="text"
+                                id="idCedulaIdentidad"
+                                class="form-control"
+                                placeholder="Cedula de identidad"
+                            />
+
+                            {{!-- data-tipo_llenado="datos_pagos_a" o "datos_pagos_b" o "datos" o "pagos" --}}
+                            {{!-- data-ci="" o "###" o "###" o "###" --}}
+                            {{!-- data-codigo_inmueble="###" o "###" o "" o "###" --}}
+
+                            {{!-- en lugar de "button" se encontraba "a" --}}
+                            <div class="input-group-append">
+                                <button class="llenar_datos_pagos_propietario btn btn-outline-secondary boton_resaltado" data-tipo_llenado="datos_pagos_a" data-ci="" data-codigo_inmueble="{{codigo_inmueble}}">
+                                    <i class="fas fa-user">
+                                    </i>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        {{/unless}}
+        <div class="col-12 col-sm-6 col-lg-4">
+            <div class="card mb-2">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>INMUEBLE</h5>
+                    <i class="d-block fas fa-house-user size_iconos"></i>
+                </div>
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-6">
+                                    Reserva:
+                                </div>
+                                <div class="col-6">
+                                    <span>{{reserva_render}}</span> <span>$us</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-6">
+                                    Precio Justo:
+                                </div>
+                                <div class="col-6">
+                                    <span>{{precio_render}}</span> <span>$us</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-6">
+                                    Plusvalía:
+                                </div>
+                                <div class="col-6">
+                                    <span>{{plusvalia_render}}</span> <span>$us</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+    <div class="card mt-4">
+        <div class="card-header ref_boton_datos_pagos_propietario">
+            <div class="d-flex justify-content-between">
+                <h5>INFORMACIÓN PROPIETARIO</h5>
+                <div>
+                    {{!-- data-id="guardar_datos_pagos_a"  o "guardar_datos_pagos_b" o  "guardar_datos" --}}
+                    <button
+                    type="button"
+                    class="btn btn-primary mr-3"
+                    id="guardar_datos_pagos_propietario"
+                    data-id="guardar_datos_pagos_a"
+                    data-ci="{{contenido_propietario.propietario_datos.ci_propietario}}"
+                    >
+                    Guardar
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn btn-danger"
+                        id="eliminar_datos_pagos_propietario"
+                        data-ci="{{contenido_propietario.propietario_datos.ci_propietario}}"
+                    >
+                        Eliminar
+                    </button>
+                </div>
+                
+            </div>
+            
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                
+                {{!-- <div class="p-3 col-12 col-sm-6"> --}}
+                <div class="p-3 col-12 col-lg-9 col-xl-6">
+
+                    <div>
+                        {{> adm_propietario_datos}}
+                    </div>
+
+                </div>
+
+                {{> adm_propietario_pagos}}
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,83 @@
+{{! para PROYECTO pestaña INMUEBLES del lado del ADMINISTRADOR }}
+
+{{! boton para crear nuevo inmueble }}
+<div class="contenido container-fluid my-3">
+
+    <div class="card" style="max-width: 36rem;">
+        <h5 class="card-header">CREAR NUEVO INMUEBLE</h5>
+        <div class="card-body text-primary">
+            {{! importante es que tenga el METODO DESEADO, en este caso sera "post" , el
+                            "action" se le dara en su jquery de su boton "crear nuevo inmueble" }}
+            <form target="_blank" id="formulario_creador_inmueble" method="post">
+                {{! mantenemos este "FORM", porque necesitamos de su "_blank" para que habra
+                                la ventana del inmueble creado en una NUEVA VENTANA }}
+            </form>
+
+            {{! el boton tipo "button" deve estar fuera del FORM }}
+            <input
+                type="button"
+                id="creador_nuevo_inmueble"
+                value="Crear inmueble"
+                data-id="{{codigo_proyecto}}"
+                class="btn btn-primary"
+            />
+        </div>
+    </div>
+
+</div>
+
+<hr class="border-success mx-3" />
+
+{{> adm_cli_filtro_orden_inm}}
+
+<div class="contenido container-fluid">
+    <div class="row">
+
+        <div class="col-md-12 contenedor_madre_inmuebles">
+
+            {{! IMPORTANTE: PARA TENER UN ORDENAMIENTO POR PISO POR DEFECTO, YA SE LO HACE EN LA
+                RENDERIZACION DE LA VENTANA DEL PROYECTO }}
+
+            {{! -------------------------------------------------------- }}
+
+            <div class="row mx-1">
+                {{! px-0 para que el col no tenga espacios a sus laterales por defecto }}
+                <div class="col-12 px-0 mt-3 mb-2">
+                    <div
+                        class="cuadro_estandart p-2 mb-2 d-flex justify-content-between"
+                    >
+                        <div class="filtrador btn btn-primary" href="#ventanaModalFiltros" data-toggle="modal">
+                            <i class="fas fa-filter size-iconos"></i>
+                        </div>
+                        <div class="mt-1 ref_titulo_py_inm_r_o_b h5 d-none d-sm-block">
+                            <span class="t_busqueda"></span>
+                            <span class="t1_inv_inm">Todos &gt;</span>
+                            <span class="t2_inv_inm">Piso</span>
+                        </div>
+                        <div>
+                            <input type="text" class="form-control" id="palabras_buscar_py_inm" placeholder="Buscar inmuebles">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row" id="contenedor_py_inm_render">
+                <div class="ref_tipo_py_inm"></div>
+                {{! debajo de esta ref, es que se renderizaran los inmuebles dependiendo del radi elegido
+                    y del tipo de orden elegido, tambien util para los filtros casillas }}
+            </div>
+
+            <div class="row" id="contenedor_py_inm_todos" hidden>
+
+                {{#each contenido_proyecto}}
+                {{> adm_cli_card_inmueble}}
+                {{/each}}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

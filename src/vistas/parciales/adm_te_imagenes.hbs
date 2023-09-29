@@ -1,0 +1,183 @@
+{{! imagenes del TERRENO lado del ADMINISTRADOR }}
+
+<div class="contenido container-fluid">
+
+    <div class="card my-4" style="max-width: 40rem;">
+
+        <h5 class="card-header">SUBIR ARCHIVO IMAGEN</h5>
+
+        <div class="card-body text-primary">
+
+            <form enctype="multipart/form-data" id="idSubirImagen">
+
+                <div class="form-group row">
+
+                    {{! name="subirArchivoNavegador" este "name" deve coincidir con el dado en el
+                    MIDDLEWARE "multer" en el "configuracion.js" }}
+
+                    <label for="id_input_subir_imagen" class="col-12 col-sm-4">Seleccionar imagen</label>
+
+                    <input
+                        type="file"
+                        name="subirArchivoNavegador"
+                        class="clase_input_subir_imagen form-control col-12 col-sm-5"
+                        id="id_input_subir_imagen"
+                        required
+                    />
+
+                </div>
+
+                {{! campo para escribir el titulo de la imagen }}
+
+                <div class="form-group row">
+                    <label for="id_titulo_imagen" class="col-12 col-sm-4">Título de la imagen</label>
+
+                    <input
+                        type="text"
+                        name="nombreImagenHtml"
+                        class="form-control col-12 col-sm-5"
+                        placeholder="Titulo de la imagen"
+                        id="id_titulo_imagen"
+                        required
+                    />
+
+                </div>
+
+                {{! auxiliar para guardado de imagen para envio por jquery }}
+                <input type="text" name="tipo_imagen" value="terreno" id="tipo_objetivo" hidden />
+                {{! codigo_objetivo, dependiendo, puede ser de terreno o proyecto }}
+                <input type="text" name="codigo_objetivo" class="input_codigo_terreno" value="{{codigo_terreno}}" hidden />
+                {{! codigo_terreno, para determinar si este esta bloqueado o no para efectuar cambios }}
+                <input type="text" name="codigo_terreno" value="{{codigo_terreno}}" hidden />
+                {{! tipo imagen proyecto, como estamos en "terreno", entonces sera: "ninguno" }}
+                <input type="text" name="tipo_imagen_py" value="ninguno" id="tipo_py_rs" hidden />
+
+                <input type="submit" class="ref_subir_img btn btn-primary offset-4" value="Subir Imagen" />
+
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<hr />
+
+<div class="contenido container-fluid contenedor_imagenes_subidas">
+
+    <div class="row">
+
+        <div class="ref_titulo_imagen_te_principal col-12">
+            <h5 class="cuadro_estandart p-2 rounded text-center">
+                IMAGEN PRINCIPAL DEL TERRENO
+            </h5>
+        </div>
+
+        {{!-- aqui se muestra la única imagen principal del terreno --}}
+        {{#each contenido_terreno.imagenes_principal_te}}
+
+            <div class="cuadro_contenedor_imagen la_imagen_principal imagenes mb-3 col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card">
+
+                    <div class="card-header p-0">
+                        <div class="d-flex p-0 m-0">
+
+                            <div class="align-self-center w-75 py-2 ml-2 text-primary">
+                                <h6>{{nombre_imagen}}</h6>
+                            </div>
+
+                            <div
+                                class="boton_eliminar_imagen_jquery text-center ir_rojo w-25 align-self-center border-left"
+                                data-id="{{codigo_imagen}}"
+                                style="color: red;"
+                            >
+                                <i class="fas fa-window-close py-1" style="font-size: 2em;"></i>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <img
+                            src="/rutavirtualpublico/subido/{{codigo_imagen}}{{extension_imagen}}"
+                            alt="{{nombre_imagen}}"
+                            title="{{codigo_imagen}}"
+                            class="estilo_imagen card-img-top"
+                        />
+                    </div>
+                    <div class="card-footer">
+                        <button
+                            class="selec_deselec_imagen_principal_te btn btn-primary mb-2"
+                            data-id="{{codigo_imagen}}/{{codigo_terreno}}"
+                        >Principal</button>
+                    </div>
+                </div>
+            </div>
+
+        {{/each}}
+
+    </div>
+
+
+
+
+
+
+
+    <hr />
+
+    <div class="row">
+
+        <div class="ref_titulo_imagen_te_exclusivas col-12">
+            <h5 class="cuadro_estandart p-2 rounded text-center">
+                IMÁGENES PERTENECIENTES AL TERRENO
+            </h5>
+        </div>
+
+        {{! aqui se muestra las imagenes que forman parte propia del TERRENO }}
+        {{#each contenido_terreno.imagenes_exclusivas_te}}
+
+            <div class="cuadro_contenedor_imagen imagenes mb-3 col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card">
+
+                    <div class="card-header p-0">
+                        <div class="d-flex p-0 m-0">
+
+                            <div class="align-self-center w-75 py-2 ml-2 text-primary">
+                                <h6>{{nombre_imagen}}</h6>
+                            </div>
+
+                            <div
+                                class="boton_eliminar_imagen_jquery text-center ir_rojo w-25 align-self-center border-left"
+                                data-id="{{codigo_imagen}}"
+                                style="color: red;"
+                            >
+                                <i class="fas fa-window-close py-1" style="font-size: 2em;"></i>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <img
+                            src="/rutavirtualpublico/subido/{{codigo_imagen}}{{extension_imagen}}"
+                            alt="{{nombre_imagen}}"
+                            title="{{codigo_imagen}}"
+                            class="estilo_imagen card-img-top"
+                        />
+                    </div>
+                    <div class="card-footer">
+                        <button
+                            class="selec_deselec_imagen_principal_te btn btn-primary mb-2"
+                            data-id="{{codigo_imagen}}/{{codigo_terreno}}"
+                        >Principal</button>
+                    </div>
+                </div>
+            </div>
+
+        {{/each}}
+
+    </div>
+
+
+</div>
+{{! container contenedor de imagenes subidas }}

@@ -1,0 +1,88 @@
+{{! cabezeras INTERNAS de lado de ADMINISTRADOR, EJ/ cuando estamos en la ventana propia del terreno }}
+{{! valido para TERRENOS, PROYECTOS, INMUEBLES, PROPIETARIOS, ADMINISTRADOR }}
+
+<div class="cabezera-secundario {{estilo_cabezera}} w-100">
+
+    <div class="letras_cabezera p-3" style="display: flex; justify-content: space-between;">
+
+        {{#if cab_te_adm}}
+            <div>
+                <div>
+                    <span>{{cabezera_adm.ciudad}}</span>
+                    <span class="d-none d-sm-inline-block">&nbsp;/&nbsp;</span>
+                    <span class="d-none d-sm-inline-block">{{cabezera_adm.provincia}}</span>
+                </div>
+                <div class="py-2">{{cabezera_adm.direccion}}</div>
+                <div class="codigo-cabezera">{{cabezera_adm.codigo}}</div>
+            </div>
+
+            <div style="text-align: right;">
+                <div class="pb-2" style="text-transform: capitalize;">{{cabezera_adm.estado}}</div>
+            </div>
+        {{/if}}
+
+        {{#if cab_py_adm}}
+            <div>
+                <div>
+                    <span>{{cabezera_adm.nombre_proyecto}}</span>
+                </div>
+                <div class="py-2 codigo-cabezera">{{cabezera_adm.codigo}}</div>
+                <div>
+                    <a
+                        class="btn btn-outline-primary"
+                        href="/laapirest/terreno/{{cabezera_adm.codigo_terreno}}/descripcion"
+                    >Terreno</a>
+                </div>
+            </div>
+
+            <div style="text-align: right;">
+                <div class="pb-2" style="text-transform: capitalize;">{{cabezera_adm.estado}}</div>
+            </div>
+        {{/if}}
+
+        {{#if cab_inm_adm}}
+            <div>
+                <div>
+                    <span>{{cabezera_adm.tipo_inmueble}}</span>
+                </div>
+                <div class="py-2 codigo-cabezera">{{cabezera_adm.codigo}}</div>
+                <div>
+                    <a
+                        class="btn btn-outline-primary"
+                        href="/laapirest/proyecto/{{cabezera_adm.codigo_proyecto}}/descripcion"
+                    >Proyecto</a>
+                </div>
+            </div>
+
+            <div style="text-align: right;">
+                <div class="pb-2" style="text-transform: capitalize;">{{cabezera_adm.estado}}</div>
+            </div>
+        {{/if}}
+
+        {{#if cab_adm_adm}}
+            <div>
+                <div>
+                    <span style="text-transform: capitalize;">{{cabezera_adm.clase}}</span>
+                </div>
+                <div class="py-2">
+                    <span>{{cabezera_adm.adm_nombres}}</span>
+                </div>
+                <div class="codigo-cabezera">{{cabezera_adm.ci_administrador}}</div>
+            </div>
+        {{/if}}
+
+        {{#if cab_prop_adm}}
+            <div>
+                <div>
+                    <span style="text-transform: capitalize;">Propietario</span>
+                </div>
+                <div class="py-2">
+                    <span>{{cabezera_adm.prop_nombres}}</span>
+                </div>
+                <div class="codigo-cabezera">{{cabezera_adm.ci_propietario}}</div>
+            </div>
+        {{/if}}
+
+    </div>
+
+</div>

@@ -1,0 +1,492 @@
+{{! para la pestaña de ver COMO FUNCIONA en administrador maestro }}
+<div id="madre_funciona">
+
+    <div class="contenido container-fluid">
+        <div class="container-fluid">
+            <div class="row">
+
+                <div class="col-12 col-md-6 col-lg-4 col-xl-3 mt-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="text-center">CÓMO FUNCIONA</h5>
+                        </div>
+
+                        <div class="card-body text-primary">
+
+                            <form id="form_encabezado_funciona">
+
+                                <div class="form-group">
+                                    <label
+                                        for="label_encabezado_funciona"
+                                        class="form-label"
+                                    >Encabezado</label>
+                                    <div>
+                                        <input
+                                            type="text"
+                                            name="encabezado_funciona"
+                                            class="form-control"
+                                            id="label_encabezado_funciona"
+                                            value="{{contenido_administrador.encabezado_funciona}}"
+                                            placeholder="Lo hacemos fácil para tí"
+                                            required
+                                        />
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="label_texto_funciona" class="form-label">Texto</label>
+                                    <div>
+                                        <textarea
+                                            name="texto_funciona"
+                                            class="form-control"
+                                            id="label_texto_funciona"
+                                            rows="5"
+                                            required
+                                        >{{contenido_administrador.texto_funciona}}</textarea>
+                                    </div>
+                                </div>
+
+                                <div class="text-center">
+                                    <input
+                                        type="submit"
+                                        value="Guardar encabezados"
+                                        class="ref_boton_funciona btn btn-primary"
+                                    />
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-4 col-xl-3 mt-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="text-center">SUBIR INFORMACIÓN</h5>
+                        </div>
+
+                        <div class="card-body text-primary">
+                            <p class="text-left">
+                                <span class="texto-resaltado"><b>Importante: </b></span>
+                                <br />
+                                <span>Todas las imagenes subidas deben ser de las
+                                    mismas dimensiones</span>
+                            </p>
+
+                            <form enctype="multipart/form-data" id="idSubirImagen">
+
+                                <div class="form-group">
+
+                                    {{! name="subirArchivoNavegador" este "name" deve coincidir con el dado en el
+                                MIDDLEWARE "multer" en el "configuracion.js" }}
+
+                                    <label for="id_input_subir_imagen" class="form-label">Seleccionar
+                                        imagen</label>
+
+                                    <input
+                                        type="file"
+                                        name="subirArchivoNavegador"
+                                        class="clase_input_subir_imagen form-control"
+                                        id="id_input_subir_imagen"
+                                        required
+                                    />
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="id_orden_imagen" class="form-label">Orden</label>
+
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        name="orden_imagen"
+                                        class="form-control"
+                                        placeholder="Orden de numeración"
+                                        id="id_orden_imagen"
+                                        required
+                                    />
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="id_titulo_imagen" class="form-label">Titulo</label>
+
+                                    <input
+                                        type="text"
+                                        name="titulo_imagen"
+                                        class="form-control"
+                                        placeholder="Inmuebles, Terrenos, Requerimientos ..."
+                                        id="id_titulo_imagen"
+                                        required
+                                    />
+
+                                </div>
+
+                                <div class="form-group">
+
+                                    <label for="id_texto_imagen" class="form-label">Texto</label>
+
+                                    <textarea
+                                        name="texto_imagen"
+                                        class="form-control"
+                                        rows="5"
+                                        placeholder="Para saltos de línea use: <br> u otras etiquetas html"
+                                        id="id_texto_imagen"
+                                        title="Para saltos de línea use: <br> u otras etiquetas html"
+                                        required
+                                    ></textarea>
+
+                                </div>
+
+                                <div class="form-check mt-3" title="Seleccione si la información que guardara pertenece a Requerimientos de insumos, materiales, servicios, etc.">
+                                    <label>
+                                        <input
+                                            type="checkbox"
+                                            name="name_check_requerimiento"
+                                            class="form-check-input"
+                                            value="garaje_seleccionado"
+                                            id="id_check_requerimiento"
+                                            data-seleccionado="no"
+                                        />Requerimiento
+                                    </label>
+                                </div>
+
+                                {{! auxiliar para guardado de imagen para envio por jquery }}
+                                <input
+                                    type="text"
+                                    name="tipo_imagen"
+                                    value="empresa_funciona"
+                                    id="tipo_objetivo"
+                                    hidden
+                                />
+                                {{! codigo_objetivo, dependiendo, puede ser de terreno o proyecto o "ninguno" en caso de que sea imagen pertneciente a empresa }}
+                                <input type="text" name="codigo_objetivo" value="ninguno" hidden />
+                                {{! codigo_terreno, para determinar si este esta bloqueado o no para efectuar cambios }}
+                                <input type="text" name="codigo_terreno" value="ninguno" hidden />
+                                {{! tipo imagen proyecto, como estamos en "empresa", entonces sera: "ninguno" }}
+                                <input
+                                    type="text"
+                                    name="tipo_imagen_py"
+                                    value="ninguno"
+                                    id="tipo_py_rs"
+                                    hidden
+                                />
+
+                                <div class="text-center">
+                                    <input
+                                        type="submit"
+                                        class="ref_subir_img btn btn-primary"
+                                        value="Subir Imagen"
+                                    />
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-4 col-xl-3 mt-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="text-center">DOCUMENTOS</h5>
+                        </div>
+
+                        <div class="card-body text-primary">
+
+                            <form
+                                enctype="multipart/form-data"
+                                id="idSubirDocEmpresaFunciona"
+                                data-tipo_doc="empresa_funciona"
+                            >
+
+                                <div class="form-group">
+
+                                    {{! name="subirArchivoNavegador" este "name" deve coincidir con el dado en el
+                                MIDDLEWARE "multer" en el "configuracion.js" }}
+
+                                    <label for="id_input_subir_documento" class="form-label">Seleccionar
+                                        documento</label>
+
+                                    <input
+                                        type="file"
+                                        name="subirArchivoNavegador"
+                                        class="form-control"
+                                        id="id_input_subir_documento"
+                                        required
+                                    />
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="label_codigo_funciona" class="form-label">Código funciona</label>
+                                    <div>
+                                        <input
+                                            type="text"
+                                            name="name_codigo_funciona"
+                                            class="clase_codigo_funciona form-control"
+                                            id="label_codigo_funciona"
+                                            placeholder="Código de cómo funciona"
+                                            required
+                                        />
+                                    </div>
+                                </div>
+
+                                <label class="form-label">Tipo de documento</label>
+
+                                <div class="d-flex mx-1 mb-2">
+                                    <label>
+                                        <input
+                                            type="radio"
+                                            name="name_radio_tipo_doc"
+                                            value="manual"
+                                            data-seleccionada="no"
+                                            required
+                                        />
+                                        Manual
+                                    </label>
+                                    <label class="ml-5">
+                                        <input
+                                            type="radio"
+                                            name="name_radio_tipo_doc"
+                                            value="beneficio"
+                                            data-seleccionada="no"
+                                            required
+                                        />
+                                        Beneficios
+                                    </label>
+                                    <label class="ml-5">
+                                        <input
+                                            type="radio"
+                                            name="name_radio_tipo_doc"
+                                            value="modelo"
+                                            data-seleccionada="no"
+                                            required
+                                        />
+                                        Modelo
+                                    </label>
+                                </div>
+
+                                <label class="form-label">Tipo de archivo</label>
+
+                                <div class="d-flex mx-1">
+                                    <label>
+                                        <input
+                                            type="radio"
+                                            name="name_radio_tipo_archivo"
+                                            value="pdf"
+                                            data-seleccionada="no"
+                                            required
+                                        />
+                                        Pdf
+                                    </label>
+                                    <label class="ml-5">
+                                        <input
+                                            type="radio"
+                                            name="name_radio_tipo_archivo"
+                                            value="word"
+                                            data-seleccionada="no"
+                                            required
+                                        />
+                                        Word
+                                    </label>
+                                    <label class="ml-5">
+                                        <input
+                                            type="radio"
+                                            name="name_radio_tipo_archivo"
+                                            value="excel"
+                                            data-seleccionada="no"
+                                            required
+                                        />
+                                        Excel
+                                    </label>
+                                </div>
+
+                                <div class="ref_subir_doc text-center mt-2">
+                                    <input
+                                        type="submit"
+                                        class="btn btn-primary"
+                                        value="Subir documento"
+                                    />
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-4 col-xl-3 mt-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="text-center">VIDEOS</h5>
+                        </div>
+
+                        <div class="card-body text-primary">
+
+                            <p class="text-left">*Videos que acompañaran a la publicación. <br> &nbsp; Incluirlo solo si son necesarios.</p>
+
+                            <form
+                                enctype="multipart/form-data"
+                                id="idSubirVidEmpresaFunciona"
+                                data-tipo_doc="empresa_funciona"
+                            >
+
+                                <div class="form-group">
+                                    <label for="label_name_codigo_funciona" class="form-label">Código funciona</label>
+                                    <div>
+                                        <input
+                                            type="text"
+                                            name="name_codigo_funciona"
+                                            class="clase_codigo_funciona form-control"
+                                            id="label_name_codigo_funciona"
+                                            placeholder="Código de cómo funciona"
+                                            required
+                                        />
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="label_url_video_funciona" class="form-label">Url video</label>
+                                    <div>
+                                        <input
+                                            type="text"
+                                            name="name_url_video_funciona"
+                                            class="clase_url_video_funciona form-control"
+                                            id="label_url_video_funciona"
+                                            placeholder="https://"
+                                            required
+                                        />
+                                    </div>
+                                </div>
+
+                                <p class="text-left">**Si previamente el item de "Funcioana" al que se este dirijida ya contase con una url de video, esta sera reemplazada por la nueva url que se pretende guardar</p>
+
+                                <div class="ref_subir_vid text-center mt-2">
+                                    <input
+                                        type="submit"
+                                        class="btn btn-primary"
+                                        value="Guardar url"
+                                    />
+                                </div>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="contenido container-fluid contenedor_imagenes_subidas mt-3">
+
+        <div class="row">
+
+            <div class="ref_titulo_imagen col-12">
+                <h5 class="cuadro_estandart p-2 rounded text-center">
+                    ITEMS FUNCIONA
+                </h5>
+            </div>
+
+            {{#each contenido_administrador.lista_funciona}}
+
+                <div class="cuadro_contenedor_imagen imagenes mb-3 col-12 col-sm-6 col-md-4 col-lg-3">
+                    <div class="card">
+
+                        <div class="card-header p-0">
+                            <div class="d-flex justify-content-between p-0 m-0">
+
+                                <div class="align-self-center py-2 ml-2 text-primary">
+                                    <h6>{{orden_imagen}}</h6>
+                                </div>
+
+                                <div class="align-self-center py-2 text-primary">
+                                    <h6>{{codigo_imagen}}</h6>
+                                </div>
+
+                                <div
+                                    class="boton_eliminar_imagen_jquery text-center ir_rojo align-self-center border-left mr-2"
+                                    data-id="{{codigo_imagen}}"
+                                    style="color: red;"
+                                >
+                                    <i class="fas fa-window-close py-1" style="font-size: 2em;"></i>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            <img
+                                src="/rutavirtualpublico/subido/{{codigo_imagen}}{{extension_imagen}}"
+                                alt="{{orden_imagen}}"
+                                title="{{orden_imagen}}"
+                                class="estilo_imagen card-img-top"
+                            />
+
+                            <h5 class="mt-2 text-center">{{titulo_imagen}}</h5>
+                            <p class="mt-2">{{texto_imagen}}</p>
+                        </div>
+
+                        <div class="card-footer">
+                            {{#each lista_documentos}}
+                                <div class="documento_funciona d-flex justify-content-between">
+                                    <div>
+                                        <i
+                                            class="texto-link fas fa-file-{{tipo_archivo}}"
+                                            style="font-size: 2em;"
+                                        ></i>
+                                        <a
+                                            class="ml-3"
+                                            href="/rutavirtualpublico/subido/{{codigo_documento}}.{{extension}}"
+                                            target="_blank"
+                                        >
+                                            {{tipo_documento}}
+                                        </a>
+                                    </div>
+
+                                    <div>
+                                        <button
+                                            class="eliminar_doc_funciona d-block btn p-1"
+                                            data-id="{{codigo_documento}}"
+                                        ><i class="fas fa-window-close size_iconos"></i></button>
+                                    </div>
+                                </div>
+                            {{/each}}
+
+                            {{#if video_funciona}}
+                                <div class="video_funciona d-flex justify-content-between">
+                                    <div>
+                                        <i
+                                            class="texto-link fas fa-video"
+                                            style="font-size: 2em;"
+                                        ></i>
+                                        <a
+                                            class="ml-3"
+                                            href="{{url_video}}"
+                                            target="_blank"
+                                        >
+                                            Video
+                                        </a>
+                                    </div>
+
+                                    <div>
+                                        <button
+                                            class="eliminar_video_funciona d-block btn p-1"
+                                            data-id="{{codigo_imagen}}"
+                                        ><i class="fas fa-window-close size_iconos"></i></button>
+                                    </div>
+                                </div>
+                            {{/if}}
+                        </div>
+                    </div>
+                </div>
+
+            {{/each}}
+
+        </div>
+
+    </div>
+
+</div>

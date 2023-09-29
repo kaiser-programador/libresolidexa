@@ -1,0 +1,48 @@
+{{!-- para vista de los inmuebles, dependiendo del tipo de proyecto que se trate --}}
+
+{{!-- util para la manera de visualizar los inmuebles del proyecto --}}
+
+<div id="idEstadoProyecto" data-id="{{global_py.estado_proyecto}}"></div>
+
+{{> adm_cli_filtro_orden_inm}}
+
+<div class="row mt-3 mx-1">
+
+    <div class="col-12 px-0 mt-3 mb-2">
+        
+        <div class="cuadro_estandart p-2 mb-2 d-flex justify-content-between">
+            <div class="filtrador btn btn-primary" href="#ventanaModalFiltros" data-toggle="modal">
+                <i class="fas fa-filter size-iconos"></i>
+            </div>
+
+            <div class="mt-1 ref_titulo_py_inm_r_o_b h5 d-none d-sm-block">
+                <span class="t_busqueda"></span>
+                <span class="t1_inv_inm">Todos &gt;</span>
+                <span class="t2_inv_inm">Precio</span>
+            </div>
+            <div>
+                <input type="text" class="form-control" id="palabras_buscar_py_inm" placeholder="Buscar inmuebles">
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<div class="row mt-3" id="contenedor_py_inm_render">
+    <div class="ref_tipo_py_inm"></div>
+    {{!-- debajo de esta ref, es que se renderizaran los inmuebles dependiendo del radi elegido y del tipo de orden elegido, tambien util para los filtros casillas --}}
+</div>
+
+{{!-- <div class="row mt-3" id="contenedor_py_inm_todos" hidden> --}}
+<div class="row mt-3" id="contenedor_py_inm_todos" hidden>
+    {{#each contenido_proyecto}}
+    {{> adm_cli_card_inmueble}}
+    {{/each}}
+</div>
+
+<div class="text-right mt-4" title="Numero de visualizaciones">
+    <span><i class="fas fa-glasses icono_visualizaciones"></i></span>
+    <span class="numero_visualizaciones"><b>{{nv_ventana}}</b></span>
+</div>
+

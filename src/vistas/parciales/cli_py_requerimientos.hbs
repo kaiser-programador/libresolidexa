@@ -1,0 +1,222 @@
+{{! para pestaña REQUERIMIENTOS del PROYECTO lado del CLIENTE }}
+
+{{#if contenido_proyecto.existe_requerimientos}}
+    <div class="container my-4">
+
+        <div class="row mt-5 cuadro_estandart py-3">
+            <div class="col-12 d-flex">
+                <div class="mr-3 contenedor-detalle-icono">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+
+                <div class="contenedor-detalle-texto">
+                    <h4 class="texto-resaltado">Importante</h4>
+                    {{! para mostrar el modelo y el manual de requerimiento }}
+                    <p style="text-align: justify;">
+                        Si usted cuenta con los requerimientos que necesita el presente proyecto, entonces
+                        sírvase de llenar el formulario adjunto y enviárnoslo por el medio indicado.
+                    </p>
+                    <p style="text-align: justify;">
+                        Para un llenado correcto del formulario de requerimientos puede guiarse observando el
+                        manual de ejemplo.
+                    </p>
+
+                    <div class="d-flex">
+                        {{#if contenido_proyecto.existe_modelo}}
+                            <div class="m-2">
+                                <div class="text-center">
+                                    <a class="btn btn-success" href="/rutavirtualpublico/subido/{{contenido_proyecto.documento_modelo}}" target="_blank" style="color: white;">
+                                        <i
+                                            class="texto-link fas fa-file-{{contenido_proyecto.bootstrap_modelo}}
+                                                btn pl-0 pr-1 py-1"
+                                            style="font-size: 2em; color: white;"
+                                        ></i>
+                                        Modelo
+                                    </a>
+                                </div>
+                            </div>
+                        {{/if}}
+
+                        {{#if contenido_proyecto.existe_manual}}
+                            <div class="m-2">
+                                <div class="text-center">
+                                    <a class="btn btn-primary" href="/rutavirtualpublico/subido/{{contenido_proyecto.documento_manual}}" target="_blank" style="color: white;">
+                                        <i
+                                            class="texto-link fas fa-file-{{contenido_proyecto.bootstrap_manual}}
+                                                btn pl-0 pr-1 py-1"
+                                            style="font-size: 2em; color: white;"
+                                        ></i>
+                                        Manual
+                                    </a>
+                                </div>
+                            </div>
+                        {{/if}}
+
+                        {{#if contenido_proyecto.existe_video}}
+                            <div class="m-2">
+                                <div class="text-center">
+                                    <a
+                                        class="btn btn-success"
+                                        href="{{contenido_proyecto.url_video}}"
+                                        target="_blank"
+                                        style="color: white;"
+                                    >
+                                        <i
+                                            class="texto-link fas fa-video btn pl-0 pr-1 py-1"
+                                            style="font-size: 2em; color: white;"
+                                        ></i>
+                                        Video
+                                    </a>
+                                </div>
+                            </div>
+                        {{/if}}
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-5 cuadro_estandart py-3">
+            <div class="col-12 d-flex">
+                <div class="mr-3 contenedor-detalle-icono">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+
+                <div class="contenedor-detalle-texto">
+                    <h4 class="texto-resaltado">Requerimientos</h4>
+                    <p class="escritura" style="text-align: justify;">
+                        {{contenido_proyecto.nota_si_requerimientos}}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mx-1">
+            <div class="col-12 px-0 mt-3 mb-2">
+                <div class="cuadro_estandart p-2 d-flex justify-content-between">
+                    <div class="mt-1 ref_titulo_py_inm_r_o_b h5 d-none d-sm-block">
+                        <span class="t_busqueda"></span>
+                        <span class="t1_inv_inm texto-resaltado">Listado</span>
+                    </div>
+                    <div>
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="palabras_buscar_py_req"
+                            placeholder="Buscar requerimiento"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="lista_requerimientos_render" class="row mt-1">
+
+            <div class="col-12">
+
+                {{!-- anteriormente no incluia barra-deslizadora-mob --}}
+                {{! "table-responsive" es para que tenga un scroll en tamaños muy pequeños }}
+                <div class="tabla_caracteristicas barra-deslizadora-mob table-responsive cuadro_estandart p-4">
+
+                    <table class="tabla_contenedora table">
+                        <thead>
+                            <tr>
+                                <th class="texto-resaltado">Fecha&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                <th class="texto-resaltado">Código</th>
+                                <th class="texto-resaltado">Requerimiento&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                <th class="texto-resaltado">Descripción&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                <th class="texto-resaltado">Cantidad</th>
+                                <th class="texto-resaltado">Presupuesto Max.</th>
+                            </tr>
+                        </thead>
+
+                        <tbody class="cuerpo_filas texto-normal">
+
+                            {{#each contenido_proyecto.tabla_requerimientos}}
+                                <tr class="fila_registro">
+                                    <td>{{fecha}}</td>
+                                    <td>{{codigo_requerimiento}}</td>
+                                    <td class="escritura">{{requerimiento}}</td>
+                                    <td class="escritura">{{descripcion}}</td>
+                                    <td>{{cantidad}}</td>
+                                    <td>{{presupuesto_maximo}}</td>
+                                </tr>
+                            {{/each}}
+
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="lista_requerimientos_todos" class="row mt-5" hidden>
+
+            <div class="col-12">
+
+                {{! "table-responsive" es para que tenga un scroll en tamaños muy pequeños }}
+                <div class="tabla_caracteristicas table-responsive cuadro_estandart p-4">
+
+                    <table class="tabla_contenedora table">
+                        <thead>
+                            <tr>
+                                <th class="texto-resaltado">Fecha</th>
+                                <th class="texto-resaltado">Código</th>
+                                <th class="texto-resaltado">Requerimiento</th>
+                                <th class="texto-resaltado">Descripción</th>
+                                <th class="texto-resaltado">Cantidad</th>
+                                <th class="texto-resaltado">Presupuesto Max.</th>
+                            </tr>
+                        </thead>
+
+                        <tbody class="cuerpo_filas texto-normal">
+
+                            {{#each contenido_proyecto.tabla_requerimientos}}
+                                <tr class="fila_registro">
+                                    <td>{{fecha}}</td>
+                                    <td>{{codigo_requerimiento}}</td>
+                                    <td class="escritura">{{requerimiento}}</td>
+                                    <td class="escritura">{{descripcion}}</td>
+                                    <td>{{cantidad}}</td>
+                                    <td>{{presupuesto_maximo}}</td>
+                                </tr>
+                            {{/each}}
+
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+
+        </div>
+        
+    </div>
+{{else}}
+    <div class="container mt-5">
+        <div class="contenedor-inexistentes jumbotron">
+
+            <div class="texto-resaltado text-center">
+                <i class="fas fa-hard-hat" style="font-size: 5rem;"></i>
+            </div>
+            <h1>Requerimientos</h1>
+            <br />
+            <p class="h5">{{contenido_proyecto.nota_no_requerimientos}}</p>
+
+            <div class="contenedor-carga">
+                <div class="dot-container">
+                    <div class="dot dot-1"></div>
+                    <div class="dot dot-2"></div>
+                    <div class="dot dot-3"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{{/if}}
+
+<div class="text-right mt-4" title="Numero de visualizaciones">
+    <span><i class="fas fa-glasses icono_visualizaciones"></i></span>
+    <span class="numero_visualizaciones"><b>{{nv_ventana}}</b></span>
+</div>

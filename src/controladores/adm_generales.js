@@ -438,6 +438,10 @@ controladorAdministradorGeneral.subirImagenEmpresa = async (req, res) => {
         // extraemos la direccion donde se encuentra temporalmente la imagen (carpeta temporal) y la guardamos en la constante "direccionTemporalImagen"
         const direccionTemporalImagen = req.file.path; // es "path" (no pache, la que requerimos al inicio), esta es la propiedad propia de "file"
 
+        console.log("VEMOS INICIO EL req.file.path PARA VER LA DIRECCION ACTUAL DONDE ESTA GUARDADA LA IMAGEN TEMPORALMENTE");
+        console.log(direccionTemporalImagen);
+        console.log("VEMOS FIN")
+
         // para validar la imagen, que lo que se esta subiendo sea en verdad un archivo de imagen
         const tipo_archivo_a = req.file.mimetype.toLowerCase(); // en minuscula
 

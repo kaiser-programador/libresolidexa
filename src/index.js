@@ -29,4 +29,7 @@ servidorConfigurado.listen(puertoServidor, () => {
     console.log('Servidor escuchando en el puerto: ', puertoServidor); // "," es para concatenar
 });
 
-
+//////////////////////////////////////////
+console.log("INICIO LA DIRECCION ACTUAL DEL ARCHIVO index.js de ARRANQUE");
+console.log(__dirname);
+console.log("FIN LA DIRECCION ACTUAL DEL ARCHIVO index.js de ARRANQUE");

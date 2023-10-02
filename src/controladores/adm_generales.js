@@ -5,6 +5,11 @@ const pache = require("path");
 const fs = require("fs-extra");
 const fileType = require("file-type");
 //const moment = require("moment");
+
+//const { direccionBaseDatos } = require("../claves");
+//const { initializeApp } = require("firebase/app");
+const { getStorage, ref, uploadBytes, getDownloadURL,deleteObject } = require("firebase/storage");
+
 const {
     codigoAlfanumericoImagen,
     codAlfanumImagenEmp_sf,
@@ -203,7 +208,9 @@ controladorAdministradorGeneral.subirImagen = async (req, res) => {
                     const direccionTemporalImagen = req.file.path; // es "path" (no pache, la que requerimos al inicio), esta es la propiedad propia de "file"
 
                     // (extname) extraemos la extension de la imagen y la convertimos en minuscula "toLowerCase" por precausion, porque el codigo alfanumerico generado, se genera en minuscula.
-                    const extensionImagenMinuscula = pache.extname(req.file.originalname).toLowerCase();
+                    const extensionImagenMinuscula = pache
+                        .extname(req.file.originalname)
+                        .toLowerCase();
 
                     // direccion de destino, donde sera guardada la imagen (se la guardara en la carpeta "subido"), esta direccion sera guardada en la constante "direccionDestinoImagen"
                     // la imagen sera guardada con el codigo alfanumerico que se le dio
@@ -344,7 +351,8 @@ controladorAdministradorGeneral.subirImagen = async (req, res) => {
                             //-------------------------------------------------------------------
                             // guardamos en el historial de acciones
                             var ci_administrador = req.user.ci_administrador; // extraido de la SESION guardada del administrador
-                            var accion_administrador = "Guarda imagen " + CodigoImagenCreada + fragmento;
+                            var accion_administrador =
+                                "Guarda imagen " + CodigoImagenCreada + fragmento;
                             var aux_accion_adm = {
                                 ci_administrador,
                                 accion_administrador,
@@ -442,9 +450,11 @@ controladorAdministradorGeneral.subirImagenEmpresa = async (req, res) => {
         // extraemos la direccion donde se encuentra temporalmente la imagen (carpeta temporal) y la guardamos en la constante "direccionTemporalImagen"
         const direccionTemporalImagen = req.file.path; // es "path" (no pache, la que requerimos al inicio), esta es la propiedad propia de "file"
 
-        console.log("VEMOS INICIO EL req.file.path PARA VER LA DIRECCION ACTUAL DONDE ESTA GUARDADA LA IMAGEN TEMPORALMENTE");
+        console.log(
+            "VEMOS INICIO EL req.file.path PARA VER LA DIRECCION ACTUAL DONDE ESTA GUARDADA LA IMAGEN TEMPORALMENTE"
+        );
         console.log(direccionTemporalImagen);
-        console.log("VEMOS FIN")
+        console.log("VEMOS FIN");
 
         // para validar la imagen, que lo que se esta subiendo sea en verdad un archivo de imagen
         const tipo_archivo_a = req.file.mimetype.toLowerCase(); // en minuscula
@@ -478,7 +488,7 @@ controladorAdministradorGeneral.subirImagenEmpresa = async (req, res) => {
                     },
                     {
                         imagen: 1,
-                        completo: 1, // ej: "cabecera_convocatoria.jpg" (nombre y extension del archivo imagen guardado)
+                        completo: 1, // URL de la imagen donde se encuentra almacenado (firebase)
                     }
                 );
 
@@ -488,6 +498,7 @@ controladorAdministradorGeneral.subirImagenEmpresa = async (req, res) => {
                 if (imagenExistente) {
                     // si la imagen existe, entonces se procedera a eliminar la existente porque sera reemplazado con la nueva imagen que ocupara su lugar
 
+                    /*
                     // direccion de las imagenes del sistema
                     const direccionExistente = pache.resolve(
                         `src/publico/imagenes/imagenes_sistema/${imagenExistente.completo}`
@@ -495,9 +506,27 @@ controladorAdministradorGeneral.subirImagenEmpresa = async (req, res) => {
 
                     // con "fs.unlink" eliminamos el archivo imagen, dentro de ( ) le damos la direccion donde el archivo esta guardado.
                     await fs.unlink(direccionExistente);
+                    */
 
+                    const storage = getStorage();
+
+                    var nombre_y_ext = tipo_imagen + ".jpg"; // porque solo son aceptados imagnes ".jpg" y son guardados en minuscula
+                    // para guardar en la carpeta "imagenes_sistema" en firebase con el nombre y la extension de la imagen incluida
+                    var direccionActualImagen = "imagenes_sistema/" + nombre_y_ext;
+
+                    // Crear una referencia al archivo que se eliminará
+                    const desertRef = ref(storage, direccionActualImagen);
+                
+                    // Eliminar el archivo y esperar la promesa
+                    await deleteObject(desertRef);
+                
+                    // Archivo eliminado con éxito
+                    console.log('Archivo eliminado con éxito');
+
+
+                    /*
                     // direccion de destino, donde sera guardada la imagen (se la guardara en la carpeta "subido"), esta direccion sera guardada en la constante "direccionDestinoImagen"
-                    // la imagen sera guardada con el codigo alfanumerico que se le dio
+                    // la imagen sera guardada
                     const direccionDestinoImagen = pache.resolve(
                         `src/publico/imagenes/imagenes_sistema/${tipo_imagen}${extensionImagenMinuscula}`
                     );
@@ -505,13 +534,42 @@ controladorAdministradorGeneral.subirImagenEmpresa = async (req, res) => {
                     // ahora guardamos la nueva imagen
                     // "fs.rename" mueve un archivo (es este caso una imagen) del lugar de origen (direccionTemporalImagen) a otro destino (direccionDestinoImagen)
                     await fs.rename(direccionTemporalImagen, direccionDestinoImagen);
+                    */
 
-                    var completo = tipo_imagen + extensionImagenMinuscula;
+                    //--------------------------------------------------------------
+                    // PARA SUBIR ARCHIVO IMAGEN A FIREBASE
+
+                    //const storage = getStorage();
+
+                    var nombre_y_ext = tipo_imagen + extensionImagenMinuscula;
+                    // para guardar en la carpeta "imagenes_sistema" en firebase con el nombre y la extension de la imagen incluida
+                    var direccionDestinoImagen = "imagenes_sistema/" + nombre_y_ext;
+
+                    // cramos una referencia al archivo imagen. donde se guardara y con que nombre sera guardado dentro de firebase
+                    const storageRef = ref(storage, direccionDestinoImagen);
+
+                    const data = await fs.promises.readFile(direccionTemporalImagen); // Utilizamos fs.promises.readFile para obtener una versión promisificada de fs.readFile
+
+                    // ESPERAMOS QUE SUBA LA IMAGEN
+                    await uploadBytes(storageRef, data);
+
+                    console.log("Archivo subido con éxito a Firebase Storage");
+
+                    // Obtiene la URL de descarga pública de la imagen
+                    const url_imagen = await getDownloadURL(storageRef);
+
+                    console.log("URL de descarga pública:", url_imagen);
+
+                    //--------------------------------------------------------------
+                    // despues de subir la imagen a firebase, eliminamos el archivo de la carpeta "temporal" donde se encuentra alamacenado temporalmente
+                    // con "fs.unlink" eliminamos el archivo imagen, dentro de ( ) le damos la direccion donde el archivo esta guardado.
+                    await fs.unlink(direccionTemporalImagen);
+                    //--------------------------------------------------------------
 
                     // por seguridad solo actualizamos el atributo "completo" de la BD con el nombre y la extension con la que se guardo la nueva imagen
                     await indiceImagenesSistema.updateOne(
                         { tipo_imagen: tipo_imagen },
-                        { $set: { completo: completo } }
+                        { $set: { completo: url_imagen } }
                     );
 
                     var imagen = imagenExistente.imagen;
@@ -532,11 +590,12 @@ controladorAdministradorGeneral.subirImagenEmpresa = async (req, res) => {
                         exito: "si",
                         tipo_imagen,
                         imagen,
-                        completo,
+                        completo:url_imagen,
                     });
                 } else {
                     // si no existe la imagen, entonces se procedera a ser almacenado en la BD
 
+                    /*
                     // direccion de destino, donde sera guardada la imagen (se la guardara en la carpeta "subido"), esta direccion sera guardada en la constante "direccionDestinoImagen"
                     // la imagen sera guardada con el codigo alfanumerico que se le dio
                     const direccionDestinoImagen = pache.resolve(
@@ -546,6 +605,52 @@ controladorAdministradorGeneral.subirImagenEmpresa = async (req, res) => {
                     // ahora guardamos la nueva imagen
                     // "fs.rename" mueve un archivo (es este caso una imagen) del lugar de origen (direccionTemporalImagen) a otro destino (direccionDestinoImagen)
                     await fs.rename(direccionTemporalImagen, direccionDestinoImagen);
+                    */
+
+                    /*
+                    const firebaseConfig = {
+                        apiKey: direccionBaseDatos.F_API_KEY,
+                        authDomain: direccionBaseDatos.F_AUTH_DOMAIN,
+                        projectId: direccionBaseDatos.F_PROJECT_ID,
+                        storageBucket: direccionBaseDatos.F_STORAGE_BUCKET,
+                        messagingSenderId: direccionBaseDatos.F_MESSAGING_SENDER_ID,
+                        appId: direccionBaseDatos.F_APP_ID,
+                    };
+
+                    const app = initializeApp(firebaseConfig);
+                    */
+
+                    //const storage = getStorage(app);
+
+                    //--------------------------------------------------------------
+                    // PARA SUBIR ARCHIVO IMAGEN A FIREBASE
+
+                    const storage = getStorage();
+
+                    var nombre_y_ext = tipo_imagen + extensionImagenMinuscula;
+                    // para guardar en la carpeta "imagenes_sistema" en firebase con el nombre y la extension de la imagen incluida
+                    var direccionDestinoImagen = "imagenes_sistema/" + nombre_y_ext;
+
+                    // cramos una referencia al archivo imagen. donde se guardara y con que nombre sera guardado dentro de firebase
+                    const storageRef = ref(storage, direccionDestinoImagen);
+
+                    const data = await fs.promises.readFile(direccionTemporalImagen); // Utilizamos fs.promises.readFile para obtener una versión promisificada de fs.readFile
+
+                    // ESPERAMOS QUE SUBA LA IMAGEN
+                    await uploadBytes(storageRef, data);
+
+                    console.log("Archivo subido con éxito a Firebase Storage");
+
+                    // Obtiene la URL de descarga pública de la imagen
+                    const url_imagen = await getDownloadURL(storageRef);
+
+                    console.log("URL de descarga pública:", url_imagen);
+
+                    //--------------------------------------------------------------
+                    // despues de subir la imagen a firebase, eliminamos el archivo de la carpeta "temporal" donde se encuentra alamacenado temporalmente
+                    // con "fs.unlink" eliminamos el archivo imagen, dentro de ( ) le damos la direccion donde el archivo esta guardado.
+                    await fs.unlink(direccionTemporalImagen);
+                    //--------------------------------------------------------------
 
                     if (tipo_imagen == "inicio_horizontal") {
                         var imagen = "Inicio horizontal";
@@ -596,13 +701,11 @@ controladorAdministradorGeneral.subirImagenEmpresa = async (req, res) => {
                         var imagen = "Cabecera resultados requerimientos";
                     }
 
-                    var completo = tipo_imagen + extensionImagenMinuscula;
-
                     // registramos la nueva imagen en la BD
                     const datosImagenNueva = new indiceImagenesSistema({
                         imagen,
                         tipo_imagen,
-                        completo,
+                        completo:url_imagen,
                     });
 
                     // ahora guardamos en la base de datos la informacion de la imagen creada
@@ -624,7 +727,7 @@ controladorAdministradorGeneral.subirImagenEmpresa = async (req, res) => {
                         exito: "si",
                         tipo_imagen,
                         imagen,
-                        completo,
+                        completo:url_imagen,
                     });
                 }
             } else {
@@ -707,7 +810,10 @@ controladorAdministradorGeneral.eliminarImagen = async (req, res) => {
         //console.log("comanchero");
         if (acceso == "permitido") {
             if (imagenEliminar) {
-                if (codigo_imagen.indexOf("cabecera") != -1 || codigo_imagen.indexOf("inicio") != -1) {
+                if (
+                    codigo_imagen.indexOf("cabecera") != -1 ||
+                    codigo_imagen.indexOf("inicio") != -1
+                ) {
                     // entonces se trata de una imagen del sistema
 
                     const auxCodigoImagen = imagenEliminar.completo; // EJ/  "cabecera_convocatoria.jpg"
@@ -737,7 +843,9 @@ controladorAdministradorGeneral.eliminarImagen = async (req, res) => {
                             await indiceImagenesSistema.deleteOne({ tipo_imagen: codigo_imagen });
                         } else {
                             // si es una imagen "administrador", es decir que es propio de la EMPRESA
-                            await indiceImagenesEmpresa_sf.deleteOne({ codigo_imagen: codigo_imagen });
+                            await indiceImagenesEmpresa_sf.deleteOne({
+                                codigo_imagen: codigo_imagen,
+                            });
                         }
                     }
 
@@ -783,7 +891,9 @@ controladorAdministradorGeneral.eliminarImagen = async (req, res) => {
                             await indiceImagenesSistema.deleteOne({ tipo_imagen: codigo_imagen });
                         } else {
                             // si es una imagen "administrador", es decir que es propio de la EMPRESA
-                            await indiceImagenesEmpresa_sf.deleteOne({ codigo_imagen: codigo_imagen });
+                            await indiceImagenesEmpresa_sf.deleteOne({
+                                codigo_imagen: codigo_imagen,
+                            });
                         }
                     }
 
@@ -819,7 +929,9 @@ controladorAdministradorGeneral.eliminarImagen = async (req, res) => {
                                     documentos_imagen[i].codigo_documento + "." + extension;
                                 // eliminamos el ARCHIVO DOCUMENTO DE LA CARPETA DONDE ESTA GUARDADA
                                 await fs.unlink(
-                                    pache.resolve("./src/publico/subido/" + documentoNombreExtension)
+                                    pache.resolve(
+                                        "./src/publico/subido/" + documentoNombreExtension
+                                    )
                                 ); // "+" es para concatenar
 
                                 documentos_eliminados =
@@ -1028,14 +1140,17 @@ controladorAdministradorGeneral.seleccionarDeseleccionarImagenPrincipal = async 
                                 var arrayInmuebles = nuevaImagenPrincipal.parte_exclusiva;
 
                                 // buscamos la posicion (en el ARRAY) del inmueble/proyecto a eliminar de este ARRAY
-                                var pocicionEliminar = arrayInmuebles.indexOf(codigoInmuebleProyecto);
+                                var pocicionEliminar =
+                                    arrayInmuebles.indexOf(codigoInmuebleProyecto);
 
                                 if (pocicionEliminar == -1) {
                                     // si el "codigoInmuebleProyecto" no tiene a esta imagen como "imagenes exclusivas"(porque no se lo encontro en el ARRAY "-1" )
                                     // entonces significa que el "codigoInmuebleProyecto" forma parte de "imagenes otras"
                                     // en ese caso solo basta con agregar el "codigoInmuebleProyecto" a la "parte_principal", para que asi esta imagen pase a formar parte de "imagen principal" del inmueble/proyecto
 
-                                    nuevaImagenPrincipal.parte_principal.unshift(codigoInmuebleProyecto); // con "unshift" el codigo del proyecto/inmueble se agrega al ARRAY al INICIO
+                                    nuevaImagenPrincipal.parte_principal.unshift(
+                                        codigoInmuebleProyecto
+                                    ); // con "unshift" el codigo del proyecto/inmueble se agrega al ARRAY al INICIO
 
                                     // --------- Para verificación --------- /
                                     /*
@@ -1051,10 +1166,15 @@ controladorAdministradorGeneral.seleccionarDeseleccionarImagenPrincipal = async 
                                     res.json({ exito: "si" });
                                 } else {
                                     // entonces significa que el "codigoInmuebleProyecto" debera ser eliminado de "parte_exclusiva"
-                                    nuevaImagenPrincipal.parte_exclusiva.splice(pocicionEliminar, 1); // Recuerde que "1" significa que solo queremos borrar "1" valor del ARRAY a partir de la posicion "pocicionEliminar"
+                                    nuevaImagenPrincipal.parte_exclusiva.splice(
+                                        pocicionEliminar,
+                                        1
+                                    ); // Recuerde que "1" significa que solo queremos borrar "1" valor del ARRAY a partir de la posicion "pocicionEliminar"
 
                                     // ahora el "codigoInmuebleProyecto" sera agregado a "parte_principal"
-                                    nuevaImagenPrincipal.parte_principal.unshift(codigoInmuebleProyecto); // con "unshift" el codigo del proyecto/inmueble se agrega al ARRAY al INICIO
+                                    nuevaImagenPrincipal.parte_principal.unshift(
+                                        codigoInmuebleProyecto
+                                    ); // con "unshift" el codigo del proyecto/inmueble se agrega al ARRAY al INICIO
 
                                     // ahora guardamos la base de datos
                                     await nuevaImagenPrincipal.save();
@@ -1916,7 +2036,8 @@ controladorAdministradorGeneral.subirVideoEmpresaFunciona = async (req, res) => 
             //-------------------------------------------------------------------
             // guardamos en el historial de acciones
             var ci_administrador = req.user.ci_administrador; // extraido de la SESION guardada del administrador
-            var accion_administrador = "Guarda URL VIDEO imagen funciona" + " de " + codigo_funciona;
+            var accion_administrador =
+                "Guarda URL VIDEO imagen funciona" + " de " + codigo_funciona;
             var aux_accion_adm = {
                 ci_administrador,
                 accion_administrador,
@@ -2039,7 +2160,8 @@ controladorAdministradorGeneral.guardarTabla = async (req, res) => {
 
                 if (tipo_tabla_objetivo == "py_presupuesto") {
                     // para guardar la tabla de presupustos del proyecto
-                    var accion_administrador = "Guarda tabla de presupuesto proyecto " + codigo_objetivo;
+                    var accion_administrador =
+                        "Guarda tabla de presupuesto proyecto " + codigo_objetivo;
                     // guarda y actualiza la base de datos (si existe con anterioridad esa propiedad ya llenada con dato, lo sobreescribe con los datos nuevos)
                     await indiceProyecto.updateOne(
                         { codigo_proyecto: codigo_objetivo },
@@ -2059,7 +2181,8 @@ controladorAdministradorGeneral.guardarTabla = async (req, res) => {
 
                 if (tipo_tabla_objetivo == "py_empleos") {
                     // para guardar la tabla de empleos del proyecto
-                    var accion_administrador = "Guarda tabla de empleos del proyecto " + codigo_objetivo;
+                    var accion_administrador =
+                        "Guarda tabla de empleos del proyecto " + codigo_objetivo;
                     await indiceProyecto.updateOne(
                         { codigo_proyecto: codigo_objetivo },
                         { $set: { tabla_empleos_sociedad: array_tabla } }
@@ -2146,7 +2269,8 @@ controladorAdministradorGeneral.eliminarTabla = async (req, res) => {
 
                 if (tipo_tabla_objetivo == "py_empleos") {
                     // para guardar la tabla de responsabilidad social del proyecto
-                    var accion_administrador = "Elimina tabla de empleos proyecto " + codigo_objetivo;
+                    var accion_administrador =
+                        "Elimina tabla de empleos proyecto " + codigo_objetivo;
                     await indiceProyecto.updateOne(
                         { codigo_proyecto: codigo_objetivo },
                         { $set: { tabla_empleos_sociedad: array_tabla } }
@@ -2291,7 +2415,8 @@ controladorAdministradorGeneral.guardarDatosPagosPropietario = async (req, res) 
 
                         const datosNuevoPropietario = new indice_propietario({
                             ci_propietario: ci_propietario,
-                            nombres_propietario: objeto_convertido.propietario_datos.nombres_propietario,
+                            nombres_propietario:
+                                objeto_convertido.propietario_datos.nombres_propietario,
                             apellidos_propietario:
                                 objeto_convertido.propietario_datos.apellidos_propietario,
                             telefonos_propietario:
@@ -2354,7 +2479,8 @@ controladorAdministradorGeneral.guardarDatosPagosPropietario = async (req, res) 
                         inversionEncontrado.fecha_pagado_reserva =
                             objeto_convertido.propietario_pagos.fecha_pagado_reserva;
 
-                        inversionEncontrado.tiene_pago = objeto_convertido.propietario_pagos.tiene_pago;
+                        inversionEncontrado.tiene_pago =
+                            objeto_convertido.propietario_pagos.tiene_pago;
                         inversionEncontrado.pagado_pago =
                             objeto_convertido.propietario_pagos.pagado_pago;
                         inversionEncontrado.fecha_pagado_pago =
@@ -2404,7 +2530,8 @@ controladorAdministradorGeneral.guardarDatosPagosPropietario = async (req, res) 
 
                             tiene_pago: objeto_convertido.propietario_pagos.tiene_pago,
                             pagado_pago: objeto_convertido.propietario_pagos.pagado_pago,
-                            fecha_pagado_pago: objeto_convertido.propietario_pagos.fecha_pagado_pago,
+                            fecha_pagado_pago:
+                                objeto_convertido.propietario_pagos.fecha_pagado_pago,
 
                             tiene_mensuales: objeto_convertido.propietario_pagos.tiene_mensuales,
                             pagos_mensuales: objeto_convertido.propietario_pagos.pagos_mensuales,
@@ -2512,7 +2639,8 @@ controladorAdministradorGeneral.guardarDatosPagosPropietario = async (req, res) 
                         inversionEncontrado.fecha_pagado_reserva =
                             objeto_convertido.propietario_pagos.fecha_pagado_reserva;
 
-                        inversionEncontrado.tiene_pago = objeto_convertido.propietario_pagos.tiene_pago;
+                        inversionEncontrado.tiene_pago =
+                            objeto_convertido.propietario_pagos.tiene_pago;
                         inversionEncontrado.pagado_pago =
                             objeto_convertido.propietario_pagos.pagado_pago;
                         inversionEncontrado.fecha_pagado_pago =

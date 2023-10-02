@@ -14,6 +14,9 @@ require('./database');
 require('./servidor/pasaporte');
 
 //--------------------------------------------------------
+require("./firebase")
+//--------------------------------------------------------
+
 
 // creamos el servidor con EXPRESS
 const creamosServidorExpress = express();

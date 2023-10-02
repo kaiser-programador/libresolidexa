@@ -631,7 +631,7 @@ $("#idSubirImagenEmpresa").on("submit", function (e) {
     
                         <div class="card-body">
                             <img
-                                src="/rutavirtualpublico/imagenes/imagenes_sistema/${completo}"
+                                src="${completo}"
                                 alt="${imagen}"
                                 title="${imagen}"
                                 class="estilo_imagen card-img-top"

@@ -7,6 +7,7 @@ const {
     indiceInversiones,
     indiceAdministrador,
     indiceEmpresa,
+    indiceImagenesSistema,
 } = require("../modelos/indicemodelo");
 
 const {
@@ -92,7 +93,26 @@ controladorPropietario.renderizarVentanaPropietario = async (req, res) => {
             lado: "propietario",
         };
 
-        info_propietario.estilo_cabezera = "cabezera_estilo_propietario";
+        //info_propietario.estilo_cabezera = "cabezera_estilo_propietario";
+
+        //----------------------------------------------------
+        // para la url de la cabezera
+        var url_cabezera = ""; // vacio por defecto
+        const registro_cabezera = await indiceImagenesSistema.findOne(
+            { tipo_imagen: "cabezera_propietario" },
+            {
+                url: 1,
+                _id: 0,
+            }
+        );
+
+        if (registro_cabezera) {
+            url_cabezera = registro_cabezera.url;
+        }
+
+        info_propietario.url_cabezera = url_cabezera;
+
+        //----------------------------------------------------
 
         var cabezera_adm = await cabezeras_adm_cli(aux_cabezera);
         info_propietario.cabezera_adm = cabezera_adm;
@@ -515,8 +535,14 @@ async function resumen_propietario(codigo_propietario) {
             ) {
                 var significado_aux_0 = registro_empresa.texto_segundero_prop;
                 var significado_aux_1 = significado_aux_0.replace("/sus_precio/", aux_cajas.precio);
-                var significado_aux_2 = significado_aux_1.replace("/sus_total/", aux_cajas.valor_total);
-                var significado_aux = significado_aux_2.replace("/sus_plusvalia/", aux_cajas.plusvalia);
+                var significado_aux_2 = significado_aux_1.replace(
+                    "/sus_total/",
+                    aux_cajas.valor_total
+                );
+                var significado_aux = significado_aux_2.replace(
+                    "/sus_plusvalia/",
+                    aux_cajas.plusvalia
+                );
             } else {
                 var significado_aux = "Significado";
             }
@@ -543,7 +569,10 @@ async function resumen_propietario(codigo_propietario) {
             if (registro_empresa.texto_segundero_prop_iz != undefined) {
                 if (registro_empresa.texto_segundero_prop_iz.indexOf("/nom_propietario/") != -1) {
                     var significado_aux_0 = registro_empresa.texto_segundero_prop_iz;
-                    var mensaje_segundero_pro = significado_aux_0.replace("/nom_propietario/", reg_nombre_prop.nombres_propietario);
+                    var mensaje_segundero_pro = significado_aux_0.replace(
+                        "/nom_propietario/",
+                        reg_nombre_prop.nombres_propietario
+                    );
                 }
             }
         }
@@ -637,9 +666,8 @@ controladorPropietario.nuevasClavesInversor = async (req, res) => {
 
                     registro_inversor.usuario_propietario = usuario;
                     // antes encriptarlo para ser guardado
-                    registro_inversor.clave_propietario = await registro_inversor.encriptarContrasena(
-                        clave
-                    );
+                    registro_inversor.clave_propietario =
+                        await registro_inversor.encriptarContrasena(clave);
                     await registro_inversor.save();
                     //registro_inversor.save();
 

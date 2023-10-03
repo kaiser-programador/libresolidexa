@@ -729,8 +729,38 @@ $(window).resize(function () {
 // para animacion de las cajas caidas de una en una
 
 function dim_ventana_inicio() {
+    
+    //---------------------------------------------
+    // para cambiar la "background-image" dependiendo de las diensiones de la ventana
+
+    var ventana_madre_ancho = $(window).width(); // resultado en px
+
+    //console.log("ancho ventana madre: " + ventana_madre_ancho);
+
+    // inicialmente ya esta condicionado que estamos en la ventana de inicio del administrador (ventana de la caida de cuadros), por tanto esta ventana cuenta con las url de las imagenes: vertica y horizontal
+    var url_vertical = $("#url_vertical").attr("data-url_img");
+    var url_horizontal = $("#url_horizontal").attr("data-url_img");
+
+    var css_horizontal = `linear-gradient(rgba(5, 5, 54, 0.8), rgba(5, 5, 54, 0.8)),
+    url(${url_horizontal})`;
+
+    var css_vertical = `linear-gradient(rgba(5, 5, 54, 0.8), rgba(5, 5, 54, 0.8)),
+    url(${url_vertical})`;
+
+    if (ventana_madre_ancho >= 768) {
+        // si es igual o mayor que 768px
+        $(".inicio_h_v").css("background-image", css_horizontal);
+    } else {
+        // si es menor que 768px
+        $(".inicio_h_v").css("background-image", css_vertical);
+    }
+
+    //---------------------------------------------
+    // para animacion de las cajas caidas de una en una
+
     // var ventana_ancho = $(window).width(); // resultado en px
     // var ventana_alto = $(window).height(); // resultado en px
+
     var ventana_ancho = $(".contenedor-icono-info-hijo").width(); // resultado en px
     //console.log("ancho contenedor hijo: " + ventana_ancho);
     //var ventana_alto = $(".contenedor-icono-info-hijo").height(); // resultado en px

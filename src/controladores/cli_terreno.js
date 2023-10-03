@@ -5,11 +5,16 @@ const {
     indiceImagenesTerreno,
     indiceProyecto,
     indiceDocumentos,
+    indiceImagenesSistema,
 } = require("../modelos/indicemodelo");
 
 const { proyecto_card_adm_cli } = require("../ayudas/funcionesayuda_1");
 
-const { cabezeras_adm_cli, pie_pagina_cli, segundero_cajas } = require("../ayudas/funcionesayuda_2");
+const {
+    cabezeras_adm_cli,
+    pie_pagina_cli,
+    segundero_cajas,
+} = require("../ayudas/funcionesayuda_2");
 
 const { numero_punto_coma, verificarTePyInm } = require("../ayudas/funcionesayuda_3");
 
@@ -47,7 +52,26 @@ controladorCliTerreno.renderVentanaTerreno = async (req, res) => {
             info_terreno_cli.codigo_terreno = codigo_terreno;
             info_terreno_cli.navegador_cliente = true;
             info_terreno_cli.cab_te_cli = true;
-            info_terreno_cli.estilo_cabezera = "cabezera_estilo_terreno";
+            //info_terreno_cli.estilo_cabezera = "cabezera_estilo_terreno";
+
+            //----------------------------------------------------
+            // para la url de la cabezera
+            var url_cabezera = ""; // vacio por defecto
+            const registro_cabezera = await indiceImagenesSistema.findOne(
+                { tipo_imagen: "cabezera_terreno" },
+                {
+                    url: 1,
+                    _id: 0,
+                }
+            );
+
+            if (registro_cabezera) {
+                url_cabezera = registro_cabezera.url;
+            }
+
+            info_terreno_cli.url_cabezera = url_cabezera;
+
+            //----------------------------------------------------
 
             //////var inversor_autenticado = validar_cli_2(); // devuelve "true" or "false"
 
@@ -244,6 +268,7 @@ async function terreno_descripcion(codigo_terreno) {
                     documentos_descripcion[d] = {
                         titulo_documento: registro_documentos[d].nombre_documento,
                         codigo_documento: registro_documentos[d].codigo_documento,
+                        url: registro_documentos[d].url,
                     };
                 }
             }
@@ -359,6 +384,7 @@ async function complementos_globales_te(codigo_terreno) {
                 nombre_imagen: 1,
                 codigo_imagen: 1,
                 extension_imagen: 1,
+                url: 1,
                 _id: 0,
             }
         );
@@ -372,6 +398,7 @@ async function complementos_globales_te(codigo_terreno) {
                     extension_imagen: registro_imagenes[i].extension_imagen,
                     imagen_te:
                         registro_imagenes[i].codigo_imagen + registro_imagenes[i].extension_imagen,
+                    url: registro_imagenes[i].url,
                 };
             }
         }

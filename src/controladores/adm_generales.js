@@ -8,7 +8,7 @@ const fileType = require("file-type");
 
 //const { direccionBaseDatos } = require("../claves");
 //const { initializeApp } = require("firebase/app");
-const { getStorage, ref, uploadBytes, getDownloadURL,deleteObject } = require("firebase/storage");
+const { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } = require("firebase/storage");
 
 const {
     codigoAlfanumericoImagen,
@@ -212,11 +212,13 @@ controladorAdministradorGeneral.subirImagen = async (req, res) => {
                         .extname(req.file.originalname)
                         .toLowerCase();
 
+                    /*
                     // direccion de destino, donde sera guardada la imagen (se la guardara en la carpeta "subido"), esta direccion sera guardada en la constante "direccionDestinoImagen"
                     // la imagen sera guardada con el codigo alfanumerico que se le dio
                     const direccionDestinoImagen = pache.resolve(
                         `src/publico/subido/${CodigoImagenCreada}${extensionImagenMinuscula}`
                     );
+                    */
 
                     // para validar la imagen, que lo que se esta subiendo sea en verdad un archivo de imagen
                     const tipo_archivo_a = req.file.mimetype.toLowerCase(); // en minuscula
@@ -246,8 +248,40 @@ controladorAdministradorGeneral.subirImagen = async (req, res) => {
                                 tipo_archivo_b === "image/jpeg" ||
                                 tipo_archivo_b === "image/gif")
                         ) {
+                            /*
                             // "fs.rename" mueve un archivo (es este caso una imagen) del lugar de origen (direccionTemporalImagen) a otro destino (direccionDestinoImagen)
                             await fs.rename(direccionTemporalImagen, direccionDestinoImagen);
+                            */
+
+                            //--------------------------------------------------------------
+                            // PARA SUBIR ARCHIVO IMAGEN A FIREBASE
+
+                            const storage = getStorage();
+
+                            var nombre_y_ext = CodigoImagenCreada + extensionImagenMinuscula;
+                            // para guardar en la carpeta "subido" en firebase con el nombre y la extension de la imagen incluida
+                            var direccionDestinoImagen = "subido/" + nombre_y_ext;
+
+                            // cramos una referencia al archivo imagen. donde se guardara y con que nombre sera guardado dentro de firebase
+                            const storageRef = ref(storage, direccionDestinoImagen);
+
+                            const data = await fs.promises.readFile(direccionTemporalImagen); // Utilizamos fs.promises.readFile para obtener una versión promisificada de fs.readFile
+
+                            // ESPERAMOS QUE SUBA LA IMAGEN
+                            await uploadBytes(storageRef, data);
+
+                            //console.log("Archivo subido con éxito a Firebase Storage");
+
+                            // Obtiene la URL de descarga pública de la imagen
+                            const url_imagen = await getDownloadURL(storageRef);
+
+                            //console.log("URL de descarga pública:", url_imagen);
+
+                            //--------------------------------------------------------------
+                            // despues de subir la imagen a firebase, eliminamos el archivo de la carpeta "temporal" donde se encuentra alamacenado temporalmente
+                            // con "fs.unlink" eliminamos el archivo imagen, dentro de ( ) le damos la direccion donde el archivo esta guardado.
+                            await fs.unlink(direccionTemporalImagen);
+                            //--------------------------------------------------------------
 
                             if (tipo_imagen == "empresa_somos") {
                                 const datosImagenNueva = new indiceImagenesEmpresa_sf({
@@ -258,6 +292,7 @@ controladorAdministradorGeneral.subirImagen = async (req, res) => {
                                     texto_imagen: req.body.texto_imagen,
                                     // porque aunque en html esta espeficicado su campo input como numerico, aqui llega como string, por lo tanto debe ser convertido nuevamente a numerico antes de ser guardado en la base de datos
                                     orden_imagen: Number(req.body.orden_imagen),
+                                    url: url_imagen,
                                 });
 
                                 // ahora guardamos en la base de datos la informacion de la imagen creada
@@ -278,6 +313,7 @@ controladorAdministradorGeneral.subirImagen = async (req, res) => {
                                     titulo_imagen: req.body.titulo_imagen,
                                     texto_imagen: req.body.texto_imagen,
                                     orden_imagen: Number(req.body.orden_imagen),
+                                    url: url_imagen,
                                 });
 
                                 // ahora guardamos en la base de datos la informacion de la imagen creada
@@ -308,6 +344,7 @@ controladorAdministradorGeneral.subirImagen = async (req, res) => {
                                     codigo_imagen: CodigoImagenCreada, // sin extension
                                     extension_imagen: extensionImagenMinuscula,
                                     // imagen_principal por defecto estara en FALSE
+                                    url: url_imagen,
                                 });
 
                                 // ahora guardamos en la base de datos la informacion de la imagen creada
@@ -325,6 +362,7 @@ controladorAdministradorGeneral.subirImagen = async (req, res) => {
                                         codigo_imagen: CodigoImagenCreada, // sin extension
                                         extension_imagen: extensionImagenMinuscula,
                                         imagen_respon_social: false, // para indicar que no es de RESPONSABILIDAD SOCIAL
+                                        url: url_imagen,
                                     });
                                     // ahora guardamos en la base de datos la informacion de la imagen creada
                                     await datosImagenNueva.save();
@@ -340,6 +378,7 @@ controladorAdministradorGeneral.subirImagen = async (req, res) => {
                                         codigo_imagen: CodigoImagenCreada, // sin extension
                                         extension_imagen: extensionImagenMinuscula,
                                         imagen_respon_social: true, // para indicar que SI es de RESPONSABILIDAD SOCIAL
+                                        url: url_imagen,
                                     });
                                     // ahora guardamos en la base de datos la informacion de la imagen creada
                                     await datosImagenNueva.save();
@@ -366,6 +405,7 @@ controladorAdministradorGeneral.subirImagen = async (req, res) => {
                                     codigoImagen: CodigoImagenCreada,
                                     nombreImagen,
                                     extensionImagen: extensionImagenMinuscula,
+                                    url: url_imagen,
                                 });
                             } else {
                                 if (
@@ -379,6 +419,7 @@ controladorAdministradorGeneral.subirImagen = async (req, res) => {
                                         texto_imagen,
                                         orden_imagen,
                                         titulo_imagen,
+                                        url: url_imagen,
                                     });
                                 }
 
@@ -431,7 +472,7 @@ controladorAdministradorGeneral.subirImagen = async (req, res) => {
 };
 
 /************************************************************************************ */
-// PARA subir al servidor imagenes de la EMPRESA: CABECERAS Y PRINCIPAL
+// PARA subir al servidor imagenes del SISTEMA: CABECERAS Y PRINCIPAL
 
 // RUTA   "post"  /laapirest/administracion/general/accion/subir_imagen_empresa
 
@@ -443,9 +484,9 @@ controladorAdministradorGeneral.subirImagenEmpresa = async (req, res) => {
 
         // revisamos si la imagen es en verdad una imagen en formato jpg
 
-        console.log("INICIO LA DIRECCION ACTUAL DEL ARCHIVO adm_generales");
-        console.log(__dirname);
-        console.log("FIN LA DIRECCION ACTUAL DEL ARCHIVO adm_generales");
+        //console.log("INICIO LA DIRECCION ACTUAL DEL ARCHIVO adm_generales");
+        //console.log(__dirname);
+        //console.log("FIN LA DIRECCION ACTUAL DEL ARCHIVO adm_generales");
 
         // extraemos la direccion donde se encuentra temporalmente la imagen (carpeta temporal) y la guardamos en la constante "direccionTemporalImagen"
         const direccionTemporalImagen = req.file.path; // es "path" (no pache, la que requerimos al inicio), esta es la propiedad propia de "file"
@@ -468,15 +509,14 @@ controladorAdministradorGeneral.subirImagenEmpresa = async (req, res) => {
             // ej, nos devolvera un objeto con la siguiente informacion { ext: 'jpg', mime: 'image/jpeg' } por tanto nos interezara solo el valor de su "mime"
             const tipo_archivo_b = infoArchivo.mime.toLowerCase(); // en minuscula
 
+            //console.log("el tipo_archivo_a: " + tipo_archivo_a);
+            //console.log("el tipo_archivo_b: " + tipo_archivo_b);
+
+            // PARA IMAGENES DEL SISTEMA, SOLO ESTARAN PERMITIDAS SUBIR IMAGENES "jpg" o jpeg
             if (
-                (tipo_archivo_a === "image/png" ||
-                    tipo_archivo_a === "image/jpg" ||
-                    tipo_archivo_a === "image/jpeg" ||
-                    tipo_archivo_a === "image/gif") &&
-                (tipo_archivo_b === "image/png" ||
-                    tipo_archivo_b === "image/jpg" ||
-                    tipo_archivo_b === "image/jpeg" ||
-                    tipo_archivo_b === "image/gif")
+                tipo_archivo_a === "image/jpg" ||
+                (tipo_archivo_a === "image/jpeg" && tipo_archivo_b === "image/jpg") ||
+                tipo_archivo_b === "image/jpeg"
             ) {
                 const tipo_imagen = req.body.name_radio_tipo_img_emp; // los 14 tipos de imagen de la empresa, ej/ cabecera_convocatoria
 
@@ -488,7 +528,7 @@ controladorAdministradorGeneral.subirImagenEmpresa = async (req, res) => {
                     },
                     {
                         imagen: 1,
-                        completo: 1, // URL de la imagen donde se encuentra almacenado (firebase)
+                        completo: 1, // EJ/ "cabecera_convocatoria.jpg", "inicio_horizontal.jpg"
                     }
                 );
 
@@ -510,19 +550,18 @@ controladorAdministradorGeneral.subirImagenEmpresa = async (req, res) => {
 
                     const storage = getStorage();
 
-                    var nombre_y_ext = tipo_imagen + ".jpg"; // porque solo son aceptados imagnes ".jpg" y son guardados en minuscula
+                    var nombre_y_ext = imagenExistente.completo;
                     // para guardar en la carpeta "imagenes_sistema" en firebase con el nombre y la extension de la imagen incluida
                     var direccionActualImagen = "imagenes_sistema/" + nombre_y_ext;
 
                     // Crear una referencia al archivo que se eliminará
                     const desertRef = ref(storage, direccionActualImagen);
-                
+
                     // Eliminar el archivo y esperar la promesa
                     await deleteObject(desertRef);
-                
-                    // Archivo eliminado con éxito
-                    console.log('Archivo eliminado con éxito');
 
+                    // Archivo eliminado con éxito
+                    //console.log("Archivo eliminado con éxito");
 
                     /*
                     // direccion de destino, donde sera guardada la imagen (se la guardara en la carpeta "subido"), esta direccion sera guardada en la constante "direccionDestinoImagen"
@@ -553,12 +592,8 @@ controladorAdministradorGeneral.subirImagenEmpresa = async (req, res) => {
                     // ESPERAMOS QUE SUBA LA IMAGEN
                     await uploadBytes(storageRef, data);
 
-                    console.log("Archivo subido con éxito a Firebase Storage");
-
                     // Obtiene la URL de descarga pública de la imagen
                     const url_imagen = await getDownloadURL(storageRef);
-
-                    console.log("URL de descarga pública:", url_imagen);
 
                     //--------------------------------------------------------------
                     // despues de subir la imagen a firebase, eliminamos el archivo de la carpeta "temporal" donde se encuentra alamacenado temporalmente
@@ -569,7 +604,7 @@ controladorAdministradorGeneral.subirImagenEmpresa = async (req, res) => {
                     // por seguridad solo actualizamos el atributo "completo" de la BD con el nombre y la extension con la que se guardo la nueva imagen
                     await indiceImagenesSistema.updateOne(
                         { tipo_imagen: tipo_imagen },
-                        { $set: { completo: url_imagen } }
+                        { $set: { completo: nombre_y_ext, url: url_imagen } }
                     );
 
                     var imagen = imagenExistente.imagen;
@@ -590,7 +625,7 @@ controladorAdministradorGeneral.subirImagenEmpresa = async (req, res) => {
                         exito: "si",
                         tipo_imagen,
                         imagen,
-                        completo:url_imagen,
+                        url: url_imagen,
                     });
                 } else {
                     // si no existe la imagen, entonces se procedera a ser almacenado en la BD
@@ -705,7 +740,8 @@ controladorAdministradorGeneral.subirImagenEmpresa = async (req, res) => {
                     const datosImagenNueva = new indiceImagenesSistema({
                         imagen,
                         tipo_imagen,
-                        completo:url_imagen,
+                        completo: nombre_y_ext,
+                        url: url_imagen,
                     });
 
                     // ahora guardamos en la base de datos la informacion de la imagen creada
@@ -727,7 +763,7 @@ controladorAdministradorGeneral.subirImagenEmpresa = async (req, res) => {
                         exito: "si",
                         tipo_imagen,
                         imagen,
-                        completo:url_imagen,
+                        url: url_imagen,
                     });
                 }
             } else {
@@ -754,7 +790,7 @@ controladorAdministradorGeneral.subirImagenEmpresa = async (req, res) => {
 };
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// PARA ELIMINACION DE IMAGEN DE TERRENO || PROYECTO || EMPRESA (tambien SISTEMA)
+// PARA ELIMINACION DE IMAGEN DE TERRENO || PROYECTO || EMPRESA (somos y funciona) || SISTEMA
 controladorAdministradorGeneral.eliminarImagen = async (req, res) => {
     // delete: "/laapirest/administracion/general/accion/eliminar_imagen/:objetivo_tipo/:codigo_imagen"
 
@@ -790,11 +826,12 @@ controladorAdministradorGeneral.eliminarImagen = async (req, res) => {
                         tipo_imagen: codigo_imagen, // ok (ej/ cabecera_convocatoria)
                     },
                     {
-                        completo: 1, // EJ/  "cabecera_convocatoria.jpg"
+                        completo: 1, // EJ/  la URL imagen en FIREBASE
                     }
                 );
             } else {
                 // si es una imagen "administrador", es decir que es propio de la EMPRESA
+                // imagenes de: COMO FUNCIONA y QUINES SOMOS
                 var imagenEliminar = await indiceImagenesEmpresa_sf.findOne({
                     codigo_imagen: codigo_imagen,
                 });
@@ -807,7 +844,7 @@ controladorAdministradorGeneral.eliminarImagen = async (req, res) => {
             var codigo_terreno = imagenEliminar.codigo_terreno;
             var acceso = await verificadorTerrenoBloqueado(codigo_terreno);
         }
-        //console.log("comanchero");
+
         if (acceso == "permitido") {
             if (imagenEliminar) {
                 if (
@@ -816,43 +853,44 @@ controladorAdministradorGeneral.eliminarImagen = async (req, res) => {
                 ) {
                     // entonces se trata de una imagen del sistema
 
+                    /*
                     const auxCodigoImagen = imagenEliminar.completo; // EJ/  "cabecera_convocatoria.jpg"
 
                     // "unlink" es un metodo de "fs" que elimina un archivo a partir de la direccion que se le de. Esta direccion sera aquella donde se encuentra guardada la imagen
                     await fs.unlink(
                         pache.resolve("./src/publico/imagenes/imagenes_sistema/" + auxCodigoImagen)
                     ); // "+" es para concatenar
+                    */
+
+                    //--------------------------------------------------
+
+                    const storage = getStorage();
+
+                    var nombre_y_ext = codigo_imagen + ".jpg"; // porque solo son aceptados imagnes ".jpg" y son guardados en minuscula
+                    // para encontrar en la carpeta "imagenes_sistema" en firebase con el nombre y la extension de la imagen incluida
+                    var direccionActualImagen = "imagenes_sistema/" + nombre_y_ext;
+
+                    // Crear una referencia al archivo que se eliminará
+                    const desertRef = ref(storage, direccionActualImagen);
+
+                    // Eliminar el archivo y esperar la promesa
+                    await deleteObject(desertRef);
+
+                    // Archivo eliminado con éxito
+                    console.log("Archivo eliminado DE FIREBASE con éxito");
+
+                    //--------------------------------------------------
 
                     // ahora eliminamos todos los datos (informacion que esta guardada en la base de datos) de la imagen
                     //await imagenEliminar.remove(); // indiceImagenesSistema (funcionaba, pero lo reemplazamos para no tener problemas con la obsolescencia)
 
-                    if (objetivo_tipo == "terreno") {
-                        await indiceImagenesTerreno.deleteOne({ codigo_imagen: codigo_imagen });
-                    }
-
-                    if (objetivo_tipo == "proyecto") {
-                        await indiceImagenesProyecto.deleteOne({ codigo_imagen: codigo_imagen });
-                    }
-
-                    if (objetivo_tipo == "administrador") {
-                        if (
-                            codigo_imagen.indexOf("cabecera") != -1 ||
-                            codigo_imagen.indexOf("inicio") != -1
-                        ) {
-                            // entonces se trata de una imagen del sistema (ej/ cabeceras)
-                            await indiceImagenesSistema.deleteOne({ tipo_imagen: codigo_imagen });
-                        } else {
-                            // si es una imagen "administrador", es decir que es propio de la EMPRESA
-                            await indiceImagenesEmpresa_sf.deleteOne({
-                                codigo_imagen: codigo_imagen,
-                            });
-                        }
-                    }
+                    // se trata de una imagen del sistema (ej/ cabeceras)
+                    await indiceImagenesSistema.deleteOne({ tipo_imagen: codigo_imagen });
 
                     //--------------------------------------------
                     // guardamos en el historial de acciones
                     var ci_administrador = req.user.ci_administrador; // extraido de la SESION guardada del administrador
-                    var accion_administrador = "Elimina imagen SISTEMA " + auxCodigoImagen;
+                    var accion_administrador = "Elimina imagen SISTEMA " + codigo_imagen;
                     var aux_accion_adm = {
                         ci_administrador,
                         accion_administrador,
@@ -864,12 +902,33 @@ controladorAdministradorGeneral.eliminarImagen = async (req, res) => {
                         exito: "si",
                     });
                 } else {
+                    /*
                     // si la imagen es encontrada en la base de datos
                     // entonces eliminamos el archivo imagen (la imagen misma) de la carpeta donde se encuentra guardada (carpeta "subido")
                     // "unlink" es un metodo de "fs" que elimina un archivo a partir de la direccion que se le de. Esta direccion sera aquella donde se encuentra guardada la imagen
                     const auxCodigoImagen = codigo_imagen + imagenEliminar.extension_imagen;
 
                     await fs.unlink(pache.resolve("./src/publico/subido/" + auxCodigoImagen)); // "+" es para concatenar
+                    */
+                    //--------------------------------------------------
+
+                    const storage = getStorage();
+
+                    var nombre_y_ext = codigo_imagen + imagenEliminar.extension_imagen;
+
+                    // para encontrar en la carpeta "subido" en firebase con el nombre y la extension de la imagen incluida
+                    var direccionActualImagen = "subido/" + nombre_y_ext;
+
+                    // Crear una referencia al archivo que se eliminará
+                    const desertRef = ref(storage, direccionActualImagen);
+
+                    // Eliminar el archivo y esperar la promesa
+                    await deleteObject(desertRef);
+
+                    // Archivo eliminado con éxito
+                    console.log("Archivo eliminado DE FIREBASE con éxito");
+
+                    //--------------------------------------------------
 
                     // ahora eliminamos todos los datos (informacion que esta guardada en la base de datos) de la imagen
                     //await imagenEliminar.remove(); // indiceImagenesSistema (funcionaba, pero lo reemplazamos para no tener problemas con la obsolescencia)
@@ -883,18 +942,11 @@ controladorAdministradorGeneral.eliminarImagen = async (req, res) => {
                     }
 
                     if (objetivo_tipo == "administrador") {
-                        if (
-                            codigo_imagen.indexOf("cabecera") != -1 ||
-                            codigo_imagen.indexOf("inicio") != -1
-                        ) {
-                            // entonces se trata de una imagen del sistema (ej/ cabeceras)
-                            await indiceImagenesSistema.deleteOne({ tipo_imagen: codigo_imagen });
-                        } else {
-                            // si es una imagen "administrador", es decir que es propio de la EMPRESA
-                            await indiceImagenesEmpresa_sf.deleteOne({
-                                codigo_imagen: codigo_imagen,
-                            });
-                        }
+                        // ya se verifico que no es una imagen del sistema
+                        // es una imagen "administrador", es decir que es propio de la EMPRESA
+                        await indiceImagenesEmpresa_sf.deleteOne({
+                            codigo_imagen: codigo_imagen,
+                        });
                     }
 
                     //--------------------------------------------
@@ -925,14 +977,36 @@ controladorAdministradorGeneral.eliminarImagen = async (req, res) => {
                                 if (documentos_imagen[i].nombre_documento == "excel") {
                                     var extension = "xlsx";
                                 }
+
                                 let documentoNombreExtension =
                                     documentos_imagen[i].codigo_documento + "." + extension;
+
+                                /*
                                 // eliminamos el ARCHIVO DOCUMENTO DE LA CARPETA DONDE ESTA GUARDADA
                                 await fs.unlink(
                                     pache.resolve(
                                         "./src/publico/subido/" + documentoNombreExtension
                                     )
                                 ); // "+" es para concatenar
+                                */
+
+                                //--------------------------------------------------
+
+                                //const storage = getStorage(); // ya fue declarado anteriormente
+
+                                // para encontrar en la carpeta "subido" en firebase con el nombre y la extension de la imagen incluida
+                                var direccionActualImagen = "subido/" + documentoNombreExtension;
+
+                                // Crear una referencia al archivo que se eliminará
+                                const desertRef = ref(storage, direccionActualImagen);
+
+                                // Eliminar el archivo y esperar la promesa
+                                await deleteObject(desertRef);
+
+                                // Archivo eliminado con éxito
+                                console.log("Archivo eliminado DE FIREBASE con éxito");
+
+                                //--------------------------------------------------
 
                                 documentos_eliminados =
                                     documentos_eliminados + " " + documentoNombreExtension;
@@ -1590,11 +1664,13 @@ controladorAdministradorGeneral.subirDocumento = async (req, res) => {
                         .extname(req.file.originalname)
                         .toLowerCase();
 
+                    /*
                     // direccion de destino, donde sera guardada el documento (se la guardara en la carpeta "subido"), esta direccion sera guardada en la constante "direccionDestino"
                     // el documento sera guardada con el nombre alfanumerico que se le dio
                     const direccionDestino = pache.resolve(
                         `src/publico/subido/${codigo_documento}${extensionDocumentoMinuscula}`
                     );
+                    */
 
                     // para validar el documento, que lo que se esta subiendo sea en verdad un archivo de PDF
                     const tipo_archivo_a = req.file.mimetype.toLowerCase(); // en minuscula
@@ -1604,6 +1680,7 @@ controladorAdministradorGeneral.subirDocumento = async (req, res) => {
                     const infoArchivo = await fileType.fromFile(direccionTemporal);
 
                     if (infoArchivo != undefined) {
+
                         // ej, nos devolvera un objeto con la siguiente informacion { ext: 'pdf', mime: 'application/pdf' } por tanto nos interezara solo el valor de su "mime"
                         const tipo_archivo_b = infoArchivo.mime.toLowerCase(); // en minuscula
 
@@ -1614,6 +1691,36 @@ controladorAdministradorGeneral.subirDocumento = async (req, res) => {
                             // "fs.rename" mueve un archivo del lugar de origen (direccionTemporal) a otro destino (direccionDestino)
                             await fs.rename(direccionTemporal, direccionDestino);
 
+                            //--------------------------------------------------------------
+                            // PARA SUBIR ARCHIVO A FIREBASE
+
+                            const storage = getStorage();
+
+                            var nombre_y_ext = codigo_documento + extensionDocumentoMinuscula;
+                            // para guardar en la carpeta "subido" en firebase con el nombre y la extension del archivo incluida
+                            var direccionDestinoArchivo = "subido/" + nombre_y_ext;
+
+                            // cramos una referencia al archivo imagen. donde se guardara y con que nombre sera guardado dentro de firebase
+                            const storageRef = ref(storage, direccionDestinoArchivo);
+
+                            const data = await fs.promises.readFile(direccionTemporal); // Utilizamos fs.promises.readFile para obtener una versión promisificada de fs.readFile
+
+                            // ESPERAMOS QUE SUBA LA IMAGEN
+                            await uploadBytes(storageRef, data);
+
+                            //console.log("Archivo subido con éxito a Firebase Storage");
+
+                            // Obtiene la URL de descarga pública de la imagen
+                            const url_archivo = await getDownloadURL(storageRef);
+
+                            //console.log("URL de descarga pública:", url_archivo);
+
+                            //--------------------------------------------------------------
+                            // despues de subir la imagen a firebase, eliminamos el archivo de la carpeta "temporal" donde se encuentra alamacenado temporalmente
+                            // con "fs.unlink" eliminamos el archivo imagen, dentro de ( ) le damos la direccion donde el archivo esta guardado.
+                            await fs.unlink(direccionTemporal);
+                            //--------------------------------------------------------------
+
                             const datosDocumentoNuevo = new indiceDocumentos({
                                 codigo_terreno: codigo_terreno,
                                 codigo_proyecto: codigo_proyecto,
@@ -1622,6 +1729,7 @@ controladorAdministradorGeneral.subirDocumento = async (req, res) => {
                                 codigo_documento: codigo_documento,
                                 clase_documento: req.body.clase_documento,
                                 ci_propietario: req.body.ci_propietario,
+                                url: url_archivo,
                             });
 
                             // ahora guardamos en la base de datos la informacion de el documento creada
@@ -1649,6 +1757,7 @@ controladorAdministradorGeneral.subirDocumento = async (req, res) => {
                                     codigo_documento,
                                     nombre_documento,
                                     codigo_inmueble, // codigo del inm al que pertenecera el docum
+                                    url:url_archivo,
                                 });
                             } else {
                                 res.json({
@@ -1656,6 +1765,7 @@ controladorAdministradorGeneral.subirDocumento = async (req, res) => {
                                     codigo_documento,
                                     nombre_documento,
                                     clase_documento: req.body.clase_documento,
+                                    url:url_archivo,
                                 });
                             }
                         } else {
@@ -1795,11 +1905,13 @@ controladorAdministradorGeneral.subirDocumentoEmpresaFunciona = async (req, res)
                         .extname(req.file.originalname)
                         .toLowerCase();
 
+                    /*
                     // direccion de destino, donde sera guardada el documento (se la guardara en la carpeta "subido"), esta direccion sera guardada en la constante "direccionDestino"
                     // el documento sera guardada con el nombre alfanumerico que se le dio
                     const direccionDestino = pache.resolve(
                         `src/publico/subido/${codigo_documento}${extensionDocumentoMinuscula}`
                     );
+                    */
 
                     //console.log("req.file es");
                     //console.log(req.file);
@@ -1876,8 +1988,40 @@ controladorAdministradorGeneral.subirDocumentoEmpresaFunciona = async (req, res)
                         }
 
                         if (archivo_aceptado) {
+                            /*
                             // "fs.rename" mueve un archivo del lugar de origen (direccionTemporal) a otro destino (direccionDestino)
                             await fs.rename(direccionTemporal, direccionDestino);
+                            */
+
+                            //--------------------------------------------------------------
+                            // PARA SUBIR ARCHIVO A FIREBASE
+
+                            const storage = getStorage();
+
+                            var nombre_y_ext = codigo_documento + extensionDocumentoMinuscula;
+                            // para guardar en la carpeta "subido" en firebase con el nombre y la extension del archivo incluida
+                            var direccionDestinoImagen = "subido/" + nombre_y_ext;
+
+                            // cramos una referencia al archivo imagen. donde se guardara y con que nombre sera guardado dentro de firebase
+                            const storageRef = ref(storage, direccionDestinoImagen);
+
+                            const data = await fs.promises.readFile(direccionTemporal); // Utilizamos fs.promises.readFile para obtener una versión promisificada de fs.readFile
+
+                            // ESPERAMOS QUE SUBA LA IMAGEN
+                            await uploadBytes(storageRef, data);
+
+                            //console.log("Archivo subido con éxito a Firebase Storage");
+
+                            // Obtiene la URL de descarga pública de la imagen
+                            const url_archivo = await getDownloadURL(storageRef);
+
+                            //console.log("URL de descarga pública:", url_archivo);
+
+                            //--------------------------------------------------------------
+                            // despues de subir la imagen a firebase, eliminamos el archivo de la carpeta "temporal" donde se encuentra alamacenado temporalmente
+                            // con "fs.unlink" eliminamos el archivo imagen, dentro de ( ) le damos la direccion donde el archivo esta guardado.
+                            await fs.unlink(direccionTemporal);
+                            //--------------------------------------------------------------
 
                             // los atributos que no figuran aqui ya estan configurados con valores por defecto en la base de datos
                             const datosDocumentoNuevo = new indiceDocumentos({
@@ -1885,6 +2029,7 @@ controladorAdministradorGeneral.subirDocumentoEmpresaFunciona = async (req, res)
                                 nombre_documento: req.body.name_radio_tipo_archivo, // pdf || word || excel
                                 codigo_documento,
                                 clase_documento: req.body.name_radio_tipo_doc, // manual || beneficio || modelo
+                                url: url_archivo,
                             });
 
                             // ahora guardamos en la base de datos la informacion de el documento creada
@@ -1911,6 +2056,7 @@ controladorAdministradorGeneral.subirDocumentoEmpresaFunciona = async (req, res)
                                 codigo_funciona,
                                 tipo_archivo: req.body.name_radio_tipo_archivo, // pdf || word || excel
                                 tipo_doc: req.body.name_radio_tipo_doc, // manual || beneficio || modelo
+                                url: url_archivo,
                             });
                         } else {
                             // en caso de que el archivo no sea una pdf o docx, entonces sera eliminado de la carpeta "TEMPORAL"

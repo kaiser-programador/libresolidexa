@@ -20,11 +20,13 @@ const imagenesProyectoEsquema = new Schema({
     // inmuebles (incluido el proyecto si fuera el caso) que tienen a esta imagen como IMAGEN EXCLUSIVA
     parte_exclusiva: { type: Array, default: [] },
 
-    imagen_respon_social: { type: Boolean } // sera "FALSE" en caso de que NO SERA UNA IMAGEN DE RESPONSABILIDAD SOCIAL, "TRUE" EN CASO DE QUE SI LO SEA
+    imagen_respon_social: { type: Boolean }, // sera "FALSE" en caso de que NO SERA UNA IMAGEN DE RESPONSABILIDAD SOCIAL, "TRUE" EN CASO DE QUE SI LO SEA
 
     // la parte de "otros" son aquellos que no tienen a esta imagen como "principal" ni como "exclusiva"
 
     // LAS IMAGENES DE DONACION RESPONSABILIDAD SOCIAL NO TENDRAN DATOS DE "parte_principal" ni "parte_exclusiva"
+
+    url: { type: String, default: "" }, // PARA INDICAR LA URL DONDE ESTARA GUARDADA EL ARCHIVO, por ejemplo en FIREBASE STORAGE
 
 });
 

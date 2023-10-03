@@ -8,6 +8,7 @@ const {
     indiceInversiones,
     indiceGuardados,
     indiceImagenesProyecto,
+    indiceImagenesSistema,
 } = require("../modelos/indicemodelo");
 
 const {
@@ -133,7 +134,27 @@ controladorAdmInmueble.renderizarVentanaInmueble = async (req, res) => {
             // VERIFICAMOS QUE EL INMUEBLE EXISTA EN LA BASE DE DATOS
             var info_inmueble = {};
             info_inmueble.cab_inm_adm = true;
-            info_inmueble.estilo_cabezera = "cabezera_estilo_inmueble";
+            //info_inmueble.estilo_cabezera = "cabezera_estilo_inmueble";
+
+            //----------------------------------------------------
+            // para la url de la cabezera
+            var url_cabezera = ""; // vacio por defecto
+            const registro_cabezera = await indiceImagenesSistema.findOne(
+                { tipo_imagen: "cabezera_inmueble" },
+                {
+                    url: 1,
+                    _id: 0,
+                }
+            );
+
+            if (registro_cabezera) {
+                url_cabezera = registro_cabezera.url;
+            }
+
+            info_inmueble.url_cabezera = url_cabezera;
+
+            //----------------------------------------------------
+
             info_inmueble.codigo_inmueble = codigo_inmueble;
 
             var aux_cabezera = {
@@ -190,9 +211,9 @@ controladorAdmInmueble.renderizarVentanaInmueble = async (req, res) => {
                 var competencia_inm = inmuebleExiste.precio_competencia;
                 var plusvalia_inm = competencia_inm - precio_justo_inm;
 
-                info_inmueble.reserva_render=numero_punto_coma(reserva_inm);
-                info_inmueble.precio_render=numero_punto_coma(precio_justo_inm.toFixed(0));
-                info_inmueble.plusvalia_render=numero_punto_coma(plusvalia_inm.toFixed(0));
+                info_inmueble.reserva_render = numero_punto_coma(reserva_inm);
+                info_inmueble.precio_render = numero_punto_coma(precio_justo_inm.toFixed(0));
+                info_inmueble.plusvalia_render = numero_punto_coma(plusvalia_inm.toFixed(0));
 
                 var contenido_inmueble = await inmueble_propietario(codigo_inmueble);
                 info_inmueble.propietario_inmueble = true;
@@ -379,6 +400,7 @@ async function inmueble_imagenes(codigo_inmueble) {
                             nombre_imagen: proyectoImagenes[i].nombre_imagen,
                             codigo_imagen: proyectoImagenes[i].codigo_imagen, // sin extension
                             extension_imagen: proyectoImagenes[i].extension_imagen,
+                            url: proyectoImagenes[i].url,
                         };
                     } else {
                         // si la imagen no es "principal" para el inmueble,
@@ -399,6 +421,7 @@ async function inmueble_imagenes(codigo_inmueble) {
                                 nombre_imagen: proyectoImagenes[i].nombre_imagen,
                                 codigo_imagen: proyectoImagenes[i].codigo_imagen, // sin extension
                                 extension_imagen: proyectoImagenes[i].extension_imagen,
+                                url: proyectoImagenes[i].url,
                             };
                         } else {
                             // si la imagen NO es "principal", NO es "exclusiva", entonces es "OTROS" para el inmueble,
@@ -412,6 +435,7 @@ async function inmueble_imagenes(codigo_inmueble) {
                                 nombre_imagen: proyectoImagenes[i].nombre_imagen,
                                 codigo_imagen: proyectoImagenes[i].codigo_imagen, // sin extension
                                 extension_imagen: proyectoImagenes[i].extension_imagen,
+                                url: proyectoImagenes[i].url,
                             };
                         }
                     }
@@ -441,6 +465,7 @@ async function inmueble_documentos(codigo_inmueble) {
                 nombre_documento: 1,
                 codigo_documento: 1,
                 clase_documento: 1,
+                url: 1,
                 _id: 0,
             }
         );
@@ -1033,7 +1058,8 @@ controladorAdmInmueble.eliminarInmueble = async (req, res) => {
         } else {
             res.json({
                 exito: "no",
-                mensaje: "Inmueble No encontrado, por favor refresque la ventana e intentelo nuevamente",
+                mensaje:
+                    "Inmueble No encontrado, por favor refresque la ventana e intentelo nuevamente",
             });
         }
     } catch (error) {
@@ -1140,7 +1166,8 @@ async function eliminadorDocumentosInmueble(codigo_inmueble) {
         if (registroDocumentosInmueble.length > 0) {
             // eliminamos los ARCHIVOS DOCUMENTOS PDF uno por uno (sean publicos o privados del propietario dueño de este inmueble)
             for (let i = 0; i < registroDocumentosInmueble.length; i++) {
-                let documentoNombreExtension = registroDocumentosInmueble[i].codigo_documento + ".pdf";
+                let documentoNombreExtension =
+                    registroDocumentosInmueble[i].codigo_documento + ".pdf";
                 // eliminamos el ARCHIVO DOCUMENTO DE LA CARPETA DONDE ESTA GUARDADA
                 await fs.unlink(pache.resolve("./src/publico/subido/" + documentoNombreExtension)); // "+" es para concatenar
             }

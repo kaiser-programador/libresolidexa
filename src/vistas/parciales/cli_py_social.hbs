@@ -141,7 +141,7 @@
                                 </div>
 
                                 <img
-                                    src="/rutavirtualpublico/subido/{{imagen_rs}}"
+                                    src="{{imagen_rs}}"
                                     alt="{{codigo_imagen}}"
                                     title="{{nombre_imagen}}"
                                     class="estilo_imagen card-img-top"
@@ -158,11 +158,11 @@
                         {{! Por pura suerte para que fancybox no presente las imagenes propias del proyecto con las de responsabilidad es que aqui se puso en el atributo: data-fancybox="gallery_rs" en lugar de: data-fancybox="gallery"  (dado que esta ultima esta reservada para las imagenes propias del proyecto) }}
                         {{#each contenido_proyecto.imagenes_rs}}
                             <a
-                                href="/rutavirtualpublico/subido/{{imagen_rs}}"
+                                href="{{imagen_rs}}"
                                 data-fancybox="gallery_rs"
                                 data-caption="{{nombre_imagen}}"
                             ><img
-                                    src="/rutavirtualpublico/subido/{{imagen_rs}}"
+                                    src="{{imagen_rs}}"
                                     alt="{{nombre_imagen}}"
                                 /></a>
                         {{/each}}

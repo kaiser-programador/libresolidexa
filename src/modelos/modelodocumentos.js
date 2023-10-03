@@ -18,7 +18,10 @@ const documentosEsquema = new Schema({
     clase_documento: { type: String }, // si es un doc que pertenecera a todos los inmuebles, entonces para no repetir y ocupar espacio poniendo a todos el mismo doc, se pondra solo una vez (como general) en la ventana del PROYECTO que engloba a todos los inmuebles
     // para documentos que pertenescan a "COMO FUNCIONA" aqui se guardara el tipo: manual || beneficio || modelo
 
-    ci_propietario: { type: String, default: '' } // existira SI EL TIPO DE DOCUMENTO ES PRIVADO, caso contrario estara vacio ''
+    ci_propietario: { type: String, default: '' }, // existira SI EL TIPO DE DOCUMENTO ES PRIVADO, caso contrario estara vacio ''
+
+    url: { type: String, default: "" }, // PARA INDICAR LA URL DONDE ESTARA GUARDADA EL ARCHIVO, por ejemplo en FIREBASE STORAGE
+
 });
 
 module.exports = mongoose.model('documentosModelo', documentosEsquema);

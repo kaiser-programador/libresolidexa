@@ -1,6 +1,11 @@
 // CONTROLADORES PARA EL INMUEBLE DESDE EL LADO DEL CLIENTE PUBLICO
 
-const { indiceEmpresa, indiceImagenesEmpresa_sf, indiceDocumentos } = require("../modelos/indicemodelo");
+const {
+    indiceEmpresa,
+    indiceImagenesEmpresa_sf,
+    indiceDocumentos,
+    indiceImagenesSistema,
+} = require("../modelos/indicemodelo");
 
 const { pie_pagina_cli } = require("../ayudas/funcionesayuda_2");
 
@@ -31,7 +36,26 @@ controladorCliEmpresa.comoFunciona = async (req, res) => {
         }
 
         info_funciona.navegador_cliente = true;
-        info_funciona.estilo_cabezera = "cabezera_estilo_empresa";
+        //info_funciona.estilo_cabezera = "cabezera_estilo_empresa";
+
+        //----------------------------------------------------
+        // para la url de la cabezera
+        var url_cabezera = ""; // vacio por defecto
+        const registro_cabezera = await indiceImagenesSistema.findOne(
+            { tipo_imagen: "cabecera_empresa" },
+            {
+                url: 1,
+                _id: 0,
+            }
+        );
+
+        if (registro_cabezera) {
+            url_cabezera = registro_cabezera.url;
+        }
+
+        info_funciona.url_cabezera = url_cabezera;
+
+        //----------------------------------------------------
 
         var pie_pagina = await pie_pagina_cli();
         info_funciona.pie_pagina_cli = pie_pagina;
@@ -54,6 +78,7 @@ controladorCliEmpresa.comoFunciona = async (req, res) => {
                     titulo_imagen: 1,
                     url_video: 1,
                     video_funciona: 1,
+                    url: 1,
                     _id: 0,
                 }
             )
@@ -81,6 +106,7 @@ controladorCliEmpresa.comoFunciona = async (req, res) => {
                         titulo_imagen: como_funciona[i].titulo_imagen,
                         url_video: como_funciona[i].url_video,
                         video_funciona: como_funciona[i].video_funciona, // true o false
+                        url: como_funciona[i].url,
                         lista_documentos: [], // POR DEFECTO de inicio vacio para luego ser llenado
                     };
 
@@ -88,31 +114,43 @@ controladorCliEmpresa.comoFunciona = async (req, res) => {
                     // en el orden: 1. manual, 2. modelo, 3. beneficio, 4. video
 
                     var documentos_i_manual = await indiceDocumentos.find(
-                        { codigo_terreno: como_funciona[i].codigo_imagen, clase_documento: "manual" },
+                        {
+                            codigo_terreno: como_funciona[i].codigo_imagen,
+                            clase_documento: "manual",
+                        },
                         {
                             nombre_documento: 1, // pdf || word || excel
                             codigo_documento: 1,
                             clase_documento: 1, // manual || beneficio || modelo
+                            url: 1,
                             _id: 0,
                         }
                     );
 
                     var documentos_i_modelo = await indiceDocumentos.find(
-                        { codigo_terreno: como_funciona[i].codigo_imagen, clase_documento: "modelo" },
+                        {
+                            codigo_terreno: como_funciona[i].codigo_imagen,
+                            clase_documento: "modelo",
+                        },
                         {
                             nombre_documento: 1, // pdf || word || excel
                             codigo_documento: 1,
                             clase_documento: 1, // manual || beneficio || modelo
+                            url: 1,
                             _id: 0,
                         }
                     );
 
                     var documentos_i_beneficio = await indiceDocumentos.find(
-                        { codigo_terreno: como_funciona[i].codigo_imagen, clase_documento: "beneficio" },
+                        {
+                            codigo_terreno: como_funciona[i].codigo_imagen,
+                            clase_documento: "beneficio",
+                        },
                         {
                             nombre_documento: 1, // pdf || word || excel
                             codigo_documento: 1,
                             clase_documento: 1, // manual || beneficio || modelo
+                            url: 1,
                             _id: 0,
                         }
                     );
@@ -157,6 +195,7 @@ controladorCliEmpresa.comoFunciona = async (req, res) => {
                                 extension, // pdf || docx || xlsx
                                 //tipo_archivo, // pdf || word || excel (para bootstrap)
                                 tipo_archivo: documentos_i[j].nombre_documento, // pdf || word || excel (para bootstrap)
+                                url: documentos_i[j].url,
                             };
                         }
 
@@ -208,7 +247,26 @@ controladorCliEmpresa.quienesSomos = async (req, res) => {
         info_somos.pie_pagina_cli = pie_pagina;
         info_somos.navegador_cliente = true;
         info_somos.ordenador_externo = false; // porque no existen cards que ordenar
-        info_somos.estilo_cabezera = "cabezera_estilo_empresa";
+        //info_somos.estilo_cabezera = "cabezera_estilo_empresa";
+
+        //----------------------------------------------------
+        // para la url de la cabezera
+        var url_cabezera = ""; // vacio por defecto
+        const registro_cabezera = await indiceImagenesSistema.findOne(
+            { tipo_imagen: "cabecera_empresa" },
+            {
+                url: 1,
+                _id: 0,
+            }
+        );
+
+        if (registro_cabezera) {
+            url_cabezera = registro_cabezera.url;
+        }
+
+        info_somos.url_cabezera = url_cabezera;
+
+        //----------------------------------------------------
 
         info_somos.inversor_autenticado = req.inversor_autenticado; // true o false
         // si es TRUE y solo si es true, entonces se mostrara su ci
@@ -225,6 +283,7 @@ controladorCliEmpresa.quienesSomos = async (req, res) => {
                     texto_imagen: 1,
                     orden_imagen: 1,
                     titulo_imagen: 1,
+                    url: 1,
                     _id: 0,
                 }
             )
@@ -246,6 +305,7 @@ controladorCliEmpresa.quienesSomos = async (req, res) => {
                         texto_imagen: quienes_somos[i].texto_imagen,
                         orden_imagen: quienes_somos[i].orden_imagen,
                         titulo_imagen: quienes_somos[i].titulo_imagen,
+                        url: quienes_somos[i].url,
                     };
                 } else {
                     lista_somos[i] = {
@@ -258,6 +318,7 @@ controladorCliEmpresa.quienesSomos = async (req, res) => {
                         texto_imagen: quienes_somos[i].texto_imagen,
                         orden_imagen: quienes_somos[i].orden_imagen,
                         titulo_imagen: quienes_somos[i].titulo_imagen,
+                        url: quienes_somos[i].url,
                     };
                 }
             }
@@ -287,7 +348,26 @@ controladorCliEmpresa.preguntasFrecuentes = async (req, res) => {
         var info_preguntas = {};
 
         info_preguntas.navegador_cliente = true;
-        info_preguntas.estilo_cabezera = "cabezera_estilo_empresa";
+        //info_preguntas.estilo_cabezera = "cabezera_estilo_empresa";
+
+        //----------------------------------------------------
+        // para la url de la cabezera
+        var url_cabezera = ""; // vacio por defecto
+        const registro_cabezera = await indiceImagenesSistema.findOne(
+            { tipo_imagen: "cabecera_empresa" },
+            {
+                url: 1,
+                _id: 0,
+            }
+        );
+
+        if (registro_cabezera) {
+            url_cabezera = registro_cabezera.url;
+        }
+
+        info_preguntas.url_cabezera = url_cabezera;
+
+        //----------------------------------------------------
 
         info_preguntas.inversor_autenticado = req.inversor_autenticado; // FALSE O TRUE,
         // si es TRUE y solo si es true, entonces se mostrara su ci
@@ -335,11 +415,10 @@ controladorCliEmpresa.preguntasFrecuentes = async (req, res) => {
             //console.log(info_preguntas);
 
             res.render("cli_preguntas", info_preguntas);
-        }else{
+        } else {
             // de todas maneras renderiza la ventana (para que asi no se quede colgado cargando), pero renderizara una ventana con campos vacios, porque "info_funciona" esta vacio
             res.render("cli_preguntas", info_preguntas);
         }
-
     } catch (error) {
         console.log(error);
     }

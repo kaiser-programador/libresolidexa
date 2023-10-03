@@ -217,6 +217,18 @@ $("#form-acceso-administrador").on("submit", function (e) {
 $("#idSubirImagen").on("submit", function (e) {
     e.preventDefault(); // EVITAMOS QUE EL FORMULARIO SE DIRIJA AL SRC POR DEFECTO
 
+    $(".alert").remove(); // por seguridad borramos todos los alert
+
+    // con "after" el nuevo contenido se pondra DESPUES y al MISMO NIVEL
+    $(".ref_subir_img").after(
+        `<div class="alert alert-warning mt-3">
+            <button type="button" class="close" data-dismiss="alert">
+                <span>&times;</span>
+            </button>
+            <strong>Espere, imagen subiendose...!</strong>
+        </div>`
+    );
+
     var datosFormulario = new FormData(document.getElementById("idSubirImagen"));
 
     var tipo_objetivo = $("#tipo_objetivo").val();
@@ -236,6 +248,8 @@ $("#idSubirImagen").on("submit", function (e) {
         var tipoRespuesta = respuestaServidor.exito;
 
         if (tipoRespuesta == "si") {
+            var url = respuestaServidor.url; // TODAS LAS IMAGENES SUBIDAS CUENTAN CON ESTA PROPIEDAD
+
             if (tipo_objetivo == "empresa_somos" || tipo_objetivo == "empresa_funciona") {
                 // si la imagen fue guardada en el servidor
                 // extraemos los datos
@@ -287,7 +301,7 @@ $("#idSubirImagen").on("submit", function (e) {
     
                         <div class="card-body">
                             <img
-                                src="/rutavirtualpublico/subido/${codigo_imagen}${extension_imagen}"
+                                src="${url}"
                                 alt="${orden_imagen}"
                                 title="${orden_imagen}"
                                 class="estilo_imagen card-img-top"
@@ -330,7 +344,7 @@ $("#idSubirImagen").on("submit", function (e) {
                             </div>
 
                             <div class="card-body">
-                                <img src="/rutavirtualpublico/subido/${codigo_imagen}${extension_imagen}" alt="${nombre_imagen}"
+                                <img src="${url}" alt="${nombre_imagen}"
                                     title="${codigo_imagen}" class="estilo_imagen card-img-top">
                             </div>
 
@@ -371,7 +385,7 @@ $("#idSubirImagen").on("submit", function (e) {
                                     </div>
                                 </div>
 
-                                <img src="/rutavirtualpublico/subido/${codigo_imagen}${extension_imagen}"
+                                <img src="${url}"
                                     alt="${nombre_imagen}" title="${codigo_imagen}"
                                     class="estilo_imagen card-img-top">
                                 <div class="card-body">
@@ -410,7 +424,7 @@ $("#idSubirImagen").on("submit", function (e) {
                                 </div>
     
                                 <div class="card-body">
-                                    <img src="/rutavirtualpublico/subido/${codigo_imagen}${extension_imagen}" alt="${nombre_imagen}"
+                                    <img src="${url}" alt="${nombre_imagen}"
                                         title="${codigo_imagen}" class="estilo_imagen card-img-top">
     
                                 </div>
@@ -419,12 +433,26 @@ $("#idSubirImagen").on("submit", function (e) {
                     );
                 }
             }
+
+            $(".alert").remove(); // por seguridad borramos todos los alert
+
+            // con "after" el nuevo contenido se pondra DESPUES y al MISMO NIVEL
+            $(".ref_subir_img").after(
+                `<div class="alert alert-success mt-3">
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span>&times;</span>
+                    </button>
+                    <strong>Imagen subida!</strong>
+                </div>`
+            );
         }
 
         if (tipoRespuesta == "no") {
             // si la imagen no fue guardada, entonces procedemos a mostrar la respuesta del servidor
             //alert(respuestaServidor.mensaje);
             // aunque desde el servido viene como respuesta un "mensaje", aqui lo escribimos manualmente (el mismo mensaje que el de servidor)
+
+            $(".alert").remove(); // por seguridad borramos todos los alert
 
             // con "after" el nuevo contenido se pondra DESPUES y al MISMO NIVEL
             $(".ref_subir_img").after(
@@ -438,6 +466,8 @@ $("#idSubirImagen").on("submit", function (e) {
         }
 
         if (tipoRespuesta == "denegado") {
+            $(".alert").remove(); // por seguridad borramos todos los alert
+
             // con "after" el nuevo contenido se pondra DESPUES y al MISMO NIVEL
             $(".ref_subir_img").after(
                 `<div class="alert alert-danger mt-3">
@@ -460,16 +490,14 @@ $("#idSubirImagen").on("submit", function (e) {
         }
 
         // para la casilla check de "Requerimientos" si es que existiese
-        if($("#id_check_requerimiento").length>0){
+        if ($("#id_check_requerimiento").length > 0) {
             // dejamos este check en su estano natural que es el de estar deseleccionado
             let seleccionado = $("#id_check_requerimiento").attr("data-seleccionado");
-            if(seleccionado == "si"){
+            if (seleccionado == "si") {
                 // entonces lo deseleccionamos haciendo click en este check
                 $("#id_check_requerimiento").click();
             }
         }
-        
-
     });
 });
 
@@ -564,6 +592,18 @@ $(".contenedor_imagenes_subidas").on("click", ".boton_eliminar_imagen_jquery", f
 $("#idSubirImagenEmpresa").on("submit", function (e) {
     e.preventDefault(); // EVITAMOS QUE EL FORMULARIO SE DIRIJA AL SRC POR DEFECTO
 
+    $(".alert").remove(); // por seguridad borramos todos los alert
+
+    // con "after" el nuevo contenido se pondra DESPUES y al MISMO NIVEL
+    $(".ref_subir_img").after(
+        `<div class="alert alert-warning mt-3">
+            <button type="button" class="close" data-dismiss="alert">
+                <span>&times;</span>
+            </button>
+            <strong>Espere, imagen subiendose...!</strong>
+        </div>`
+    );
+
     var datosFormulario = new FormData(document.getElementById("idSubirImagenEmpresa"));
 
     $.ajax({
@@ -585,7 +625,7 @@ $("#idSubirImagenEmpresa").on("submit", function (e) {
 
             var tipo_imagen = respuestaServidor.tipo_imagen;
 
-            var completo = respuestaServidor.completo;
+            var url = respuestaServidor.url;
 
             var imagen = respuestaServidor.imagen;
 
@@ -631,7 +671,7 @@ $("#idSubirImagenEmpresa").on("submit", function (e) {
     
                         <div class="card-body">
                             <img
-                                src="${completo}"
+                                src="${url}"
                                 alt="${imagen}"
                                 title="${imagen}"
                                 class="estilo_imagen card-img-top"
@@ -641,12 +681,26 @@ $("#idSubirImagenEmpresa").on("submit", function (e) {
                     </div>
                 </div>`
             );
+
+            $(".alert").remove(); // por seguridad borramos todos los alert
+
+            // con "after" el nuevo contenido se pondra DESPUES y al MISMO NIVEL
+            $(".ref_subir_img").after(
+                `<div class="alert alert-success mt-3">
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span>&times;</span>
+                    </button>
+                    <strong>Imagen subida!</strong>
+                </div>`
+            );
         }
 
         if (tipoRespuesta == "no") {
             // si la imagen no fue guardada, entonces procedemos a mostrar la respuesta del servidor
             //alert(respuestaServidor.mensaje);
             // aunque desde el servido viene como respuesta un "mensaje", aqui lo escribimos manualmente (el mismo mensaje que el de servidor)
+
+            $(".alert").remove(); // por seguridad borramos todos los alert
 
             // con "after" el nuevo contenido se pondra DESPUES y al MISMO NIVEL
             $(".ref_subir_img").after(
@@ -895,7 +949,9 @@ $(".contenedor_imagenes_subidas").on("click", ".selec_deselec_imagen_principal_t
 
     if (numeroImagenesPrincipales != 0) {
         // como a los sumo solo existira UNA imagen principal, es por eso que bastara con "eq(0)"
-        let elDataId = $(".la_imagen_principal .card .card-footer .selec_deselec_imagen_principal_te")
+        let elDataId = $(
+            ".la_imagen_principal .card .card-footer .selec_deselec_imagen_principal_te"
+        )
             .eq(0)
             .attr("data-id");
 
@@ -1178,7 +1234,9 @@ $(".contenedor_imagenes_subidas").on(
                         );
                     } else {
                         // entonces la respuesta es un "no" que no se pudo encontrar la imagen a cambiar
-                        alert("Imagen no encontrada, refresque el navegador e intentelo nuevamente");
+                        alert(
+                            "Imagen no encontrada, refresque el navegador e intentelo nuevamente"
+                        );
                     }
                 }
             });
@@ -1194,6 +1252,18 @@ $("#idSubirDocumento").on("submit", function (e) {
 
     var datosFormulario = new FormData(document.getElementById("idSubirDocumento"));
 
+    $(".alert").remove(); // por seguridad borramos todos los alert
+
+    // con "after" el nuevo contenido se pondra DESPUES y al MISMO NIVEL
+    $(".ref_subir_doc").after(
+        `<div class="alert alert-warning mt-3">
+            <button type="button" class="close" data-dismiss="alert">
+                <span>&times;</span>
+            </button>
+            <strong>Espere, documento subiendose...!</strong>
+        </div>`
+    );
+
     $.ajax({
         type: "post",
         //url: rutaServidor,
@@ -1204,6 +1274,9 @@ $("#idSubirDocumento").on("submit", function (e) {
         contentType: false,
         processData: false,
     }).done(function (respuestaServidor) {
+
+        $(".alert").remove(); // por seguridad borramos todos los alert
+
         var tipoRespuesta = respuestaServidor.exito;
 
         if (tipoRespuesta == "si") {
@@ -1214,6 +1287,7 @@ $("#idSubirDocumento").on("submit", function (e) {
                 var codigo_documento = respuestaServidor.codigo_documento;
                 var nombre_documento = respuestaServidor.nombre_documento;
                 var codigo_inmpro_pertenece = respuestaServidor.codigo_inmueble;
+                var url = respuestaServidor.url;
 
                 // agregamos la fila tabla del documento
                 // LO Agregamos despues del cuerpo de la tabla (.cuerpo_filas), COMO HIJO (con "append")
@@ -1240,7 +1314,7 @@ $("#idSubirDocumento").on("submit", function (e) {
                                     data-id="${codigo_documento}"
                                 >Eliminar</button>
                                 <a
-                                    href="/rutavirtualpublico/subido/${codigo_documento}.pdf"
+                                    href="${url}"
                                     target="_blank"
                                     class="btn btn-success"
                                 >Ver</a>
@@ -1254,6 +1328,7 @@ $("#idSubirDocumento").on("submit", function (e) {
                 var codigo_documento = respuestaServidor.codigo_documento;
                 var nombre_documento = respuestaServidor.nombre_documento;
                 var clase_documento = respuestaServidor.clase_documento;
+                var url = respuestaServidor.url;
 
                 // agregamos la fila tabla del documento
                 // LO Agregamos despues del cuerpo de la tabla (.cuerpo_filas), COMO HIJO (con "append")
@@ -1270,7 +1345,7 @@ $("#idSubirDocumento").on("submit", function (e) {
                             <div class="contenedor_ver_eliminar_documento">
                                 <button class="boton_eliminar_documento_jquery btn btn-danger"
                                     data-id="${codigo_documento}">Eliminar</button>
-                                <a href="/rutavirtualpublico/subido/${codigo_documento}.pdf" target="_blank" class="btn btn-success">Ver</a>
+                                <a href="${url}" target="_blank" class="btn btn-success">Ver</a>
                             </div>
                         </td>
                     </tr>`
@@ -1386,7 +1461,9 @@ $(".tabla_contenedora").on("click", ".boton_eliminar_documento_jquery", function
                     var numeroElementos = $(".fila_registro").length;
 
                     for (let i = 0; i < numeroElementos; i++) {
-                        let codigoDocumentoFor = $(".fila_registro .boton_eliminar_documento_jquery")
+                        let codigoDocumentoFor = $(
+                            ".fila_registro .boton_eliminar_documento_jquery"
+                        )
                             .eq(i)
                             .attr("data-id");
 
@@ -1634,15 +1711,14 @@ $(".madre_tabla").on("click", "#id_guardar_tabla", function () {
         }
 
         //--------------- Verificacion ----------------
-        console.log('LA TABLA ARRAY ANTES DEL JSON');
+        console.log("LA TABLA ARRAY ANTES DEL JSON");
         console.log(array_tabla);
         //---------------------------------------------
-        
 
         var aux_string = JSON.stringify(array_tabla);
 
         //--------------- Verificacion ----------------
-        console.log('LA TABLA ARRAY DESPUES DEL JSON');
+        console.log("LA TABLA ARRAY DESPUES DEL JSON");
         console.log(aux_string);
         //---------------------------------------------
 
@@ -1808,7 +1884,11 @@ $(".contenido").on("click", ".llenar_datos_pagos_propietario", function () {
     if (tipo_llenado == "datos") {
         var codigo_inmueble = "";
     }
-    if (tipo_llenado == "datos_pagos_a" || tipo_llenado == "datos_pagos_b" || tipo_llenado == "pagos") {
+    if (
+        tipo_llenado == "datos_pagos_a" ||
+        tipo_llenado == "datos_pagos_b" ||
+        tipo_llenado == "pagos"
+    ) {
         var codigo_inmueble = $boton.attr("data-codigo_inmueble");
     }
 
@@ -1842,7 +1922,8 @@ $(".contenido").on("click", ".llenar_datos_pagos_propietario", function () {
 
         // entramos a la ruta de servidor
         $.ajax({
-            url: "/laapirest/inmueble/" + codigo_inmueble + "/accion/llenar_datos_pagos_propietario",
+            url:
+                "/laapirest/inmueble/" + codigo_inmueble + "/accion/llenar_datos_pagos_propietario",
             type: "POST",
             data: paqueteDatos,
         }).done(function (aux_respuestaServidor) {
@@ -1896,7 +1977,9 @@ $(".contenido").on("click", ".llenar_datos_pagos_propietario", function () {
                 tipo_llenado == "datos_pagos_b" ||
                 tipo_llenado == "pagos"
             ) {
-                $("#pagado_reserva").val(respuestaServidor.respuesta.propietario_pagos.pagado_reserva);
+                $("#pagado_reserva").val(
+                    respuestaServidor.respuesta.propietario_pagos.pagado_reserva
+                );
                 $("#fecha_pagado_reserva").val(
                     respuestaServidor.respuesta.propietario_pagos.fecha_pagado_reserva
                 );
@@ -1946,7 +2029,8 @@ $(".contenido").on("click", ".llenar_datos_pagos_propietario", function () {
 
                     for (let k = 0; k < numero_mensuales; k++) {
                         var pago_mes_fecha =
-                            respuestaServidor.respuesta.propietario_pagos.pagos_mensuales[k].fecha_pago;
+                            respuestaServidor.respuesta.propietario_pagos.pagos_mensuales[k]
+                                .fecha_pago;
                         var pago_mes_valor =
                             respuestaServidor.respuesta.propietario_pagos.pagos_mensuales[k].pago;
 
@@ -2035,11 +2119,9 @@ $("#guardar_datos_pagos_propietario").click(function (e) {
         }
 
         // guardar del propietario: pagos
-        if (
-            tipo_guardado == "guardar_datos_pagos_a" ||
-            tipo_guardado == "guardar_datos_pagos_b"
-        ) {
-            propietario_pagos.codigo_inmueble = $("#id_objetivo_codigo").attr("data-objetivo_codigo");
+        if (tipo_guardado == "guardar_datos_pagos_a" || tipo_guardado == "guardar_datos_pagos_b") {
+            propietario_pagos.codigo_inmueble =
+                $("#id_objetivo_codigo").attr("data-objetivo_codigo");
 
             propietario_pagos.pagado_reserva = $("#pagado_reserva").val();
             propietario_pagos.fecha_pagado_reserva = $("#fecha_pagado_reserva").val();
@@ -2141,21 +2223,21 @@ $("#guardar_datos_pagos_propietario").click(function (e) {
                     propietario_pagos.tiene_mensuales = true;
 
                     //--------------- Verificacion ----------------
-                    console.log('EL ARRAY DE PAGOS PROPIETARIO ANTES DEL JSON');
+                    console.log("EL ARRAY DE PAGOS PROPIETARIO ANTES DEL JSON");
                     console.log(array_tabla);
                     //---------------------------------------------
 
                     var aux_string = JSON.stringify(array_tabla);
 
                     //--------------- Verificacion ----------------
-                    console.log('EL ARRAY DE PAGOS PROPIETARIO DESPUES DEL JSON');
+                    console.log("EL ARRAY DE PAGOS PROPIETARIO DESPUES DEL JSON");
                     console.log(aux_string);
                     //---------------------------------------------
 
                     var aux_string1 = JSON.stringify(aux_string);
 
                     //--------------- Verificacion ----------------
-                    console.log('EL ARRAY DE PAGOS PROPIETARIO DESPUES DEL JSON 2');
+                    console.log("EL ARRAY DE PAGOS PROPIETARIO DESPUES DEL JSON 2");
                     console.log(aux_string1);
                     //---------------------------------------------
 
@@ -2171,7 +2253,9 @@ $("#guardar_datos_pagos_propietario").click(function (e) {
 
         if (datos_personales == true && inputs_vacios == 0) {
             // ------- Para verificación -------
-            console.log("entramos a guardar datos desde el navegador y vemos los datos que se enviaran");
+            console.log(
+                "entramos a guardar datos desde el navegador y vemos los datos que se enviaran"
+            );
             console.log(paqueteDatos);
 
             var verdad_paqueteDatos = JSON.stringify(paqueteDatos);

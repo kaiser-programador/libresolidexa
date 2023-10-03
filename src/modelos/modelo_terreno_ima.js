@@ -13,6 +13,8 @@ const imagenesTerrenoEsquema = new Schema({
     extension_imagen: { type: String, default: "" }, // ya viene con el punto, ej/  ".jpg" y minuscula
 
     imagen_principal: { type: Boolean, default: false }, // sera TRUE en caso de que sea la imagen PRINCIPAL DEL TERRENO, y sera FALSE en caso contrario
+
+    url: { type: String, default: "" }, // PARA INDICAR LA URL DONDE ESTARA GUARDADA EL ARCHIVO, por ejemplo en FIREBASE STORAGE
 });
 
 module.exports = mongoose.model("imagenesTerrenoModelo", imagenesTerrenoEsquema);

@@ -1649,6 +1649,18 @@ $("#madre_funciona").on("submit", "#idSubirDocEmpresaFunciona", function (e) {
 
     var datosFormulario = new FormData(document.getElementById("idSubirDocEmpresaFunciona"));
 
+    $(".alert").remove(); // por seguridad borramos todos los alert
+
+    // con "after" el nuevo contenido se pondra DESPUES y al MISMO NIVEL
+    $(".ref_subir_doc").after(
+        `<div class="alert alert-warning mt-3">
+            <button type="button" class="close" data-dismiss="alert">
+                <span>&times;</span>
+            </button>
+            <strong>Espere, documento subiendose...!</strong>
+        </div>`
+    );
+
     $.ajax({
         type: "post",
         //url: rutaServidor,
@@ -1666,6 +1678,7 @@ $("#madre_funciona").on("submit", "#idSubirDocEmpresaFunciona", function (e) {
             var codigo_funciona = respuestaServidor.codigo_funciona;
             var tipo_archivo = respuestaServidor.tipo_archivo; // pdf || word || excel
             var tipo_doc = respuestaServidor.tipo_doc; // manual || beneficio || modelo
+            var url = respuestaServidor.url; // manual || beneficio || modelo
 
             var numeroFunciona = $(".boton_eliminar_imagen_jquery").length;
 
@@ -1715,7 +1728,7 @@ $("#madre_funciona").on("submit", "#idSubirDocEmpresaFunciona", function (e) {
                                 ></i>
                                 <a
                                     class="ml-3"
-                                    href="/rutavirtualpublico/subido/${codigo_documento}.${extension}"
+                                    href="${url}"
                                     target="_blank"
                                 >
                                     ${tipo_documento}
@@ -1735,6 +1748,7 @@ $("#madre_funciona").on("submit", "#idSubirDocEmpresaFunciona", function (e) {
                 }
             }
 
+            $(".alert").remove(); // por seguridad borramos todos los alert
             // con "after" el nuevo contenido se pondra DESPUES y al MISMO NIVEL
             $(".ref_subir_doc").after(
                 `<div class="alert alert-success mt-3">

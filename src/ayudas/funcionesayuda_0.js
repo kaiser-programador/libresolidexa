@@ -3,6 +3,7 @@ const {
     indiceProyecto,
     indiceInmueble,
     indiceEmpresa,
+    indiceImagenesSistema,
 } = require("../modelos/indicemodelo");
 
 const {
@@ -72,9 +73,29 @@ funcionesAyuda_0.cards_inicio_cli_adm = async function (paquete_info) {
 
         if (registro_datos_empresa) {
             if (tipo_ventana == "guardado_terreno") {
-                objetivo_armado.encabezado_titulo = registro_datos_empresa.encabezado_guardado_terreno;
+                objetivo_armado.encabezado_titulo =
+                    registro_datos_empresa.encabezado_guardado_terreno;
                 objetivo_armado.encabezado_texto = registro_datos_empresa.texto_guardado_terreno;
-                objetivo_armado.estilo_cabezera = "cabezera_estilo_terreno";
+                //objetivo_armado.estilo_cabezera = "cabezera_estilo_terreno";
+
+                //----------------------------------------------------
+                // para la url de la cabezera
+                var url_cabezera = ""; // vacio por defecto
+                const registro_cabezera = await indiceImagenesSistema.findOne(
+                    { tipo_imagen: "cabecera_terreno" },
+                    {
+                        url: 1,
+                        _id: 0,
+                    }
+                );
+
+                if (registro_cabezera) {
+                    url_cabezera = registro_cabezera.url;
+                }
+
+                objetivo_armado.url_cabezera = url_cabezera;
+
+                //----------------------------------------------------
 
                 var registro_objetivo = await indiceTerreno
                     .find(
@@ -108,9 +129,29 @@ funcionesAyuda_0.cards_inicio_cli_adm = async function (paquete_info) {
             }
 
             if (tipo_ventana == "guardado_proyecto") {
-                objetivo_armado.encabezado_titulo = registro_datos_empresa.encabezado_guardado_proyecto;
+                objetivo_armado.encabezado_titulo =
+                    registro_datos_empresa.encabezado_guardado_proyecto;
                 objetivo_armado.encabezado_texto = registro_datos_empresa.texto_guardado_proyecto;
-                objetivo_armado.estilo_cabezera = "cabezera_estilo_proyecto";
+                //objetivo_armado.estilo_cabezera = "cabezera_estilo_proyecto";
+
+                //----------------------------------------------------
+                // para la url de la cabezera
+                var url_cabezera = ""; // vacio por defecto
+                const registro_cabezera = await indiceImagenesSistema.findOne(
+                    { tipo_imagen: "cabecera_proyecto" },
+                    {
+                        url: 1,
+                        _id: 0,
+                    }
+                );
+
+                if (registro_cabezera) {
+                    url_cabezera = registro_cabezera.url;
+                }
+
+                objetivo_armado.url_cabezera = url_cabezera;
+
+                //----------------------------------------------------
 
                 var registro_objetivo = await indiceProyecto
                     .find(
@@ -144,9 +185,29 @@ funcionesAyuda_0.cards_inicio_cli_adm = async function (paquete_info) {
             }
 
             if (tipo_ventana == "guardado_inmueble") {
-                objetivo_armado.encabezado_titulo = registro_datos_empresa.encabezado_guardado_inmueble;
+                objetivo_armado.encabezado_titulo =
+                    registro_datos_empresa.encabezado_guardado_inmueble;
                 objetivo_armado.encabezado_texto = registro_datos_empresa.texto_guardado_inmueble;
-                objetivo_armado.estilo_cabezera = "cabezera_estilo_inmueble";
+                //objetivo_armado.estilo_cabezera = "cabezera_estilo_inmueble";
+
+                //----------------------------------------------------
+                // para la url de la cabezera
+                var url_cabezera = ""; // vacio por defecto
+                const registro_cabezera = await indiceImagenesSistema.findOne(
+                    { tipo_imagen: "cabecera_inmueble" },
+                    {
+                        url: 1,
+                        _id: 0,
+                    }
+                );
+
+                if (registro_cabezera) {
+                    url_cabezera = registro_cabezera.url;
+                }
+
+                objetivo_armado.url_cabezera = url_cabezera;
+
+                //----------------------------------------------------
 
                 var registro_objetivo = await indiceInmueble
                     .find(
@@ -184,7 +245,26 @@ funcionesAyuda_0.cards_inicio_cli_adm = async function (paquete_info) {
             if (tipo_ventana == "convocatoria") {
                 objetivo_armado.encabezado_titulo = registro_datos_empresa.encabezado_convocatoria;
                 objetivo_armado.encabezado_texto = registro_datos_empresa.texto_convocatoria;
-                objetivo_armado.estilo_cabezera = "cabezera_estilo_convocatoria";
+                //objetivo_armado.estilo_cabezera = "cabezera_estilo_convocatoria";
+
+                //----------------------------------------------------
+                // para la url de la cabezera
+                var url_cabezera = ""; // vacio por defecto
+                const registro_cabezera = await indiceImagenesSistema.findOne(
+                    { tipo_imagen: "cabecera_convocatoria" },
+                    {
+                        url: 1,
+                        _id: 0,
+                    }
+                );
+
+                if (registro_cabezera) {
+                    url_cabezera = registro_cabezera.url;
+                }
+
+                objetivo_armado.url_cabezera = url_cabezera;
+
+                //----------------------------------------------------
 
                 objetivo_armado.terrenos_convocatoria = true;
 
@@ -223,7 +303,26 @@ funcionesAyuda_0.cards_inicio_cli_adm = async function (paquete_info) {
             if (tipo_ventana == "reserva") {
                 objetivo_armado.encabezado_titulo = registro_datos_empresa.encabezado_reserva;
                 objetivo_armado.encabezado_texto = registro_datos_empresa.texto_reserva;
-                objetivo_armado.estilo_cabezera = "cabezera_estilo_reserva";
+                //objetivo_armado.estilo_cabezera = "cabezera_estilo_reserva";
+
+                //----------------------------------------------------
+                // para la url de la cabezera
+                var url_cabezera = ""; // vacio por defecto
+                const registro_cabezera = await indiceImagenesSistema.findOne(
+                    { tipo_imagen: "cabecera_reserva" },
+                    {
+                        url: 1,
+                        _id: 0,
+                    }
+                );
+
+                if (registro_cabezera) {
+                    url_cabezera = registro_cabezera.url;
+                }
+
+                objetivo_armado.url_cabezera = url_cabezera;
+
+                //----------------------------------------------------
 
                 objetivo_armado.proyectos_reserva = true;
 
@@ -290,12 +389,14 @@ funcionesAyuda_0.cards_inicio_cli_adm = async function (paquete_info) {
                         //console.log(objetivo_armado);
                     } else {
                         objetivo_armado.no_existe = true;
-                        objetivo_armado.mensaje_inexistente = registro_datos_empresa.inexistente_reserva;
+                        objetivo_armado.mensaje_inexistente =
+                            registro_datos_empresa.inexistente_reserva;
                         objetivo_armado.adm_cli_reserva = [];
                     }
                 } else {
                     objetivo_armado.no_existe = true;
-                    objetivo_armado.mensaje_inexistente = registro_datos_empresa.inexistente_reserva;
+                    objetivo_armado.mensaje_inexistente =
+                        registro_datos_empresa.inexistente_reserva;
                     objetivo_armado.adm_cli_reserva = [];
                 }
 
@@ -309,7 +410,26 @@ funcionesAyuda_0.cards_inicio_cli_adm = async function (paquete_info) {
             if (tipo_ventana == "aprobacion") {
                 objetivo_armado.encabezado_titulo = registro_datos_empresa.encabezado_aprobacion;
                 objetivo_armado.encabezado_texto = registro_datos_empresa.texto_aprobacion;
-                objetivo_armado.estilo_cabezera = "cabezera_estilo_aprobacion";
+                //objetivo_armado.estilo_cabezera = "cabezera_estilo_aprobacion";
+
+                //----------------------------------------------------
+                // para la url de la cabezera
+                var url_cabezera = ""; // vacio por defecto
+                const registro_cabezera = await indiceImagenesSistema.findOne(
+                    { tipo_imagen: "cabecera_aprobacion" },
+                    {
+                        url: 1,
+                        _id: 0,
+                    }
+                );
+
+                if (registro_cabezera) {
+                    url_cabezera = registro_cabezera.url;
+                }
+
+                objetivo_armado.url_cabezera = url_cabezera;
+
+                //----------------------------------------------------
 
                 objetivo_armado.proyectos_aprobacion = true;
 
@@ -369,7 +489,8 @@ funcionesAyuda_0.cards_inicio_cli_adm = async function (paquete_info) {
                     }
                 } else {
                     objetivo_armado.no_existe = true;
-                    objetivo_armado.mensaje_inexistente = registro_datos_empresa.inexistente_aprobacion;
+                    objetivo_armado.mensaje_inexistente =
+                        registro_datos_empresa.inexistente_aprobacion;
                     objetivo_armado.adm_cli_aprobacion = [];
                 }
 
@@ -379,7 +500,26 @@ funcionesAyuda_0.cards_inicio_cli_adm = async function (paquete_info) {
             if (tipo_ventana == "pago") {
                 objetivo_armado.encabezado_titulo = registro_datos_empresa.encabezado_pago;
                 objetivo_armado.encabezado_texto = registro_datos_empresa.texto_pago;
-                objetivo_armado.estilo_cabezera = "cabezera_estilo_pago";
+                //objetivo_armado.estilo_cabezera = "cabezera_estilo_pago";
+
+                //----------------------------------------------------
+                // para la url de la cabezera
+                var url_cabezera = ""; // vacio por defecto
+                const registro_cabezera = await indiceImagenesSistema.findOne(
+                    { tipo_imagen: "cabecera_pago" },
+                    {
+                        url: 1,
+                        _id: 0,
+                    }
+                );
+
+                if (registro_cabezera) {
+                    url_cabezera = registro_cabezera.url;
+                }
+
+                objetivo_armado.url_cabezera = url_cabezera;
+
+                //----------------------------------------------------
 
                 objetivo_armado.proyectos_pago = true;
 
@@ -449,7 +589,26 @@ funcionesAyuda_0.cards_inicio_cli_adm = async function (paquete_info) {
             if (tipo_ventana == "construccion") {
                 objetivo_armado.encabezado_titulo = registro_datos_empresa.encabezado_construccion;
                 objetivo_armado.encabezado_texto = registro_datos_empresa.texto_construccion;
-                objetivo_armado.estilo_cabezera = "cabezera_estilo_construccion";
+                //objetivo_armado.estilo_cabezera = "cabezera_estilo_construccion";
+
+                //----------------------------------------------------
+                // para la url de la cabezera
+                var url_cabezera = ""; // vacio por defecto
+                const registro_cabezera = await indiceImagenesSistema.findOne(
+                    { tipo_imagen: "cabecera_construccion" },
+                    {
+                        url: 1,
+                        _id: 0,
+                    }
+                );
+
+                if (registro_cabezera) {
+                    url_cabezera = registro_cabezera.url;
+                }
+
+                objetivo_armado.url_cabezera = url_cabezera;
+
+                //----------------------------------------------------
 
                 objetivo_armado.proyectos_construccion = true;
 
@@ -518,7 +677,26 @@ funcionesAyuda_0.cards_inicio_cli_adm = async function (paquete_info) {
             if (tipo_ventana == "construido") {
                 objetivo_armado.encabezado_titulo = registro_datos_empresa.encabezado_construido;
                 objetivo_armado.encabezado_texto = registro_datos_empresa.texto_construido;
-                objetivo_armado.estilo_cabezera = "cabezera_estilo_construido";
+                //objetivo_armado.estilo_cabezera = "cabezera_estilo_construido";
+
+                //----------------------------------------------------
+                // para la url de la cabezera
+                var url_cabezera = ""; // vacio por defecto
+                const registro_cabezera = await indiceImagenesSistema.findOne(
+                    { tipo_imagen: "cabecera_construido" },
+                    {
+                        url: 1,
+                        _id: 0,
+                    }
+                );
+
+                if (registro_cabezera) {
+                    url_cabezera = registro_cabezera.url;
+                }
+
+                objetivo_armado.url_cabezera = url_cabezera;
+
+                //----------------------------------------------------
 
                 objetivo_armado.proyectos_construido = true;
 
@@ -576,7 +754,8 @@ funcionesAyuda_0.cards_inicio_cli_adm = async function (paquete_info) {
                     }
                 } else {
                     objetivo_armado.no_existe = true;
-                    objetivo_armado.mensaje_inexistente = registro_datos_empresa.inexistente_construido;
+                    objetivo_armado.mensaje_inexistente =
+                        registro_datos_empresa.inexistente_construido;
                     objetivo_armado.adm_cli_construido = [];
                 }
 

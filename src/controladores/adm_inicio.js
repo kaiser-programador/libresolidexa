@@ -10,6 +10,7 @@ const {
     indiceEmpresa,
     indiceTerreno,
     indiceRequerimientos,
+    indiceImagenesSistema,
 } = require("../modelos/indicemodelo");
 
 const { cards_inicio_cli_adm } = require("../ayudas/funcionesayuda_0");
@@ -54,6 +55,8 @@ controladorInicio.adm_correcto = async (req, res) => {
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 //  para renderizar la ventana de inico del sistema
+// es la ventana que se abre despues de acceder con: la cuenta y contraseña de administrador (en la que se ven las cajas descendiendo)
+
 controladorInicio.inicioSistema = async (req, res) => {
     // viene de la ruta:  "/laapirest/accesosistema"  metodo: GET
 
@@ -71,9 +74,38 @@ controladorInicio.inicioSistema = async (req, res) => {
         console.log(req.user.ci_administrador);
         */
 
-        // EL CODIGO SIGUIENTE SERA COPIADO EN LOS JS DE AYUDA EJ/ funcionesayuda_0 PARA QUE SEA REUTILIZADO POR LA PARTE GESTIONADOR Y LA PARTE DEL CLIENTE
+        // ---------------------------------------------------------------
+        // para las url de imagen inicio del sistema horizontal y vertical
 
-        var registro_terreno = await indiceEmpresa.findOne(
+        var url_inicio_h = ""; // vacio por defecto
+        var url_inicio_v = ""; // vacio por defecto
+
+        const registro_img_sistema_h = await indiceImagenesSistema.findOne(
+            { tipo_imagen: "inicio_horizontal" },
+            {
+                url: 1,
+                _id: 0,
+            }
+        );
+
+        const registro_img_sistema_v = await indiceImagenesSistema.findOne(
+            { tipo_imagen: "inicio_vertical" },
+            {
+                url: 1,
+                _id: 0,
+            }
+        );
+
+        if (registro_img_sistema_h) {
+            url_inicio_h = registro_img_sistema_h.url;
+        }
+        if (registro_img_sistema_v) {
+            url_inicio_v = registro_img_sistema_v.url;
+        }
+
+        // ---------------------------------------------------------------
+
+        var registro_empresa = await indiceEmpresa.findOne(
             {},
             {
                 texto_inicio_principal: 1,
@@ -89,9 +121,9 @@ controladorInicio.inicioSistema = async (req, res) => {
             }
         );
 
-        if (registro_terreno) {
+        if (registro_empresa) {
             // conversion del documento MONGO ({OBJETO}) a "string"
-            var aux_string = JSON.stringify(registro_terreno);
+            var aux_string = JSON.stringify(registro_empresa);
 
             // reconversion del "string" a "objeto"
             var datos_empresa = JSON.parse(aux_string);
@@ -108,6 +140,8 @@ controladorInicio.inicioSistema = async (req, res) => {
             res.render("inicio", {
                 es_ninguno: true,
                 datos_empresa,
+                url_inicio_h,
+                url_inicio_v,
                 pie_pagina_adm: {
                     texto_footer: pie_pagina.texto_footer,
                     year_derecho: pie_pagina.year_derecho,
@@ -120,7 +154,7 @@ controladorInicio.inicioSistema = async (req, res) => {
             // es_ninguno: true  // para las opciones de navegacion de la ventana en estado comprimido
             //res.render("inicio", { es_ninguno: true }); //increible que borrandolo FUNCIONE
             //////// res.render("cli_inmueble", info_inmueble_cli);
-            res.render("inicio", { es_ninguno: true, datos_empresa }); //increible que borrandolo FUNCIONE
+            res.render("inicio", { es_ninguno: true, datos_empresa, url_inicio_h, url_inicio_v }); //increible que borrandolo FUNCIONE
         }
     } catch (error) {
         console.log(error);

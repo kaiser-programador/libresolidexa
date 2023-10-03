@@ -14,7 +14,7 @@
 <div class="wrapper" id="contenedor_imagenes_te" hidden>
     {{!-- solo indicamos la ruta "href" para visualizar la imagen (aun no la cargamos visualmente) --}}
     {{#each global_te.imagenes_te}}
-    <a href="/rutavirtualpublico/subido/{{imagen_te}}" data-fancybox="gallery" data-caption="{{nombre_imagen}}"><img src="/rutavirtualpublico/subido/{{imagen_te}}" alt="{{nombre_imagen}}"></a>
+    <a href="{{url}}" data-fancybox="gallery" data-caption="{{nombre_imagen}}"><img src="{{url}}" alt="{{nombre_imagen}}"></a>
     {{/each}}
 </div>
 

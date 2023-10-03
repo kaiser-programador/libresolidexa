@@ -8,6 +8,7 @@ const {
     indiceInversiones,
     indiceTerreno,
     indiceEmpresa,
+    indiceImagenesSistema,
 } = require("../modelos/indicemodelo");
 
 const {
@@ -55,9 +56,28 @@ controladorCliInmueble.renderVentanaInmueble = async (req, res) => {
 
             var info_inmueble_cli = {};
             info_inmueble_cli.cab_inm_cli = true;
-            info_inmueble_cli.estilo_cabezera = "cabezera_estilo_inmueble";
+            //info_inmueble_cli.estilo_cabezera = "cabezera_estilo_inmueble";
             info_inmueble_cli.navegador_cliente = true;
             info_inmueble_cli.codigo_inmueble = codigo_inmueble;
+
+            //----------------------------------------------------
+            // para la url de la cabezera
+            var url_cabezera = ""; // vacio por defecto
+            const registro_cabezera = await indiceImagenesSistema.findOne(
+                { tipo_imagen: "cabezera_inmueble" },
+                {
+                    url: 1,
+                    _id: 0,
+                }
+            );
+
+            if (registro_cabezera) {
+                url_cabezera = registro_cabezera.url;
+            }
+
+            info_inmueble_cli.url_cabezera = url_cabezera;
+
+            //----------------------------------------------------
 
             // ------- Para verificación -------
             //console.log("VEMOS SI EL CLIENTE ES VALIDADO");
@@ -579,6 +599,7 @@ async function inmueble_descripcion(paquete_datos) {
                         documentos_descripcion[d] = {
                             titulo_documento: registro_documentos[d].nombre_documento,
                             codigo_documento: registro_documentos[d].codigo_documento,
+                            url: registro_documentos[d].url,
                         };
                     }
                 }
@@ -628,6 +649,7 @@ async function inmueble_garantias(codigo_inmueble) {
                     documentacion[d] = {
                         titulo_documento: registro_documentos[d].nombre_documento,
                         codigo_documento: registro_documentos[d].codigo_documento,
+                        url: registro_documentos[d].url,
                     };
                 }
             }
@@ -793,7 +815,9 @@ async function inmueble_beneficios(paquete_datos) {
                                 Number(registro_inmueble.m2_comparativa[i])
                             ).toFixed(2)
                         );
-                        var aux_precio_inm_volterra = Number((aux_sus_m2 * area_construida).toFixed(2));
+                        var aux_precio_inm_volterra = Number(
+                            (aux_sus_m2 * area_construida).toFixed(2)
+                        );
                         sum_precios = sum_precios + aux_precio_inm_volterra;
                         precios_mercado[i] = {
                             direccion_comparativa: registro_inmueble.direccion_comparativa[i],
@@ -819,7 +843,9 @@ async function inmueble_beneficios(paquete_datos) {
                                 registro_inmueble.precio_comparativa[i].toFixed(0)
                             ),
                             sus_m2: numero_punto_coma(aux_sus_m2.toFixed(2)),
-                            precio_inm_volterra: numero_punto_coma(aux_precio_inm_volterra.toFixed(0)), // precio del inmueble  calculado a los precios que venden sus similares
+                            precio_inm_volterra: numero_punto_coma(
+                                aux_precio_inm_volterra.toFixed(0)
+                            ), // precio del inmueble  calculado a los precios que venden sus similares
                             sobreprecio_venta: numero_punto_coma(
                                 (aux_precio_inm_volterra - construccion_inm).toFixed(0)
                             ),
@@ -935,7 +961,8 @@ async function inmueble_info_economico(codigo_inmueble) {
                 for (let t = 0; t < n_filas; t++) {
                     // porque de momento son 14 filas como maximo que permite la tabla
                     if (registro_proyecto.presupuesto_proyecto[t][1] != "") {
-                        sum_valores = sum_valores + Number(registro_proyecto.presupuesto_proyecto[t][2]);
+                        sum_valores =
+                            sum_valores + Number(registro_proyecto.presupuesto_proyecto[t][2]);
                     }
                 }
                 var total_presupuesto = sum_valores;
@@ -996,6 +1023,7 @@ async function inmueble_info_economico(codigo_inmueble) {
                         documentacion[d] = {
                             titulo_documento: registro_documentos[d].nombre_documento,
                             codigo_documento: registro_documentos[d].codigo_documento,
+                            url: registro_documentos[d].url,
                         };
                     }
                 }
@@ -1012,7 +1040,9 @@ async function inmueble_info_economico(codigo_inmueble) {
                     valores_tabla,
                     documentacion,
 
-                    superficie_inmueble_m2: numero_punto_coma(registro_inmueble.superficie_inmueble_m2),
+                    superficie_inmueble_m2: numero_punto_coma(
+                        registro_inmueble.superficie_inmueble_m2
+                    ),
 
                     titulo_economico_inm: registro_proyecto.titulo_economico_inm,
                     texto_economico_inm: registro_proyecto.texto_economico_inm,
@@ -1095,12 +1125,14 @@ async function inmueble_empleos(codigo_inmueble) {
                     if (registro_proyecto.tabla_empleos_sociedad[t] != "") {
                         sum_valores =
                             sum_valores +
-                            Number(registro_proyecto.tabla_empleos_sociedad[t][4]) * fraccion_inmueble;
+                            Number(registro_proyecto.tabla_empleos_sociedad[t][4]) *
+                                fraccion_inmueble;
                         sum_valores_2 =
                             sum_valores_2 + Number(registro_proyecto.tabla_empleos_sociedad[t][4]);
 
                         sum_beneficiarios =
-                            sum_beneficiarios + Number(registro_proyecto.tabla_empleos_sociedad[t][3]);
+                            sum_beneficiarios +
+                            Number(registro_proyecto.tabla_empleos_sociedad[t][3]);
                     }
                 }
 
@@ -1164,7 +1196,8 @@ async function inmueble_empleos(codigo_inmueble) {
                         }
                         if (registro_proyecto.tabla_empleos_sociedad[t][2] == "Indirecto") {
                             n_indirectos =
-                                n_indirectos + Number(registro_proyecto.tabla_empleos_sociedad[t][3]);
+                                n_indirectos +
+                                Number(registro_proyecto.tabla_empleos_sociedad[t][3]);
                             sus_indirectos =
                                 sus_indirectos +
                                 Number(registro_proyecto.tabla_empleos_sociedad[t][4]) *
@@ -1215,10 +1248,19 @@ async function inmueble_empleos(codigo_inmueble) {
                     "/py_inm_nfe/",
                     py_inm_nfe
                 );
-                var significado_inm_empresa = significado_inm_empresa_2.replace("/inm_dfe/", inm_dfe);
+                var significado_inm_empresa = significado_inm_empresa_2.replace(
+                    "/inm_dfe/",
+                    inm_dfe
+                );
 
-                var significado_inm_pais_1 = significado_inm_pais_0.replace("/nom_empre/", nom_empre);
-                var significado_inm_pais_2 = significado_inm_pais_1.replace("/py_inm_nfb/", py_inm_nfb);
+                var significado_inm_pais_1 = significado_inm_pais_0.replace(
+                    "/nom_empre/",
+                    nom_empre
+                );
+                var significado_inm_pais_2 = significado_inm_pais_1.replace(
+                    "/py_inm_nfb/",
+                    py_inm_nfb
+                );
                 var significado_inm_pais = significado_inm_pais_2.replace("/inm_dfb/", inm_dfb);
 
                 // ---------------------------------------------------------------------
@@ -1299,6 +1341,7 @@ async function inmueble_inversor(paquete_datos) {
                     codigo_inmueble: registro_documentos_priv[p].codigo_inmueble,
                     nombre_documento: registro_documentos_priv[p].nombre_documento,
                     codigo_documento: registro_documentos_priv[p].codigo_documento,
+                    url: registro_documentos_priv[p].url,
                 };
             }
         }
@@ -1422,6 +1465,7 @@ async function complementos_globales_inm(paquete_datos) {
                 extension_imagen: 1,
                 parte_principal: 1,
                 parte_exclusiva: 1,
+                url: 1,
                 _id: 0,
             }
         );
@@ -1450,6 +1494,7 @@ async function complementos_globales_inm(paquete_datos) {
                         inmueble_imagen:
                             registro_imagenes_py[i].codigo_imagen +
                             registro_imagenes_py[i].extension_imagen,
+                        url: registro_imagenes_py[i].url,
                     };
                 } else {
                     // si la imagen no es "principal" para el proyecto,
@@ -1471,6 +1516,7 @@ async function complementos_globales_inm(paquete_datos) {
                             inmueble_imagen:
                                 registro_imagenes_py[i].codigo_imagen +
                                 registro_imagenes_py[i].extension_imagen,
+                            url: registro_imagenes_py[i].url,
                         };
                     }
                 }

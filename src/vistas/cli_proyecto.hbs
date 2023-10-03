@@ -17,14 +17,14 @@
 <div class="wrapper" id="contenedor_imagenes_py" hidden>
     {{!-- solo indicamos la ruta "href" para visualizar la imagen (aun no la cargamos visualmente) --}}
     {{#each global_py.imagenes_py_principal}}
-    <a href="/rutavirtualpublico/subido/{{proyecto_imagen}}" data-fancybox="gallery"
-        data-caption="{{nombre_imagen}}"><img src="/rutavirtualpublico/subido/{{proyecto_imagen}}"
+    <a href="{{url}}" data-fancybox="gallery"
+        data-caption="{{nombre_imagen}}"><img src="{{url}}"
             alt="{{nombre_imagen}}"></a>
     {{/each}}
 
     {{#each global_py.imagenes_py_exclusiva}}
-    <a href="/rutavirtualpublico/subido/{{proyecto_imagen}}" data-fancybox="gallery"
-        data-caption="{{nombre_imagen}}"><img src="/rutavirtualpublico/subido/{{proyecto_imagen}}"
+    <a href="{{url}}" data-fancybox="gallery"
+        data-caption="{{nombre_imagen}}"><img src="{{url}}"
             alt="{{nombre_imagen}}"></a>
     {{/each}}
 </div>

@@ -165,13 +165,14 @@ funcionesAyuda_1.terreno_card_adm_cli = async function (paquete_terreno) {
                     nombre_imagen: 1,
                     codigo_imagen: 1,
                     extension_imagen: 1, // ej: ".jpg"
+                    url:1,
                     _id: 0,
                 }
             );
 
             if (registro_ima_te) {
-                var imagen_terreno = registro_ima_te.codigo_imagen + registro_ima_te.extension_imagen;
-                terreno_card.imagen_terreno = imagen_terreno;
+                //var imagen_terreno = registro_ima_te.codigo_imagen + registro_ima_te.extension_imagen;
+                terreno_card.imagen_terreno = registro_ima_te.url;
                 terreno_card.imagen_encontrado = true;
             } else {
                 terreno_card.imagen_encontrado = false;
@@ -278,6 +279,7 @@ funcionesAyuda_1.proyecto_card_adm_cli = async function (paquete_proyecto) {
                     codigo_imagen: 1,
                     extension_imagen: 1,
                     parte_principal: 1, // es un ARRAY
+                    url:1,
                 }
             );
 
@@ -288,10 +290,11 @@ funcionesAyuda_1.proyecto_card_adm_cli = async function (paquete_proyecto) {
                     // buscamos en este "codArray" si existe el codigo del proyecto (buscando la posicion que este ocupa en el presente ARRAY)
                     let pocisionExiste = codArray.indexOf(codigo_proyecto);
                     if (pocisionExiste != -1) {
-                        var nombre_imagen = registro_imagenes_py[j].nombre_imagen;
-                        var codigo_imagen = registro_imagenes_py[j].codigo_imagen;
-                        var extension_imagen = registro_imagenes_py[j].extension_imagen;
-                        var imagen_proyecto = codigo_imagen + extension_imagen;
+                        //var nombre_imagen = registro_imagenes_py[j].nombre_imagen;
+                        //var codigo_imagen = registro_imagenes_py[j].codigo_imagen;
+                        //var extension_imagen = registro_imagenes_py[j].extension_imagen;
+                        //var imagen_proyecto = codigo_imagen + extension_imagen;
+                        var imagen_proyecto = registro_imagenes_py[j].url;
 
                         var imagen_encontrado = true; // cambiamos el booleano de la imagen a true (encontrado)
                         break;
@@ -448,6 +451,7 @@ funcionesAyuda_1.inmueble_card_adm_cli = async function (paquete_inmueble) {
                     codigo_imagen: 1,
                     extension_imagen: 1,
                     parte_principal: 1, // es un ARRAY
+                    url:1,
                 }
             );
 
@@ -459,9 +463,10 @@ funcionesAyuda_1.inmueble_card_adm_cli = async function (paquete_inmueble) {
                     let pocisionExiste = codArray.indexOf(codigo_inmueble);
                     if (pocisionExiste != -1) {
                         var nombre_imagen = registro_imagenes_py[j].nombre_imagen;
-                        var codigo_imagen = registro_imagenes_py[j].codigo_imagen;
-                        var extension_imagen = registro_imagenes_py[j].extension_imagen;
-                        var imagen_inmueble = codigo_imagen + extension_imagen;
+                        //var codigo_imagen = registro_imagenes_py[j].codigo_imagen;
+                        //var extension_imagen = registro_imagenes_py[j].extension_imagen;
+                        //var imagen_inmueble = codigo_imagen + extension_imagen;
+                        var imagen_inmueble = registro_imagenes_py[j].url;
 
                         var imagen_encontrado = true; // cambiamos el booleano de la imagen a true (encontrado)
                         break;

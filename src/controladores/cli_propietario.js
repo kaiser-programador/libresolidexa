@@ -9,6 +9,7 @@ const {
     indiceGuardados,
     indiceEmpresa,
     indiceInmueble,
+    indiceImagenesSistema
 } = require("../modelos/indicemodelo");
 
 const { inmueble_card_adm_cli } = require("../ayudas/funcionesayuda_1");
@@ -92,9 +93,28 @@ controladorCliInversor.renderizarVentanaPropietarioCli = async (req, res) => {
         var info_propietario = {};
         info_propietario.navegador_cliente = true;
         info_propietario.cab_prop_cli = true;
-        info_propietario.estilo_cabezera = "cabezera_estilo_propietario";
+        //info_propietario.estilo_cabezera = "cabezera_estilo_propietario";
         info_propietario.codigo_propietario = codigo_propietario;
         info_propietario.inversor_autenticado = req.inversor_autenticado;
+
+        //----------------------------------------------------
+        // para la url de la cabezera
+        var url_cabezera = ""; // vacio por defecto
+        const registro_cabezera = await indiceImagenesSistema.findOne(
+            { tipo_imagen: "cabezera_propietario" },
+            {
+                url: 1,
+                _id: 0,
+            }
+        );
+
+        if (registro_cabezera) {
+            url_cabezera = registro_cabezera.url;
+        }
+
+        info_propietario.url_cabezera = url_cabezera;
+
+        //----------------------------------------------------
 
         // "req.inversor_autenticado" si es TRUE y solo si es true, de manera que el propietario se encuentra navegando con su cuenta privada
         // "req.params.ci_propietario == req.user.ci_propietario" si y solo si el ci que figura en la url del navegador es igual a ci del req.user
@@ -852,6 +872,7 @@ async function documentos_propietario(codigo_propietario) {
                     codigo_inmueble: registro_documentos_priv[p].codigo_inmueble,
                     nombre_documento: registro_documentos_priv[p].nombre_documento,
                     codigo_documento: registro_documentos_priv[p].codigo_documento,
+                    url: registro_documentos_priv[p].url,
                 };
             }
         }

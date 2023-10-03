@@ -9,11 +9,16 @@ const {
     indiceEmpresa,
     indiceRequerimientos,
     indiceImagenesEmpresa_sf,
+    indiceImagenesSistema,
 } = require("../modelos/indicemodelo");
 
 const { inmueble_card_adm_cli } = require("../ayudas/funcionesayuda_1");
 
-const { cabezeras_adm_cli, pie_pagina_cli, segundero_cajas } = require("../ayudas/funcionesayuda_2");
+const {
+    cabezeras_adm_cli,
+    pie_pagina_cli,
+    segundero_cajas,
+} = require("../ayudas/funcionesayuda_2");
 
 const { numero_punto_coma, verificarTePyInm } = require("../ayudas/funcionesayuda_3");
 
@@ -49,7 +54,26 @@ controladorCliProyecto.renderVentanaProyecto = async (req, res) => {
             info_proyecto_cli.codigo_proyecto = codigo_proyecto;
             info_proyecto_cli.navegador_cliente = true;
             info_proyecto_cli.cab_py_cli = true;
-            info_proyecto_cli.estilo_cabezera = "cabezera_estilo_proyecto";
+            //info_proyecto_cli.estilo_cabezera = "cabezera_estilo_proyecto";
+
+            //----------------------------------------------------
+            // para la url de la cabezera
+            var url_cabezera = ""; // vacio por defecto
+            const registro_cabezera = await indiceImagenesSistema.findOne(
+                { tipo_imagen: "cabezera_proyecto" },
+                {
+                    url: 1,
+                    _id: 0,
+                }
+            );
+
+            if (registro_cabezera) {
+                url_cabezera = registro_cabezera.url;
+            }
+
+            info_proyecto_cli.url_cabezera = url_cabezera;
+
+            //----------------------------------------------------
 
             //////var inversor_autenticado = validar_cli_2(); // devuelve "true" or "false"
 
@@ -519,7 +543,9 @@ async function proyecto_descripcion(codigo_proyecto) {
                 var py_descripcion = JSON.parse(aux_string);
 
                 // correccion superficie del py en punto mil
-                py_descripcion.area_construida = numero_punto_coma(registro_proyecto.area_construida);
+                py_descripcion.area_construida = numero_punto_coma(
+                    registro_proyecto.area_construida
+                );
 
                 // por defecto ponemos a todos en "false"
                 py_descripcion.resplandor_1 = false;
@@ -725,6 +751,7 @@ async function proyecto_descripcion(codigo_proyecto) {
                         documentos_descripcion[d] = {
                             titulo_documento: registro_documentos[d].nombre_documento,
                             codigo_documento: registro_documentos[d].codigo_documento,
+                            url: registro_documentos[d].url,
                         };
                     }
                 }
@@ -751,7 +778,8 @@ async function proyecto_descripcion(codigo_proyecto) {
 
                 if (registro_inmuebles.length > 0) {
                     for (let i = 0; i < registro_inmuebles.length; i++) {
-                        nt_dormitorios = nt_dormitorios + registro_inmuebles[i].dormitorios_inmueble;
+                        nt_dormitorios =
+                            nt_dormitorios + registro_inmuebles[i].dormitorios_inmueble;
                         nt_banos = nt_banos + registro_inmuebles[i].banos_inmueble;
                     }
                 }
@@ -844,6 +872,7 @@ async function proyecto_garantias(codigo_proyecto) {
                     documentacion[d] = {
                         titulo_documento: registro_documentos[d].nombre_documento,
                         codigo_documento: registro_documentos[d].codigo_documento,
+                        url: registro_documentos[d].url,
                     };
                 }
             }
@@ -1046,7 +1075,8 @@ async function proyecto_info_economico(codigo_proyecto) {
             var sum_valores = 0;
             for (let t = 0; t < n_filas; t++) {
                 if (registro_proyecto.presupuesto_proyecto[t] != "") {
-                    sum_valores = sum_valores + Number(registro_proyecto.presupuesto_proyecto[t][2]);
+                    sum_valores =
+                        sum_valores + Number(registro_proyecto.presupuesto_proyecto[t][2]);
                 }
             }
             var total_presupuesto = sum_valores;
@@ -1102,6 +1132,7 @@ async function proyecto_info_economico(codigo_proyecto) {
                     documentacion[d] = {
                         titulo_documento: registro_documentos[d].nombre_documento,
                         codigo_documento: registro_documentos[d].codigo_documento,
+                        url: registro_documentos[d].url,
                     };
                 }
             }
@@ -1164,7 +1195,8 @@ async function proyecto_empleos(codigo_proyecto) {
             var sum_beneficiarios = 0;
             for (let t = 0; t < n_filas; t++) {
                 if (registro_proyecto.tabla_empleos_sociedad[t] != "") {
-                    sum_valores = sum_valores + Number(registro_proyecto.tabla_empleos_sociedad[t][4]);
+                    sum_valores =
+                        sum_valores + Number(registro_proyecto.tabla_empleos_sociedad[t][4]);
 
                     sum_beneficiarios =
                         sum_beneficiarios + Number(registro_proyecto.tabla_empleos_sociedad[t][3]);
@@ -1217,7 +1249,8 @@ async function proyecto_empleos(codigo_proyecto) {
                     };
 
                     if (registro_proyecto.tabla_empleos_sociedad[t][2] == "Directo") {
-                        n_directos = n_directos + Number(registro_proyecto.tabla_empleos_sociedad[t][3]);
+                        n_directos =
+                            n_directos + Number(registro_proyecto.tabla_empleos_sociedad[t][3]);
                         sus_directos =
                             sus_directos + Number(registro_proyecto.tabla_empleos_sociedad[t][4]);
                     }
@@ -1281,10 +1314,19 @@ async function proyecto_empleos(codigo_proyecto) {
                 "/py_nfp/",
                 py_nfp
             );
-            var significado_py_propietarios = significado_py_propietarios_1.replace("/py_dfp/", py_dfp);
+            var significado_py_propietarios = significado_py_propietarios_1.replace(
+                "/py_dfp/",
+                py_dfp
+            );
 
-            var significado_py_empresa_1 = significado_py_empresa_0.replace("/nom_empre/", nom_empre);
-            var significado_py_empresa_2 = significado_py_empresa_1.replace("/py_inm_nfe/", py_inm_nfe);
+            var significado_py_empresa_1 = significado_py_empresa_0.replace(
+                "/nom_empre/",
+                nom_empre
+            );
+            var significado_py_empresa_2 = significado_py_empresa_1.replace(
+                "/py_inm_nfe/",
+                py_inm_nfe
+            );
             var significado_py_empresa = significado_py_empresa_2.replace("/py_dfe/", py_dfe);
 
             var significado_py_pais_1 = significado_py_pais_0.replace("/nom_empre/", nom_empre);
@@ -1439,14 +1481,15 @@ async function proyecto_requerimientos(codigo_proyecto) {
                 }
 
                 //--------------- Verificacion ----------------
-                console.log('LOS PUTOS DOC DE REQUERIMIENTOS');
+                console.log("LOS PUTOS DOC DE REQUERIMIENTOS");
                 console.log(info_requerimientos);
                 //---------------------------------------------
 
                 //--------------------------------------------
                 // para el armado de la tabla de requerimientos
 
-                info_requerimientos.nota_si_requerimientos = registro_proyecto.nota_si_requerimientos;
+                info_requerimientos.nota_si_requerimientos =
+                    registro_proyecto.nota_si_requerimientos;
                 info_requerimientos.existe_requerimientos = registro_proyecto.existe_requerimientos;
 
                 var registro_requerimientos = await indiceRequerimientos
@@ -1493,7 +1536,8 @@ async function proyecto_requerimientos(codigo_proyecto) {
                     return info_requerimientos;
                 }
             } else {
-                info_requerimientos.nota_no_requerimientos = registro_proyecto.nota_no_requerimientos;
+                info_requerimientos.nota_no_requerimientos =
+                    registro_proyecto.nota_no_requerimientos;
                 info_requerimientos.existe_requerimientos = registro_proyecto.existe_requerimientos;
 
                 return info_requerimientos;
@@ -1536,6 +1580,7 @@ async function proyecto_resp_social(codigo_proyecto) {
                     nombre_imagen: 1,
                     codigo_imagen: 1,
                     extension_imagen: 1,
+                    url: 1,
                     _id: 0,
                 }
             );
@@ -1547,9 +1592,12 @@ async function proyecto_resp_social(codigo_proyecto) {
                         nombre_imagen: registro_imagenes_py[i].nombre_imagen,
                         codigo_imagen: registro_imagenes_py[i].codigo_imagen,
                         extension_imagen: registro_imagenes_py[i].extension_imagen,
+                        /*
                         imagen_rs:
                             registro_imagenes_py[i].codigo_imagen +
                             registro_imagenes_py[i].extension_imagen,
+                            */
+                        imagen_rs: registro_imagenes_py[i].url,
                     };
                 }
             }
@@ -1739,7 +1787,10 @@ async function valores_badge(paquete_badge) {
 
                 if (registro_terreno.estado_terreno == "aprobacion") {
                     var registro_inmuebles = await indiceInmueble.find(
-                        { codigo_proyecto: codigo_proyecto, estado_inmueble: "pendiente_aprobacion" },
+                        {
+                            codigo_proyecto: codigo_proyecto,
+                            estado_inmueble: "pendiente_aprobacion",
+                        },
                         {
                             codigo_inmueble: 1,
                         }
@@ -1846,6 +1897,7 @@ async function complementos_globales_py(codigo_proyecto) {
                         proyecto_imagen:
                             registro_imagenes_py[i].codigo_imagen +
                             registro_imagenes_py[i].extension_imagen,
+                        url: registro_imagenes_py[i].url,
                     };
                 } else {
                     // si la imagen no es "principal" para el proyecto,
@@ -1867,6 +1919,7 @@ async function complementos_globales_py(codigo_proyecto) {
                             proyecto_imagen:
                                 registro_imagenes_py[i].codigo_imagen +
                                 registro_imagenes_py[i].extension_imagen,
+                            url: registro_imagenes_py[i].url,
                         };
                     }
                 }

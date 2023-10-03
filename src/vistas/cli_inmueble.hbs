@@ -17,14 +17,14 @@
 <div class="wrapper" id="contenedor_imagenes_inm" hidden>
     {{!-- solo indicamos la ruta "href" para visualizar la imagen (aun no la cargamos visualmente) --}}
     {{#each global_inm.imagenes_inm_principal}}
-    <a href="/rutavirtualpublico/subido/{{inmueble_imagen}}" data-fancybox="gallery"
-        data-caption="{{nombre_imagen}}"><img src="/rutavirtualpublico/subido/{{inmueble_imagen}}"
+    <a href="{{url}}" data-fancybox="gallery"
+        data-caption="{{nombre_imagen}}"><img src="{{url}}"
             alt="{{nombre_imagen}}"></a>
     {{/each}}
 
     {{#each global_inm.imagenes_inm_exclusiva}}
-    <a href="/rutavirtualpublico/subido/{{inmueble_imagen}}" data-fancybox="gallery"
-        data-caption="{{nombre_imagen}}"><img src="/rutavirtualpublico/subido/{{inmueble_imagen}}"
+    <a href="{{url}}" data-fancybox="gallery"
+        data-caption="{{nombre_imagen}}"><img src="{{url}}"
             alt="{{nombre_imagen}}"></a>
     {{/each}}
 </div>

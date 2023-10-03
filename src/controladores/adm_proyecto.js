@@ -19,6 +19,7 @@ const {
     indiceGuardados,
     indiceTerreno,
     indiceRequerimientos,
+    indiceImagenesSistema,
 } = require("../modelos/indicemodelo");
 
 const {
@@ -137,7 +138,27 @@ controladorAdmProyecto.renderizarVentanaProyecto = async (req, res) => {
             // VERIFICAMOS QUE EL PROYECTO EXISTA EN LA BASE DE DATOS
             var info_proyecto = {};
             info_proyecto.cab_py_adm = true;
-            info_proyecto.estilo_cabezera = "cabezera_estilo_proyecto";
+            //info_proyecto.estilo_cabezera = "cabezera_estilo_proyecto";
+
+            //----------------------------------------------------
+            // para la url de la cabezera
+            var url_cabezera = ""; // vacio por defecto
+            const registro_cabezera = await indiceImagenesSistema.findOne(
+                { tipo_imagen: "cabezera_proyecto" },
+                {
+                    url: 1,
+                    _id: 0,
+                }
+            );
+
+            if (registro_cabezera) {
+                url_cabezera = registro_cabezera.url;
+            }
+
+            info_proyecto.url_cabezera = url_cabezera;
+
+            //----------------------------------------------------
+
             info_proyecto.codigo_proyecto = codigo_proyecto;
 
             var aux_cabezera = {
@@ -561,6 +582,7 @@ async function proyecto_imagenes(codigo_proyecto) {
                         nombre_imagen: proyectoImagenes[i].nombre_imagen,
                         codigo_imagen: proyectoImagenes[i].codigo_imagen, // sin extension
                         extension_imagen: proyectoImagenes[i].extension_imagen,
+                        url: proyectoImagenes[i].url,
                     };
                 } else {
                     // si la imagen no es "principal" para el proyecto,
@@ -581,6 +603,7 @@ async function proyecto_imagenes(codigo_proyecto) {
                             nombre_imagen: proyectoImagenes[i].nombre_imagen,
                             codigo_imagen: proyectoImagenes[i].codigo_imagen, // sin extension
                             extension_imagen: proyectoImagenes[i].extension_imagen,
+                            url: proyectoImagenes[i].url,
                         };
                     } else {
                         // si la imagen NO es "principal", NO es "exclusiva", entonces es "OTROS" para el proyecto,
@@ -594,6 +617,7 @@ async function proyecto_imagenes(codigo_proyecto) {
                             nombre_imagen: proyectoImagenes[i].nombre_imagen,
                             codigo_imagen: proyectoImagenes[i].codigo_imagen, // sin extension
                             extension_imagen: proyectoImagenes[i].extension_imagen,
+                            url: proyectoImagenes[i].url,
                         };
                     }
                 }
@@ -623,6 +647,7 @@ async function proyecto_documentos(codigo_proyecto) {
                 nombre_documento: 1,
                 codigo_documento: 1,
                 clase_documento: 1,
+                url: 1,
                 _id: 0,
             }
         );

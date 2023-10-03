@@ -219,13 +219,14 @@ $(document).ready(function () {
         }
     }
 
-
     function sus_seg() {
         setInterval(() => {
             var r_plusSum = Number($("#r_plusSum").attr("data-r_plusSum")); // $us/seg
 
             // la plusvalia del py o inm o la sumatoria de todos los inm del propietario de los inm de los que el es el dueño actual
-            var plusGeneranCompleta = Number($("#plusGeneranCompleta").attr("data-plusGeneranCompleta"));
+            var plusGeneranCompleta = Number(
+                $("#plusGeneranCompleta").attr("data-plusGeneranCompleta")
+            );
 
             // util solo para la pestaña RESUMEN de la cuenta del propietario que expresa la sumatoria total de todas las plusvalias de los inmuebles que ya estan construidos completamente y de los que el dueño presente es el propietario, esto para que el segundero segundo a segundo inluya este valor actualizado
             var plusvalia_construida = Number(
@@ -375,7 +376,9 @@ $(document).ready(function () {
                     }
                     //==========================================================
 
-                    let porcen_progreso = ((total_retor_y_alq / plusGeneranCompleta) * 100).toFixed(2); // con 2 decimales
+                    let porcen_progreso = ((total_retor_y_alq / plusGeneranCompleta) * 100).toFixed(
+                        2
+                    ); // con 2 decimales
                     let aux_string_progre = porcen_progreso + "%";
                     $("#ref_progreso_generandose").css("width", aux_string_progre);
                     //++++++++++++++++++++++++++++++
@@ -408,7 +411,6 @@ $(document).ready(function () {
             }
         }, 1000);
     }
-
 
     /*
     function sus_seg() {
@@ -523,7 +525,6 @@ $(document).ready(function () {
         }, 1000);
     }
     */
-
 
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     function numero_punto_coma_query(numero) {
@@ -709,9 +710,37 @@ $(window).resize(function () {
 });
 
 //---------------------------------------------
-// para animacion de las cajas caidas de una en una
 
 function dim_ventana_inicio() {
+    
+    //---------------------------------------------
+    // para cambiar la "background-image" dependiendo de las diensiones de la ventana
+
+    var ventana_madre_ancho = $(window).width(); // resultado en px
+
+    //console.log("ancho ventana madre: " + ventana_madre_ancho);
+
+    // inicialmente ya esta condicionado que estamos en la ventana de inicio del administrador (ventana de la caida de cuadros), por tanto esta ventana cuenta con las url de las imagenes: vertica y horizontal
+    var url_vertical = $("#url_vertical").attr("data-url_img");
+    var url_horizontal = $("#url_horizontal").attr("data-url_img");
+
+    var css_horizontal = `linear-gradient(rgba(5, 5, 54, 0.8), rgba(5, 5, 54, 0.8)),
+    url(${url_horizontal})`;
+
+    var css_vertical = `linear-gradient(rgba(5, 5, 54, 0.8), rgba(5, 5, 54, 0.8)),
+    url(${url_vertical})`;
+
+    if (ventana_madre_ancho >= 768) {
+        // si es igual o mayor que 768px
+        $(".inicio_h_v").css("background-image", css_horizontal);
+    } else {
+        // si es menor que 768px
+        $(".inicio_h_v").css("background-image", css_vertical);
+    }
+
+    //---------------------------------------------
+    // para animacion de las cajas caidas de una en una
+
     // var ventana_ancho = $(window).width(); // resultado en px
     // var ventana_alto = $(window).height(); // resultado en px
     var ventana_ancho = $(".contenedor-icono-info-hijo").width(); // resultado en px
@@ -727,6 +756,8 @@ function dim_ventana_inicio() {
         $(".contenedor-icono-info-1").eq(i).css("left", separacion_i[i]);
         //console.log(separacion_i[i]);
     }
+
+    //---------------------------------------------
 
     //alert("ancho: " + ventana_ancho + "alto: " + ventana_alto);
 }

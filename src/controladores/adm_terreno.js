@@ -15,6 +15,7 @@ const {
     indiceInversiones,
     indiceGuardados,
     indiceRequerimientos,
+    indiceImagenesSistema,
 } = require("../modelos/indicemodelo");
 
 const {
@@ -105,7 +106,28 @@ controladorAdmTerreno.renderizarVentanaTerreno = async (req, res) => {
 
             var info_terreno = {};
             info_terreno.cab_te_adm = true;
-            info_terreno.estilo_cabezera = "cabezera_estilo_terreno";
+
+            //info_terreno.estilo_cabezera = "cabezera_estilo_terreno";
+
+            //----------------------------------------------------
+            // para la url de la cabezera
+            var url_cabezera = ""; // vacio por defecto
+            const registro_cabezera = await indiceImagenesSistema.findOne(
+                { tipo_imagen: "cabezera_terreno" },
+                {
+                    url: 1,
+                    _id: 0,
+                }
+            );
+
+            if (registro_cabezera) {
+                url_cabezera = registro_cabezera.url;
+            }
+
+            info_terreno.url_cabezera = url_cabezera;
+
+            //----------------------------------------------------
+
             info_terreno.codigo_terreno = codigo_terreno;
 
             var aux_cabezera = {
@@ -840,7 +862,8 @@ async function eliminadorDocumentosTerreno(codigo_terreno) {
         if (registroDocumentosTerreno) {
             // eliminamos los ARCHIVOS DOCUMENTOS PDF uno por uno
             for (let i = 0; i < registroDocumentosTerreno.length; i++) {
-                let documentoNombreExtension = registroDocumentosTerreno[i].codigo_documento + ".pdf";
+                let documentoNombreExtension =
+                    registroDocumentosTerreno[i].codigo_documento + ".pdf";
                 // eliminamos el ARCHIVO DOCUMENTO DE LA CARPETA DONDE ESTA GUARDADA
                 await fs.unlink(pache.resolve("./src/publico/subido/" + documentoNombreExtension)); // "+" es para concatenar
             }

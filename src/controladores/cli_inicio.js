@@ -6,6 +6,7 @@ const {
     indiceTerreno,
     indiceEmpresa,
     indiceRequerimientos,
+    indiceImagenesSistema,
 } = require("../modelos/indicemodelo");
 
 const { cards_inicio_cli_adm } = require("../ayudas/funcionesayuda_0");
@@ -30,7 +31,7 @@ controladorClienteInicio.inicioCliente = async (req, res) => {
 
     try {
         // ------- Para verificación -------
-        console.log("ESTAMOS EN LA VENTANA DE INICIO DEL LADO DEL CLIENTE OK");
+        //console.log("ESTAMOS EN LA VENTANA DE INICIO DEL LADO DEL CLIENTE OK");
 
         /*
         // ------- Para verificación -------
@@ -42,7 +43,38 @@ controladorClienteInicio.inicioCliente = async (req, res) => {
         console.log(req.user.ci_administrador);
         */
 
-        var registro_terreno = await indiceEmpresa.findOne(
+        // ---------------------------------------------------------------
+        // para las url de imagen inicio del sistema horizontal y vertical
+
+        var url_inicio_h = ""; // vacio por defecto
+        var url_inicio_v = ""; // vacio por defecto
+
+        const registro_img_sistema_h = await indiceImagenesSistema.findOne(
+            { tipo_imagen: "inicio_horizontal" },
+            {
+                url: 1,
+                _id: 0,
+            }
+        );
+
+        const registro_img_sistema_v = await indiceImagenesSistema.findOne(
+            { tipo_imagen: "inicio_vertical" },
+            {
+                url: 1,
+                _id: 0,
+            }
+        );
+
+        if (registro_img_sistema_h) {
+            url_inicio_h = registro_img_sistema_h.url;
+        }
+        if (registro_img_sistema_v) {
+            url_inicio_v = registro_img_sistema_v.url;
+        }
+
+        // ---------------------------------------------------------------
+
+        var registro_empresa = await indiceEmpresa.findOne(
             {},
             {
                 texto_inicio_principal: 1,
@@ -56,9 +88,9 @@ controladorClienteInicio.inicioCliente = async (req, res) => {
             }
         );
 
-        if (registro_terreno) {
+        if (registro_empresa) {
             // conversion del documento MONGO ({OBJETO}) a "string"
-            var aux_string = JSON.stringify(registro_terreno);
+            var aux_string = JSON.stringify(registro_empresa);
 
             // reconversion del "string" a "objeto"
             var datos_empresa = JSON.parse(aux_string);
@@ -84,6 +116,9 @@ controladorClienteInicio.inicioCliente = async (req, res) => {
 
             datos_empresa.navegador_cliente = true;
 
+            datos_empresa.url_inicio_h = url_inicio_h;
+            datos_empresa.url_inicio_v = url_inicio_v;
+
             res.render("cli_inicio", datos_empresa); //increible que borrandolo FUNCIONE
         } else {
             var datos_empresa = {}; // lo enviamos como objeto vacio
@@ -108,6 +143,9 @@ controladorClienteInicio.inicioCliente = async (req, res) => {
             datos_empresa.pie_pagina_cli = pie_pagina;
 
             datos_empresa.navegador_cliente = true;
+
+            datos_empresa.url_inicio_h = url_inicio_h;
+            datos_empresa.url_inicio_v = url_inicio_v;
 
             res.render("cli_inicio", datos_empresa); //increible que borrandolo FUNCIONE
         }
@@ -178,7 +216,27 @@ controladorClienteInicio.buscarInmueble = async (req, res) => {
             resultado_renderizar.es_remate = true;
             resultado_renderizar.encabezado_texto = "En Remates";
         }
-        resultado_renderizar.estilo_cabezera = "cabezera_estilo_resultados";
+
+        //resultado_renderizar.estilo_cabezera = "cabezera_estilo_resultados";
+
+        //----------------------------------------------------
+        // para la url de la cabezera
+        var url_cabezera = ""; // vacio por defecto
+        const registro_cabezera = await indiceImagenesSistema.findOne(
+            { tipo_imagen: "cabecera_resultados_inmuebles" },
+            {
+                url: 1,
+                _id: 0,
+            }
+        );
+
+        if (registro_cabezera) {
+            url_cabezera = registro_cabezera.url;
+        }
+
+        resultado_renderizar.url_cabezera = url_cabezera;
+
+        //----------------------------------------------------
 
         // informacion para pie de página
         var pie_pagina = await pie_pagina_cli();
@@ -413,7 +471,9 @@ controladorClienteInicio.buscarInmueble = async (req, res) => {
                 //-------------------------------------------------------------
                 // revision si cumple con el tamaño de superficie
                 // las superficies validas, san aquellas que son iguales o MAYORES que la superficie introducida en el input html
-                if (Number(info_inmueble_i.superficie_inmueble_m2) >= Number(html_input_superficie)) {
+                if (
+                    Number(info_inmueble_i.superficie_inmueble_m2) >= Number(html_input_superficie)
+                ) {
                     ok_superficie = true;
                 }
 
@@ -425,7 +485,9 @@ controladorClienteInicio.buscarInmueble = async (req, res) => {
 
                 //-------------------------------------------------------------
                 // revision si cumple con el numero de dormitorios
-                if (Number(info_inmueble_i.dormitorios_inmueble) >= Number(html_numero_habitaciones)) {
+                if (
+                    Number(info_inmueble_i.dormitorios_inmueble) >= Number(html_numero_habitaciones)
+                ) {
                     ok_dormitorios = true;
                 } else {
                     if (
@@ -473,7 +535,6 @@ controladorClienteInicio.buscarInmueble = async (req, res) => {
                 inmueble_card_i.card_externo = true; // para que muestre info de card EXTERIONES
 
                 if (tipo_busqueda == "remate") {
-                    
                     inmueble_card_i.factor_tiempo_tiempo = "En remate"; // (esto porque no deseamos que muestre el tiempo de FINALIZA ....)
                 }
 
@@ -616,8 +677,6 @@ controladorClienteInicio.buscarProyectos = async (req, res) => {
         resultado_renderizar.ordenador_externo = true; // porque SI existen cards que ordenar
         resultado_renderizar.encabezado_titulo = "Resultado proyectos";
 
-
-
         // informacion para pie de página
         var pie_pagina = await pie_pagina_cli();
         resultado_renderizar.pie_pagina_cli = pie_pagina;
@@ -640,7 +699,26 @@ controladorClienteInicio.buscarProyectos = async (req, res) => {
             resultado_renderizar.es_reservacion = true;
             resultado_renderizar.proyectos_reserva = true; // para mostrar el menu desplegable de ordenacion
             resultado_renderizar.encabezado_texto = "Reservación";
-            resultado_renderizar.estilo_cabezera = "cabezera_estilo_reserva";
+            //resultado_renderizar.estilo_cabezera = "cabezera_estilo_reserva";
+
+            //----------------------------------------------------
+            // para la url de la cabezera
+            var url_cabezera = ""; // vacio por defecto
+            const registro_cabezera = await indiceImagenesSistema.findOne(
+                { tipo_imagen: "cabecera_reserva" },
+                {
+                    url: 1,
+                    _id: 0,
+                }
+            );
+
+            if (registro_cabezera) {
+                url_cabezera = registro_cabezera.url;
+            }
+
+            resultado_renderizar.url_cabezera = url_cabezera;
+
+            //----------------------------------------------------
 
             var estado_buscar = "reserva";
         }
@@ -649,7 +727,26 @@ controladorClienteInicio.buscarProyectos = async (req, res) => {
             resultado_renderizar.es_aprobacion = true;
             resultado_renderizar.proyectos_aprobacion = true; // para mostrar el menu desplegable de ordenacion
             resultado_renderizar.encabezado_texto = "Aprobación";
-            resultado_renderizar.estilo_cabezera = "cabezera_estilo_aprobacion";
+            //resultado_renderizar.estilo_cabezera = "cabezera_estilo_aprobacion";
+
+            //----------------------------------------------------
+            // para la url de la cabezera
+            var url_cabezera = ""; // vacio por defecto
+            const registro_cabezera = await indiceImagenesSistema.findOne(
+                { tipo_imagen: "cabecera_aprobacion" },
+                {
+                    url: 1,
+                    _id: 0,
+                }
+            );
+
+            if (registro_cabezera) {
+                url_cabezera = registro_cabezera.url;
+            }
+
+            resultado_renderizar.url_cabezera = url_cabezera;
+
+            //----------------------------------------------------
 
             var estado_buscar = "aprobacion";
         }
@@ -658,7 +755,26 @@ controladorClienteInicio.buscarProyectos = async (req, res) => {
             resultado_renderizar.es_pago = true;
             resultado_renderizar.proyectos_pago = true; // para mostrar el menu desplegable de ordenacion
             resultado_renderizar.encabezado_texto = "Pago";
-            resultado_renderizar.estilo_cabezera = "cabezera_estilo_pago";
+            //resultado_renderizar.estilo_cabezera = "cabezera_estilo_pago";
+
+            //----------------------------------------------------
+            // para la url de la cabezera
+            var url_cabezera = ""; // vacio por defecto
+            const registro_cabezera = await indiceImagenesSistema.findOne(
+                { tipo_imagen: "cabecera_pago" },
+                {
+                    url: 1,
+                    _id: 0,
+                }
+            );
+
+            if (registro_cabezera) {
+                url_cabezera = registro_cabezera.url;
+            }
+
+            resultado_renderizar.url_cabezera = url_cabezera;
+
+            //----------------------------------------------------
 
             var estado_buscar = "pago";
         }
@@ -667,7 +783,26 @@ controladorClienteInicio.buscarProyectos = async (req, res) => {
             resultado_renderizar.es_construccion = true;
             resultado_renderizar.proyectos_construccion = true; // para mostrar el menu desplegable de ordenacion
             resultado_renderizar.encabezado_texto = "Construcción";
-            resultado_renderizar.estilo_cabezera = "cabezera_estilo_construccion";
+            //resultado_renderizar.estilo_cabezera = "cabezera_estilo_construccion";
+
+            //----------------------------------------------------
+            // para la url de la cabezera
+            var url_cabezera = ""; // vacio por defecto
+            const registro_cabezera = await indiceImagenesSistema.findOne(
+                { tipo_imagen: "cabecera_construccion" },
+                {
+                    url: 1,
+                    _id: 0,
+                }
+            );
+
+            if (registro_cabezera) {
+                url_cabezera = registro_cabezera.url;
+            }
+
+            resultado_renderizar.url_cabezera = url_cabezera;
+
+            //----------------------------------------------------
 
             var estado_buscar = "construccion";
         }
@@ -676,7 +811,26 @@ controladorClienteInicio.buscarProyectos = async (req, res) => {
             resultado_renderizar.es_construido = true;
             resultado_renderizar.proyectos_construido = true; // para mostrar el menu desplegable de ordenacion
             resultado_renderizar.encabezado_texto = "Construido";
-            resultado_renderizar.estilo_cabezera = "cabezera_estilo_construido";
+            //resultado_renderizar.estilo_cabezera = "cabezera_estilo_construido";
+
+            //----------------------------------------------------
+            // para la url de la cabezera
+            var url_cabezera = ""; // vacio por defecto
+            const registro_cabezera = await indiceImagenesSistema.findOne(
+                { tipo_imagen: "cabecera_construido" },
+                {
+                    url: 1,
+                    _id: 0,
+                }
+            );
+
+            if (registro_cabezera) {
+                url_cabezera = registro_cabezera.url;
+            }
+
+            resultado_renderizar.url_cabezera = url_cabezera;
+
+            //----------------------------------------------------
 
             var estado_buscar = "construido";
         }
@@ -685,7 +839,26 @@ controladorClienteInicio.buscarProyectos = async (req, res) => {
             resultado_renderizar.es_convocatoria = true;
             resultado_renderizar.terrenos_convocatoria = true; // para mostrar el menu desplegable de ordenacion
             resultado_renderizar.encabezado_texto = "Convocatoria";
-            resultado_renderizar.estilo_cabezera = "cabezera_estilo_convocatoria";
+            //resultado_renderizar.estilo_cabezera = "cabezera_estilo_convocatoria";
+
+            //----------------------------------------------------
+            // para la url de la cabezera
+            var url_cabezera = ""; // vacio por defecto
+            const registro_cabezera = await indiceImagenesSistema.findOne(
+                { tipo_imagen: "cabecera_convocatoria" },
+                {
+                    url: 1,
+                    _id: 0,
+                }
+            );
+
+            if (registro_cabezera) {
+                url_cabezera = registro_cabezera.url;
+            }
+
+            resultado_renderizar.url_cabezera = url_cabezera;
+
+            //----------------------------------------------------
         }
 
         if (tipo_busqueda == "convocatoria") {
@@ -903,7 +1076,9 @@ controladorClienteInicio.buscarProyectos = async (req, res) => {
                                     codigo_proyecto: codigos_resultados[i],
                                     laapirest: "/", // por partir desde el lado del CLIENTE
                                 };
-                                proyectos_renderizar[i] = await proyecto_card_adm_cli(paquete_proyecto);
+                                proyectos_renderizar[i] = await proyecto_card_adm_cli(
+                                    paquete_proyecto
+                                );
                                 proyectos_renderizar[i].card_externo = true; // para que muestre info de card EXTERNOS
                             }
                             resultado_renderizar.existen_resultados = true;
@@ -988,7 +1163,26 @@ controladorClienteInicio.buscarRequerimientos = async (req, res) => {
 
         resultado_renderizar.es_requerimiento = true;
         resultado_renderizar.encabezado_texto = "Vigentes";
-        resultado_renderizar.estilo_cabezera = "cabezera_estilo_requerimientos";
+        //resultado_renderizar.estilo_cabezera = "cabezera_estilo_requerimientos";
+
+        //----------------------------------------------------
+        // para la url de la cabezera
+        var url_cabezera = ""; // vacio por defecto
+        const registro_cabezera = await indiceImagenesSistema.findOne(
+            { tipo_imagen: "cabecera_resultados_requerimientos" },
+            {
+                url: 1,
+                _id: 0,
+            }
+        );
+
+        if (registro_cabezera) {
+            url_cabezera = registro_cabezera.url;
+        }
+
+        resultado_renderizar.url_cabezera = url_cabezera;
+
+        //----------------------------------------------------
 
         // informacion para pie de página
         var pie_pagina = await pie_pagina_cli();
@@ -1036,7 +1230,6 @@ controladorClienteInicio.buscarRequerimientos = async (req, res) => {
         }
 
         if (requerimientos_buscar.length > 0) {
-
             // para conversion de formato de fecha a ej/ domingo 28 Junio de 2023
             moment.locale("es");
 

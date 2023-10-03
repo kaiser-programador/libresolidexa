@@ -14,7 +14,11 @@ const {
 
 const moment = require("moment");
 
-const { cabezeras_adm_cli, segundero_cajas, pie_pagina_adm } = require("../ayudas/funcionesayuda_2");
+const {
+    cabezeras_adm_cli,
+    segundero_cajas,
+    pie_pagina_adm,
+} = require("../ayudas/funcionesayuda_2");
 
 const { numero_punto_coma } = require("../ayudas/funcionesayuda_3");
 
@@ -32,7 +36,28 @@ controladorAdmAdministrador.renderizarVentanaAdministrador = async (req, res) =>
 
         var info_administrador = {};
         info_administrador.cab_adm_adm = true;
-        info_administrador.estilo_cabezera = "cabezera_estilo_administrador";
+
+        //info_administrador.estilo_cabezera = "cabezera_estilo_administrador";
+
+        //----------------------------------------------------
+        // para la url de la cabezera
+        var url_cabezera = ""; // vacio por defecto
+        const registro_cabezera = await indiceImagenesSistema.findOne(
+            { tipo_imagen: "cabecera_administrador" },
+            {
+                url: 1,
+                _id: 0,
+            }
+        );
+
+        if(registro_cabezera){
+            url_cabezera=registro_cabezera.url;
+        }
+
+        info_administrador.url_cabezera = url_cabezera;
+
+        //----------------------------------------------------
+
         info_administrador.codigo_administrador = codigo_administrador;
 
         // -----------------------------------------------
@@ -301,9 +326,13 @@ async function cuenta_administrador(codigo_administrador) {
             // conversion de formato de fecha a ej/ domingo 28 Junio de 2023
             moment.locale("es");
 
-            aux_objeto.fecha_nacimiento = moment.utc(registro_administrador.ad_nacimiento).format("LL"); // muestra solo fecha español
+            aux_objeto.fecha_nacimiento = moment
+                .utc(registro_administrador.ad_nacimiento)
+                .format("LL"); // muestra solo fecha español
 
-            aux_objeto.fecha_ingreso = moment.utc(registro_administrador.fecha_ingreso).format("LL"); // muestra solo fecha español
+            aux_objeto.fecha_ingreso = moment
+                .utc(registro_administrador.fecha_ingreso)
+                .format("LL"); // muestra solo fecha español
 
             return aux_objeto;
         } else {
@@ -485,6 +514,7 @@ async function somos_administrador() {
                     texto_imagen: 1,
                     titulo_imagen: 1,
                     orden_imagen: 1,
+                    url: 1,
                     _id: 0,
                 }
             )
@@ -498,6 +528,7 @@ async function somos_administrador() {
                     texto_imagen: somos_empresa_detalle[i].texto_imagen,
                     titulo_imagen: somos_empresa_detalle[i].titulo_imagen,
                     orden_imagen: somos_empresa_detalle[i].orden_imagen,
+                    url: somos_empresa_detalle[i].url,
                 };
             }
         }
@@ -541,6 +572,7 @@ async function funciona_administrador() {
                     orden_imagen: 1,
                     titulo_imagen: 1,
                     url_video: 1,
+                    url: 1, // URL DE LA IMAGEN DE "COMO FUNCIONA"
                     video_funciona: 1, // true o false
                     _id: 0,
                 }
@@ -556,6 +588,7 @@ async function funciona_administrador() {
                     orden_imagen: funciona_empresa_detalle[i].orden_imagen,
                     titulo_imagen: funciona_empresa_detalle[i].titulo_imagen,
                     url_video: funciona_empresa_detalle[i].url_video,
+                    url: funciona_empresa_detalle[i].url,
                     video_funciona: funciona_empresa_detalle[i].video_funciona,
                     lista_documentos: [], // POR DEFECTO de inicio vacio para luego ser llenado
                 };
@@ -567,6 +600,7 @@ async function funciona_administrador() {
                         nombre_documento: 1, // pdf || word || excel
                         codigo_documento: 1,
                         clase_documento: 1, // manual || beneficio || modelo
+                        url: 1, // URL DEL DOCUMENTO
                         _id: 0,
                     }
                 );
@@ -600,6 +634,7 @@ async function funciona_administrador() {
                             tipo_documento, // Manual || Beneficio || Modelo
                             extension, // pdf || docx || xlsx
                             tipo_archivo: documentos_i[j].nombre_documento, // pdf || word || excel (para bootstrap)
+                            url: documentos_i[j].url,
                         };
                     }
 
@@ -682,6 +717,7 @@ async function imagenes_administrador() {
                 imagen: 1,
                 tipo_imagen: 1,
                 completo: 1,
+                url: 1,
                 _id: 0,
             }
         );
@@ -1067,7 +1103,6 @@ controladorAdmAdministrador.guardarTextosSegundero = async (req, res) => {
         const registro_empresa = await indiceEmpresa.findOne({});
 
         if (registro_empresa) {
-
             registro_empresa.texto_segundero_py = req.body.texto_segundero_py;
             registro_empresa.texto_segundero_inm = req.body.texto_segundero_inm;
             registro_empresa.texto_segundero_prop = req.body.texto_segundero_prop;
@@ -1227,9 +1262,8 @@ controladorAdmAdministrador.guardarAdministrador = async (req, res) => {
                 });
                 //----------------------------------
                 // #session-passport #encriptar-contraseña para SESION USUARIO, encriptar contraseña y guardarlo en la base de datos
-                datosNuevoAdministrador.ad_clave = await datosNuevoAdministrador.encriptarContrasena(
-                    clave_defecto
-                );
+                datosNuevoAdministrador.ad_clave =
+                    await datosNuevoAdministrador.encriptarContrasena(clave_defecto);
                 //----------------------------------
                 // ahora guardamos en la base de datos la informacion de la imagen creada
                 await datosNuevoAdministrador.save();
@@ -1610,7 +1644,8 @@ controladorAdmAdministrador.borrarHistorial = async (req, res) => {
             }
 
             exito = "si";
-            mensaje = "Fueron eliminadas TODAS las acciones del historial, en total: " + numero_borrados;
+            mensaje =
+                "Fueron eliminadas TODAS las acciones del historial, en total: " + numero_borrados;
         }
 
         res.json({

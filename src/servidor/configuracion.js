@@ -20,14 +20,18 @@ const sesion = require("express-session");
 const pasaporte = require("passport");
 
 //------------------------------------------------------
+const mongoose = require("mongoose");
+// para utilizar connect-mongo como almacenamiento de sesiones
+// el (sesion) es el sesion de: const sesion = require("express-session");
+const MongoStore = require("connect-mongo")(sesion);
+//const MongoStore = require('connect-mongo')(require('express-session'));
+//------------------------------------------------------
 
 const rutasDelServidor = require("../rutas/rutaservidor");
-
 
 // Exportaremos una funcion que contendra las configuraciones, middlewares, rutas, archivos estaticos y el manejador de errores
 
 module.exports = function (servidorConfiguraciones) {
-
     /**************************************************************************************** */
     // SETTINGS O CONFIGURACIONES DEL SERVIDOR "set" es la palabra clave (es analogo a guardar los valores, en este caso a guardar las configuraciones y se los utiliza con "get" que es analogo a leer valores)
 
@@ -42,7 +46,6 @@ module.exports = function (servidorConfiguraciones) {
     servidorConfiguraciones.set("views", direccionVistas); // "views" es nombre standart
     /**----------------------------------------------------------- */
     // configuracion del MOTOR DE PLANTILLAS DE HANDLEBARS
-
 
     const cofiguracionHanddlebars = miMotorHandlebars({
         // nombre del archivo handdlebars que sera repetitivo (que se vera siempre) en todas las ventanas de nuestra aplicacion en el navegador, este sera "repetitivo.hbs" pero no sera necesario darle con su extension ".hbs"
@@ -93,12 +96,23 @@ module.exports = function (servidorConfiguraciones) {
 
     //-----------------------------------------------------------------
 
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    // Crea una instancia de MongoStore para almacenar las sesiones en MongoDB
+    const mongoStore = new MongoStore({
+        mongooseConnection: mongoose.connection,
+    });
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
     // #session-passport para SESIONES DEL USUARIO, alamacenar sus datos temporalmente
     servidorConfiguraciones.use(
         sesion({
             secret: "misecretoapp",
             resave: true,
             saveUninitialized: false, // "false" al parecer para que no exija volver a introducir usuario y contraseña nuevamente.
+
+            // para utilizar connect-mongo como almacenamiento de sesiones, asi no utilizamos la memoria del servidor.
+            store: mongoStore,
+            //store: new MongoStore({mongooseConnection:mongoose.Connection})
         })
     );
 
@@ -108,13 +122,14 @@ module.exports = function (servidorConfiguraciones) {
 
     //-----------------------------------------------------------------
     // VARIABLES GLOBALES
-    servidorConfiguraciones.use((req, res, next) => { // "use" es propio del servidor
-        res.locals.user = req.user || null; 
+    servidorConfiguraciones.use((req, res, next) => {
+        // "use" es propio del servidor
+        res.locals.user = req.user || null;
 
         // ESTA A LA PRIMERA DARIA "undefined", pero cuando pase un usuario registrado y se valide sus datos, se mostrara todos los datos de este usuario
         // console.log(req.user);
 
-        // LA RAZON POR LA QUE NO FUNCIONAN LAS SIGUIENTES A LA PRIMERA, ES PORQUE NO SE TENDRIAN AUN DATOS DE UN USUARIO, 
+        // LA RAZON POR LA QUE NO FUNCIONAN LAS SIGUIENTES A LA PRIMERA, ES PORQUE NO SE TENDRIAN AUN DATOS DE UN USUARIO,
         // console.log(req.user.ci_administrador);
 
         next();

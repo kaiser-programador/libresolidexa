@@ -16,8 +16,8 @@ const funcionesAyuda_4 = {};
 funcionesAyuda_4.inmueble_info_cd = async function (paquete_inmueble) {
     try {
         // ------- Para verificación -------
-        console.log("EL PAQUETE DE DATOS QUE LE LLEGA INMUEBLE INFO CD");
-        console.log(paquete_inmueble);
+        //console.log("EL PAQUETE DE DATOS QUE LE LLEGA INMUEBLE INFO CD");
+        //console.log(paquete_inmueble);
 
         var codigo_inmueble = paquete_inmueble.codigo_inmueble;
         var codigo_usuario = paquete_inmueble.codigo_usuario; // usuario que navega con su cuenta registrada

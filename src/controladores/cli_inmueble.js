@@ -240,8 +240,8 @@ controladorCliInmueble.renderVentanaInmueble = async (req, res) => {
                 info_inmueble_cli.informacion = info_inmueble;
 
                 // ------- Para verificación -------
-                console.log("los datos de PROPIETARIO del inmueble");
-                console.log(info_inmueble_cli);
+                //console.log("los datos de PROPIETARIO del inmueble");
+                //console.log(info_inmueble_cli);
 
                 res.render("cli_inmueble", info_inmueble_cli);
             }
@@ -1114,8 +1114,8 @@ async function inmueble_empleos(codigo_inmueble) {
                 var fraccion_inmueble = construccion_inmueble / construccion_proyecto;
 
                 // ------- Para verificación -------
-                console.log("la fraccion del inmueble es:");
-                console.log(fraccion_inmueble);
+                //console.log("la fraccion del inmueble es:");
+                //console.log(fraccion_inmueble);
 
                 let n_filas = registro_proyecto.tabla_empleos_sociedad.length;
                 var sum_valores = 0;

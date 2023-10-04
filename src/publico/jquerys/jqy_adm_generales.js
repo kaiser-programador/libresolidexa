@@ -552,8 +552,8 @@ $(".contenedor_imagenes_subidas").on("click", ".boton_eliminar_imagen_jquery", f
                     // Contamos todas las imagenes que existen en la ventana, contamos las que son exclusivas del proyecto y las que no las son
                     var numeroElementos = $(".cuadro_contenedor_imagen").length;
 
-                    console.log("vemos el numero de elementos imagenes TOTALES");
-                    console.log(numeroElementos);
+                    //console.log("vemos el numero de elementos imagenes TOTALES");
+                    //console.log(numeroElementos);
 
                     for (let i = 0; i < numeroElementos; i++) {
                         let codigoImagenFor = $(
@@ -746,8 +746,8 @@ $(".contenedor_imagenes_subidas").on("click", ".selec_deselec_imagen_principal",
 
     var numeroImagenesPrincipales = $(".la_imagen_principal").length; // es obvio que a lo sumo solo existira una IMAGEN PRINCIPAL
 
-    console.log("vemos el numero de elementos IMAGENES PRINCIPALES");
-    console.log(numeroImagenesPrincipales);
+    //console.log("vemos el numero de elementos IMAGENES PRINCIPALES");
+    //console.log(numeroImagenesPrincipales);
 
     if (numeroImagenesPrincipales != 0) {
         // como a los sumo solo existira UNA imagen principal, es por eso que bastara con "eq(0)"
@@ -776,8 +776,8 @@ $(".contenedor_imagenes_subidas").on("click", ".selec_deselec_imagen_principal",
         var caso = "nuevo";
     }
 
-    console.log("vemos el codigo de la IMAGEN PRINCIPAL PREVIO");
-    console.log(codigoImagenPrincipalPrevio);
+    //console.log("vemos el codigo de la IMAGEN PRINCIPAL PREVIO");
+    //console.log(codigoImagenPrincipalPrevio);
 
     var paqueteDatos = {
         imagen_principal_previo: codigoImagenPrincipalPrevio,
@@ -800,8 +800,8 @@ $(".contenedor_imagenes_subidas").on("click", ".selec_deselec_imagen_principal",
         // la respusta del servidor la guardamos en "respuestaServidor", con esta respuesta daremos estilo y modificaremos la interfaz del navegador
         .done(function (respuestaServidor) {
             /****** Para verificación **********/
-            console.log("vemos el valor de la respuesta del servidor");
-            console.log(respuestaServidor.exito);
+            //console.log("vemos el valor de la respuesta del servidor");
+            //console.log(respuestaServidor.exito);
 
             if (respuestaServidor.exito == "si") {
                 if (caso == "reemplazar") {
@@ -886,8 +886,8 @@ $(".contenedor_imagenes_subidas").on("click", ".selec_deselec_imagen_principal",
             function buscaPosicionImagen() {
                 var numeroElementos = $(".cuadro_contenedor_imagen").length;
 
-                console.log("vemos el numero de elementos imagenes TOTALES");
-                console.log(numeroElementos);
+                //console.log("vemos el numero de elementos imagenes TOTALES");
+                //console.log(numeroElementos);
 
                 for (let i = 0; i < numeroElementos; i++) {
                     let elDataId = $(
@@ -909,8 +909,8 @@ $(".contenedor_imagenes_subidas").on("click", ".selec_deselec_imagen_principal",
                     }
                 }
 
-                console.log("retornamos la posicion de la imagen click");
-                console.log(posicImagClick);
+                //console.log("retornamos la posicion de la imagen click");
+                //console.log(posicImagClick);
                 // ahra retornamos pocicion de la imagen sobre la que se hizo click
                 return posicImagClick;
             }
@@ -944,8 +944,8 @@ $(".contenedor_imagenes_subidas").on("click", ".selec_deselec_imagen_principal_t
 
     var numeroImagenesPrincipales = $(".la_imagen_principal").length; // es obvio que a lo sumo solo existira una IMAGEN PRINCIPAL
 
-    console.log("vemos el numero de elementos IMAGENES PRINCIPALES");
-    console.log(numeroImagenesPrincipales);
+    //console.log("vemos el numero de elementos IMAGENES PRINCIPALES");
+    //console.log(numeroImagenesPrincipales);
 
     if (numeroImagenesPrincipales != 0) {
         // como a los sumo solo existira UNA imagen principal, es por eso que bastara con "eq(0)"
@@ -976,8 +976,8 @@ $(".contenedor_imagenes_subidas").on("click", ".selec_deselec_imagen_principal_t
         var caso = "nuevo";
     }
 
-    console.log("vemos el codigo de la IMAGEN PRINCIPAL PREVIO");
-    console.log(codigoImagenPrincipalPrevio);
+    //console.log("vemos el codigo de la IMAGEN PRINCIPAL PREVIO");
+    //console.log(codigoImagenPrincipalPrevio);
 
     var paqueteDatos = {
         imagen_principal_previo: codigoImagenPrincipalPrevio,
@@ -1000,8 +1000,8 @@ $(".contenedor_imagenes_subidas").on("click", ".selec_deselec_imagen_principal_t
         // la respuesta del servidor la guardamos en "respuestaServidor", con esta respuesta daremos estilo y modificaremos la interfaz del navegador
         .done(function (respuestaServidor) {
             /****** Para verificación **********/
-            console.log("vemos el valor de la respuesta del servidor");
-            console.log(respuestaServidor.exito);
+            //console.log("vemos el valor de la respuesta del servidor");
+            //console.log(respuestaServidor.exito);
 
             if (respuestaServidor.exito == "si") {
                 ////---//  ME QUEDE AQUI  //----
@@ -1087,8 +1087,8 @@ $(".contenedor_imagenes_subidas").on("click", ".selec_deselec_imagen_principal_t
             function buscaPosicionImagen() {
                 var numeroElementos = $(".cuadro_contenedor_imagen").length;
 
-                console.log("vemos el numero de elementos imagenes TOTALES");
-                console.log(numeroElementos);
+                //console.log("vemos el numero de elementos imagenes TOTALES");
+                //console.log(numeroElementos);
 
                 for (let i = 0; i < numeroElementos; i++) {
                     let elDataId = $(
@@ -1110,8 +1110,8 @@ $(".contenedor_imagenes_subidas").on("click", ".selec_deselec_imagen_principal_t
                     }
                 }
 
-                console.log("retornamos la posicion de la imagen click");
-                console.log(posicImagClick);
+                //console.log("retornamos la posicion de la imagen click");
+                //console.log(posicImagClick);
                 // ahra retornamos pocicion de la imagen sobre la que se hizo click
                 return posicImagClick;
             }
@@ -1157,8 +1157,8 @@ $(".contenedor_imagenes_subidas").on(
 
             // la respusta del servidor la guardamos en "respuestaServidor", con esta respuesta daremos estilo y modificaremos la interfaz del navegador
             .done(function (respuestaServidor) {
-                console.log("vemos el valor de la respuesta del servidor");
-                console.log(respuestaServidor.tipo_caso);
+                //console.log("vemos el valor de la respuesta del servidor");
+                //console.log(respuestaServidor.tipo_caso);
 
                 if (respuestaServidor.exito == "si") {
                     if (respuestaServidor.tipo_caso == "principal") {
@@ -1203,8 +1203,8 @@ $(".contenedor_imagenes_subidas").on(
                     function buscaPosicionImagen() {
                         var numeroElementos = $(".cuadro_contenedor_imagen").length;
 
-                        console.log("vemos el numero de elementos imagenes TOTALES");
-                        console.log(numeroElementos);
+                        //console.log("vemos el numero de elementos imagenes TOTALES");
+                        //console.log(numeroElementos);
 
                         for (let i = 0; i < numeroElementos; i++) {
                             elDataId = $(
@@ -1503,8 +1503,8 @@ $(".madre_tabla").on("click", ".boton_fila_arriba", function () {
 
     var html_nueva_fila = $(".fila_fila").eq(0).html(); // rescatara todo lo que esta dentro de "fila_fila", tomando a la primera fila como referencia
     // ------- Para verificación -------
-    console.log("LA NUEVA FILA ARRIBA EN FORMATO HTML");
-    console.log(html_nueva_fila);
+    //console.log("LA NUEVA FILA ARRIBA EN FORMATO HTML");
+    //console.log(html_nueva_fila);
 
     for (let i = 0; i < n_filas; i++) {
         // "n_fila" ok, porque empieza desde 0
@@ -1561,8 +1561,8 @@ $(".madre_tabla").on("click", ".boton_fila_abajo", function () {
     var html_nueva_fila = $(".fila_fila").eq(0).html(); // rescatara todo lo que esta dentro de "fila_fila", tomando a la primera fila como referencia
 
     // ------- Para verificación -------
-    console.log("LA NUEVA FILA ABAJO EN FORMATO HTML");
-    console.log(html_nueva_fila);
+    //console.log("LA NUEVA FILA ABAJO EN FORMATO HTML");
+    //console.log(html_nueva_fila);
 
     for (let i = 0; i < n_filas; i++) {
         let numero_i = Number($(".numero_fila").eq(i).attr("data-id"));
@@ -1654,9 +1654,9 @@ $(".madre_tabla").on("click", "#id_guardar_tabla", function () {
     let n_columnas = n_inputs / n_filas;
 
     // ------- Para verificación -------
-    console.log("NUMERO DE FILAS " + n_filas);
-    console.log("NUMERO DE INPUTS " + n_inputs);
-    console.log("NUMERO DE COLUMNAS " + n_columnas);
+    //console.log("NUMERO DE FILAS " + n_filas);
+    //console.log("NUMERO DE INPUTS " + n_inputs);
+    //console.log("NUMERO DE COLUMNAS " + n_columnas);
 
     let inputs_vacios = 0;
 
@@ -1690,36 +1690,36 @@ $(".madre_tabla").on("click", "#id_guardar_tabla", function () {
             sub_array_tabla[sub_aux] = aux_contenido;
 
             // ------- Para verificación -------
-            console.log("SUB_TABLA EN PROCESO DE LLENADO");
-            console.log(sub_array_tabla);
+            //console.log("SUB_TABLA EN PROCESO DE LLENADO");
+            //console.log(sub_array_tabla);
 
             if (sub_aux == n_columnas - 1) {
                 aux = aux + 1;
                 sub_array_tabla.unshift(aux + 1); // Añade "aux+1" numero de fila al inicio del array (+1 para que inicie desde 1 y no desde 0)
 
                 // ------- Para verificación -------
-                console.log("SUB TABLA");
-                console.log(sub_array_tabla);
+                //console.log("SUB TABLA");
+                //console.log(sub_array_tabla);
 
                 array_tabla[aux] = sub_array_tabla; // ok "aux" porque lo pocicionara en ubicacion 0 dentro del array
                 // ------- Para verificación -------
-                console.log("TABLA");
-                console.log(array_tabla);
+                //console.log("TABLA");
+                //console.log(array_tabla);
                 sub_aux = -1; // para iniciar de nuevo la siguiente fila de llenado
                 sub_array_tabla = []; // limpiamos para la siguiente fila de llenado
             }
         }
 
         //--------------- Verificacion ----------------
-        console.log("LA TABLA ARRAY ANTES DEL JSON");
-        console.log(array_tabla);
+        //console.log("LA TABLA ARRAY ANTES DEL JSON");
+        //console.log(array_tabla);
         //---------------------------------------------
 
         var aux_string = JSON.stringify(array_tabla);
 
         //--------------- Verificacion ----------------
-        console.log("LA TABLA ARRAY DESPUES DEL JSON");
-        console.log(aux_string);
+        //console.log("LA TABLA ARRAY DESPUES DEL JSON");
+        //console.log(aux_string);
         //---------------------------------------------
 
         $.ajax({
@@ -1929,12 +1929,12 @@ $(".contenido").on("click", ".llenar_datos_pagos_propietario", function () {
         }).done(function (aux_respuestaServidor) {
             var respuestaServidor = aux_respuestaServidor;
             // ------- Para verificación -------
-            console.log("la respuesta del servidor");
-            console.log(respuestaServidor);
+            //console.log("la respuesta del servidor");
+            //console.log(respuestaServidor);
 
             // ------- Para verificación -------
-            console.log("nombres del propietario desde el servidor");
-            console.log(respuestaServidor.respuesta.propietario_datos.nombres_propietario);
+            //console.log("nombres del propietario desde el servidor");
+            //console.log(respuestaServidor.respuesta.propietario_datos.nombres_propietario);
 
             if (
                 tipo_llenado == "datos_pagos_a" ||
@@ -2081,8 +2081,8 @@ $("#guardar_datos_pagos_propietario").click(function (e) {
         var propietario_pagos = {};
 
         // ------- Para verificación -------
-        console.log("entramos guardar los datos del  propietaio desde el navegador");
-        console.log(paqueteDatos);
+        //console.log("entramos guardar los datos del  propietaio desde el navegador");
+        //console.log(paqueteDatos);
 
         // guardar del propietario: datos
         // "guardar_datos" cuando se gusrda solo DATOS desde la pestaña DATOS de la ventana PROPIETARIO (este no requiere del codigo del inmueble)
@@ -2163,12 +2163,14 @@ $("#guardar_datos_pagos_propietario").click(function (e) {
             }
 
             // ------- Para verificación -------
+            /*
             console.log(
                 "los inputs vacios son: " +
                     inputs_vacios +
                     " los inputs permitidos son: " +
                     vacios_permitidos
             );
+            */
 
             if (inputs_vacios == 2 && vacios_permitidos == 2) {
                 // solo se admite la primera fila vacia, es decir maximo 2 inputs vacios son permitidos
@@ -2200,21 +2202,21 @@ $("#guardar_datos_pagos_propietario").click(function (e) {
                         sub_array_tabla[sub_aux] = aux_contenido;
 
                         // ------- Para verificación -------
-                        console.log("SUB_TABLA EN PROCESO DE LLENADO");
-                        console.log(sub_array_tabla);
+                        //console.log("SUB_TABLA EN PROCESO DE LLENADO");
+                        //console.log(sub_array_tabla);
 
                         if (sub_aux == n_columnas - 1) {
                             aux = aux + 1;
                             sub_array_tabla.unshift(aux + 1); // Añade "aux+1" numero de fila al inicio del array (+1 para que inicie desde 1 y no desde 0)
 
                             // ------- Para verificación -------
-                            console.log("SUB TABLA");
-                            console.log(sub_array_tabla);
+                            //console.log("SUB TABLA");
+                            //console.log(sub_array_tabla);
 
                             array_tabla[aux] = sub_array_tabla; // ok "aux" porque lo pocicionara en ubicacion 0 dentro del array
                             // ------- Para verificación -------
-                            console.log("TABLA");
-                            console.log(array_tabla);
+                            //console.log("TABLA");
+                            //console.log(array_tabla);
                             sub_aux = -1; // para iniciar de nuevo la siguiente fila de llenado
                             sub_array_tabla = []; // limpiamos para la siguiente fila de llenado
                         }
@@ -2223,22 +2225,22 @@ $("#guardar_datos_pagos_propietario").click(function (e) {
                     propietario_pagos.tiene_mensuales = true;
 
                     //--------------- Verificacion ----------------
-                    console.log("EL ARRAY DE PAGOS PROPIETARIO ANTES DEL JSON");
-                    console.log(array_tabla);
+                    //console.log("EL ARRAY DE PAGOS PROPIETARIO ANTES DEL JSON");
+                    //console.log(array_tabla);
                     //---------------------------------------------
 
                     var aux_string = JSON.stringify(array_tabla);
 
                     //--------------- Verificacion ----------------
-                    console.log("EL ARRAY DE PAGOS PROPIETARIO DESPUES DEL JSON");
-                    console.log(aux_string);
+                    //console.log("EL ARRAY DE PAGOS PROPIETARIO DESPUES DEL JSON");
+                    //console.log(aux_string);
                     //---------------------------------------------
 
                     var aux_string1 = JSON.stringify(aux_string);
 
                     //--------------- Verificacion ----------------
-                    console.log("EL ARRAY DE PAGOS PROPIETARIO DESPUES DEL JSON 2");
-                    console.log(aux_string1);
+                    //console.log("EL ARRAY DE PAGOS PROPIETARIO DESPUES DEL JSON 2");
+                    //console.log(aux_string1);
                     //---------------------------------------------
 
                     // propietario_pagos.pagos_mensuales = aux_string;
@@ -2253,10 +2255,12 @@ $("#guardar_datos_pagos_propietario").click(function (e) {
 
         if (datos_personales == true && inputs_vacios == 0) {
             // ------- Para verificación -------
+            /*
             console.log(
                 "entramos a guardar datos desde el navegador y vemos los datos que se enviaran"
             );
             console.log(paqueteDatos);
+            */
 
             var verdad_paqueteDatos = JSON.stringify(paqueteDatos);
 
@@ -2327,7 +2331,7 @@ $("#guardar_datos_pagos_propietario").click(function (e) {
                 tipo_guardado == "guardar_datos_pagos_b"
             ) {
                 // ------- Para verificación -------
-                console.log("los inputs de la tabla de pagos mensuales no estan llenados");
+                //console.log("los inputs de la tabla de pagos mensuales no estan llenados");
 
                 // con "after" el nuevo contenido se pondra DESPUES y al MISMO NIVEL
                 $(".ref_boton_datos_pagos_propietario").after(

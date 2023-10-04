@@ -604,16 +604,16 @@ controladorClienteInicio.buscarInmueble = async (req, res) => {
                 */
 
                 // ------- Para verificación -------
-                console.log("todo el resultado a RENDERIZAR");
-                console.log(resultado_renderizar);
+                //console.log("todo el resultado a RENDERIZAR");
+                //console.log(resultado_renderizar);
 
                 res.render("cli_resultado_busqueda", resultado_renderizar);
             } else {
                 resultado_renderizar.existen_resultados = false;
 
                 // ------- Para verificación -------
-                console.log("todo el resultado a RENDERIZAR");
-                console.log(resultado_renderizar);
+                //console.log("todo el resultado a RENDERIZAR");
+                //console.log(resultado_renderizar);
 
                 res.render("cli_resultado_busqueda", resultado_renderizar);
             }
@@ -1138,8 +1138,8 @@ controladorClienteInicio.buscarRequerimientos = async (req, res) => {
 
     try {
         // ------- Para verificación -------
-        console.log("los datos del formulario busqueda de requerimientos:");
-        console.log(req.body);
+        //console.log("los datos del formulario busqueda de requerimientos:");
+        //console.log(req.body);
 
         let ciudad_busqueda = req.body.name_ciudad_busq_req;
         let aux_palabras_clave = req.body.html_palabras_requerimiento; // debe estar en minuscula
@@ -1329,16 +1329,16 @@ controladorClienteInicio.buscarRequerimientos = async (req, res) => {
                 resultado_renderizar.existen_resultados = true;
 
                 // ------- Para verificación -------
-                console.log("todo el resultado a RENDERIZAR");
-                console.log(resultado_renderizar);
+                //console.log("todo el resultado a RENDERIZAR");
+                //console.log(resultado_renderizar);
 
                 res.render("cli_resultado_busqueda", resultado_renderizar);
             } else {
                 resultado_renderizar.existen_resultados = false;
 
                 // ------- Para verificación -------
-                console.log("todo el resultado a RENDERIZAR");
-                console.log(resultado_renderizar);
+                //console.log("todo el resultado a RENDERIZAR");
+                //console.log(resultado_renderizar);
 
                 res.render("cli_resultado_busqueda", resultado_renderizar);
             }
@@ -1383,7 +1383,7 @@ controladorClienteInicio.cliProyectosVariosTipos = async (req, res) => {
 
         cards_inicio.inversor_autenticado = req.inversor_autenticado; // FALSE O TRUE
 
-        console.log("req.inversor_autenticado es: " + req.inversor_autenticado);
+        //console.log("req.inversor_autenticado es: " + req.inversor_autenticado);
 
         // si es TRUE y solo si es true, entonces se mostrara su ci
         if (req.inversor_autenticado) {

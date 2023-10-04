@@ -157,8 +157,8 @@ controladorCliInversor.renderizarVentanaPropietarioCli = async (req, res) => {
                 info_propietario.informacion = contenido_propietario;
                 // ------- Para verificación -------
 
-                console.log("los datos para renderizar RESUMEN DEL PROPIETARIO");
-                console.log(info_propietario);
+                //console.log("los datos para renderizar RESUMEN DEL PROPIETARIO");
+                //console.log(info_propietario);
 
                 res.render("cli_propietario", info_propietario);
             }
@@ -169,8 +169,8 @@ controladorCliInversor.renderizarVentanaPropietarioCli = async (req, res) => {
                 info_propietario.contenido_propietario = contenido_propietario;
                 // ------- Para verificación -------
 
-                console.log("los datos para renderizar INFORMACION DEL PROPIETARIO");
-                console.log(info_propietario);
+                //console.log("los datos para renderizar INFORMACION DEL PROPIETARIO");
+                //console.log(info_propietario);
 
                 res.render("cli_propietario", info_propietario);
             }
@@ -320,8 +320,8 @@ controladorCliInversor.renderizarVentanaPropietarioCli = async (req, res) => {
                 info_propietario.contenido_propietario = contenido_propietario;
                 // ------- Para verificación -------
 
-                console.log("los datos para renderizar PROPIEDADES DEL PROPIETARIO");
-                console.log(info_propietario);
+                //console.log("los datos para renderizar PROPIEDADES DEL PROPIETARIO");
+                //console.log(info_propietario);
 
                 res.render("cli_propietario", info_propietario);
             }
@@ -465,8 +465,8 @@ controladorCliInversor.renderizarVentanaPropietarioCli = async (req, res) => {
                 info_propietario.contenido_propietario = contenido_propietario;
                 // ------- Para verificación -------
 
-                console.log("los datos para renderizar GUARDADOS DEL PROPIETARIO");
-                console.log(info_propietario);
+                //console.log("los datos para renderizar GUARDADOS DEL PROPIETARIO");
+                //console.log(info_propietario);
 
                 res.render("cli_propietario", info_propietario);
             }
@@ -477,8 +477,8 @@ controladorCliInversor.renderizarVentanaPropietarioCli = async (req, res) => {
                 info_propietario.contenido_propietario = contenido_propietario;
                 // ------- Para verificación -------
 
-                console.log("los datos para renderizar PROPIETARIO DOCUMENTOS PRIVADOS");
-                console.log(info_propietario);
+                //console.log("los datos para renderizar PROPIETARIO DOCUMENTOS PRIVADOS");
+                //console.log(info_propietario);
 
                 res.render("cli_propietario", info_propietario);
             }
@@ -756,8 +756,8 @@ async function resumen_propietario(codigo_propietario) {
                 }
 
                 //--------------- Verificacion ----------------
-                console.log("histoiral de inversiones");
-                console.log(historial_inversiones);
+                //console.log("historial de inversiones");
+                //console.log(historial_inversiones);
                 //---------------------------------------------
             } // for
         } else {
@@ -937,16 +937,16 @@ controladorCliInversor.guardarInmueble = async (req, res) => {
     //  viene de la RUTA  post   '/inversor/operacion/guardar-inmueble'
     try {
         //--------------- Verificacion ----------------
-        console.log("los datos de PAQUETE DE DATOS para guardar o des-guardar");
-        console.log(req.body);
+        //console.log("los datos de PAQUETE DE DATOS para guardar o des-guardar");
+        //console.log(req.body);
         //---------------------------------------------
         var estado_guardado = req.body.estado_guardado;
         var codigo_inmueble = req.body.codigo_inmueble;
 
         // ------- Para verificación -------
-        console.log("VEMOS SI EL CLIENTE ES VALIDADO iniciooo, PROPIETARIO GUARDAR INMUEBLE");
-        console.log(req.inversor_autenticado);
-        console.log("VEMOS SI EL CLIENTE ES VALIDADO finnnnn, PROPIETARIO GUARDAR INMUEBLE");
+        //console.log("VEMOS SI EL CLIENTE ES VALIDADO iniciooo, PROPIETARIO GUARDAR INMUEBLE");
+        //console.log(req.inversor_autenticado);
+        //console.log("VEMOS SI EL CLIENTE ES VALIDADO finnnnn, PROPIETARIO GUARDAR INMUEBLE");
 
         // ------------------------------------------------------
         //var ci_propietario = req.user.ci_propietario; // alfa estaba anteriormente
@@ -1042,8 +1042,8 @@ controladorCliInversor.cambiarClavesAcceso = async (req, res) => {
         //var nue_clave_2 = req.body.nue_clave_2; // no es necesario ya que es el mismo que nue_clave_1 que ya fue verificado en logica de cliente propietario
 
         // ------- Para verificación -------
-        console.log("los datos enviados al servidor para las re-claves del propietario");
-        console.log(req.body);
+        //console.log("los datos enviados al servidor para las re-claves del propietario");
+        //console.log(req.body);
 
         var registro_inversionista = await indice_propietario.findOne({
             usuario_propietario: act_usuario,
@@ -1107,6 +1107,8 @@ controladorCliInversor.cambiarClavesAcceso = async (req, res) => {
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+/*
+// ORIGINALMENTE ESTE CODIGO NO DESTRUYE LAS SESSIONES CREADAS CON COOKIES EN LA BASE DE DATOS DE MONGODB ATLAS, CUANDO SE LE DA LA OPCION DESDE NUESTRA APP WEB DE "CERRAR SESION"
 
 controladorCliInversor.cerrarInversor = async (req, res) => {
     //  viene de la RUTA  GET   '/ventana/inversor/cerrar'
@@ -1116,6 +1118,29 @@ controladorCliInversor.cerrarInversor = async (req, res) => {
         res.redirect("/"); // funciona, renderiza la ventana de inicio y la url del navegador se ve con el correcto "/" de inicio del sistema publico
     } catch (error) {
         console.log(error);
+    }
+};
+*/
+
+controladorCliInversor.cerrarInversor = async (req, res) => {
+    try {
+        // "destroy" Destruye la sesión actual de la base de datos de mongodb atlas
+        await new Promise((resolve, reject) => {
+            req.session.destroy((err) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            });
+        });
+
+        req.logout(); // para BORRAR la sesion del CLIENTE
+
+        res.redirect("/"); // funciona, renderiza la ventana de inicio y la url del navegador se ve con el correcto "/" de inicio del sistema
+    } catch (err) {
+        console.error("Error al cerrar sesión:", err);
+        // Maneja el error de acuerdo a tus necesidades
     }
 };
 

@@ -1177,8 +1177,8 @@ async function aux_inmueble_segundero(aux_paquete_datos) {
         };
 
         // ------- Para verificación -------
-        console.log("el retorno de propietaio coño");
-        console.log(resultados);
+        //console.log("el retorno de propietaio aux_inmueble_segundero");
+        //console.log(resultados);
 
         return resultados;
     } catch (error) {

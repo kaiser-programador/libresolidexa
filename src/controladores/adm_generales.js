@@ -491,11 +491,13 @@ controladorAdministradorGeneral.subirImagenEmpresa = async (req, res) => {
         // extraemos la direccion donde se encuentra temporalmente la imagen (carpeta temporal) y la guardamos en la constante "direccionTemporalImagen"
         const direccionTemporalImagen = req.file.path; // es "path" (no pache, la que requerimos al inicio), esta es la propiedad propia de "file"
 
+        /*
         console.log(
             "VEMOS INICIO EL req.file.path PARA VER LA DIRECCION ACTUAL DONDE ESTA GUARDADA LA IMAGEN TEMPORALMENTE"
         );
         console.log(direccionTemporalImagen);
         console.log("VEMOS FIN");
+        */
 
         // para validar la imagen, que lo que se esta subiendo sea en verdad un archivo de imagen
         const tipo_archivo_a = req.file.mimetype.toLowerCase(); // en minuscula
@@ -674,12 +676,12 @@ controladorAdministradorGeneral.subirImagenEmpresa = async (req, res) => {
                     // ESPERAMOS QUE SUBA LA IMAGEN
                     await uploadBytes(storageRef, data);
 
-                    console.log("Archivo subido con éxito a Firebase Storage");
+                    //console.log("Archivo subido con éxito a Firebase Storage");
 
                     // Obtiene la URL de descarga pública de la imagen
                     const url_imagen = await getDownloadURL(storageRef);
 
-                    console.log("URL de descarga pública:", url_imagen);
+                    //console.log("URL de descarga pública:", url_imagen);
 
                     //--------------------------------------------------------------
                     // despues de subir la imagen a firebase, eliminamos el archivo de la carpeta "temporal" donde se encuentra alamacenado temporalmente
@@ -877,7 +879,7 @@ controladorAdministradorGeneral.eliminarImagen = async (req, res) => {
                     await deleteObject(desertRef);
 
                     // Archivo eliminado con éxito
-                    console.log("Archivo eliminado DE FIREBASE con éxito");
+                    //console.log("Archivo eliminado DE FIREBASE con éxito");
 
                     //--------------------------------------------------
 
@@ -926,7 +928,7 @@ controladorAdministradorGeneral.eliminarImagen = async (req, res) => {
                     await deleteObject(desertRef);
 
                     // Archivo eliminado con éxito
-                    console.log("Archivo eliminado DE FIREBASE con éxito");
+                    //console.log("Archivo eliminado DE FIREBASE con éxito");
 
                     //--------------------------------------------------
 
@@ -1004,7 +1006,7 @@ controladorAdministradorGeneral.eliminarImagen = async (req, res) => {
                                 await deleteObject(desertRef);
 
                                 // Archivo eliminado con éxito
-                                console.log("Archivo eliminado DE FIREBASE con éxito");
+                                //console.log("Archivo eliminado DE FIREBASE con éxito");
 
                                 //--------------------------------------------------
 
@@ -2473,11 +2475,11 @@ controladorAdministradorGeneral.guardarDatosPagosPropietario = async (req, res) 
         var objeto_convertido = JSON.parse(req.body.contenedor);
 
         // ------- Para verificación -------
-        console.log("el objeto convertido es:");
-        console.log(objeto_convertido);
+        //console.log("el objeto convertido es:");
+        //console.log(objeto_convertido);
         // ------- Para verificación -------
-        console.log("PAGOS MENSUALES es:");
-        console.log(objeto_convertido.propietario_pagos);
+        //console.log("PAGOS MENSUALES es:");
+        //console.log(objeto_convertido.propietario_pagos);
 
         const ci_propietario = objeto_convertido.ci_propietario;
         const tipo_guardado = req.params.tipo_guardado;

@@ -609,6 +609,7 @@ $("#madre_visitas").on("click", ".orden_tabla_visitas", function () {
     let n_filas = $(".ref_fila_visita").length;
     var vemos = $(this).attr("data-id"); // menor a mayor   o    mayor a menor
 
+    /*
     let uno = 30;
     let dos = 6;
 
@@ -626,6 +627,7 @@ $("#madre_visitas").on("click", ".orden_tabla_visitas", function () {
     } else {
         console.log("6 string es mayor que 30 string");
     }
+    */
 
     if (n_filas > 1) {
         var array_valores = [];
@@ -1596,8 +1598,8 @@ $("#id_guardar_tabla_preguntas").click(function (e) {
         };
 
         // ------- Para verificación -------
-        console.log("el paquete de datos a envia");
-        console.log(paqueteDatos);
+        //console.log("el paquete de datos a envia");
+        //console.log(paqueteDatos);
 
         $.ajax({
             type: "POST",

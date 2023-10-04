@@ -45,7 +45,7 @@ controladorPropietario.guardarDatosInversor = async (req, res) => {
     try {
         var inversor_ci = req.body.inversor_ci;
         // ------- Para verificación -------
-        console.log("el ci del inversor es: " + inversor_ci);
+        //console.log("el ci del inversor es: " + inversor_ci);
 
         var registro_inversor = await indice_propietario.findOne({ ci_propietario: inversor_ci });
         if (registro_inversor) {
@@ -128,8 +128,8 @@ controladorPropietario.renderizarVentanaPropietario = async (req, res) => {
             info_propietario.contenido_propietario = contenido_propietario;
             // ------- Para verificación -------
 
-            console.log("los datos para renderizar DATOS DEL PROPIETARIO");
-            console.log(info_propietario);
+            //console.log("los datos para renderizar DATOS DEL PROPIETARIO");
+            //console.log(info_propietario);
 
             res.render("adm_propietario", info_propietario);
         }
@@ -141,8 +141,8 @@ controladorPropietario.renderizarVentanaPropietario = async (req, res) => {
             info_propietario.informacion = contenido_propietario;
             // ------- Para verificación -------
 
-            console.log("los datos para renderizar la DESCRIPCION DEL PROYECTO");
-            console.log(info_propietario);
+            //console.log("los datos para renderizar la DESCRIPCION DEL PROYECTO");
+            //console.log(info_propietario);
 
             res.render("adm_propietario", info_propietario);
         }
@@ -291,8 +291,8 @@ controladorPropietario.renderizarVentanaPropietario = async (req, res) => {
             info_propietario.contenido_propietario = contenido_propietario;
             // ------- Para verificación -------
 
-            console.log("los datos para renderizar PROPIETARIO");
-            console.log(info_propietario);
+            //console.log("los datos para renderizar PROPIETARIO");
+            //console.log(info_propietario);
 
             res.render("adm_propietario", info_propietario);
         }
@@ -303,8 +303,8 @@ controladorPropietario.renderizarVentanaPropietario = async (req, res) => {
             info_propietario.contenido_propietario = contenido_propietario;
             // ------- Para verificación -------
 
-            console.log("los datos para renderizar PROPIETARIO");
-            console.log(info_propietario);
+            //console.log("los datos para renderizar PROPIETARIO");
+            //console.log(info_propietario);
 
             res.render("adm_propietario", info_propietario);
         }
@@ -313,8 +313,8 @@ controladorPropietario.renderizarVentanaPropietario = async (req, res) => {
             info_propietario.eliminar_propietario = true; // para pestaña y ventana apropiada para proyecto
             // ------- Para verificación -------
 
-            console.log("los datos para renderizar PROPIETARIO");
-            console.log(info_propietario);
+            //console.log("los datos para renderizar PROPIETARIO");
+            //console.log(info_propietario);
 
             res.render("adm_propietario", info_propietario);
         }
@@ -621,8 +621,8 @@ controladorPropietario.nuevasClavesInversor = async (req, res) => {
     //  viene de la RUTA  POST   '/laapirest/inversor/nuevas_claves'
     try {
         // ------- Para verificación -------
-        console.log("los datos del body para re-claves del inversor");
-        console.log(req.body);
+        //console.log("los datos del body para re-claves del inversor");
+        //console.log(req.body);
 
         var usuario_maestro = req.body.usuario_maestro;
         var clave_maestro = req.body.clave_maestro;
@@ -661,8 +661,8 @@ controladorPropietario.nuevasClavesInversor = async (req, res) => {
                     let clave = dia + mes + year; // concatenamos
 
                     // ------- Para verificación -------
-                    console.log("vemos la contraseña diaMesAño ej/ 05011988");
-                    console.log(clave);
+                    //console.log("vemos la contraseña diaMesAño ej/ 05011988");
+                    //console.log(clave);
 
                     registro_inversor.usuario_propietario = usuario;
                     // antes encriptarlo para ser guardado
@@ -672,8 +672,8 @@ controladorPropietario.nuevasClavesInversor = async (req, res) => {
                     //registro_inversor.save();
 
                     // ------- Para verificación -------
-                    console.log("los nuevos reclaves del propietario es:");
-                    console.log(usuario + "  " + clave);
+                    //console.log("los nuevos reclaves del propietario es:");
+                    //console.log(usuario + "  " + clave);
 
                     res.json({
                         mensaje: "exito",

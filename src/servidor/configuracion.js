@@ -20,6 +20,7 @@ const sesion = require("express-session");
 const pasaporte = require("passport");
 
 //------------------------------------------------------
+// para MongoStore. Para que la sesion de usuario se almacene en el store de la base de datos y no en la memoria del servidor (render.com) donde esta almacenado al app web
 const mongoose = require("mongoose");
 // para utilizar connect-mongo como almacenamiento de sesiones
 // el (sesion) es el sesion de: const sesion = require("express-session");
@@ -107,7 +108,7 @@ module.exports = function (servidorConfiguraciones) {
     servidorConfiguraciones.use(
         sesion({
             secret: "misecretoapp",
-            resave: true,
+            resave: false, // antes era "true"
             saveUninitialized: false, // "false" al parecer para que no exija volver a introducir usuario y contraseña nuevamente.
 
             // para utilizar connect-mongo como almacenamiento de sesiones, asi no utilizamos la memoria del servidor.

@@ -50,8 +50,8 @@ controladorAdmAdministrador.renderizarVentanaAdministrador = async (req, res) =>
             }
         );
 
-        if(registro_cabezera){
-            url_cabezera=registro_cabezera.url;
+        if (registro_cabezera) {
+            url_cabezera = registro_cabezera.url;
         }
 
         info_administrador.url_cabezera = url_cabezera;
@@ -822,6 +822,9 @@ async function numeros_administrador() {
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+/*
+// ORIGINALMENTE ESTE CODIGO NO DESTRUYE LAS SESSIONES CREADAS CON COOKIES EN LA BASE DE DATOS DE MONGODB ATLAS, CUANDO SE LE DA LA OPCION DESDE NUESTRA APP WEB DE "CERRAR SESION"
+
 controladorAdmAdministrador.cerrarAdministrador = async (req, res) => {
     //  viene de la RUTA  GET   '/laapirest/administrador/accion/cerrar'
     try {
@@ -832,6 +835,31 @@ controladorAdmAdministrador.cerrarAdministrador = async (req, res) => {
         console.log(error);
     }
 };
+*/
+controladorAdmAdministrador.cerrarAdministrador = async (req, res) => {
+    //  viene de la RUTA  GET   '/laapirest/administrador/accion/cerrar'
+
+    try {
+        // "destroy" Destruye la sesión actual de la base de datos de mongodb atlas
+        await new Promise((resolve, reject) => {
+            req.session.destroy((err) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            });
+        });
+
+        req.logout(); // para BORRAR la sesion del ADMINISTRADOR
+        // res.render('acceso');  // funciona renderiza la ventana de inicio, pero en la url del navegador se queda con "/laapirest/administrador/cerrar"
+        res.redirect("/laapirest"); // funciona, renderiza la ventana de inicio y la url del navegador se ve con el correcto "/" de inicio del sistema
+    } catch (err) {
+        console.error("Error al cerrar sesión:", err);
+        // Maneja el error de acuerdo a tus necesidades
+    }
+};
+
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 controladorAdmAdministrador.cambiarClaves = async (req, res) => {
@@ -893,7 +921,7 @@ controladorAdmAdministrador.cambiarClaves = async (req, res) => {
                                 exito: "otro_usuario",
                             });
                         } else {
-                            console.log("vamos a camiar las claves");
+                            //console.log("vamos a cambiar las claves");
                             registro_administrador.ad_usuario = usuario_nuevo;
                             //registro_administrador.ad_clave = clave_nuevo_1; // podria ser tambien clave_nuevo_2
 
@@ -1602,6 +1630,7 @@ controladorAdmAdministrador.borrarHistorial = async (req, res) => {
                 if (acciones_eliminar.length > 0) {
                     await indiceHistorial.deleteMany({ fecha_accion: { $lte: fecha_referencia } }); // borramos TODOS (usando deleteMany) las acciones del historial que cumplan con la condicion de fecha
 
+                    /*
                     for (let n = 0; n < acciones_eliminar.length; n++) {
                         console.log(
                             "la fecha " +
@@ -1611,6 +1640,7 @@ controladorAdmAdministrador.borrarHistorial = async (req, res) => {
                                 " es menor o igual que la fecha de referencia"
                         );
                     }
+                    */
 
                     exito = "si";
                     mensaje =

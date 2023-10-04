@@ -315,8 +315,8 @@ $(document).ready(function () {
                     let total_retor_y_alq = actualTotalRx;
 
                     //--------------- Verificacion ----------------
-                    console.log("vemossss total_retor_y_alq");
-                    console.log(total_retor_y_alq);
+                    //console.log("vemossss total_retor_y_alq");
+                    //console.log(total_retor_y_alq);
                     //---------------------------------------------
 
                     let string_total_re_y_al = total_retor_y_alq.toString();

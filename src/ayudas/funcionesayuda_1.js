@@ -28,8 +28,8 @@ const funcionesAyuda_1 = {};
 // VERIFICADOR TERRENO BLOQUEADO
 funcionesAyuda_1.verificadorTerrenoBloqueado = async function (codigo_terreno) {
     // ------- Para verificación -------
-    console.log("el codigo del terreno para ver si esta bloquado");
-    console.log(codigo_terreno);
+    //console.log("el codigo del terreno para ver si esta bloquado");
+    //console.log(codigo_terreno);
     var acceso_terreno = await indiceTerreno.findOne(
         { codigo_terreno: codigo_terreno },
         { acceso_bloqueado: 1 }

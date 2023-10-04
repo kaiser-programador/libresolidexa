@@ -1298,14 +1298,14 @@ async function proyecto_empleos(codigo_proyecto) {
             let py_dfb = numero_punto_coma(sus_indirectos.toFixed(0));
 
             //--------------- Verificacion ----------------
-            console.log("/py_nfp/ " + py_nfp);
-            console.log("/py_dfp/ " + py_dfp);
-            console.log("/nom_empre/ " + nom_empre);
-            console.log("/py_inm_nfe/ " + py_inm_nfe);
-            console.log("/py_dfe/ " + py_dfe);
-            console.log("/nom_empre/ " + nom_empre);
-            console.log("/py_inm_nfb/ " + py_inm_nfb);
-            console.log("/py_dfb/ " + py_dfb);
+            //console.log("/py_nfp/ " + py_nfp);
+            //console.log("/py_dfp/ " + py_dfp);
+            //console.log("/nom_empre/ " + nom_empre);
+            //console.log("/py_inm_nfe/ " + py_inm_nfe);
+            //console.log("/py_dfe/ " + py_dfe);
+            //console.log("/nom_empre/ " + nom_empre);
+            //console.log("/py_inm_nfb/ " + py_inm_nfb);
+            //console.log("/py_dfb/ " + py_dfb);
             //---------------------------------------------
 
             // "replace" reemplaza solo la primera coincidencia.
@@ -1481,8 +1481,8 @@ async function proyecto_requerimientos(codigo_proyecto) {
                 }
 
                 //--------------- Verificacion ----------------
-                console.log("LOS PUTOS DOC DE REQUERIMIENTOS");
-                console.log(info_requerimientos);
+                //console.log("LOS PUTOS DOC DE REQUERIMIENTOS");
+                //console.log(info_requerimientos);
                 //---------------------------------------------
 
                 //--------------------------------------------

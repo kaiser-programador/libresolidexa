@@ -42,7 +42,10 @@ validador.validar_adm = async (req, res, next) => {
 
             // CON ESTO SE GARANTIZA QUE PARA ACCEDER A LAS URL DE ADMINISTRADOR SE DEBE HACER DESDE LA CUENTA DE ADMINISTRADOR ACTIVO
 
-            if (registroAdministrador.estado_administrador == "activo" && estado_navegante == "activo") {
+            if (
+                registroAdministrador.estado_administrador == "activo" &&
+                estado_navegante == "activo"
+            ) {
                 // ------- Para verificación -------
                 //console.log("ESTA VALIDADO EL ADMINISTRADOR INGRESANTE");
                 return next(); // significa que se continuara con el codigo que tenga a continuacion de el...
@@ -50,6 +53,8 @@ validador.validar_adm = async (req, res, next) => {
             } else {
                 //console.log("El usuario INTENTA INGRESAR A URL DE ADMINISTRADOR CON CUENTA FALSA 1");
                 res.write("<h1>SU ACCESO A SISTEMA ADMINISTRATIVO A SIDO DENEGADO</h1>"); // mensaje que sera mostrado en la ventana del navegador
+                // mensaje que sera mostrado en la ventana del navegador
+
                 res.end(); // es para terminar la respuesta para que el navegador no se quede en espera de carga
             }
         } else {
@@ -103,7 +108,10 @@ validador.validar_cli_2 = (req, res, next) => {
             return next(); // significa que se continuara con el codigo que tenga a continuacion de el...
             //next(); // OJO sin usar "return" NO FUNCIONARIA
         } else {
-            res.write("<h1>SU ACCESO A SISTEMA CLIENTE PROPIETARIO A SIDO DENEGADO</h1>"); // mensaje que sera mostrado en la ventana del navegador
+            // mensaje que sera mostrado en la ventana del navegador
+            res.write(
+                "<h1>ACCESO DENEGADO<br>Desde cuenta de ADMINISTRADOR no puede ingresar a direcciones de CLIENTE, primero deber&aacute; cerrar sesi&oacute;n como administrador.</h1>"
+            );
             res.end(); // es para terminar la respuesta para que el navegador no se quede en espera de carga
         }
     } else {

@@ -11,7 +11,7 @@ $("#guardar_datos_formulario_inmueble").on("submit", function (e) {
 
     var codigoInmueble = $("#guardar_datos_formulario_inmueble").attr("data-id");
 
-    console.log(codigoInmueble);
+    //console.log(codigoInmueble);
 
     $.ajax({
         type: "post",

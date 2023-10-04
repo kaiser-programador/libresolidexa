@@ -8,8 +8,8 @@ const ayudasHandlebars = {};
 ayudasHandlebars.imagenTipoInmueble = function (tipoImueble) {
 
     /****** Para verificación **********/
-    console.log('tipo de inmueble recibido');
-    console.log(tipoImueble);
+    //console.log('tipo de inmueble recibido');
+    //console.log(tipoImueble);
 
     if (tipoImueble === 'Departamento') {
         tipoImuebleRespuesta = 'departamento.png';

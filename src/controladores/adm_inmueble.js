@@ -200,8 +200,8 @@ controladorAdmInmueble.renderizarVentanaInmueble = async (req, res) => {
                 info_inmueble.documentos_inmueble = true;
                 info_inmueble.contenido_inmueble = contenido_inmueble;
                 // ------- Para verificación -------
-                console.log("los datos de documentos del inmueble");
-                console.log(info_inmueble);
+                //console.log("los datos de documentos del inmueble");
+                //console.log(info_inmueble);
                 res.render("adm_inmueble", info_inmueble);
             }
 
@@ -220,11 +220,11 @@ controladorAdmInmueble.renderizarVentanaInmueble = async (req, res) => {
                 info_inmueble.contenido_propietario = contenido_inmueble;
 
                 // ------- Para verificación -------
-                console.log("informacion completa PROPIETARIO");
-                console.log(info_inmueble);
+                //console.log("informacion completa PROPIETARIO");
+                //console.log(info_inmueble);
                 // ------- Para verificación -------
-                console.log("informacion completa pagos_mensuales");
-                console.log(info_inmueble.contenido_propietario.propietario_pagos.pagos_mensuales);
+                //console.log("informacion completa pagos_mensuales");
+                //console.log(info_inmueble.contenido_propietario.propietario_pagos.pagos_mensuales);
 
                 res.render("adm_inmueble", info_inmueble);
             }
@@ -234,8 +234,8 @@ controladorAdmInmueble.renderizarVentanaInmueble = async (req, res) => {
                 info_inmueble.pagos_inmueble = true;
                 info_inmueble.contenido_propietario = contenido_inmueble;
                 // ------- Para verificación -------
-                console.log("los datos de PAGOS inmueble");
-                console.log(info_inmueble);
+                //console.log("los datos de PAGOS inmueble");
+                //console.log(info_inmueble);
                 res.render("adm_inmueble", info_inmueble);
             }
 

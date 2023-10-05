@@ -1,8 +1,12 @@
 // TODO LO REFERENTE A LA PARTE DE TERRENO PARA ALBERGAR PROPUESTAS DE PROYECTOS
-const pache = require("path");
-const fs = require("fs-extra");
+//const pache = require("path");
+//const fs = require("fs-extra");
+
 //const fileType = require("file-type");
 //const moment = require("moment");
+
+const { getStorage, ref, deleteObject } = require("firebase/storage");
+
 const { codigoAlfanumericoTerreno } = require("../ayudas/ayudaslibreria");
 
 const {
@@ -113,7 +117,7 @@ controladorAdmTerreno.renderizarVentanaTerreno = async (req, res) => {
             // para la url de la cabezera
             var url_cabezera = ""; // vacio por defecto
             const registro_cabezera = await indiceImagenesSistema.findOne(
-                { tipo_imagen: "cabezera_terreno" },
+                { tipo_imagen: "cabecera_terreno" },
                 {
                     url: 1,
                     _id: 0,
@@ -820,14 +824,43 @@ async function eliminadorImagenesTerreno(codigo_terreno) {
             codigo_terreno: codigo_terreno, // codigo_terreno esta OK
         });
 
+        const storage = getStorage();
+
         if (registroImagenesTerreno) {
+
+
             // eliminamos los ARCHIVOS IMAGEN uno por uno
             for (let i = 0; i < registroImagenesTerreno.length; i++) {
+
+                /*
                 let imagenNombreExtension =
                     registroImagenesTerreno[i].codigo_imagen +
                     registroImagenesTerreno[i].extension_imagen;
                 // eliminamos el ARCHIVO IMAGEN DE LA CARPETA DONDE ESTA GUARDADA
                 await fs.unlink(pache.resolve("./src/publico/subido/" + imagenNombreExtension)); // "+" es para concatenar
+                */
+
+                //--------------------------------------------------
+
+                //const storage = getStorage();
+
+                var nombre_y_ext = registroImagenesTerreno[i].codigo_imagen +
+                    registroImagenesTerreno[i].extension_imagen;
+
+                // para encontrar en la carpeta "subido" en firebase con el nombre y la extension de la imagen incluida
+                var direccionActualImagen = "subido/" + nombre_y_ext;
+
+                // Crear una referencia al archivo que se eliminará
+                var desertRef = ref(storage, direccionActualImagen);
+
+                // Eliminar el archivo y esperar la promesa
+                await deleteObject(desertRef);
+
+                // Archivo eliminado con éxito
+                //console.log("Archivo eliminado DE FIREBASE con éxito");
+
+                //--------------------------------------------------
+
             }
             // luego de eliminar todos los ARCHIVOS IMAGEN, procedemos a ELIMINARLO DE LA BASE DE DATOS
             // await indiceImagenesTerreno.remove({ codigo_terreno: codigo_terreno }); // no usamos remove para no tener problemas con su caducidad
@@ -837,11 +870,36 @@ async function eliminadorImagenesTerreno(codigo_terreno) {
         if (registroImagenesProyecto) {
             // eliminamos los ARCHIVOS IMAGEN uno por uno
             for (let i = 0; i < registroImagenesProyecto.length; i++) {
+
+                /*
                 let imagenNombreExtension =
                     registroImagenesProyecto[i].codigo_imagen +
                     registroImagenesProyecto[i].extension_imagen;
                 // eliminamos el ARCHIVO IMAGEN DE LA CARPETA DONDE ESTA GUARDADA
                 await fs.unlink(pache.resolve("./src/publico/subido/" + imagenNombreExtension)); // "+" es para concatenar
+                */
+
+                //--------------------------------------------------
+
+                //const storage = getStorage();
+
+                var nombre_y_ext = registroImagenesProyecto[i].codigo_imagen +
+                registroImagenesProyecto[i].extension_imagen;
+
+                // para encontrar en la carpeta "subido" en firebase con el nombre y la extension de la imagen incluida
+                var direccionActualImagen = "subido/" + nombre_y_ext;
+
+                // Crear una referencia al archivo que se eliminará
+                var desertRef = ref(storage, direccionActualImagen);
+
+                // Eliminar el archivo y esperar la promesa
+                await deleteObject(desertRef);
+
+                // Archivo eliminado con éxito
+                //console.log("Archivo eliminado DE FIREBASE con éxito");
+
+                //--------------------------------------------------
+
             }
 
             // await indiceImagenesProyecto.remove({ codigo_terreno: codigo_terreno }); // no usamos remove para no tener problemas con su caducidad
@@ -864,12 +922,39 @@ async function eliminadorDocumentosTerreno(codigo_terreno) {
         });
 
         if (registroDocumentosTerreno) {
+
+            const storage = getStorage();
+
             // eliminamos los ARCHIVOS DOCUMENTOS PDF uno por uno
             for (let i = 0; i < registroDocumentosTerreno.length; i++) {
+
+                /*
                 let documentoNombreExtension =
                     registroDocumentosTerreno[i].codigo_documento + ".pdf";
                 // eliminamos el ARCHIVO DOCUMENTO DE LA CARPETA DONDE ESTA GUARDADA
                 await fs.unlink(pache.resolve("./src/publico/subido/" + documentoNombreExtension)); // "+" es para concatenar
+                */
+
+                //--------------------------------------------------
+
+                //const storage = getStorage();
+
+                var nombre_y_ext = registroDocumentosTerreno[i].codigo_documento + ".pdf";
+
+                // para encontrar en la carpeta "subido" en firebase con el nombre y la extension de la imagen incluida
+                var direccionActualImagen = "subido/" + nombre_y_ext;
+
+                // Crear una referencia al archivo que se eliminará
+                var desertRef = ref(storage, direccionActualImagen);
+
+                // Eliminar el archivo y esperar la promesa
+                await deleteObject(desertRef);
+
+                // Archivo eliminado con éxito
+                //console.log("Archivo eliminado DE FIREBASE con éxito");
+
+                //--------------------------------------------------
+
             }
             // luego de eliminar todos los ARCHIVOS DOCUMENTO, procedemos a ELIMINARLO DE LA BASE DE DATOS
             // await indiceDocumentos.remove({ codigo_terreno: codigo_terreno });

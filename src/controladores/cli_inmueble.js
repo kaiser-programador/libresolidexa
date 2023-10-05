@@ -64,7 +64,7 @@ controladorCliInmueble.renderVentanaInmueble = async (req, res) => {
             // para la url de la cabezera
             var url_cabezera = ""; // vacio por defecto
             const registro_cabezera = await indiceImagenesSistema.findOne(
-                { tipo_imagen: "cabezera_inmueble" },
+                { tipo_imagen: "cabecera_inmueble" },
                 {
                     url: 1,
                     _id: 0,

@@ -22,11 +22,15 @@ const {
     datos_pagos_propietario,
     pie_pagina_adm,
 } = require("../ayudas/funcionesayuda_2");
-const pache = require("path");
 
-const fs = require("fs-extra");
+//const pache = require("path");
+
+//const fs = require("fs-extra");
+
 const { numero_punto_coma } = require("../ayudas/funcionesayuda_3");
 //const { Number } = require("mongoose");
+
+const { getStorage, ref, deleteObject } = require("firebase/storage");
 
 const controladorAdmInmueble = {};
 
@@ -140,7 +144,7 @@ controladorAdmInmueble.renderizarVentanaInmueble = async (req, res) => {
             // para la url de la cabezera
             var url_cabezera = ""; // vacio por defecto
             const registro_cabezera = await indiceImagenesSistema.findOne(
-                { tipo_imagen: "cabezera_inmueble" },
+                { tipo_imagen: "cabecera_inmueble" },
                 {
                     url: 1,
                     _id: 0,
@@ -844,6 +848,8 @@ controladorAdmInmueble.eliminar_propietario_inmueble = async (req, res) => {
             var acceso = await verificadorTerrenoBloqueado(registroInversion.codigo_terreno);
 
             if (acceso == "permitido") {
+                const storage = getStorage();
+
                 //--------------------------------------------------------
                 // ELIMINACION DE LOS DOCUMENTOS PRIVADOS DEL INMUEBLE QUE TIENE CON SU PROPIETARIO
 
@@ -856,12 +862,34 @@ controladorAdmInmueble.eliminar_propietario_inmueble = async (req, res) => {
                 if (registroDocumentosPrivados) {
                     // eliminamos los ARCHIVOS DOCUMENTOS PDF uno por uno (sean publicos o privados)
                     for (let i = 0; i < registroDocumentosPrivados.length; i++) {
+                        /*
                         let documentoNombreExtension =
                             registroDocumentosPrivados[i].codigo_documento + ".pdf";
                         // eliminamos el ARCHIVO DOCUMENTO DE LA CARPETA DONDE ESTA GUARDADA
                         await fs.unlink(
                             pache.resolve("./src/publico/subido/" + documentoNombreExtension)
                         ); // "+" es para concatenar
+                        */
+
+                        //--------------------------------------------------
+
+                        //const storage = getStorage();
+
+                        var nombre_y_ext = registroDocumentosPrivados[i].codigo_documento + ".pdf";
+
+                        // para encontrar en la carpeta "subido" en firebase con el nombre y la extension de la imagen incluida
+                        var direccionActualImagen = "subido/" + nombre_y_ext;
+
+                        // Crear una referencia al archivo que se eliminará
+                        var desertRef = ref(storage, direccionActualImagen);
+
+                        // Eliminar el archivo y esperar la promesa
+                        await deleteObject(desertRef);
+
+                        // Archivo eliminado con éxito
+                        //console.log("Archivo eliminado DE FIREBASE con éxito");
+
+                        //--------------------------------------------------
                     }
                     // luego de eliminar todos los ARCHIVOS DOCUMENTO, procedemos a ELIMINARLO DE LA BASE DE DATOS
                     await indiceDocumentos.deleteMany({
@@ -1164,12 +1192,37 @@ async function eliminadorDocumentosInmueble(codigo_inmueble) {
         });
 
         if (registroDocumentosInmueble.length > 0) {
+
+            const storage = getStorage();
+
             // eliminamos los ARCHIVOS DOCUMENTOS PDF uno por uno (sean publicos o privados del propietario dueño de este inmueble)
             for (let i = 0; i < registroDocumentosInmueble.length; i++) {
+                /*
                 let documentoNombreExtension =
                     registroDocumentosInmueble[i].codigo_documento + ".pdf";
                 // eliminamos el ARCHIVO DOCUMENTO DE LA CARPETA DONDE ESTA GUARDADA
                 await fs.unlink(pache.resolve("./src/publico/subido/" + documentoNombreExtension)); // "+" es para concatenar
+                */
+
+                //--------------------------------------------------
+
+                //const storage = getStorage();
+
+                var nombre_y_ext = registroDocumentosInmueble[i].codigo_documento + ".pdf";
+
+                // para encontrar en la carpeta "subido" en firebase con el nombre y la extension de la imagen incluida
+                var direccionActualImagen = "subido/" + nombre_y_ext;
+
+                // Crear una referencia al archivo que se eliminará
+                var desertRef = ref(storage, direccionActualImagen);
+
+                // Eliminar el archivo y esperar la promesa
+                await deleteObject(desertRef);
+
+                // Archivo eliminado con éxito
+                //console.log("Archivo eliminado DE FIREBASE con éxito");
+
+                //--------------------------------------------------
             }
             // luego de eliminar todos los ARCHIVOS DOCUMENTO, procedemos a ELIMINARLO DE LA BASE DE DATOS
             //await indiceDocumentos.remove({ codigo_inmueble: codigo_inmueble });

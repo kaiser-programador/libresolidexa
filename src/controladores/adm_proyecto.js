@@ -1,9 +1,11 @@
-const pache = require("path");
+//const pache = require("path");
 
 // se usa para mover la imagen (la imagen misma) de la carpeta "temporal" a la carpeta "subido"
 // tambien se usara su metodo "unlink" para eliminar archivos (como imagenes o pdf)
-const fs = require("fs-extra");
+//const fs = require("fs-extra");
 // import { rename, unlink } from 'fs-extra';
+
+const { getStorage, ref, deleteObject } = require("firebase/storage");
 
 const {
     codigoAlfanumericoProyecto,
@@ -144,7 +146,7 @@ controladorAdmProyecto.renderizarVentanaProyecto = async (req, res) => {
             // para la url de la cabezera
             var url_cabezera = ""; // vacio por defecto
             const registro_cabezera = await indiceImagenesSistema.findOne(
-                { tipo_imagen: "cabezera_proyecto" },
+                { tipo_imagen: "cabecera_proyecto" },
                 {
                     url: 1,
                     _id: 0,
@@ -1399,13 +1401,41 @@ async function eliminadorImagenesProyecto(codigo_proyecto) {
         });
 
         if (registroImagenesProyecto) {
+
+            const storage = getStorage();
+
             // eliminamos los ARCHIVOS IMAGEN uno por uno
             for (let i = 0; i < registroImagenesProyecto.length; i++) {
+
+                /*
                 let imagenNombreExtension =
                     registroImagenesProyecto[i].codigo_imagen +
                     registroImagenesProyecto[i].extension_imagen;
                 // eliminamos el ARCHIVO IMAGEN DE LA CARPETA DONDE ESTA GUARDADA
                 await fs.unlink(pache.resolve("./src/publico/subido/" + imagenNombreExtension)); // "+" es para concatenar
+                */
+
+                //--------------------------------------------------
+
+                //const storage = getStorage();
+
+                var nombre_y_ext = registroImagenesProyecto[i].codigo_imagen +
+                registroImagenesProyecto[i].extension_imagen;
+
+                // para encontrar en la carpeta "subido" en firebase con el nombre y la extension de la imagen incluida
+                var direccionActualImagen = "subido/" + nombre_y_ext;
+
+                // Crear una referencia al archivo que se eliminará
+                var desertRef = ref(storage, direccionActualImagen);
+
+                // Eliminar el archivo y esperar la promesa
+                await deleteObject(desertRef);
+
+                // Archivo eliminado con éxito
+                //console.log("Archivo eliminado DE FIREBASE con éxito");
+
+                //--------------------------------------------------
+
             }
             // luego de eliminar todos los ARCHIVOS IMAGEN, procedemos a ELIMINARLO DE LA BASE DE DATOS
             //await indiceImagenesProyecto.remove({ codigo_proyecto: codigo_proyecto });
@@ -1425,11 +1455,37 @@ async function eliminadorDocumentosProyecto(codigo_proyecto) {
         });
 
         if (registroDocumentosProyecto) {
+
+            const storage = getStorage();
+
             // eliminamos los ARCHIVOS DOCUMENTOS PDF uno por uno (sean publicos o privados)
             for (let i = 0; i < registroDocumentosProyecto.length; i++) {
+
+                /*
                 let documentoNombreExtension = registroDocumentosProyecto[i].codigo_documento + ".pdf";
                 // eliminamos el ARCHIVO DOCUMENTO DE LA CARPETA DONDE ESTA GUARDADA
                 await fs.unlink(pache.resolve("./src/publico/subido/" + documentoNombreExtension)); // "+" es para concatenar
+                */
+
+                //--------------------------------------------------
+
+                //const storage = getStorage();
+
+                var nombre_y_ext = registroDocumentosProyecto[i].codigo_documento + ".pdf";
+
+                // para encontrar en la carpeta "subido" en firebase con el nombre y la extension de la imagen incluida
+                var direccionActualImagen = "subido/" + nombre_y_ext;
+
+                // Crear una referencia al archivo que se eliminará
+                var desertRef = ref(storage, direccionActualImagen);
+
+                // Eliminar el archivo y esperar la promesa
+                await deleteObject(desertRef);
+
+                // Archivo eliminado con éxito
+                //console.log("Archivo eliminado DE FIREBASE con éxito");
+
+                //--------------------------------------------------
             }
             // luego de eliminar todos los ARCHIVOS DOCUMENTO, procedemos a ELIMINARLO DE LA BASE DE DATOS
             //await indiceDocumentos.remove({ codigo_proyecto: codigo_proyecto }); no usamos esto porque no deseamos tener problemas con la caducidad de remove

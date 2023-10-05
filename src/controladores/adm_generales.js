@@ -1682,7 +1682,6 @@ controladorAdministradorGeneral.subirDocumento = async (req, res) => {
                     const infoArchivo = await fileType.fromFile(direccionTemporal);
 
                     if (infoArchivo != undefined) {
-
                         // ej, nos devolvera un objeto con la siguiente informacion { ext: 'pdf', mime: 'application/pdf' } por tanto nos interezara solo el valor de su "mime"
                         const tipo_archivo_b = infoArchivo.mime.toLowerCase(); // en minuscula
 
@@ -1691,7 +1690,7 @@ controladorAdministradorGeneral.subirDocumento = async (req, res) => {
                             tipo_archivo_b === "application/pdf"
                         ) {
                             // "fs.rename" mueve un archivo del lugar de origen (direccionTemporal) a otro destino (direccionDestino)
-                            await fs.rename(direccionTemporal, direccionDestino);
+                            //await fs.rename(direccionTemporal, direccionDestino);
 
                             //--------------------------------------------------------------
                             // PARA SUBIR ARCHIVO A FIREBASE
@@ -1759,7 +1758,7 @@ controladorAdministradorGeneral.subirDocumento = async (req, res) => {
                                     codigo_documento,
                                     nombre_documento,
                                     codigo_inmueble, // codigo del inm al que pertenecera el docum
-                                    url:url_archivo,
+                                    url: url_archivo,
                                 });
                             } else {
                                 res.json({
@@ -1767,7 +1766,7 @@ controladorAdministradorGeneral.subirDocumento = async (req, res) => {
                                     codigo_documento,
                                     nombre_documento,
                                     clase_documento: req.body.clase_documento,
-                                    url:url_archivo,
+                                    url: url_archivo,
                                 });
                             }
                         } else {
@@ -1826,9 +1825,29 @@ controladorAdministradorGeneral.eliminarDocumento = async (req, res) => {
                 // si la documento pdf es encontrada en la base de datos
                 // entonces eliminamos el archivo documento pdf (la documento pdf misma) de la carpeta donde se encuentra guardada (carpeta "subido")
                 // "unlink" es un metodo de "fs" que elimina un archivo a partir de la direccion que se le de. Esta direccion sera aquella donde se encuentra guardada la documento pdf
-                const auxCodigoDocumento = codigo_documento + ".pdf";
+                //const auxCodigoDocumento = codigo_documento + ".pdf";
 
-                await fs.unlink(pache.resolve("./src/publico/subido/" + auxCodigoDocumento)); // "+" es para concatenar
+                //await fs.unlink(pache.resolve("./src/publico/subido/" + auxCodigoDocumento)); // "+" es para concatenar
+
+                //--------------------------------------------------
+
+                const storage = getStorage();
+
+                var nombre_y_ext = codigo_documento + ".pdf";
+
+                // para encontrar en la carpeta "subido" en firebase con el nombre y la extension de la imagen incluida
+                var direccionActualImagen = "subido/" + nombre_y_ext;
+
+                // Crear una referencia al archivo que se eliminará
+                const desertRef = ref(storage, direccionActualImagen);
+
+                // Eliminar el archivo y esperar la promesa
+                await deleteObject(desertRef);
+
+                // Archivo eliminado con éxito
+                //console.log("Archivo eliminado DE FIREBASE con éxito");
+
+                //--------------------------------------------------
 
                 // ahora eliminamos todos los datos (informacion que esta guardada en la base de datos) de la documento pdf
                 //await documentoEliminar.remove(); // funcionaba, pero eliminamos para no tener problemas con la caducidad de remove
@@ -2121,10 +2140,30 @@ controladorAdministradorGeneral.eliminarDocumentoEmpresaFunciona = async (req, r
             }
 
             // en "nombre_documento" se encuentra el tipo: "pdf || docx" (guardado asi para FUNCIONA EMPRESA)
-            const auxCodigoDocumento = codigo_documento + "." + extension;
+            //const auxCodigoDocumento = codigo_documento + "." + extension;
 
             // "unlink" es un metodo de "fs" que elimina un archivo a partir de la direccion que se le de. Esta direccion sera aquella donde se encuentra guardada la documento pdf o docx
-            await fs.unlink(pache.resolve("./src/publico/subido/" + auxCodigoDocumento)); // "+" es para concatenar
+            //await fs.unlink(pache.resolve("./src/publico/subido/" + auxCodigoDocumento)); // "+" es para concatenar
+
+            //--------------------------------------------------
+
+            const storage = getStorage();
+
+            var nombre_y_ext = codigo_documento + "." + extension;
+
+            // para encontrar en la carpeta "subido" en firebase con el nombre y la extension de la imagen incluida
+            var direccionActualImagen = "subido/" + nombre_y_ext;
+
+            // Crear una referencia al archivo que se eliminará
+            const desertRef = ref(storage, direccionActualImagen);
+
+            // Eliminar el archivo y esperar la promesa
+            await deleteObject(desertRef);
+
+            // Archivo eliminado con éxito
+            //console.log("Archivo eliminado DE FIREBASE con éxito");
+
+            //--------------------------------------------------
 
             // ahora eliminamos todos los datos (informacion que esta guardada en la base de datos) de la documento pdf
             //await documentoEliminar.remove(); // funciona, pero cambiamos porque dice que esta obsoleto

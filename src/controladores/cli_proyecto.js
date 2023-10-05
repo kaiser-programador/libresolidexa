@@ -60,7 +60,7 @@ controladorCliProyecto.renderVentanaProyecto = async (req, res) => {
             // para la url de la cabezera
             var url_cabezera = ""; // vacio por defecto
             const registro_cabezera = await indiceImagenesSistema.findOne(
-                { tipo_imagen: "cabezera_proyecto" },
+                { tipo_imagen: "cabecera_proyecto" },
                 {
                     url: 1,
                     _id: 0,

@@ -57,6 +57,9 @@ controladorCliEmpresa.comoFunciona = async (req, res) => {
 
         //----------------------------------------------------
 
+        // es_ninguno: true  // para las opciones de navegacion de la ventana en estado comprimido
+        info_funciona.es_ninguno = true;
+
         var pie_pagina = await pie_pagina_cli();
         info_funciona.pie_pagina_cli = pie_pagina;
         info_funciona.ordenador_externo = false; // porque no existen cards que ordenar
@@ -243,6 +246,9 @@ controladorCliEmpresa.quienesSomos = async (req, res) => {
             info_somos.encabezado_texto = somos_encabezado.texto_somos;
         }
 
+        // es_ninguno: true  // para las opciones de navegacion de la ventana en estado comprimido
+        info_somos.es_ninguno = true;
+
         var pie_pagina = await pie_pagina_cli();
         info_somos.pie_pagina_cli = pie_pagina;
         info_somos.navegador_cliente = true;
@@ -374,6 +380,9 @@ controladorCliEmpresa.preguntasFrecuentes = async (req, res) => {
         if (req.inversor_autenticado) {
             info_preguntas.ci_propietario = req.user.ci_propietario;
         }
+
+        // es_ninguno: true  // para las opciones de navegacion de la ventana en estado comprimido
+        info_preguntas.es_ninguno = true;        
 
         var pie_pagina = await pie_pagina_cli();
         info_preguntas.pie_pagina_cli = pie_pagina;

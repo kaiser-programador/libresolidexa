@@ -340,6 +340,7 @@ async function terreno_imagenes(codigo_terreno) {
                 codigo_imagen: 1,
                 extension_imagen: 1,
                 imagen_principal: 1, // true || false
+                url: 1,
                 _id: 0,
             }
         );
@@ -364,6 +365,7 @@ async function terreno_imagenes(codigo_terreno) {
                         codigo_imagen: aux_objeto[i].codigo_imagen,
                         extension_imagen: aux_objeto[i].extension_imagen,
                         codigo_terreno,
+                        url:aux_objeto[i].url,
                     };
                 } else {
                     posi_e = posi_e + 1;
@@ -372,6 +374,7 @@ async function terreno_imagenes(codigo_terreno) {
                         codigo_imagen: aux_objeto[i].codigo_imagen,
                         extension_imagen: aux_objeto[i].extension_imagen,
                         codigo_terreno,
+                        url:aux_objeto[i].url,
                     };
                 }
             }
@@ -396,6 +399,7 @@ async function terreno_documentos(codigo_terreno) {
                 nombre_documento: 1,
                 codigo_documento: 1,
                 clase_documento: 1,
+                url: 1,
                 _id: 0,
             }
         );

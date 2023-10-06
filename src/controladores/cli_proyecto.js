@@ -741,6 +741,7 @@ async function proyecto_descripcion(codigo_proyecto) {
                 var registro_documentos = await indiceDocumentos.find({
                     codigo_proyecto: codigo_proyecto,
                     clase_documento: "General",
+                    codigo_inmueble:"",
                 });
 
                 // por defecto con respectos a los documentos del inmueble
@@ -862,6 +863,7 @@ async function proyecto_garantias(codigo_proyecto) {
             var registro_documentos = await indiceDocumentos.find({
                 codigo_proyecto: codigo_proyecto,
                 clase_documento: "Garantía",
+                codigo_inmueble:"",
             });
 
             // por defecto con respectos a los documentos  de garantia del proyecto
@@ -1124,6 +1126,7 @@ async function proyecto_info_economico(codigo_proyecto) {
             var registro_documentos = await indiceDocumentos.find({
                 codigo_proyecto: codigo_proyecto,
                 clase_documento: "Económico",
+                codigo_inmueble:"",
             });
 
             var documentacion = []; // por defecto con respectos a los documentos  economico del proyecto
@@ -1869,6 +1872,7 @@ async function complementos_globales_py(codigo_proyecto) {
                 extension_imagen: 1,
                 parte_principal: 1,
                 parte_exclusiva: 1,
+                url:1,
                 _id: 0,
             }
         );

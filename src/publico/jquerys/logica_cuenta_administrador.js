@@ -744,7 +744,9 @@ $("#madre_visitas").on("click", ".orden_tabla_visitas", function () {
         // reconstruccion de la tabla ordenada
         for (let r = 0; r < n_filas; r++) {
             // "append" inserta contenido como hijo de ".tbody_filas_visitas" y al final
-            $(".tbody_filas_visitas").append(`<tr class="ref_fila_visita">` + array_html[r] + `</tr>`);
+            $(".tbody_filas_visitas").append(
+                `<tr class="ref_fila_visita">` + array_html[r] + `</tr>`
+            );
         }
 
         //---------------------------------------------------------
@@ -1563,6 +1565,7 @@ $(".cuerpo_filas_preguntas").on("click", ".preguntas_eliminar", function () {
     }
 });
 
+
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // para "GUARDAR TABLA DE COMO preguntas"
 $("#id_guardar_tabla_preguntas").click(function (e) {
@@ -1584,27 +1587,30 @@ $("#id_guardar_tabla_preguntas").click(function (e) {
         // significa que no existen campos vacios, mas al contrario existen campos llenos con informacion
 
         // almacenamos los valores de los inputs de la tabla
-        let array_pregunta = [];
-        let array_respuesta = [];
+        let array_pre_res = [];
 
         for (let j = 0; j < n_item; j++) {
-            array_pregunta[j] = $(".campo_pregunta_preguntas").eq(j).val();
-            array_respuesta[j] = $(".campo_respuesta_preguntas").eq(j).val();
+            let la_pregunta = $(".campo_pregunta_preguntas").eq(j).val();
+            let la_respuesta = $(".campo_respuesta_preguntas").eq(j).val();
+            array_pre_res[j] = [la_pregunta, la_respuesta];
         }
 
-        var paqueteDatos = {
-            array_pregunta,
-            array_respuesta,
-        };
+        //--------------- Verificacion ----------------
+        //console.log("LA TABLA ARRAY ANTES DEL JSON");
+        //console.log(array_pre_res);
+        //---------------------------------------------
 
-        // ------- Para verificación -------
-        //console.log("el paquete de datos a envia");
-        //console.log(paqueteDatos);
+        var aux_string = JSON.stringify(array_pre_res);
+
+        //--------------- Verificacion ----------------
+        //console.log("LA TABLA ARRAY DESPUES DEL JSON");
+        //console.log(aux_string);
+        //---------------------------------------------
 
         $.ajax({
             type: "POST",
             url: "/laapirest/administrador/accion/guardar_tabla_preguntas",
-            data: paqueteDatos,
+            data: { en_string: aux_string },
         }).done(function (respuestaServidor) {
             var tipoRespuesta = respuestaServidor.exito;
 
@@ -1971,7 +1977,9 @@ $("#madre_funciona").on("click", ".eliminar_video_funciona", function () {
 
                     if (n_videos > 0) {
                         for (let j = 0; j < n_videos; j++) {
-                            let codigo_funciona_j = $(".eliminar_video_funciona").eq(j).attr("data-id");
+                            let codigo_funciona_j = $(".eliminar_video_funciona")
+                                .eq(j)
+                                .attr("data-id");
                             if (codigo_funciona_j == codigo_funciona) {
                                 // eliminamos desde el contenedor del video funciona
                                 $(".video_funciona").eq(j).remove();

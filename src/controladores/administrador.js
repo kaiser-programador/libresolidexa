@@ -1786,35 +1786,22 @@ controladorAdmAdministrador.guardarTablaPreguntas = async (req, res) => {
 
     try {
         // ------- Para verificación -------
-        //console.log("TABLA DE PREGUNTAS FRECUENTES");
+        //console.log("los datos DEL BODY");
         //console.log(req.body);
 
-        for (var propiedad in req.body) {
-            let p_array_pregunta = propiedad.indexOf("array_pregunta");
-            let p_array_respuesta = propiedad.indexOf("array_respuesta");
-
-            if (p_array_pregunta != -1) {
-                var array_pregunta = req.body[propiedad];
-            }
-            if (p_array_respuesta != -1) {
-                var array_respuesta = req.body[propiedad];
-            }
-        }
+        // el array ya viene en string de ajax, aqui se lo convierte en objeto tipo array como debe ser
+        var array_tabla = JSON.parse(req.body.en_string);
 
         // ------- Para verificación -------
-        /*
-        console.log("el array pregunta");
-        console.log(array_pregunta);
-        console.log("el array respuesta");
-        console.log(array_respuesta);
-        */
+        //console.log("CONVIRTIENDO EL BODY PAQUETE DATOS EN OBJETO");
+        //console.log(array_tabla);
 
         var aux_array = [];
-        if (array_pregunta.length > 0 && array_respuesta.length > 0) {
-            for (let i = 0; i < array_pregunta.length; i++) {
+        if (array_tabla.length > 0) {
+            for (let i = 0; i < array_tabla.length; i++) {
                 aux_array[i] = {
-                    pregunta: array_pregunta[i],
-                    respuesta: array_respuesta[i],
+                    pregunta: array_tabla[i][0],
+                    respuesta: array_tabla[i][1],
                 };
             }
         }

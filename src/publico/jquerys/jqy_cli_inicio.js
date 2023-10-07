@@ -142,6 +142,7 @@ $(document).ready(function () {
                 let array_nombre = [];
                 let array_costo = [];
                 let array_color = [];
+                let array_borde = [];
 
                 for (let i = 0; i < n_filas_r; i++) {
                     array_nombre[i] = $("#contenedor_constructoras .cuerpo .nombre")
@@ -153,8 +154,10 @@ $(document).ready(function () {
                     if (i == 0) {
                         // si es la PRIMERA, (que pertenece a SOLIDEXA)
                         array_color[i] = "#46BFBD"; // CON COLOR
+                        array_borde[i] = "#028684"; // CON COLOR
                     } else {
                         array_color[i] = "#949FB1"; // COLOR GRIS
+                        array_borde[i] = "#727881"; // COLOR GRIS
                     }
                 }
 
@@ -166,6 +169,11 @@ $(document).ready(function () {
                                 label: "Costo construcción $us",
                                 data: array_costo,
                                 backgroundColor: array_color,
+                                ////////
+                                // Bordes y sombras:
+                                borderColor: array_borde, // Cambia los colores de los bordes de las barras
+                                borderWidth: 2, // 2 Ancho del borde de las barras
+                                ////////
                             },
                         ],
                         labels: array_nombre,
@@ -180,6 +188,16 @@ $(document).ready(function () {
                                     },
                                 },
                             ],
+
+                            //----
+                            // para ancho de la barras
+                            // Ajusta el porcentaje de ancho de las barras (por ejemplo, 0.7 para un 70%)
+                            xAxes: [
+                                {
+                                    barPercentage: 0.7,
+                                },
+                            ],
+                            //----
                         },
                     },
                 };
@@ -204,6 +222,11 @@ $(document).ready(function () {
                             label: "Plusvalía mercado",
                             data: [costo_construccion, plusvalia],
                             backgroundColor: ["#46BFBD", "#FDB45C"],
+                            ////////
+                            // Bordes y sombras:
+                            borderColor: ["#028684", "#e09c49"], // Cambia los colores de los bordes de las barras
+                            borderWidth: 2, // 2 Ancho del borde de las barras
+                            ////////
                         },
                     ],
                     labels: ["SOLIDEXA", "Plusvalía"],
@@ -218,6 +241,15 @@ $(document).ready(function () {
                                 },
                             },
                         ],
+                        //----
+                        // para ancho de la barras
+                        // Ajusta el porcentaje de ancho de las barras (por ejemplo, 0.7 para un 70%)
+                        xAxes: [
+                            {
+                                barPercentage: 0.5,
+                            },
+                        ],
+                        //----
                     },
                 },
             };
@@ -253,9 +285,12 @@ $(document).ready(function () {
                 let array_direccion = [];
                 let array_precios_mercado = []; // los precios de un inmueble llevado a igual superficie que el INMUEBLE de SOLIDEXA
                 let array_color = [];
+                let array_borde = [];
 
                 for (let i = 0; i < n_filas_r; i++) {
-                    array_direccion[i] = $("#contenedor_precios_mercado .cuerpo .direccion_comparativa")
+                    array_direccion[i] = $(
+                        "#contenedor_precios_mercado .cuerpo .direccion_comparativa"
+                    )
                         .eq(i)
                         .attr("data-direccion");
                     array_precios_mercado[i] = Number(
@@ -264,6 +299,7 @@ $(document).ready(function () {
                             .attr("data-convertido")
                     );
                     array_color[i] = "#949FB1"; // COLOR GRIS
+                    array_borde[i] = "#727881"; // COLOR GRIS
                 }
 
                 var precio_volterra = Number(
@@ -274,6 +310,7 @@ $(document).ready(function () {
                 array_direccion.unshift("Inmueble SOLIDEXA");
                 array_precios_mercado.unshift(precio_volterra);
                 array_color.unshift("#46BFBD"); // CON COLOR
+                array_borde.unshift("#028684"); // CON COLOR
 
                 var datos_precios = {
                     type: "bar",
@@ -283,6 +320,11 @@ $(document).ready(function () {
                                 label: "Precios venta $us",
                                 data: array_precios_mercado,
                                 backgroundColor: array_color,
+                                ////////
+                                // Bordes y sombras:
+                                borderColor: array_borde, // Cambia los colores de los bordes de las barras
+                                borderWidth: 2, // 2 Ancho del borde de las barras
+                                ////////
                             },
                         ],
                         labels: array_direccion,
@@ -297,6 +339,16 @@ $(document).ready(function () {
                                     },
                                 },
                             ],
+
+                            //----
+                            // para ancho de la barras
+                            // Ajusta el porcentaje de ancho de las barras (por ejemplo, 0.7 para un 70%)
+                            xAxes: [
+                                {
+                                    barPercentage: 0.7,
+                                },
+                            ],
+                            //----
                         },
                     },
                 };
@@ -318,6 +370,7 @@ $(document).ready(function () {
                 let array_nombre = [];
                 let array_costo = [];
                 let array_color = [];
+                let array_borde = [];
 
                 for (let i = 0; i < n_filas_r; i++) {
                     array_nombre[i] = $("#contenedor_constructoras .cuerpo .nombre")
@@ -329,8 +382,10 @@ $(document).ready(function () {
                     if (i == 0) {
                         // si es la PRIMERA, (que pertenece a SOLIDEXA)
                         array_color[i] = "#46BFBD"; // CON COLOR
+                        array_borde[i] = "#028684"; // CON COLOR
                     } else {
                         array_color[i] = "#949FB1"; // COLOR GRIS
+                        array_borde[i] = "#727881"; // COLOR GRIS
                     }
                 }
 
@@ -342,6 +397,11 @@ $(document).ready(function () {
                                 label: "Costo construcción $us",
                                 data: array_costo,
                                 backgroundColor: array_color,
+                                ////////
+                                // Bordes y sombras:
+                                borderColor: array_borde, // Cambia los colores de los bordes de las barras
+                                borderWidth: 2, // 2 Ancho del borde de las barras
+                                ////////
                             },
                         ],
                         labels: array_nombre,
@@ -356,6 +416,16 @@ $(document).ready(function () {
                                     },
                                 },
                             ],
+
+                            //----
+                            // para ancho de la barras
+                            // Ajusta el porcentaje de ancho de las barras (por ejemplo, 0.7 para un 70%)
+                            xAxes: [
+                                {
+                                    barPercentage: 0.7,
+                                },
+                            ],
+                            //----
                         },
                     },
                 };
@@ -380,6 +450,11 @@ $(document).ready(function () {
                             label: "Plusvalía mercado",
                             data: [pv_volterra, plusvalia],
                             backgroundColor: ["#46BFBD", "#FDB45C"],
+                            ////////
+                            // Bordes y sombras:
+                            borderColor: ["#028684", "#e09c49"], // Cambia los colores de los bordes de las barras
+                            borderWidth: 2, // 2 Ancho del borde de las barras
+                            ////////
                         },
                     ],
                     labels: ["SOLIDEXA", "Plusvalía"],
@@ -394,7 +469,28 @@ $(document).ready(function () {
                                 },
                             },
                         ],
+
+                        //----
+                        // para ancho de la barras
+                        // Ajusta el porcentaje de ancho de las barras (por ejemplo, 0.7 para un 70%)
+                        xAxes: [
+                            {
+                                barPercentage: 0.5,
+                            },
+                        ],
+                        //----
                     },
+
+                    //////////////
+                    layout: {
+                        padding: {
+                            left: 20,
+                            right: 20,
+                            top: 20,
+                            bottom: 20,
+                        },
+                    },
+                    //////////////
                 },
             };
 
@@ -485,7 +581,9 @@ $(document).ready(function () {
             var r_plusSum = Number($("#r_plusSum").attr("data-r_plusSum")); // $us/seg
 
             // la plusvalia del py o inm o la sumatoria de todos los inm del propietario de los inm de los que el es el dueño actual
-            var plusGeneranCompleta = Number($("#plusGeneranCompleta").attr("data-plusGeneranCompleta"));
+            var plusGeneranCompleta = Number(
+                $("#plusGeneranCompleta").attr("data-plusGeneranCompleta")
+            );
 
             // util solo para la pestaña RESUMEN de la cuenta del propietario que expresa la sumatoria total de todas las plusvalias de los inmuebles que ya estan construidos completamente y de los que el dueño presente es el propietario, esto para que el segundero segundo a segundo inluya este valor actualizado
             var plusvalia_construida = Number(
@@ -645,7 +743,9 @@ $(document).ready(function () {
                     }
                     //==========================================================
 
-                    let porcen_progreso = ((total_retor_y_alq / plusGeneranCompleta) * 100).toFixed(2); // con 2 decimales
+                    let porcen_progreso = ((total_retor_y_alq / plusGeneranCompleta) * 100).toFixed(
+                        2
+                    ); // con 2 decimales
                     let aux_string_progre = porcen_progreso + "%";
                     $("#ref_progreso_generandose").css("width", aux_string_progre);
                     //++++++++++++++++++++++++++++++
@@ -729,7 +829,6 @@ $(window).resize(function () {
 // para animacion de las cajas caidas de una en una
 
 function dim_ventana_inicio() {
-    
     //---------------------------------------------
     // para cambiar la "background-image" dependiendo de las diensiones de la ventana
 

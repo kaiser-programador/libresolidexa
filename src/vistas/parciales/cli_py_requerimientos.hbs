@@ -5,12 +5,12 @@
 
         <div class="row mt-5 cuadro_estandart py-3">
             <div class="col-12 d-flex">
-                <div class="mr-3 contenedor-detalle-icono">
+                <div class="d-none d-md-flex mr-3 contenedor-detalle-icono">
                     <i class="fas fa-exclamation-triangle"></i>
                 </div>
 
                 <div class="contenedor-detalle-texto">
-                    <h4 class="texto-resaltado">Importante</h4>
+                    <h4 class="texto-resaltado"><span class="icono_izq d-inline-block d-md-none"><i class="fas fa-exclamation-triangle"></i></span>Importante</h4>
                     {{! para mostrar el modelo y el manual de requerimiento }}
                     <p style="text-align: justify;">
                         Si usted cuenta con los requerimientos que necesita el presente proyecto, entonces
@@ -79,12 +79,12 @@
 
         <div class="row mt-5 cuadro_estandart py-3">
             <div class="col-12 d-flex">
-                <div class="mr-3 contenedor-detalle-icono">
+                <div class="d-none d-md-flex mr-3 contenedor-detalle-icono">
                     <i class="fas fa-clipboard-list"></i>
                 </div>
 
                 <div class="contenedor-detalle-texto">
-                    <h4 class="texto-resaltado">Requerimientos</h4>
+                    <h4 class="texto-resaltado"><span class="icono_izq d-inline-block d-md-none"><i class="fas fa-clipboard-list"></i></span>Requerimientos</h4>
                     <p class="escritura" style="text-align: justify;">
                         {{contenido_proyecto.nota_si_requerimientos}}
                     </p>

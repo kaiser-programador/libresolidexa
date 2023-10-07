@@ -3,12 +3,12 @@
 <div class="row mt-5 cuadro_estandart py-3">
 
     <div class="col-12 d-flex">
-        <div class="mr-3 contenedor-detalle-icono">
+        <div class="d-none d-md-flex mr-3 contenedor-detalle-icono">
             <i class="fas fa-file-invoice-dollar"></i>
         </div>
 
-        <div class="container-fluid contenedor-detalle-texto">
-            <h4 class="texto-resaltado">{{informacion.titulo_economico_inm}}</h4>
+        <div class="mx-md-4 contenedor-detalle-texto">
+            <h4 class="texto-resaltado"><span class="icono_izq d-inline-block d-md-none"><i class="fas fa-file-invoice-dollar"></i></span>{{informacion.titulo_economico_inm}}</h4>
             <p class="escritura texto-normal" style="text-align: justify;">
                 {{informacion.texto_economico_inm}}
             </p>
@@ -67,7 +67,7 @@
                 </div>
 
                 <div class="col-12">
-                    <div class="escritura">
+                    <div class="text-justify escritura">
                         {{informacion.nota_economico_inm}}
                     </div>
                 </div>
@@ -82,14 +82,14 @@
 <div class="row mt-5 cuadro_estandart py-3">
     <div class="col-12 d-flex">
 
-        <div class="mr-3 contenedor-detalle-icono">
+        <div class="d-none d-md-flex mr-3 contenedor-detalle-icono">
             <i class="fas fa-folder-open"></i>
         </div>
 
         <div class="contenedor-detalle-texto">
-            <h4 class="texto-resaltado">Documentos</h4>
+            <h4 class="texto-resaltado"><span class="icono_izq d-inline-block d-md-none"><i class="fas fa-folder-open"></i></span>Documentos</h4>
 
-            <div class="ml-4">
+            <div class="ml-md-4">
 
                 {{#each informacion.documentacion}}
                 <div class="mt-3">

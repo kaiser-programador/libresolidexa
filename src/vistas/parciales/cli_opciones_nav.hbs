@@ -190,14 +190,14 @@
                             {{/if}}
                         </a></li>
 
-                    {{#if global_py.estado_proyecto_construido}}
-                        {{#if global_py.existe_res_soc}}
-                            <li class="nav-item"><a
-                                    href="#"
-                                    class="nav-link aux_tabe pestana_navegador"
-                                    data-id="responsabilidad_social-tab"
-                                >Responsabilidad social</a></li>
-                        {{/if}}
+                    {{!-- global_py.existe_res_soc estaba dentro del #if: global_py.estado_proyecto_construido --}}
+
+                    {{#if global_py.existe_res_soc}}
+                        <li class="nav-item"><a
+                                href="#"
+                                class="nav-link aux_tabe pestana_navegador"
+                                data-id="responsabilidad_social-tab"
+                            >Responsabilidad social</a></li>
                     {{/if}}
                 </ul>
             </div>

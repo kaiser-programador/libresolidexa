@@ -596,7 +596,35 @@
     }
 }
 
+/* PARA LOS DECIMALES DEL SEGUNDERO */
 
+/* si es menor que 450px */
+@media screen and (max-width: 450px) {
+    #decimales_tot_ret_alq {
+        width: 75%;
+    }
+}
+
+/* si es mayor o igual que 450px hasta menor que 768 (768 no esta incluida) */
+@media screen and (min-width: 450px) and (max-width: 768px) {
+    #decimales_tot_ret_alq {
+        width: 60%;
+    }
+}
+
+/* si es mayor o igual que 768px hasta menor que 1200 (1200 no esta incluida) */
+@media screen and (min-width: 768px) and (max-width: 1200px) {
+    #decimales_tot_ret_alq {
+        width: 75%;
+    }
+}
+
+/* mayor o igual que 1200 */
+@media screen and (min-width: 1200px) {
+    #decimales_tot_ret_alq {
+        width: 50%;
+    }
+}
 
 /* .contenedor_somos_impar .textos_somos{
     padding-right: 2rem;

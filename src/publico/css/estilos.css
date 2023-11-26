@@ -422,8 +422,10 @@ footer {
     color: var(--color_fondo_principal) !important;
 }
 
-/* Para que las filas de las tablas esten intercaladas con colores */
-.tabla_caracteristicas tr:nth-child(even) {
+/* Para que las filas de las tablas SOLO LA PARTE DEL BODY DE LA TABLA esten intercaladas con colores */
+/* even: es para seleccionar las filas pares, mientras que "odd" es para seleccionar las impares*/
+/* .tabla_caracteristicas tr:nth-child(even) { */
+.tabla_caracteristicas tbody tr:nth-child(odd) {
     background: var(--color_fondo_principal);
 }
 

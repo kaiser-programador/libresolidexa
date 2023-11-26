@@ -451,8 +451,8 @@ controladorCliProyecto.renderVentanaProyecto = async (req, res) => {
                 info_proyecto_cli.responsabilidad_social = true;
 
                 // ------- Para verificación -------
-                //console.log("los datos a renderizar de responsabilidad social");
-                //console.log(info_proyecto_cli);
+                console.log("los datos a renderizar de responsabilidad social");
+                console.log(info_proyecto_cli);
 
                 res.render("cli_proyecto", info_proyecto_cli);
             }

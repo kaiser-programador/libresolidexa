@@ -107,6 +107,11 @@ body {
     background-position: center;
 }
 /* -------------------------------------------------------------*/
+.estilo_logo{
+    width: 150px;
+
+}
+/* -------------------------------------------------------------*/
 .card-footer {
     background-color: var(--color_fondo_secundario) !important;
 }

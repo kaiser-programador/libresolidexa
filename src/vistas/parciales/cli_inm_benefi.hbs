@@ -31,6 +31,132 @@
     <span class="plusvalia" data-plusvalia="{{informacion.plusvalia_sus}}"></span>
 </div>
 
+
+<div class="row mt-5 cuadro_estandart py-3">
+    <div class="col-12 d-flex">
+        <div class="d-none d-md-flex mr-3 contenedor-detalle-icono">
+            <i class="fas fa-gift"></i>
+        </div>
+
+        <div class="mx-md-4 contenedor-detalle-texto">
+
+            <h4 class="texto-resaltado"><span class="icono_izq d-inline-block d-md-none"><i class="fas fa-gift"></i></span>{{informacion.titulo_plusvalia_inm}}</h4>
+            <p class="escritura" style="text-align: justify;">
+                {{informacion.texto_plusvalia_inm}}
+            </p>
+
+            <div class="row mt-2" style="width: 100%;">
+                <div class="col-12 text-center">
+                    <h5 class="texto-link">Plusvalía del inmueble</h5>
+                    <div class="row texto-normal mb-3">
+                        <div class="col-12 col-md-6 text-center text-md-right">
+                            <span>
+                                Precio justo:
+                                <b>{{informacion.costo_volterra_render}} $us</b>
+                            </span>
+                        </div>
+                        <div class="col-12 col-md-6 text-center text-md-left">
+                            <span>
+                                Plusvalía regalo:
+                                <b>{{informacion.plusvalia_sus_render}} $us</b>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 d-flex justify-content-center mb-3">
+                    <div class="contendor_graf_plusvalia barra-deslizadora-mob" style="overflow: auto;">
+                        <div style="width: 40rem;">
+                            <canvas id="graficoPlusvalia"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 mt-4">
+                    <button
+                        class="btn btn-primary"
+                        data-toggle="collapse"
+                        data-target="#calculos_plusvalia"
+                        aria-expanded="false"
+                    >Cómo se calcula</button>
+
+                    <div class="collapse" id="calculos_plusvalia">
+                        <div class="my-3 p-3 borde_como_calcula">
+
+                            <div class="d-flex justify-content-center">
+                                <p class="texto-normal" style="text-align: justify;">Con los valores
+                                    calculados de $us/m<sup>2</sup>
+                                    (ver calculos de precios de venta), un inmueble de
+                                    <b>{{informacion.area_construida}}
+                                        m<sup>2</sup></b>
+                                    como el nuestro llegaria a valer en el mercado los siguientes precios
+                                    que se presentan a continuación:
+                                </p>
+                            </div>
+
+                            <div class="d-flex justify-content-center">
+                                {{! para un centrado correcto ambos deben tener el msmo valor de width }}
+                                <div
+                                    class="tabla_caracteristicas table-responsive barra-deslizadora-mob"
+                                    id="diferencia_ganancias"
+                                    style="width: 40rem;"
+                                >
+                                    <table class="texto-link" style="width: 40rem;" cellpadding="7">
+                                        <thead>
+                                            <tr>
+                                                <th>Otros inmuebles</th>
+                                                <th>Superficie m<sup>2</sup></th>
+                                                <th>Precio de venta $us</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody class="cuerpo_filas">
+                                            {{#each informacion.precios_mercado_render}}
+                                                <tr class="fila_ref">
+                                                    <td>{{direccion_comparativa}}</td>
+                                                    <td>{{area_volterra}}</td>
+                                                    <td>{{precio_inm_volterra}}</td>
+                                                </tr>
+                                            {{/each}}
+                                        </tbody>
+                                    </table>
+
+                                </div>
+
+                            </div>
+
+                            <div class="mt-3 d-flex justify-content-center">
+                                <p class="texto-normal" style="text-align: justify;">
+                                    El promedio de los precios de venta en el mercado es de
+                                    <b>{{informacion.precio_promedio_render}} $us</b>, a dicho valor se
+                                    le sustrae el precio de venta de nuestro inmueble
+                                    <b>{{informacion.pv_volterra_render}} $us</b>, obteniendo asi el
+                                    valor de plusvalía de nuestro inmueble:
+                                    <b>{{informacion.plusvalia_sus_render}}
+                                        $us</b>
+                                </p>
+                            </div>
+
+                            <div class="text-center mt-4">
+                                <button
+                                    class="btn btn-primary"
+                                    data-toggle="collapse"
+                                    data-target="#calculos_plusvalia"
+                                    aria-expanded="true"
+                                >Cerrar</button>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
 <div class="row mt-5 cuadro_estandart py-3">
     <div class="col-12 d-flex">
         <div class="d-none d-md-flex mr-3 contenedor-detalle-icono">
@@ -48,7 +174,7 @@
             {{! div style="overflow: auto;" style="width: 100%;"}}
             <div class="row mt-2" style="width: 100%;">
                 <div class="col-12 text-center">
-                    <h5 class="texto-link">SOLIDEXA Vs Otros inmuebles</h5>
+                    <h5 class="texto-link">SOLIDEXA vs Otros inmuebles</h5>
                 </div>
 
                 <div class="col-12 d-flex justify-content-center mb-3">
@@ -120,7 +246,7 @@
 
                 <div class="col-12 mt-4">
                     <button
-                        class="btn btn-success"
+                        class="btn btn-primary"
                         data-toggle="collapse"
                         data-target="#calculos_precios"
                         aria-expanded="false"
@@ -214,7 +340,7 @@
 
                             <div class="text-center mt-4">
                                 <button
-                                    class="btn btn-success"
+                                    class="btn btn-primary"
                                     data-toggle="collapse"
                                     data-target="#calculos_precios"
                                     aria-expanded="true"
@@ -228,131 +354,6 @@
                 </div>
             </div>
             {{! div }}
-        </div>
-
-    </div>
-</div>
-
-<div class="row mt-5 cuadro_estandart py-3">
-    <div class="col-12 d-flex">
-        <div class="d-none d-md-flex mr-3 contenedor-detalle-icono">
-            <i class="fas fa-gift"></i>
-        </div>
-
-        <div class="mx-md-4 contenedor-detalle-texto">
-
-            <h4 class="texto-resaltado"><span class="icono_izq d-inline-block d-md-none"><i class="fas fa-gift"></i></span>{{informacion.titulo_plusvalia_inm}}</h4>
-            <p class="escritura" style="text-align: justify;">
-                {{informacion.texto_plusvalia_inm}}
-            </p>
-
-            <div class="row mt-2" style="width: 100%;">
-                <div class="col-12 text-center">
-                    <h5 class="texto-link">Plusvalía del inmueble</h5>
-                    <div class="row texto-normal mb-3">
-                        <div class="col-12 col-md-6 text-center text-md-right">
-                            <span>
-                                Precio justo:
-                                <b>{{informacion.costo_volterra_render}} $us</b>
-                            </span>
-                        </div>
-                        <div class="col-12 col-md-6 text-center text-md-left">
-                            <span>
-                                Plusvalía regalo:
-                                <b>{{informacion.plusvalia_sus_render}} $us</b>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 d-flex justify-content-center mb-3">
-                    <div class="contendor_graf_plusvalia barra-deslizadora-mob" style="overflow: auto;">
-                        <div style="width: 40rem;">
-                            <canvas id="graficoPlusvalia"></canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 mt-4">
-                    <button
-                        class="btn btn-success"
-                        data-toggle="collapse"
-                        data-target="#calculos_plusvalia"
-                        aria-expanded="false"
-                    >Cómo se calcula</button>
-
-                    <div class="collapse" id="calculos_plusvalia">
-                        <div class="my-3 p-3 borde_como_calcula">
-
-                            <div class="d-flex justify-content-center">
-                                <p class="texto-normal" style="text-align: justify;">Con los valores
-                                    calculados de $us/m<sup>2</sup>
-                                    (ver calculos de precios de venta), un inmueble de
-                                    <b>{{informacion.area_construida}}
-                                        m<sup>2</sup></b>
-                                    como el nuestro llegaria a valer en el mercado los siguientes precios
-                                    que se presentan a continuación:
-                                </p>
-                            </div>
-
-                            <div class="d-flex justify-content-center">
-                                {{! para un centrado correcto ambos deben tener el msmo valor de width }}
-                                <div
-                                    class="tabla_caracteristicas table-responsive barra-deslizadora-mob"
-                                    id="diferencia_ganancias"
-                                    style="width: 40rem;"
-                                >
-                                    <table class="texto-link" style="width: 40rem;" cellpadding="7">
-                                        <thead>
-                                            <tr>
-                                                <th>Otros inmuebles</th>
-                                                <th>Superficie m<sup>2</sup></th>
-                                                <th>Precio de venta $us</th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody class="cuerpo_filas">
-                                            {{#each informacion.precios_mercado_render}}
-                                                <tr class="fila_ref">
-                                                    <td>{{direccion_comparativa}}</td>
-                                                    <td>{{area_volterra}}</td>
-                                                    <td>{{precio_inm_volterra}}</td>
-                                                </tr>
-                                            {{/each}}
-                                        </tbody>
-                                    </table>
-
-                                </div>
-
-                            </div>
-
-                            <div class="mt-3 d-flex justify-content-center">
-                                <p class="texto-normal" style="text-align: justify;">
-                                    El promedio de los precios de venta en el mercado es de
-                                    <b>{{informacion.precio_promedio_render}} $us</b>, a dicho valor se
-                                    le sustrae el precio de venta de nuestro inmueble
-                                    <b>{{informacion.pv_volterra_render}} $us</b>, obteniendo asi el
-                                    valor de plusvalía de nuestro inmueble:
-                                    <b>{{informacion.plusvalia_sus_render}}
-                                        $us</b>
-                                </p>
-                            </div>
-
-                            <div class="text-center mt-4">
-                                <button
-                                    class="btn btn-success"
-                                    data-toggle="collapse"
-                                    data-target="#calculos_plusvalia"
-                                    aria-expanded="true"
-                                >Cerrar</button>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-            </div>
         </div>
 
     </div>
@@ -376,7 +377,7 @@
 
             <div class="row mt-2">
                 <div class="col-12 text-center">
-                    <h5 class="texto-link">SOLIDEXA Vs Constructoras tradicionales</h5>
+                    <h5 class="texto-link">SOLIDEXA vs Constructoras tradicionales</h5>
                 </div>
 
                 <div class="col-12 d-flex justify-content-center mb-3">

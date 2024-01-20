@@ -34,11 +34,15 @@ const inmuebleEsquema = new Schema({
     // es el precio de venta, de un imueble similar a nuestro inmueble que es vendido por LA COMPETENCIA, importante que este precio debe ser SUPERIOR al precio de SOLIDEXA
     // TAMBIEN ES IMPORTANTE QUE ESTE PRECIO SEA IGUAL AL PROMEDIO DE LOS PRECIOS COMPARTIVOS DE INMUEBLE DEL MERCADO QUE ESTAN ALMACENADOS EN "precio_comparativa"
     precio_competencia: { type: Number, default: 0 },
-    // ------------------------------------------------------------
 
     // ------------------------------------------------------------
     // el el precio de contruccion del inmueble o PRECIO JUSTO, incluido el costo de derechos de terreno
     precio_construccion: { type: Number, default: 100 },
+
+    // ------------------------------------------------------------
+    // el valor en BS. del valor de recompensa por el tiempo de espera del inmueble hasta el inicio de su contruccion
+    recompensa: { type: Number, default: 0 }, // en moneda nacional "Bs"
+
     // ------------------------------------------------------------
 
     plusvalia_sus: { type: Number, default: 0 }, //  ( = precio mercado corriente de inmueble similares - precio construccion SOLIDEXA)

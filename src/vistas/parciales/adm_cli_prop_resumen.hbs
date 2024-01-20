@@ -1,20 +1,59 @@
 {{! para pestaña RESUMEN del PROPIETARIO del lado ADMINISTRADOR y CLIENTE }}
-<div
-    id="min_fecha_inicio"
-    data-min_fecha_inicio="{{informacion.val_segundero_cajas.min_fecha_inicio}}"
-></div>
 
-<div
-    id="max_fecha_fin"
-    data-max_fecha_fin="{{informacion.val_segundero_cajas.max_fecha_fin}}"
-></div>
+{{!-- ------------------------------------------------------- --}}
+{{!-- DATOS PARA SEGUNDERO DE PLUSVALIA --}}
 
-<div id="r_plusSum" data-r_plusSum="{{informacion.val_segundero_cajas.r_plusSum}}"></div>
+<div id="contenedor_seg_plus" hidden>
+    {{! usamos data-  para no tener problemas con nombre que tengan añadidos espacios largos o saltos de lineas provocados por handlebars }}
+    {{#each informacion.val_segundero_cajas.array_plusvalia}}
+        <div class="cuerpo_plus">
+            <span class="plus_r" data-plus_r="{{plus_r}}"></span>
+            <span class="plus_fechaInicio" data-plus_fechaInicio="{{plus_fechaInicio}}"></span>
+            <span class="plus_fechaFin" data-plus_fechaFin="{{plus_fechaFin}}"></span>
+        </div>
+    {{/each}}
+</div>
+{{!-- ------------------------------------------------------- --}}
+{{!-- DATOS PARA SEGUNDERO DE RECOMPENSA --}}
 
-<div id="plusGeneranCompleta" data-plusGeneranCompleta="{{informacion.val_segundero_cajas.plusGeneranCompleta}}"></div>
+<div id="contenedor_seg_recom" hidden>
+    {{! usamos data-  para no tener problemas con nombre que tengan añadidos espacios largos o saltos de lineas provocados por handlebars }}
+    {{#each informacion.val_segundero_cajas.array_recompensa}}
+        <div class="cuerpo_recom">
+            <span class="recom_r" data-recom_r="{{recom_r}}"></span>
+            <span class="recom_fechaInicio" data-recom_fechaInicio="{{recom_fechaInicio}}"></span>
+            <span class="recom_fechaFin" data-recom_fechaFin="{{recom_fechaFin}}"></span>
+        </div>
+    {{/each}}
+</div>
 
-{{!-- este es util solo para la pestaña RESUMEN del propietario, para la pestaña de DESCRIPCION DE inmueble y proyecto, esto ya viene predefinido con valor de cero --}}
-<div id="plusvalia_construida" data-plusvalia_construida="{{informacion.val_cajas.plusvalia_construida}}"></div>
+{{!-- ------------------------------------------------------- --}}
+
+<div id="contenedor_seg_plus" hidden>
+    {{! usamos data-  para no tener problemas con nombre que tengan añadidos espacios largos o saltos de lineas provocados por handlebars }}
+    {{#each informacion.val_segundero_cajas.array_plusvalia}}
+        <div class="cuerpo_plus">
+            <span class="plus_r" data-plus_r="{{plus_r}}"></span>
+            <span class="plus_fechaInicio" data-plus_fechaInicio="{{plus_fechaInicio}}"></span>
+            <span class="plus_fechaFin" data-plus_fechaFin="{{plus_fechaFin}}"></span>
+        </div>
+    {{/each}}
+</div>
+{{!-- ------------------------------------------------------- --}}
+{{!-- DATOS PARA SEGUNDERO DE RECOMPENSA --}}
+
+<div id="contenedor_seg_recom" hidden>
+    {{! usamos data-  para no tener problemas con nombre que tengan añadidos espacios largos o saltos de lineas provocados por handlebars }}
+    {{#each informacion.val_segundero_cajas.array_recompensa}}
+        <div class="cuerpo_recom">
+            <span class="recom_r" data-recom_r="{{recom_r}}"></span>
+            <span class="recom_fechaInicio" data-recom_fechaInicio="{{recom_fechaInicio}}"></span>
+            <span class="recom_fechaFin" data-recom_fechaFin="{{recom_fechaFin}}"></span>
+        </div>
+    {{/each}}
+</div>
+
+
 
 <div class="contenido container">
     

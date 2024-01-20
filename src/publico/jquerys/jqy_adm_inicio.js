@@ -221,176 +221,60 @@ $(document).ready(function () {
 
     function sus_seg() {
         setInterval(() => {
-            var r_plusSum = Number($("#r_plusSum").attr("data-r_plusSum")); // $us/seg
 
-            // la plusvalia del py o inm o la sumatoria de todos los inm del propietario de los inm de los que el es el dueño actual
-            var plusGeneranCompleta = Number(
-                $("#plusGeneranCompleta").attr("data-plusGeneranCompleta")
-            );
+            //----------------------------------------------------------------------------
+            // SEGUNDERO DE PLUSVALIA
 
-            // util solo para la pestaña RESUMEN de la cuenta del propietario que expresa la sumatoria total de todas las plusvalias de los inmuebles que ya estan construidos completamente y de los que el dueño presente es el propietario, esto para que el segundero segundo a segundo inluya este valor actualizado
-            var plusvalia_construida = Number(
-                $("#plusvalia_construida").attr("data-plusvalia_construida")
-            );
+            var plus_r = 0;
+            var a_plus_r = [];
+            var plus_fechaInicio = new Date();
+            var plus_fechaFin = new Date();
 
-            let aux_min_fecha_inicio = $("#min_fecha_inicio").attr("data-min_fecha_inicio");
-            let min_fecha_inicio = new Date(aux_min_fecha_inicio);
+            var p_verificador = 0;
 
-            let aux_max_fecha_fin = $("#max_fecha_fin").attr("data-max_fecha_fin");
-            //let max_fecha_fin = new Date(aux_max_fecha_fin);
+            var s_plus_t = 0;
+            var s_plus_r = 0;
 
-            //--------------------------------------------------------------------
-            //var estado_actual = $(".css-numero-resplandor").attr("data-id");
-            //if (estado_actual == "construido") {
-            if (r_plusSum == 0) {
-                // "val_entero" se lo convertira en formato español punto mil:
+            var n_plus = $("#contenedor_seg_plus .cuerpo_plus").length;
+            if (n_plus > 0) {
+                for (let i = 0; i < n_plus; i++) {
+                    plus_r = Number(
+                        $("#contenedor_seg_plus .cuerpo_plus .plus_r").eq(i).attr("data-plus_r")
+                    );
 
-                let numero_convertido = numero_punto_coma_query(plusGeneranCompleta);
+                    a_plus_r[i] = plus_r;
 
-                $("#entero_tot_ret_alq").text(numero_convertido);
+                    let aux_r_fi = $("#contenedor_seg_plus .cuerpo_plus .plus_fechaInicio")
+                        .eq(i)
+                        .attr("data-plus_fechaInicio");
 
-                //$("#decimales_tot_ret_alq").text(",000");
-                $(".cd").eq(0).text(",");
-                $(".cd").eq(1).text("0");
-                $(".cd").eq(2).text("0");
-                $(".cd").eq(3).text("0");
-                //$(".cd").eq(4).attr("hidden", false); // ocultamos
-                $(".cd").eq(4).css("display", "none"); // ocultamos
+                    plus_fechaInicio = new Date(aux_r_fi); // convertimos a formato fecha
 
-                let aux_string_progre = "100" + "%";
-                $("#ref_progreso_generandose").css("width", aux_string_progre);
-                $("#ref_valor_progreso_generandose").text(aux_string_progre);
+                    let aux_r_ff = $("#contenedor_seg_plus .cuerpo_plus .plus_fechaFin")
+                        .eq(i)
+                        .attr("data-plus_fechaFin");
 
-                // se acabara la funcion de conteo $us/seg
-                //alert('fin calculos $us/seg');
-                clearInterval(sus_seg);
-            } else {
-                // var actualTotalRx = ((new Date() - min_fecha_inicio) / 1000) * r_plusSum;
-                var actualTotalRx =
-                    ((new Date() - min_fecha_inicio) / 1000) * r_plusSum + plusvalia_construida;
+                    plus_fechaFin = new Date(aux_r_ff); // convertimos a formato fecha
 
-                if (plusGeneranCompleta <= 0) {
-                    // LO Agregamos despues del cuerpo de la tabla (.cuerpo_filas), COMO HIJO (con "append")
-                    $("#entero_tot_ret_alq").text("0");
+                    s_plus_t = s_plus_t + ((plus_fechaFin - plus_fechaInicio) / 1000) * plus_r;
 
-                    //$("#decimales_tot_ret_alq").text(",000");
-                    $(".cd").eq(0).text(",");
-                    $(".cd").eq(1).text("0");
-                    $(".cd").eq(2).text("0");
-                    $(".cd").eq(3).text("0");
-                    //$(".cd").eq(4).attr("hidden", false); // ocultamos
-                    $(".cd").eq(4).css("display", "none"); // ocultamos
+                    let r_d_t = (plus_fechaFin - plus_fechaInicio) / 1000;
+                    let r_d_p = (new Date() - plus_fechaInicio) / 1000;
 
-                    let aux_string_progre = "0" + "%";
-                    $("#ref_progreso_generandose").css("width", aux_string_progre);
-                    $("#ref_valor_progreso_generandose").text(aux_string_progre);
-
-                    // se acabara la funcion de conteo $us/seg
-                    //alert('fin calculos $us/seg');
-                    clearInterval(sus_seg);
-                } else {
-                    // ------- Para verificación -------
-                    //console.log("TOTAL de RETORNOS");
-                    //console.log(actualTotalRx);
-
-                    let total_r_q = r_plusSum;
-                    let string_total_r_q = total_r_q.toString();
-                    // ------- Para verificación -------
-                    //console.log("sus_seg r q: " + string_total_r_q);
-                    //console.log("numero de caracteres sus_seg: " + string_total_r_q.length);
-
-                    for (let t = 0; t < string_total_r_q.length; t++) {
-                        // las posiciones de una cadena empiezan desde CERO
-                        let porsion = string_total_r_q.substring(t, t + 1);
-                        // let porsion = string_total_r_q.substring(5, 6);
-                        //console.log("porsion de sus_seg: " + porsion);
-                        if (porsion != "0" && porsion != ".") {
-                            //console.log("entramos al caracter dist cero: " + t);
-                            // entonces la posicion es el de un numero superior a cero
-                            var n_casillas_deci = t - 1;
-                            break; // para salir de este bucle for
-                        }
+                    if (r_d_p >= r_d_t) {
+                        s_plus_r = s_plus_r + r_d_t * plus_r;
+                    }
+                    if (r_d_p < r_d_t) {
+                        s_plus_r = s_plus_r + r_d_p * plus_r;
                     }
 
-                    let total_retor_y_alq = actualTotalRx;
-
-                    //--------------- Verificacion ----------------
-                    //console.log("vemossss total_retor_y_alq");
-                    //console.log(total_retor_y_alq);
-                    //---------------------------------------------
-
-                    let string_total_re_y_al = total_retor_y_alq.toString();
-                    let array_aux = string_total_re_y_al.split(".");
-                    let val_entero = array_aux[0];
-                    let aux_decimal = array_aux[1].substring(0, n_casillas_deci);
-                    let val_decimal = "," + aux_decimal;
-
-                    // ------- Para verificación -------
-                    //console.log("numero decimales " + n_casillas_deci);
-                    //console.log("valor entero decimal " + string_total_re_y_al);
-                    //console.log("valor entero " + val_entero);
-                    //console.log("valor decimalll " + aux_decimal);
-                    //console.log("valor decimal " + val_decimal);
-
-                    //---------------------------------------------------------
-                    // "val_entero" se lo convertira en formato español punto mil:
-                    var el_numero = Number(val_entero);
-                    var aux_num_string = el_numero.toLocaleString("en"); // LO DEVUELVE EN FORMATO INGLES Y EN STRING
-
-                    var numero_convertido = aux_num_string
-                        .replace(".", "#")
-                        .replace(",", ".")
-                        .replace("#", ","); // LO CONVIERTE A FORMATO ESPAÑOL, Y EN STRING
-                    //---------------------------------------------------------
-
-                    $("#entero_tot_ret_alq").text(numero_convertido);
-
-                    //$("#decimales_tot_ret_alq").text(val_decimal);
-
-                    //==========================================================
-                    var arr = Array.from(aux_decimal); // convierte a "aux_decimal" en un array separandolo en cada uno de sus caracteres. ej/ 539 = [5, 3, 9]
-                    // ncd = 5: número de ".cd" caracteres para decimales (incluido la coma,)
-                    // n_casillas_deci: número de decimales ( sin inluir la coma, )
-                    var ncd = 5;
-                    if (ncd > n_casillas_deci) {
-                        $(".cd").eq(0).text(",");
-                        for (var ii = 0; ii < arr.length; ii++) {
-                            $(".cd")
-                                .eq(ii + 1)
-                                .text(arr[ii]);
-                        }
-
-                        // ocultamos las casillas que no seran llenadas con decimales
-                        for (let j = ii + 1; j < ncd; j++) {
-                            //alert("changos");
-                            //$(".cd").eq(j).attr("hidden", false); // ocultamos
-                            $(".cd").eq(j).css("display", "none"); // ocultamos
-                        }
-                    } else {
-                        // entonces solo seran mostrados hasta maximo: 4 digitos de los decimales, que incluido con la coma "," ocuparan la totalidad de los 5 ".cd"
-                        for (let k = 0; k < ncd; k++) {
-                            $(".cd")
-                                .eq(k + 1)
-                                .text(arr[k]);
-                        }
+                    if (plus_r != 0) {
+                        p_verificador = p_verificador + 1;
                     }
-                    //==========================================================
-
-                    let porcen_progreso = ((total_retor_y_alq / plusGeneranCompleta) * 100).toFixed(
-                        2
-                    ); // con 2 decimales
-                    let aux_string_progre = porcen_progreso + "%";
-                    $("#ref_progreso_generandose").css("width", aux_string_progre);
-                    //++++++++++++++++++++++++++++++
-                    var num_punto_coma = numero_punto_coma_query(porcen_progreso);
-                    //++++++++++++++++++++++++++++++
-                    var formato_punto_coma = num_punto_coma + " %";
-                    $("#ref_valor_progreso_generandose").text(formato_punto_coma);
                 }
             }
-            //--------------------------------------------------------------------
 
-            if (plusGeneranCompleta == 0) {
+            if (p_verificador == 0) {
                 $("#entero_tot_ret_alq").text("0");
 
                 //$("#decimales_tot_ret_alq").text(",000");
@@ -401,65 +285,19 @@ $(document).ready(function () {
                 //$(".cd").eq(4).attr("hidden", false); // ocultamos
                 $(".cd").eq(4).css("display", "none"); // ocultamos
 
-                let aux_string_progre = "0" + "%";
-                $("#ref_progreso_generandose").css("width", aux_string_progre);
-                $("#ref_valor_progreso_generandose").text(aux_string_progre);
-
-                // se acabara la funcion de conteo $us/seg
-                //alert('fin calculos $us/seg');
-                clearInterval(sus_seg);
-            }
-        }, 1000);
-    }
-
-    /*
-    function sus_seg() {
-        setInterval(() => {
-            var r_plusSum = Number($("#r_plusSum").attr("data-r_plusSum")); // $us/seg
-
-            // la plusvalia del py o inm o la sumatoria de todos los inm del propietario de los inm de los que el es el dueño actual
-            var plusGeneranCompleta = Number($("#plusGeneranCompleta").attr("data-plusGeneranCompleta"));
-
-            let aux_min_fecha_inicio = $("#min_fecha_inicio").attr("data-min_fecha_inicio");
-            let min_fecha_inicio = new Date(aux_min_fecha_inicio);
-
-            let aux_max_fecha_fin = $("#max_fecha_fin").attr("data-max_fecha_fin");
-            //let max_fecha_fin = new Date(aux_max_fecha_fin);
-
-            //---------------------------------------------------
-
-            var actualTotalRx = ((new Date() - min_fecha_inicio) / 1000) * r_plusSum;
-
-            //if (plusGeneranCompleta <= 0) {
-            if (r_plusSum <= 0) {
-                // LO Agregamos despues del cuerpo de la tabla (.cuerpo_filas), COMO HIJO (con "append")
-                $("#entero_tot_ret_alq").text("0");
-
-                $("#decimales_tot_ret_alq").text(",000");
-
-                let aux_string_progre = "0" + "%";
-                $("#ref_progreso_generandose").css("width", aux_string_progre);
-                $("#ref_valor_progreso_generandose").text(aux_string_progre);
-
-                // se acabara la funcion de conteo $us/seg
-                //alert('fin calculos $us/seg');
-                clearInterval(sus_seg);
+                let r_aux_string_progre = "0" + "%";
+                $("#ref_progreso_generandose").css("width", r_aux_string_progre);
+                $("#ref_valor_progreso_generandose").text(r_aux_string_progre);
             } else {
-                // ------- Para verificación -------
-                //console.log("TOTAL de RETORNOS");
-                //console.log(actualTotalRx);
+                // Usar Math.max con el operador de propagación para obtener el valor máximo
+                let plus_r_max = Math.max(...a_plus_r); // el valor maximo de Bs/seg
 
-                let total_r_q = r_plusSum;
-                let string_total_r_q = total_r_q.toString();
-                // ------- Para verificación -------
-                //console.log("sus_seg r q: " + string_total_r_q);
-                //console.log("numero de caracteres sus_seg: " + string_total_r_q.length);
+                let string_plus_r_max = plus_r_max.toString();
 
-                for (let t = 0; t < string_total_r_q.length; t++) {
+                for (let t = 0; t < string_plus_r_max.length; t++) {
                     // las posiciones de una cadena empiezan desde CERO
-                    let porsion = string_total_r_q.substring(t, t + 1);
-                    // let porsion = string_total_r_q.substring(5, 6);
-                    //console.log("porsion de sus_seg: " + porsion);
+                    let porsion = string_plus_r_max.substring(t, t + 1);
+
                     if (porsion != "0" && porsion != ".") {
                         //console.log("entramos al caracter dist cero: " + t);
                         // entonces la posicion es el de un numero superior a cero
@@ -468,63 +306,204 @@ $(document).ready(function () {
                     }
                 }
 
-                let total_retor_y_alq = actualTotalRx;
-                let string_total_re_y_al = total_retor_y_alq.toString();
-                let array_aux = string_total_re_y_al.split(".");
+                let string_s_plus_r = s_plus_r.toString();
+                let array_aux = string_s_plus_r.split(".");
                 let val_entero = array_aux[0];
                 let aux_decimal = array_aux[1].substring(0, n_casillas_deci);
-                let val_decimal = "," + aux_decimal;
-
-                // ------- Para verificación -------
-                //console.log("numero decimales " + n_casillas_deci);
-                //console.log("valor entero decimal " + string_total_re_y_al);
-                //console.log("valor entero " + val_entero);
-                //console.log("valor decimalll " + aux_decimal);
-                //console.log("valor decimal " + val_decimal);
 
                 //---------------------------------------------------------
                 // "val_entero" se lo convertira en formato español punto mil:
-                var el_numero = Number(val_entero);
-                var aux_num_string = el_numero.toLocaleString("en"); // LO DEVUELVE EN FORMATO INGLES Y EN STRING
+                let el_numero = Number(val_entero);
+                let aux_num_string = el_numero.toLocaleString("en"); // LO DEVUELVE EN FORMATO INGLES Y EN STRING
 
-                var numero_convertido = aux_num_string
+                let numero_convertido = aux_num_string
                     .replace(".", "#")
                     .replace(",", ".")
                     .replace("#", ","); // LO CONVIERTE A FORMATO ESPAÑOL, Y EN STRING
-                //---------------------------------------------------------
 
                 $("#entero_tot_ret_alq").text(numero_convertido);
 
-                $("#decimales_tot_ret_alq").text(val_decimal);
+                //==========================================================
+                var arr = Array.from(aux_decimal); // convierte a "aux_decimal" en un array separandolo en cada uno de sus caracteres. ej/ 539 = [5, 3, 9]
+                // ncd = 5: número de ".cd" caracteres para decimales (incluido la coma,)
+                // n_casillas_deci: número de decimales ( sin inluir la coma, )
+                var ncd = 5;
+                if (ncd > n_casillas_deci) {
+                    $(".cd").eq(0).text(",");
+                    for (var ii = 0; ii < arr.length; ii++) {
+                        $(".cd")
+                            .eq(ii + 1)
+                            .text(arr[ii]);
+                    }
 
-                let porcen_progreso = ((total_retor_y_alq / plusGeneranCompleta) * 100).toFixed(2); // con 2 decimales
+                    // ocultamos las casillas que no seran llenadas con decimales
+                    for (let j = ii + 1; j < ncd; j++) {
+                        $(".cd").eq(j).css("display", "none"); // ocultamos
+                    }
+                } else {
+                    // entonces solo seran mostrados hasta maximo: 4 digitos de los decimales, que incluido con la coma "," ocuparan la totalidad de los 5 ".cd"
+                    for (let k = 0; k < ncd; k++) {
+                        $(".cd")
+                            .eq(k + 1)
+                            .text(arr[k]);
+                    }
+                }
+                //==========================================================
+
+                let porcen_progreso = ((s_plus_r / s_plus_t) * 100).toFixed(2); // con 2 decimales
                 let aux_string_progre = porcen_progreso + "%";
                 $("#ref_progreso_generandose").css("width", aux_string_progre);
 
-                //++++++++++++++++++++++++++++++
-                var num_punto_coma = numero_punto_coma_query(porcen_progreso);
-                //++++++++++++++++++++++++++++++
-                var formato_punto_coma = num_punto_coma + " %";
+                let num_punto_coma = numero_punto_coma_query(porcen_progreso);
+
+                let formato_punto_coma = num_punto_coma + " %";
                 $("#ref_valor_progreso_generandose").text(formato_punto_coma);
             }
 
-            if (plusGeneranCompleta == 0) {
-                // LO Agregamos despues del cuerpo de la tabla (.cuerpo_filas), COMO HIJO (con "append")
-                $("#entero_tot_ret_alq").text("0");
+            //----------------------------------------------------------------------------
+            //----------------------------------------------------------------------------
+            // SEGUNDERO DE RECOMPENSA DE TIEMPO DE ESPERA
 
-                $("#decimales_tot_ret_alq").text(",000");
+            var recom_r = 0;
+            var a_recom_r = [];
+            var recom_fechaInicio = new Date();
+            var recom_fechaFin = new Date();
 
-                let aux_string_progre = "0" + "%";
-                $("#ref_progreso_generandose").css("width", aux_string_progre);
-                $("#ref_valor_progreso_generandose").text(aux_string_progre);
+            var r_verificador = 0;
 
-                // se acabara la funcion de conteo $us/seg
-                //alert('fin calculos $us/seg');
-                clearInterval(sus_seg);
+            var s_recom_t = 0;
+            var s_recom_r = 0;
+
+            var n_recom = $("#contenedor_seg_recom .cuerpo_recom").length;
+            if (n_recom > 0) {
+                for (let i = 0; i < n_recom; i++) {
+                    recom_r = Number(
+                        $("#contenedor_seg_recom .cuerpo_recom .recom_r").eq(i).attr("data-recom_r")
+                    );
+
+                    a_recom_r[i] = recom_r;
+
+                    let aux_r_fi = $("#contenedor_seg_recom .cuerpo_recom .recom_fechaInicio")
+                        .eq(i)
+                        .attr("data-recom_fechaInicio");
+
+                    recom_fechaInicio = new Date(aux_r_fi); // convertimos a formato fecha
+
+                    let aux_r_ff = $("#contenedor_seg_recom .cuerpo_recom .recom_fechaFin")
+                        .eq(i)
+                        .attr("data-recom_fechaFin");
+
+                    recom_fechaFin = new Date(aux_r_ff); // convertimos a formato fecha
+
+                    s_recom_t = s_recom_t + ((recom_fechaFin - recom_fechaInicio) / 1000) * recom_r;
+
+                    let r_d_t = (recom_fechaFin - recom_fechaInicio) / 1000;
+                    let r_d_p = (new Date() - recom_fechaInicio) / 1000;
+
+                    if (r_d_p >= r_d_t) {
+                        s_recom_r = s_recom_r + r_d_t * recom_r;
+                    }
+                    if (r_d_p < r_d_t) {
+                        s_recom_r = s_recom_r + r_d_p * recom_r;
+                    }
+
+                    if (recom_r != 0) {
+                        r_verificador = r_verificador + 1;
+                    }
+                }
             }
+
+            if (r_verificador == 0) {
+                $("#entero_tot_recompensa").text("0");
+
+                //$("#decimales_tot_ret_alq").text(",000");
+                $(".cd_r").eq(0).text(",");
+                $(".cd_r").eq(1).text("0");
+                $(".cd_r").eq(2).text("0");
+                $(".cd_r").eq(3).text("0");
+                //$(".cd").eq(4).attr("hidden", false); // ocultamos
+                $(".cd_r").eq(4).css("display", "none"); // ocultamos
+
+                let r_aux_string_progre = "0" + "%";
+                $("#ref_progreso_recompensa").css("width", r_aux_string_progre);
+                $("#ref_valor_progreso_recompensa").text(r_aux_string_progre);
+            } else {
+                // Usar Math.max con el operador de propagación para obtener el valor máximo
+                let recom_r_max = Math.max(...a_recom_r); // el valor maximo de Bs/seg
+
+                let string_recom_r_max = recom_r_max.toString();
+
+                for (let t = 0; t < string_recom_r_max.length; t++) {
+                    // las posiciones de una cadena empiezan desde CERO
+                    let porsion = string_recom_r_max.substring(t, t + 1);
+
+                    if (porsion != "0" && porsion != ".") {
+                        //console.log("entramos al caracter dist cero: " + t);
+                        // entonces la posicion es el de un numero superior a cero
+                        var n_casillas_deci = t - 1;
+                        break; // para salir de este bucle for
+                    }
+                }
+
+                let string_s_recom_r = s_recom_r.toString();
+                let array_aux = string_s_recom_r.split(".");
+                let val_entero = array_aux[0];
+                let aux_decimal = array_aux[1].substring(0, n_casillas_deci);
+
+                //---------------------------------------------------------
+                // "val_entero" se lo convertira en formato español punto mil:
+                let el_numero = Number(val_entero);
+                let aux_num_string = el_numero.toLocaleString("en"); // LO DEVUELVE EN FORMATO INGLES Y EN STRING
+
+                let numero_convertido = aux_num_string
+                    .replace(".", "#")
+                    .replace(",", ".")
+                    .replace("#", ","); // LO CONVIERTE A FORMATO ESPAÑOL, Y EN STRING
+
+                $("#entero_tot_recompensa").text(numero_convertido);
+
+                //==========================================================
+                var arr = Array.from(aux_decimal); // convierte a "aux_decimal" en un array separandolo en cada uno de sus caracteres. ej/ 539 = [5, 3, 9]
+                // ncd = 5: número de ".cd" caracteres para decimales (incluido la coma,)
+                // n_casillas_deci: número de decimales ( sin inluir la coma, )
+                var ncd = 5;
+                if (ncd > n_casillas_deci) {
+                    $(".cd_r").eq(0).text(",");
+                    for (var ii = 0; ii < arr.length; ii++) {
+                        $(".cd_r")
+                            .eq(ii + 1)
+                            .text(arr[ii]);
+                    }
+
+                    // ocultamos las casillas que no seran llenadas con decimales
+                    for (let j = ii + 1; j < ncd; j++) {
+                        $(".cd_r").eq(j).css("display", "none"); // ocultamos
+                    }
+                } else {
+                    // entonces solo seran mostrados hasta maximo: 4 digitos de los decimales, que incluido con la coma "," ocuparan la totalidad de los 5 ".cd_r"
+                    for (let k = 0; k < ncd; k++) {
+                        $(".cd_r")
+                            .eq(k + 1)
+                            .text(arr[k]);
+                    }
+                }
+                //==========================================================
+
+                let porcen_progreso = ((s_recom_r / s_recom_t) * 100).toFixed(2); // con 2 decimales
+                let aux_string_progre = porcen_progreso + "%";
+                $("#ref_progreso_recompensa").css("width", aux_string_progre);
+
+                let num_punto_coma = numero_punto_coma_query(porcen_progreso);
+
+                let formato_punto_coma = num_punto_coma + " %";
+                $("#ref_valor_progreso_recompensa").text(formato_punto_coma);
+            }
+
+            //----------------------------------------------------------------------------
+
+
         }, 1000);
     }
-    */
 
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     function numero_punto_coma_query(numero) {

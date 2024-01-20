@@ -711,32 +711,15 @@ funcionesAyuda_2.segundero_cajas = async function (datos_segundero) {
     var tipo_objetivo = datos_segundero.tipo_objetivo; // propietario o inmueble o proyecto
     var ci_propietario = datos_segundero.ci_propietario; // (puede ser: ci o ninguno)
 
-    //----------------------------------------------------------------------------
-    // SEGUNDERO PLUSVALIA
+    var r_plusSum = 0; // $us/seg de plusvalia
+
+    var plusGeneranCompleta = 0;
     var total = 0; // el valor total del inmueble (ahorro + construccion)
-    var ahorro = 0; // el ahorro
+    var ahorro = 0; // el ahorro d
     var precio = 0; // el valor real de precio de venta del inmueble (incluido todos los descuentos actuales con las que pueda contar)
     var construccion = 0; // valor de contruccion SOLIDEXA del inmueble
 
-    var array_plusvalia = [];
-
-    //var array_plus_r = []; // $us/seg de plusvalia
-    //var array_plus_fechaInicio = [];
-    //var array_plus_fechaFin = [];
-
-    //----------------------------------------------------------------------------
-    // SEGUNDERO RECOMPENSA
-
-    var recompensa = 0; // Bs redondeado al entero inmediato inferior
-    var meses = 0; // meses espera de recompensa redondeado al entero inmediato inferior
-
-    var array_recompensa = [];
-
-    //var array_recom_r = []; // $us/seg de recompensa
-    //var array_recom_fechaInicio = []; // fecha Cuando el inm es reservado
-    //var array_recom_fechaFin = [];
-
-    //----------------------------------------------------------------------------
+    var plusvalia_construida = 0; // sumara todas las plusvalias de los inmuebles construidos de los que es dueño el propietario, es solo util para la pestaña RESUMEN de la cuenta privada del propietario
 
     if (tipo_objetivo == "propietario") {
         // solo seran considerados los inmuebles del propietario, donde este esta "activo"
@@ -756,6 +739,20 @@ funcionesAyuda_2.segundero_cajas = async function (datos_segundero) {
             // los que terminaron de generar $us/seg son los inmuebles en estado:
             // completado (construido)
 
+            let aux_fechas_inicio = [];
+            let aux_fechas_fin = [];
+
+            var m = -1;
+            var n = -1;
+
+            //-----------------------------------------------------------------
+            // PARA SEGUNDERO DE RECOMPENSA
+
+            var recompensa_completada = 0; // Bs. util solo para pestaña resumen de propietario
+            var r_recompensa = 0; // Bs/seg real
+            var recompensa_real = 0; // Bs redondeado al entero inmediato inferior
+            var meses_r = 0;
+
             //-----------------------------------------------------------------
 
             for (let i = 0; i < registro_inmueble.length; i++) {
@@ -768,55 +765,123 @@ funcionesAyuda_2.segundero_cajas = async function (datos_segundero) {
 
                 var resultado_funcion = await aux_inmueble_segundero(aux_paquete_datos);
 
-                //-----------------------------------------------------------------
-                // PARA SEGUNDERO DE PLUSVALIA
+                plusGeneranCompleta = plusGeneranCompleta + resultado_funcion.plusGeneranCompleta;
+
+                r_plusSum = r_plusSum + resultado_funcion.r_plus;
 
                 total = total + resultado_funcion.total;
                 ahorro = ahorro + resultado_funcion.ahorro;
                 precio = precio + resultado_funcion.precio;
                 construccion = construccion + resultado_funcion.construccion;
 
-                array_plusvalia[i] = {
-                    plus_r: resultado_funcion.r_plus,
-                    plus_fechaInicio: resultado_funcion.fecha_inicio_reserva,
-                    plus_fechaFin: resultado_funcion.fecha_fin_construccion,
-                };
+                plusvalia_construida =
+                    plusvalia_construida + resultado_funcion.plusvalia_construida;
+
+                /*
+                if (
+                    resultado_funcion.fecha_inicio_reserva == null ||
+                    resultado_funcion.fecha_inicio_reserva == undefined
+                ) {
+                    aux_fechas_inicio[i] = 0;
+                } else {
+                    aux_fechas_inicio[i] = resultado_funcion.fecha_inicio_reserva;
+                }
+
+                if (
+                    resultado_funcion.fecha_fin_construccion == null ||
+                    resultado_funcion.fecha_fin_construccion == undefined
+                ) {
+                    aux_fechas_fin[i] = 0;
+                } else {
+                    aux_fechas_fin[i] = resultado_funcion.fecha_fin_construccion;
+                }
+                */
+
+                if (resultado_funcion.fecha_inicio_reserva) {
+                    m = m + 1;
+                    aux_fechas_inicio[m] = resultado_funcion.fecha_inicio_reserva;
+                }
+
+                if (resultado_funcion.fecha_fin_construccion) {
+                    n = n + 1;
+                    aux_fechas_fin[n] = resultado_funcion.fecha_fin_construccion;
+                }
 
                 //-----------------------------------------------------------------
                 // PARA SEGUNDERO DE RECOMPENSA
 
-                recompensa = recompensa + resultado_funcion.recompensa_real;
-                meses = meses + resultado_funcion.meses_r;
+                recompensa_completada =
+                    recompensa_completada + resultado_funcion.recompensa_completada; // Bs. util solo para pestaña resumen de propietario
+                r_recompensa = r_recompensa + resultado_funcion.r_recompensa; // Bs/seg real
+                recompensa_real = recompensa_real + resultado_funcion.recompensa_real; // Bs redondeado al entero inmediato inferior
 
-                array_recompensa[i] = {
-                    recom_r: resultado_funcion.r_recompensa, // Bs/seg real
-                    recom_fechaInicio: resultado_funcion.fecha_pagado_reserva_r,
-                    recom_fechaFin: resultado_funcion.fecha_inicio_construccion_r,
-                };
+                meses_r = meses_r + resultado_funcion.meses_r; // meses espera de recompensa
 
                 //-----------------------------------------------------------------
             } // for
+
+            if (aux_fechas_inicio.length > 1) {
+                let aux_min = aux_fechas_inicio[0]; // asumimos que el menor es el primero de todos
+                for (let k = 0; k < aux_fechas_inicio.length - 1; k++) {
+                    let fecha_a = aux_fechas_inicio[k + 1];
+                    if (fecha_a <= aux_min) {
+                        aux_min = fecha_a;
+                    }
+                }
+                var min_fecha_inicio = aux_min;
+            } else {
+                var min_fecha_inicio = aux_fechas_inicio[0];
+            }
+
+            if (aux_fechas_fin.length > 1) {
+                let aux_max = aux_fechas_fin[0]; // asumimos que el menor es el primero de todos
+                for (let k = 0; k < aux_fechas_fin.length - 1; k++) {
+                    let fecha_a = aux_fechas_fin[k + 1];
+                    if (fecha_a >= aux_max) {
+                        aux_max = fecha_a;
+                    }
+                }
+                var max_fecha_fin = aux_max;
+            } else {
+                var max_fecha_fin = aux_fechas_fin[0];
+            }
+
+            //-----------------------------------------------------------------
+            // PARA SEGUNDERO DE RECOMPENSA
+            // con los datos del ÚLTIMO inmueble del proyecto, ya que para todos los demas son los mimos datos
+
+            var fecha_pagado_reserva_r = resultado_funcion.fecha_pagado_reserva_r; // fecha en que inicia. Cuando el inm es reservado
+            var fecha_inicio_construccion_r = resultado_funcion.fecha_inicio_construccion_r;
+
+            //-----------------------------------------------------------------
+
+            var resultado = {
+                min_fecha_inicio,
+                max_fecha_fin,
+                r_plusSum,
+                plusGeneranCompleta,
+                total,
+                ahorro,
+                precio,
+                construccion,
+                plusvalia_construida,
+            };
+            return resultado;
+        } else {
+            // entonces los var anteriores declarados permaneceran en cero
+            var resultado = {
+                min_fecha_inicio: 0,
+                max_fecha_fin: 0,
+                r_plusSum: 0, // $us/seg
+                plusGeneranCompleta, // inicialmente, por defecto esta pueto en 0
+                total, // inicialmente, por defecto esta pueto en 0
+                ahorro, // inicialmente, por defecto esta pueto en 0
+                precio, // inicialmente, por defecto esta pueto en 0
+                construccion, // inicialmente, por defecto esta pueto en 0
+                plusvalia_construida, // inicialmente, por defecto esta pueto en 0
+            };
+            return resultado;
         }
-
-        var resultado = {
-            //---------------------------------------
-            // SEGUNDERO PLUSVALIA
-            array_plusvalia,
-
-            total,
-            ahorro,
-            precio,
-            construccion,
-
-            //---------------------------------------
-            // SEGUNDERO RECOMPENSA
-            array_recompensa,
-
-            recompensa,
-            meses,
-            //---------------------------------------
-        };
-        return resultado;
     }
 
     if (tipo_objetivo == "inmueble") {
@@ -843,31 +908,36 @@ funcionesAyuda_2.segundero_cajas = async function (datos_segundero) {
 
             var resultado_funcion = await aux_inmueble_segundero(aux_paquete_datos);
 
-            //-----------------------------------------------------------------
-            // PARA SEGUNDERO DE PLUSVALIA
+            plusGeneranCompleta = resultado_funcion.plusGeneranCompleta;
+
+            r_plusSum = resultado_funcion.r_plus;
 
             total = resultado_funcion.total;
             ahorro = resultado_funcion.ahorro;
             precio = resultado_funcion.precio;
             construccion = resultado_funcion.construccion;
 
-            array_plusvalia[0] = {
-                plus_r: resultado_funcion.r_plus,
-                plus_fechaInicio: resultado_funcion.fecha_inicio_reserva,
-                plus_fechaFin: resultado_funcion.fecha_fin_construccion,
-            };
+            if (resultado_funcion.fecha_inicio_reserva == null) {
+                var min_fecha_inicio = 0;
+            } else {
+                var min_fecha_inicio = resultado_funcion.fecha_inicio_reserva;
+            }
+
+            if (resultado_funcion.fecha_fin_construccion == null) {
+                var max_fecha_fin = 0;
+            } else {
+                var max_fecha_fin = resultado_funcion.fecha_fin_construccion;
+            }
 
             //-----------------------------------------------------------------
             // PARA SEGUNDERO DE RECOMPENSA
 
-            recompensa = recompensa + resultado_funcion.recompensa_real;
-            meses = meses + resultado_funcion.meses_r;
-
-            array_recompensa[0] = {
-                recom_r: resultado_funcion.r_recompensa, // Bs/seg real
-                recom_fechaInicio: resultado_funcion.fecha_pagado_reserva_r,
-                recom_fechaFin: resultado_funcion.fecha_inicio_construccion_r,
-            };
+            var recompensa_completada = resultado_funcion.recompensa_completada; // Bs. util solo para pestaña resumen de propietario
+            var r_recompensa = resultado_funcion.r_recompensa; // Bs/seg real
+            var recompensa_real = resultado_funcion.recompensa_real; // Bs redondeado al entero inmediato inferior
+            var fecha_pagado_reserva_r = resultado_funcion.fecha_pagado_reserva_r; // fecha en que inicia. Cuando el inm es reservado
+            var fecha_inicio_construccion_r = resultado_funcion.fecha_inicio_construccion_r;
+            var meses_r = resultado_funcion.meses_r; // meses espera de recompensa
 
             //-----------------------------------------------------------------
             // PARA LAS 2 BARRAS DE PROGRESO (FINANCIAMIENTO Y PLAZO)
@@ -880,29 +950,54 @@ funcionesAyuda_2.segundero_cajas = async function (datos_segundero) {
             var progresos = await aux_barras_progreso(paquete_datos);
 
             //-----------------------------------------------------------------
+
+            var resultado = {
+                min_fecha_inicio,
+                max_fecha_fin,
+                r_plusSum,
+                plusGeneranCompleta,
+                total,
+                ahorro,
+                precio,
+                construccion,
+                progresos,
+                plusvalia_construida: 0, // es util solo para la pestaña RESUMEN del propietario. Es por ello que aqui solo se le asigna el valor de CERO
+
+                //----------------------------------------------------
+                recompensa_completada, // Bs. util solo para pestaña resumen de propietario
+                r_recompensa, // Bs/seg real
+                recompensa_real, // Bs redondeado al entero inmediato inferior
+                fecha_pagado_reserva_r, // fecha en que inicia. Cuando el inm es reservado
+                fecha_inicio_construccion_r,
+                meses_r, // meses espera de recompensa redondeado al entero inmediato inferior
+                //----------------------------------------------------
+            };
+            return resultado;
+        } else {
+            // entonces los var anteriores declarados permaneceran en cero
+            var resultado = {
+                min_fecha_inicio: 0,
+                max_fecha_fin: 0,
+                r_plusSum: 0, // $us/seg
+                plusGeneranCompleta, // inicialmente, por defecto esta pueto en 0
+                total, // inicialmente, por defecto esta pueto en 0
+                ahorro, // inicialmente, por defecto esta pueto en 0
+                precio, // inicialmente, por defecto esta pueto en 0
+                construccion, // inicialmente, por defecto esta pueto en 0
+                progresos,
+                plusvalia_construida: 0, // es util solo para la pestaña RESUMEN del propietario. Es por ello que aqui solo se le asigna el valor de CERO
+
+                //----------------------------------------------------
+                recompensa_completada: 0, // Bs. util solo para pestaña resumen de propietario
+                r_recompensa: 0, // Bs/seg real
+                recompensa_real: 0, // Bs redondeado al entero inmediato inferior
+                fecha_pagado_reserva_r: 0, // fecha en que inicia. Cuando el inm es reservado
+                fecha_inicio_construccion_r: 0,
+                meses_r: 0, // meses espera de recompensa redondeado al entero inmediato inferior
+                //----------------------------------------------------
+            };
+            return resultado;
         }
-
-        var resultado = {
-            //---------------------------------------
-            // SEGUNDERO PLUSVALIA
-            array_plusvalia,
-
-            total,
-            ahorro,
-            precio,
-            construccion,
-
-            progresos,
-
-            //---------------------------------------
-            // SEGUNDERO RECOMPENSA
-            array_recompensa,
-
-            recompensa,
-            meses,
-            //---------------------------------------
-        };
-        return resultado;
     }
 
     if (tipo_objetivo == "proyecto") {
@@ -922,6 +1017,16 @@ funcionesAyuda_2.segundero_cajas = async function (datos_segundero) {
             // los que terminaron de generar $us/seg son los inmuebles en estado:
             // completado (construido)
 
+            let aux_fechas_inicio = [];
+            let aux_fechas_fin = [];
+
+            //-----------------------------------------------------------------
+            // PARA SEGUNDERO DE RECOMPENSA
+
+            var recompensa_completada = 0; // Bs. util solo para pestaña resumen de propietario
+            var r_recompensa = 0; // Bs/seg real
+            var recompensa_real = 0; // Bs redondeado al entero inmediato inferior
+
             //-----------------------------------------------------------------
 
             for (let i = 0; i < registro_inmueble.length; i++) {
@@ -936,34 +1041,72 @@ funcionesAyuda_2.segundero_cajas = async function (datos_segundero) {
 
                 var resultado_funcion = await aux_inmueble_segundero(aux_paquete_datos);
 
-                //-----------------------------------------------------------------
-                // PARA SEGUNDERO DE PLUSVALIA
+                //sumPlusInmueble = sumPlusInmueble + resultado_funcion.plusGeneranCompleta;
+                plusGeneranCompleta = plusGeneranCompleta + resultado_funcion.plusGeneranCompleta;
+
+                r_plusSum = r_plusSum + resultado_funcion.r_plus;
 
                 total = total + resultado_funcion.total;
                 ahorro = ahorro + resultado_funcion.ahorro;
                 precio = precio + resultado_funcion.precio;
                 construccion = construccion + resultado_funcion.construccion;
 
-                array_plusvalia[i] = {
-                    plus_r: resultado_funcion.r_plus,
-                    plus_fechaInicio: resultado_funcion.fecha_inicio_reserva,
-                    plus_fechaFin: resultado_funcion.fecha_fin_construccion,
-                };
+                if (resultado_funcion.fecha_inicio_reserva == null) {
+                    aux_fechas_inicio[i] = 0;
+                } else {
+                    aux_fechas_inicio[i] = resultado_funcion.fecha_inicio_reserva;
+                }
+
+                if (resultado_funcion.fecha_fin_construccion == null) {
+                    aux_fechas_fin[i] = 0;
+                } else {
+                    aux_fechas_fin[i] = resultado_funcion.fecha_fin_construccion;
+                }
 
                 //-----------------------------------------------------------------
                 // PARA SEGUNDERO DE RECOMPENSA
 
-                recompensa = recompensa + resultado_funcion.recompensa_real;
-                meses = meses + resultado_funcion.meses_r;
-
-                array_recompensa[i] = {
-                    recom_r: resultado_funcion.r_recompensa, // Bs/seg real
-                    recom_fechaInicio: resultado_funcion.fecha_pagado_reserva_r,
-                    recom_fechaFin: resultado_funcion.fecha_inicio_construccion_r,
-                };
+                recompensa_completada =
+                    recompensa_completada + resultado_funcion.recompensa_completada; // Bs. util solo para pestaña resumen de propietario
+                r_recompensa = r_recompensa + resultado_funcion.r_recompensa; // Bs/seg real
+                recompensa_real = recompensa_real + resultado_funcion.recompensa_real; // Bs redondeado al entero inmediato inferior
 
                 //-----------------------------------------------------------------
             } // for
+
+            if (aux_fechas_inicio.length > 1) {
+                let aux_min = aux_fechas_inicio[0]; // asumimos que el menor es el primero de todos
+                for (let k = 0; k < aux_fechas_inicio.length - 1; k++) {
+                    let fecha_a = aux_fechas_inicio[k + 1];
+                    if (fecha_a <= aux_min) {
+                        aux_min = fecha_a;
+                    }
+                }
+                var min_fecha_inicio = aux_min;
+            } else {
+                var min_fecha_inicio = aux_fechas_inicio[0];
+            }
+
+            if (aux_fechas_fin.length > 1) {
+                let aux_max = aux_fechas_fin[0]; // asumimos que el menor es el primero de todos
+                for (let k = 0; k < aux_fechas_fin.length - 1; k++) {
+                    let fecha_a = aux_fechas_fin[k + 1];
+                    if (fecha_a >= aux_max) {
+                        aux_max = fecha_a;
+                    }
+                }
+                var max_fecha_fin = aux_max;
+            } else {
+                var max_fecha_fin = aux_fechas_fin[0];
+            }
+
+            //-----------------------------------------------------------------
+            // PARA SEGUNDERO DE RECOMPENSA
+            // con los datos del ÚLTIMO inmueble del proyecto, ya que para todos los demas son los mimos datos
+
+            var fecha_pagado_reserva_r = resultado_funcion.fecha_pagado_reserva_r; // fecha en que inicia. Cuando el inm es reservado
+            var fecha_inicio_construccion_r = resultado_funcion.fecha_inicio_construccion_r;
+            var meses_r = resultado_funcion.meses_r; // meses espera de recompensa
 
             //-----------------------------------------------------------------
             // PARA LAS 2 BARRAS DE PROGRESO (FINANCIAMIENTO Y PLAZO)
@@ -976,29 +1119,56 @@ funcionesAyuda_2.segundero_cajas = async function (datos_segundero) {
             var progresos = await aux_barras_progreso(paquete_datos);
 
             //-----------------------------------------------------------------
+
+            var resultado = {
+                min_fecha_inicio,
+                max_fecha_fin,
+                r_plusSum,
+                plusGeneranCompleta,
+                construccion,
+                total,
+                ahorro,
+                precio,
+                progresos,
+                plusvalia_construida: 0, // es util solo para la pestaña RESUMEN del propietario. Es por ello que aqui solo se le asigna el valor de CERO
+
+                //-----------------------------------------------------------------
+                // PARA SEGUNDERO DE RECOMPENSA
+                recompensa_completada,
+                r_recompensa,
+                recompensa_real,
+                fecha_pagado_reserva_r,
+                fecha_inicio_construccion_r,
+                meses_r,
+                //----------------------------------------------------
+            };
+            return resultado;
+        } else {
+            // entonces los var anteriores declarados permaneceran en cero
+            var resultado = {
+                min_fecha_inicio: 0,
+                max_fecha_fin: 0,
+                r_plusSum: 0, // $us/seg
+                plusGeneranCompleta, // inicialmente, por defecto esta pueto en 0
+                construccion,
+                total, // inicialmente, por defecto esta pueto en 0
+                ahorro, // inicialmente, por defecto esta pueto en 0
+                precio, // inicialmente, por defecto esta pueto en 0
+                progresos,
+                plusvalia_construida: 0, // es util solo para la pestaña RESUMEN del propietario. Es por ello que aqui solo se le asigna el valor de CERO
+
+                //-----------------------------------------------------------------
+                // PARA SEGUNDERO DE RECOMPENSA
+                recompensa_completada: 0, // Bs. util solo para pestaña resumen de propietario
+                r_recompensa: 0, // Bs/seg real
+                recompensa_real: 0, // Bs redondeado al entero inmediato inferior
+                fecha_pagado_reserva_r: 0, // fecha en que inicia. Cuando el inm es reservado
+                fecha_inicio_construccion_r: 0,
+                meses_r: 0, // meses espera de recompensa redondeado al entero inmediato inferior
+                //----------------------------------------------------
+            };
+            return resultado;
         }
-
-        var resultado = {
-            //---------------------------------------
-            // SEGUNDERO PLUSVALIA
-            array_plusvalia,
-
-            total,
-            ahorro,
-            precio,
-            construccion,
-
-            progresos,
-
-            //---------------------------------------
-            // SEGUNDERO RECOMPENSA
-            array_recompensa,
-
-            recompensa,
-            meses,
-            //---------------------------------------
-        };
-        return resultado;
     }
 
     // SOLO PARA TERRENO EN ETAPA DE CONVOCATORIA, Y SOLO ES VISIBLE CUANDO SI INGRESA DEL LADO DEL CLIENTE (NO DEL GESTIONADOR)
@@ -1061,31 +1231,58 @@ async function aux_inmueble_segundero(aux_paquete_datos) {
             //laapirest: "/laapirest/", // por partir desde el lado del ADMINISTRADOR
         };
 
+        var plusGeneranCompleta = 0;
+
         // ------- Para verificación -------
         //console.log("para ver que paquete de datos se esta enviando");
         //console.log(paquete_inmueble);
 
         var aux_inm = await inmueble_info_cd(paquete_inmueble);
 
+        var plusGeneranCompleta = aux_inm.num_puro_ahorro;
+
         var construccion = aux_inm.num_puro_construccion;
         var precio = aux_inm.num_puro_precio_actual;
         var ahorro = aux_inm.num_puro_ahorro;
         var total = precio + ahorro;
 
-        var fecha_inicio_reserva = aux_terreno.fecha_inicio_reserva;
-        var fecha_fin_construccion = aux_terreno.fecha_fin_construccion;
+        var plusvalia_construida = 0; // por defecto, util solo para pestaña resumen de propietario
 
-        let d_segundos = (fecha_fin_construccion - fecha_inicio_reserva + 1000) / 1000;
+        if (
+            inmueble_i.estado_inmueble == "completado" ||
+            inmueble_i.estado_inmueble == "guardado"
+        ) {
+            var r_plus = 0;
 
-        // ------- Para verificación -------
-        /*
-        console.log(
-            "los segundos entre inicio de reserva y la entrega construido del proyecto"
-        );
-        console.log(d_segundos);
-        */
+            if (inmueble_i.estado_inmueble == "completado") {
+                plusvalia_construida = ahorro;
+            }
+        } else {
+            if (
+                inmueble_i.estado_inmueble == "disponible" ||
+                inmueble_i.estado_inmueble == "reservado" ||
+                inmueble_i.estado_inmueble == "pendiente_aprobacion" ||
+                inmueble_i.estado_inmueble == "pendiente_pago" ||
+                inmueble_i.estado_inmueble == "pagado_pago" ||
+                inmueble_i.estado_inmueble == "pagos" ||
+                inmueble_i.estado_inmueble == "remate"
+            ) {
+                var fecha_inicio_reserva = aux_terreno.fecha_inicio_reserva;
+                var fecha_fin_construccion = aux_terreno.fecha_fin_construccion;
 
-        var r_plus = aux_inm.num_puro_ahorro / d_segundos; // $us/seg
+                let d_segundos = (fecha_fin_construccion - fecha_inicio_reserva + 1000) / 1000;
+
+                // ------- Para verificación -------
+                /*
+                console.log(
+                    "los segundos entre inicio de reserva y la entrega construido del proyecto"
+                );
+                console.log(d_segundos);
+                */
+
+                var r_plus = aux_inm.num_puro_ahorro / d_segundos; // $us/seg
+            }
+        }
 
         //------------------------------------------------------------------
         // para RECOMPENSA
@@ -1095,8 +1292,9 @@ async function aux_inmueble_segundero(aux_paquete_datos) {
         // si el inmueble SI tiene propietario, entonces el valor de recompensa sera el correspondiente a los dias que falten para dar inicio a la construccion del py
         // el valor total que ganara el propietario del inmueble sera menor (cuando reserve su inmueble varios diaas despues de haber sido lanzado a convocatoria) o igual (cuando reserve su inmueble el mismo dia que se lanze la convocatoria) al valor de RECOMPENSA fijado en el formulario del inmueble, nunca superara a dicho valor, aunque la fecha de "inicio de contruccion" se retrase meses (ampliando el periodo de APROBACION), es decir cuando los tramites para la obtencion de permisos este demorando mucho tiempo. Otra razon para que los propietario de los inmuebles ganen menos que el valor de la RECOMPENSA fijada originalmente es cuando se de inicio a la construccion del proyecto antes de la fecha de inicio de contruccion estimada
 
-        var r_recompensa = 0; // Bs/seg para SEGUNDERO DE RECOMPENSA
-        var recompensa_real = 0; // Bs
+        var r_recompensa = 0; // para SEGUNDERO DE RECOMPENSA
+        var recompensa_completada = 0; // por defecto, util solo para pestaña resumen de propietario
+        var recompensa_real = 0;
 
         var continuar = false; // por defecto
 
@@ -1135,18 +1333,23 @@ async function aux_inmueble_segundero(aux_paquete_datos) {
 
             let recompensa = inmueble_i.recompensa;
 
-            // aplicando regla de 3 simple, calculamos la ganancia por recompensa real correspondiente al tiempo real que el propietario permanecio desde que reservo su inmueble hasta el primer dia en que se inicie su construccion.
             let aux_real = (recompensa / d_segundos_teo) * d_segundos_real;
             recompensa_real = Math.floor(aux_real); // redondeado al entero inmediato inferior
 
             r_recompensa = recompensa_real / d_segundos_real; // Bs/seg Esta es la velociad real a la que avanzara el segundero de RECOMPENSA
+
+            if (
+                aux_terreno.estado_terreno == "construccion" ||
+                aux_terreno.estado_terreno == "construido"
+            ) {
+                recompensa_completada = recompensa_real; //
+            }
         }
 
         //------------------------------------------------------------------
 
         var resultados = {
-            //-----------------------------------------------------
-            // SEGUNDERO PLUSVALIA
+            plusGeneranCompleta,
             fecha_inicio_reserva,
             fecha_fin_construccion,
             r_plus,
@@ -1156,8 +1359,10 @@ async function aux_inmueble_segundero(aux_paquete_datos) {
             ahorro,
             total,
 
+            plusvalia_construida, // util solo para pestaña resumen de propietario
+
             //-----------------------------------------------------
-            // SEGUNDERO RECOMPENSA
+            recompensa_completada, // Bs. util solo para pestaña resumen de propietario
             r_recompensa, // Bs/seg real
             recompensa_real, // Bs redondeado al entero inmediato inferior
             fecha_pagado_reserva_r, // fecha en que inicia. Cuando el inm es reservado

@@ -325,6 +325,8 @@ async function inmueble_descripcion(paquete_datos) {
                     meses_construccion: 1,
                     mensaje_segundero_py_inm_a: 1,
                     mensaje_segundero_py_inm_b: 1,
+                    mensaje_segundero_py_inm_c: 1, // para RECOMPENSA
+                    mensaje_segundero_py_inm_d: 1, // para RECOMPENSA
                     nota_precio_justo: 1,
                     _id: 0,
                 }
@@ -376,6 +378,25 @@ async function inmueble_descripcion(paquete_datos) {
                 } else {
                     var mensaje_segundero = registro_proyecto.mensaje_segundero_py_inm_a;
                 }
+
+                // Reserva, Pago y Aprobación
+                if (
+                    registro_terreno.estado_terreno == "reserva" ||
+                    registro_terreno.estado_terreno == "pago" ||
+                    registro_terreno.estado_terreno == "aprobacion"
+                ) {
+                    var texto_segundero_recom_iz = registro_proyecto.mensaje_segundero_py_inm_c;
+                }
+
+                // Construcción Y Construido
+                if (
+                    registro_terreno.estado_terreno == "construccion" ||
+                    registro_terreno.estado_terreno == "construido"
+                ) {
+                    var texto_segundero_recom_iz = registro_proyecto.mensaje_segundero_py_inm_d;
+                }
+
+                inm_descripcion.texto_segundero_recom_iz = texto_segundero_recom_iz;
 
                 //----------------------------------------------------------------
                 // para estado y color del inmueble
@@ -528,7 +549,12 @@ async function inmueble_descripcion(paquete_datos) {
                     valor_total: numero_punto_coma(aux_segundero_cajas.total),
                     precio: numero_punto_coma(aux_segundero_cajas.precio),
                     plusvalia: numero_punto_coma(aux_segundero_cajas.ahorro),
-                    plusvalia_construida: aux_segundero_cajas.plusvalia_construida, // util solo para propietario, aqui ya viene con su valor por defecto con CERO
+                    //plusvalia_construida: aux_segundero_cajas.ahorro, // util solo para propietario, aqui ya viene con su valor por defecto con CERO
+                    //-------------------------------------------------
+                    // para RECOMPENSA
+                    recompensa: numero_punto_coma(aux_segundero_cajas.recompensa),
+                    meses: numero_punto_coma(aux_segundero_cajas.meses),
+                    //-------------------------------------------------
                 };
 
                 inm_descripcion.val_segundero_cajas = aux_segundero_cajas;
@@ -544,6 +570,7 @@ async function inmueble_descripcion(paquete_datos) {
                     {},
                     {
                         texto_segundero_inm: 1,
+                        texto_segundero_recom_inm_py: 1,
                         _id: 0,
                     }
                 );
@@ -577,7 +604,33 @@ async function inmueble_descripcion(paquete_datos) {
                 inm_descripcion.significado_segundero = significado_aux;
                 inm_descripcion.mensaje_segundero = mensaje_segundero;
                 //-------------------------------------------------------------------------------
+                //---------------------------------------------------------------
+                // para mensaje debajo de segundero RECOMPENSA lado DERECHO
 
+                if (registro_empresa.texto_segundero_recom_inm_py != undefined) {
+                    if (
+                        registro_empresa.texto_segundero_recom_inm_py.indexOf("/n_meses/") != -1 &&
+                        registro_empresa.texto_segundero_recom_inm_py.indexOf("/bs_espera/") != -1
+                    ) {
+                        var significado_re_aux_0 = registro_empresa.texto_segundero_recom_inm_py;
+                        var significado_re_aux_1 = significado_re_aux_0.replace(
+                            "/n_meses/",
+                            aux_cajas.meses
+                        );
+                        var significado_re_de_aux = significado_re_aux_1.replace(
+                            "/bs_espera/",
+                            aux_cajas.recompensa
+                        );
+                    } else {
+                        var significado_re_de_aux = "Significado";
+                    }
+                } else {
+                    var significado_re_de_aux = "Significado";
+                }
+
+                inm_descripcion.texto_segundero_recom_de = significado_re_de_aux;
+
+                //---------------------------------------------------------------
                 inm_descripcion.titulo_up_a = titulo_up_a;
                 inm_descripcion.puntos_up_a = puntos_up_a;
                 inm_descripcion.titulo_up_b = titulo_up_b;
@@ -725,7 +778,7 @@ async function inmueble_beneficios(paquete_datos) {
                 // NOTE QUE USAMOS ESTA FUNCION Y NO LOS DATOS DE COSTRUCCION Y PLUSVALIA DEL INM, PORQUE TRABAJAMOS CON LOS DATOS ACTUALIZADOS DE PRECIO Y PLUSVALIA DEL INM
                 var resultado = await segundero_cajas(caja_datos);
                 var construccion_inm = resultado.construccion; // ES EL PRECIO ACTUAL DEL INMUEBLE CONSIDERANDO LOS DESCUENTOS POR REMATES SI ES QUE LOS TUVIESE
-                var plusvalia_inm = resultado.plusGeneranCompleta; // LA PLUSVALIA ACTUAL CONSIDERANDO LOS REMATES SI ES QUE TUVIESE
+                var plusvalia_inm = resultado.ahorro; // LA PLUSVALIA ACTUAL CONSIDERANDO LOS REMATES SI ES QUE TUVIESE
 
                 //-------------------------------------------------------------------------------
                 // COSTO CONTRUCCION (trabajamos con los valores referentes a la construccion y no con los precios de mercado)

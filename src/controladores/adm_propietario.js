@@ -1,7 +1,7 @@
 // CONTROLADOR RELACIONADO CON EL INVERSIONISTA DESDE EL LADO DEL GESTIONADOR DE LA APLICACION
 
 const {
-    indiceInmueble,
+    //indiceInmueble,
     indiceDocumentos,
     indice_propietario,
     indiceInversiones,
@@ -11,9 +11,9 @@ const {
 } = require("../modelos/indicemodelo");
 
 const {
-    verificadorTerrenoBloqueado,
+    //verificadorTerrenoBloqueado,
     inmueble_card_adm_cli,
-    guardarAccionAdministrador,
+    //guardarAccionAdministrador,
 } = require("../ayudas/funcionesayuda_1");
 
 const {
@@ -25,15 +25,15 @@ const {
 
 const { numero_punto_coma } = require("../ayudas/funcionesayuda_3");
 
-const { codigoAlfanumericoDocumento } = require("../ayudas/ayudaslibreria");
+//const { codigoAlfanumericoDocumento } = require("../ayudas/ayudaslibreria");
 
 const moment = require("moment");
 
 // se usa para mover la imagen (la imagen misma) de la carpeta "temporal" a la carpeta "subido"
 // tambien se usara su metodo "unlink" para eliminar archivos (como imagenes o pdf)
-const fs = require("fs-extra");
+//const fs = require("fs-extra");
 
-const pache = require("path");
+//const pache = require("path");
 
 const controladorPropietario = {};
 
@@ -501,12 +501,21 @@ async function resumen_propietario(codigo_propietario) {
         var aux_segundero_cajas = await segundero_cajas(datos_segundero);
 
         var aux_cajas = {
+            //-------------------------------------------------
+            // para PLUSVALIA
+
             // despues de sumar todos valores de plusvalia, contruccion y valor total
             // convertimos a numeros con separadores de punto, coma
             valor_total: numero_punto_coma(aux_segundero_cajas.total),
             precio: numero_punto_coma(aux_segundero_cajas.precio),
             plusvalia: numero_punto_coma(aux_segundero_cajas.ahorro),
-            plusvalia_construida: aux_segundero_cajas.plusvalia_construida, // en tipo "numerico puro"
+            //plusvalia_construida: aux_segundero_cajas.ahorro, // en tipo "numerico puro"
+            //-------------------------------------------------
+            // para RECOMPENSA
+            recompensa: numero_punto_coma(aux_segundero_cajas.recompensa),
+            meses: numero_punto_coma(aux_segundero_cajas.meses),
+
+            //-------------------------------------------------
         };
 
         var total_resumen_propietario = {
@@ -523,6 +532,8 @@ async function resumen_propietario(codigo_propietario) {
             {
                 texto_segundero_prop: 1,
                 texto_segundero_prop_iz: 1,
+                texto_segundero_prop_recom_iz: 1,
+                texto_segundero_prop_recom_de: 1,
                 _id: 0,
             }
         );
@@ -579,6 +590,49 @@ async function resumen_propietario(codigo_propietario) {
 
         total_resumen_propietario.mensaje_segundero = mensaje_segundero_pro;
         //-------------------------------------------------------------------------------
+        // para mensaje debajo de segundero RECOMPENSA lado IZQUIERDO
+
+        var significado_re_iz_aux = "Mensaje segundero RECOMPENSA propietario"; // texto por defecto
+
+        if (reg_nombre_prop) {
+            if (registro_empresa.texto_segundero_prop_recom_iz != undefined) {
+                if (registro_empresa.texto_segundero_prop_recom_iz.indexOf("/nom_propietario/") != -1) {
+                    var significado_aux_0 = registro_empresa.texto_segundero_prop_recom_iz;
+                    var significado_re_iz_aux = significado_aux_0.replace(
+                        "/nom_propietario/",
+                        reg_nombre_prop.nombres_propietario
+                    );
+                }
+            }
+        }
+
+        total_resumen_propietario.texto_segundero_recom_iz = significado_re_iz_aux;
+
+        //---------------------------------------------------------------
+        // para mensaje debajo de segundero RECOMPENSA lado DERECHO
+
+        if (registro_empresa.texto_segundero_prop_recom_de != undefined) {
+            if (
+                registro_empresa.texto_segundero_prop_recom_de.indexOf("/n_meses/") != -1 &&
+                registro_empresa.texto_segundero_prop_recom_de.indexOf("/bs_espera/") != -1
+            ) {
+                var significado_re_aux_0 = registro_empresa.texto_segundero_prop_recom_de;
+                var significado_re_aux_1 = significado_re_aux_0.replace("/n_meses/", aux_cajas.meses);
+                var significado_re_de_aux = significado_re_aux_1.replace(
+                    "/bs_espera/",
+                    aux_cajas.recompensa
+                );
+            } else {
+                var significado_re_de_aux = "Significado";
+            }
+        } else {
+            var significado_re_de_aux = "Significado";
+        }
+
+        // agregando al objeto "total_resumen_propietario"
+        total_resumen_propietario.texto_segundero_recom_de = significado_re_de_aux;
+
+        //---------------------------------------------------------------
 
         return total_resumen_propietario;
     } catch (error) {

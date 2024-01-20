@@ -462,8 +462,11 @@ async function textos_administrador() {
 
                 texto_segundero_py: 1,
                 texto_segundero_inm: 1,
+                texto_segundero_recom_inm_py: 1,
                 texto_segundero_prop: 1,
                 texto_segundero_prop_iz: 1,
+                texto_segundero_prop_recom_iz: 1,
+                texto_segundero_prop_recom_de: 1,
 
                 _id: 0,
             }
@@ -1133,8 +1136,12 @@ controladorAdmAdministrador.guardarTextosSegundero = async (req, res) => {
         if (registro_empresa) {
             registro_empresa.texto_segundero_py = req.body.texto_segundero_py;
             registro_empresa.texto_segundero_inm = req.body.texto_segundero_inm;
+            registro_empresa.texto_segundero_recom_inm_py = req.body.texto_segundero_recom_inm_py;
             registro_empresa.texto_segundero_prop = req.body.texto_segundero_prop;
             registro_empresa.texto_segundero_prop_iz = req.body.texto_segundero_prop_iz;
+
+            registro_empresa.texto_segundero_prop_recom_iz = req.body.texto_segundero_prop_recom_iz;
+            registro_empresa.texto_segundero_prop_recom_de = req.body.texto_segundero_prop_recom_de;
 
             await registro_empresa.save();
 
@@ -1963,13 +1970,13 @@ controladorAdmAdministrador.actualizarNumerosEmpresa = async (req, res) => {
                 codigo_objetivo: "",
                 tipo_objetivo: "proyecto",
             };
-            var capitalesProyecto = {};
+            //var capitalesProyecto = {};
             var valor_plusvalia = 0;
             for (let m = 0; m < ma_codigos_py.length; m++) {
                 codigo_aux = ma_codigos_py[m].codigo_proyecto;
                 datos_segundero.codigo_objetivo = codigo_aux;
-                capitalesProyecto = await segundero_cajas(datos_segundero);
-                valor_plusvalia = Number(capitalesProyecto.plusGeneranCompleta);
+                var capitalesProyecto = await segundero_cajas(datos_segundero);
+                valor_plusvalia = Number(capitalesProyecto.ahorro);
                 sum_plusvalias = sum_plusvalias + valor_plusvalia;
             }
             if (sum_plusvalias > 0) {

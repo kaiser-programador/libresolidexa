@@ -508,6 +508,8 @@ async function proyecto_descripcion(codigo_proyecto) {
 
                 mensaje_segundero_py_inm_a: 1,
                 mensaje_segundero_py_inm_b: 1,
+                mensaje_segundero_py_inm_c: 1, // para RECOMPENSA
+                mensaje_segundero_py_inm_d: 1, // para RECOMPENSA
                 nota_precio_justo: 1,
 
                 _id: 0,
@@ -576,6 +578,25 @@ async function proyecto_descripcion(codigo_proyecto) {
                 } else {
                     var mensaje_segundero = registro_proyecto.mensaje_segundero_py_inm_a;
                 }
+
+                // Reserva, Pago y Aprobación
+                if (
+                    registro_terreno.estado_terreno == "reserva" ||
+                    registro_terreno.estado_terreno == "pago" ||
+                    registro_terreno.estado_terreno == "aprobacion"
+                ) {
+                    var texto_segundero_recom_iz = registro_proyecto.mensaje_segundero_py_inm_c;
+                }
+
+                // Construcción Y Construido
+                if (
+                    registro_terreno.estado_terreno == "construccion" ||
+                    registro_terreno.estado_terreno == "construido"
+                ) {
+                    var texto_segundero_recom_iz = registro_proyecto.mensaje_segundero_py_inm_d;
+                }
+
+                py_descripcion.texto_segundero_recom_iz = texto_segundero_recom_iz;
 
                 //-------------------------------------------------------------------
                 // para tipo de proyecto: edificio || condominio
@@ -673,7 +694,12 @@ async function proyecto_descripcion(codigo_proyecto) {
                     valor_total: numero_punto_coma(aux_segundero_cajas.total),
                     precio: numero_punto_coma(aux_segundero_cajas.precio),
                     plusvalia: numero_punto_coma(aux_segundero_cajas.ahorro),
-                    plusvalia_construida: aux_segundero_cajas.plusvalia_construida, // util solo para propietario, aqui ya viene con su valor por defecto con CERO
+                    //plusvalia_construida: aux_segundero_cajas.ahorro, // util solo para propietario, aqui ya viene con su valor por defecto con CERO
+                    //-------------------------------------------------
+                    // para RECOMPENSA
+                    recompensa: numero_punto_coma(aux_segundero_cajas.recompensa),
+                    meses: numero_punto_coma(aux_segundero_cajas.meses),
+                    //-------------------------------------------------
                 };
 
                 py_descripcion.val_segundero_cajas = aux_segundero_cajas;
@@ -689,6 +715,7 @@ async function proyecto_descripcion(codigo_proyecto) {
                     {},
                     {
                         texto_segundero_py: 1,
+                        texto_segundero_recom_inm_py: 1,
                         _id: 0,
                     }
                 );
@@ -721,6 +748,33 @@ async function proyecto_descripcion(codigo_proyecto) {
 
                 py_descripcion.significado_segundero = significado_aux;
                 py_descripcion.mensaje_segundero = mensaje_segundero;
+
+                //---------------------------------------------------------------
+                // para mensaje debajo de segundero RECOMPENSA lado DERECHO
+
+                if (registro_empresa.texto_segundero_recom_inm_py != undefined) {
+                    if (
+                        registro_empresa.texto_segundero_recom_inm_py.indexOf("/n_meses/") != -1 &&
+                        registro_empresa.texto_segundero_recom_inm_py.indexOf("/bs_espera/") != -1
+                    ) {
+                        var significado_re_aux_0 = registro_empresa.texto_segundero_recom_inm_py;
+                        var significado_re_aux_1 = significado_re_aux_0.replace(
+                            "/n_meses/",
+                            aux_cajas.meses
+                        );
+                        var significado_re_de_aux = significado_re_aux_1.replace(
+                            "/bs_espera/",
+                            aux_cajas.recompensa
+                        );
+                    } else {
+                        var significado_re_de_aux = "Significado";
+                    }
+                } else {
+                    var significado_re_de_aux = "Significado";
+                }
+
+                py_descripcion.texto_segundero_recom_de = significado_re_de_aux;
+
                 //-------------------------------------------------------------------------------
 
                 py_descripcion.titulo_ot_a = titulo_ot_a;
@@ -741,7 +795,7 @@ async function proyecto_descripcion(codigo_proyecto) {
                 var registro_documentos = await indiceDocumentos.find({
                     codigo_proyecto: codigo_proyecto,
                     clase_documento: "General",
-                    codigo_inmueble:"",
+                    codigo_inmueble: "",
                 });
 
                 // por defecto con respectos a los documentos del inmueble
@@ -863,7 +917,7 @@ async function proyecto_garantias(codigo_proyecto) {
             var registro_documentos = await indiceDocumentos.find({
                 codigo_proyecto: codigo_proyecto,
                 clase_documento: "Garantía",
-                codigo_inmueble:"",
+                codigo_inmueble: "",
             });
 
             // por defecto con respectos a los documentos  de garantia del proyecto
@@ -1012,8 +1066,7 @@ async function proyecto_beneficios(codigo_proyecto) {
 
             //-------------------------------------------------------------------------------
             // PLUSVALIAS DE REGALO
-            var plusvalias_total = Number(capitalesProyecto.plusGeneranCompleta.toFixed(2));
-            //var plusvalias_total = Number(capitalesProyecto.plusGeneranCompleta);
+            var plusvalias_total = Number(capitalesProyecto.ahorro.toFixed(2));
             //-------------------------------------------------------------------------------
 
             var info_proyecto_beneficios = {
@@ -1126,7 +1179,7 @@ async function proyecto_info_economico(codigo_proyecto) {
             var registro_documentos = await indiceDocumentos.find({
                 codigo_proyecto: codigo_proyecto,
                 clase_documento: "Económico",
-                codigo_inmueble:"",
+                codigo_inmueble: "",
             });
 
             var documentacion = []; // por defecto con respectos a los documentos  economico del proyecto
@@ -1872,7 +1925,7 @@ async function complementos_globales_py(codigo_proyecto) {
                 extension_imagen: 1,
                 parte_principal: 1,
                 parte_exclusiva: 1,
-                url:1,
+                url: 1,
                 _id: 0,
             }
         );

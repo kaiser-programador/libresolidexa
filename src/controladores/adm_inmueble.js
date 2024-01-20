@@ -292,6 +292,7 @@ async function inmueble_descripcion(codigo_inmueble) {
                 garaje_inmueble: 1,
                 precio_competencia: 1,
                 precio_construccion: 1,
+                recompensa: 1,
                 plusvalia_sus: 1,
                 inmueble_descripcion: 1,
                 titulo_descripcion_1: 1,
@@ -690,6 +691,7 @@ controladorAdmInmueble.guardarDatosInmueble = async (req, res) => {
                 inmuebleEncontrado.puerta_inmueble = req.body.puerta_inmueble;
 
                 inmuebleEncontrado.precio_construccion = Number(req.body.precio_construccion);
+                inmuebleEncontrado.recompensa = Number(req.body.recompensa);
                 //inmuebleEncontrado.plusvalia_sus = Number(req.body.plusvalia_sus);
                 //inmuebleEncontrado.precio_competencia = req.body.precio_competencia;
 

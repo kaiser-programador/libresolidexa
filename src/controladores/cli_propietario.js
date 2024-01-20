@@ -9,7 +9,7 @@ const {
     indiceGuardados,
     indiceEmpresa,
     indiceInmueble,
-    indiceImagenesSistema
+    indiceImagenesSistema,
 } = require("../modelos/indicemodelo");
 
 const { inmueble_card_adm_cli } = require("../ayudas/funcionesayuda_1");
@@ -781,7 +781,12 @@ async function resumen_propietario(codigo_propietario) {
             valor_total: numero_punto_coma(aux_segundero_cajas.total),
             precio: numero_punto_coma(aux_segundero_cajas.precio),
             plusvalia: numero_punto_coma(aux_segundero_cajas.ahorro),
-            plusvalia_construida: aux_segundero_cajas.plusvalia_construida, // en tipo "numerico puro"
+            //plusvalia_construida: aux_segundero_cajas.ahorro, // en tipo "numerico puro"
+            //-------------------------------------------------
+            // para RECOMPENSA
+            recompensa: numero_punto_coma(aux_segundero_cajas.recompensa),
+            meses: numero_punto_coma(aux_segundero_cajas.meses),
+            //-------------------------------------------------
         };
 
         //-------------------------------------------------------------------------------
@@ -792,6 +797,8 @@ async function resumen_propietario(codigo_propietario) {
             {
                 texto_segundero_prop: 1,
                 texto_segundero_prop_iz: 1,
+                texto_segundero_prop_recom_iz: 1,
+                texto_segundero_prop_recom_de: 1,
                 _id: 0,
             }
         );
@@ -805,8 +812,14 @@ async function resumen_propietario(codigo_propietario) {
             ) {
                 var significado_aux_0 = registro_empresa.texto_segundero_prop;
                 var significado_aux_1 = significado_aux_0.replace("/sus_precio/", aux_cajas.precio);
-                var significado_aux_2 = significado_aux_1.replace("/sus_total/", aux_cajas.valor_total);
-                var significado_aux = significado_aux_2.replace("/sus_plusvalia/", aux_cajas.plusvalia);
+                var significado_aux_2 = significado_aux_1.replace(
+                    "/sus_total/",
+                    aux_cajas.valor_total
+                );
+                var significado_aux = significado_aux_2.replace(
+                    "/sus_plusvalia/",
+                    aux_cajas.plusvalia
+                );
             } else {
                 var significado_aux = "Significado";
             }
@@ -839,7 +852,54 @@ async function resumen_propietario(codigo_propietario) {
         }
 
         //total_resumen_propietario.mensaje_segundero = mensaje_segundero_pro;
+
         //-------------------------------------------------------------------------------
+        // para mensaje debajo de segundero RECOMPENSA lado IZQUIERDO
+
+        var significado_re_iz_aux = "Mensaje segundero RECOMPENSA propietario"; // texto por defecto
+
+        if (reg_nombre_prop) {
+            if (registro_empresa.texto_segundero_prop_recom_iz != undefined) {
+                if (registro_empresa.texto_segundero_prop_recom_iz.indexOf("/nom_propietario/") != -1) {
+                    var significado_aux_0 = registro_empresa.texto_segundero_prop_recom_iz;
+                    var significado_re_iz_aux = significado_aux_0.replace(
+                        "/nom_propietario/",
+                        reg_nombre_prop.nombres_propietario
+                    );
+                }
+            }
+        }
+
+        //total_resumen_propietario.texto_segundero_prop_recom_iz = significado_re_iz_aux;
+
+        //---------------------------------------------------------------
+        // para mensaje debajo de segundero RECOMPENSA lado DERECHO
+
+        if (registro_empresa.texto_segundero_prop_recom_de != undefined) {
+            if (
+                registro_empresa.texto_segundero_prop_recom_de.indexOf("/n_meses/") != -1 &&
+                registro_empresa.texto_segundero_prop_recom_de.indexOf("/bs_espera/") != -1
+            ) {
+                var significado_re_aux_0 = registro_empresa.texto_segundero_prop_recom_de;
+                var significado_re_aux_1 = significado_re_aux_0.replace(
+                    "/n_meses/",
+                    aux_cajas.meses
+                );
+                var significado_re_de_aux = significado_re_aux_1.replace(
+                    "/bs_espera/",
+                    aux_cajas.recompensa
+                );
+            } else {
+                var significado_re_de_aux = "Significado";
+            }
+        } else {
+            var significado_re_de_aux = "Significado";
+        }
+
+        // agregando al objeto "total_resumen_propietario"
+        //total_resumen_propietario.texto_segundero_prop_recom_de = significado_re_de_aux;
+
+        //---------------------------------------------------------------
 
         var total_resumen_propietario = {
             historial_inversiones,
@@ -847,6 +907,9 @@ async function resumen_propietario(codigo_propietario) {
             val_segundero_cajas: aux_segundero_cajas,
             significado_segundero: significado_aux,
             mensaje_segundero: mensaje_segundero_pro,
+
+            texto_segundero_recom_iz: significado_re_iz_aux,
+            texto_segundero_recom_de:significado_re_de_aux,
         };
         //-------------------------------------------------------------------------------
         return total_resumen_propietario;

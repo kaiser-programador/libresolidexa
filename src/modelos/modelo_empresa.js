@@ -63,6 +63,13 @@ const empresaEsquema = new Schema({
             "Tan solo pagando la suma de <strong>/sus_precio/ $us</strong> obtienes inmueble(s), que en el mercado tendra(n) un valor de <strong>/sus_total/ $us</strong>, obteniendo de esta manera <strong>/sus_plusvalia/ $us</strong> de plusvalía como regalo",
     },
 
+    // TEXTO QUE IRA DEBAJO DE LOS ICONOS DE MANO CON DINERO Y CALENDARIO (LADO DERECHO DE RECOMPENSA) VALIDO TANTO PARA INMUEBLE COMO PARA PROYECTO
+    texto_segundero_recom_inm_py: {
+        type: String,
+        default:
+            "la espera de <strong>/n_meses/ meses</strong> te genera una ganancia de <strong>/bs_espera/ Bs</strong>.",
+    },
+
     // mensaje del segundero del propietario que sera vista (en el lado DERECHO) en la cuenta del propietario (no influye si el propietario tiene varios inmuebles, que estos esten en reserva, construccion, etc)
     texto_segundero_prop: {
         type: String,
@@ -76,6 +83,21 @@ const empresaEsquema = new Schema({
         default:
             "<strong>/nom_propietario/</strong> el tiempo no se detiene y tus ganancias tampoco, tu inversión genera ganancias para ti segundo a sengundo.",
     },
+
+    // mensaje del segundero RECOMPENSA del propietario que sera vista (en el lado IZQUIERDO) en la cuenta del propietario (no influye si el propietario tiene varios inmuebles, que estos esten en reserva, construccion, etc)
+    texto_segundero_prop_recom_iz: {
+        type: String,
+        default:
+            "<strong>/nom_propietario/</strong> el tiempo de espera no tiene que ser una perdida de tiempo ni de dinero, mira como crecen tus ganancias segundo a segundo.",
+    },
+
+    // mensaje del segundero DERECHO del propietario que sera vista (en el lado DERECHO) en la cuenta del propietario (no influye si el propietario tiene varios inmuebles, que estos esten en reserva, construccion, etc)
+    texto_segundero_prop_recom_de: {
+        type: String,
+        default:
+            "la espera de <strong>/n_meses/ meses</strong> te genera una ganancia de <strong>/bs_espera/ Bs</strong>.",
+    },
+
     //-----------------------------------------------------------------
     whatsapp: { type: String, default: "" },
     telefono_fijo: { type: String, default: "" },

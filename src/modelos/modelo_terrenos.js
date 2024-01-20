@@ -23,17 +23,19 @@ const terrenosEsquema = new Schema({
     fecha_inicio_reserva: { type: Date, default: "" },
     fecha_fin_reserva: { type: Date, default: "" },
 
-    // tiempo de duracion 6 meses
-    fecha_inicio_aprobacion: { type: Date, default: "" },
-    fecha_fin_aprobacion: { type: Date, default: "" },
-
-    // tiempo de duracion 10 dias
+    // tiempo de duracion 10 dias 
+    // (ESTE SERA EL PRIMER PAGO QUE CUBRIRA EL PAGO A LOS ARQUITECTOS, A LOS QUE HARAN EL CALCULO ESTRUCTURAL, FICHA AMBIENTAL Y LOS NECESARIOS PARA PERMISOS A LA ALCALDIA)
     fecha_inicio_pago: { type: Date, default: "" },
     fecha_fin_pago: { type: Date, default: "" },
+
+    // tiempo de duracion 2, 4, 6 meses
+    fecha_inicio_aprobacion: { type: Date, default: "" },
+    fecha_fin_aprobacion: { type: Date, default: "" },
+    
     /**-------------------------------------------------- */
 
     // imagino que sera la fechas pertenecientes al proyecto ganador
-    fecha_inicio_construccion: { type: Date, default: "" },
+    fecha_inicio_construccion: { type: Date, default: "" }, // LO NORMAL ES QUE INICIE UN DIA DESPUES DE LA FECHA DE FIN DE APROBACION
     fecha_fin_construccion: { type: Date, default: "" },
     /**--------------------------------------------------- */
 

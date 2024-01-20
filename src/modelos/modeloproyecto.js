@@ -13,7 +13,7 @@ const proyectoEsquema = new Schema({
     visible: { type: Boolean, default: false }, // "false" para ocultar en los resultados
     estado_proyecto: { type: String, default: "guardado" }, // guardado o completado
 
-    tipo_proyecto:{ type: String, default: "" }, // edificio || condominio
+    tipo_proyecto: { type: String, default: "" }, // edificio || condominio
     // edificio (para: departamentos, oficinas, comerciales) || condominio (para: casas)
 
     // el estado_proyecto vendro estara determinado por el estado del terreno, asi que en esta base de datos no es necesario especificar
@@ -108,7 +108,6 @@ const proyectoEsquema = new Schema({
             "Los costos de contruccion fueron obtenidas de diferentes constructoras que operan en el mercado, por lo general estas empresas trabajan con una tarifa fija de contrucción $us/m2 que viene determinada por el mercado tradicional.",
     },
 
-
     titulo_construccion_inm: { type: String, default: "Construcción sin sobreprecios" },
     texto_construccion_inm: {
         type: String,
@@ -153,17 +152,29 @@ const proyectoEsquema = new Schema({
         default:
             "Con SOLIDEXA veraz crecer tus ganancias segundo a segundo, adquiere tu inmueble y benefíciate de las plusvalías del mercado.",
     }, // para las etapas de: Reserva, Pago, Aprobación y Construcción
-    
+
     mensaje_segundero_py_inm_b: {
         type: String,
         default:
             "Proyecto finalizado con éxito, gracias a todos los propietarios por confiar en nosotros.",
     }, // para las etapa de: Construido
 
-    nota_precio_justo: {
+    // mensajes que estaran debajo del segundero RECOMPENSA visto en las ventanas de:PROYECTO y sus INMUEBLES
+    mensaje_segundero_py_inm_c: {
         type: String,
         default:
-            "Precio Justo sin intermediarios, para nuestra poblacion",
+            "Con SOLIDEXA obtienes ganancias mientras se tramitan los permisos necesarios para la construcción.",
+    }, // para las etapas de: Reserva, Pago y Aprobación
+
+    mensaje_segundero_py_inm_d: {
+        type: String,
+        default:
+            "Ganancia generada por el tiempo de espera hasta la obtencion de los permisos de construcción.",
+    }, // para las etapaS de: Construcción Y Construido
+
+    nota_precio_justo: {
+        type: String,
+        default: "Precio Justo sin intermediarios, para nuestra poblacion",
     }, // Valido para Proyecto e Inmuebles de dicho proyecto
 
     //----------------------------------------------------------------
@@ -182,9 +193,17 @@ const proyectoEsquema = new Schema({
 
     //----------------------------------------------------------------
     // parte de REQUERIMIENTOS (MATERIALES, SERVICIOS)
-    nota_no_requerimientos: { type: String, default: "El presente proyecto actualmente no cuenta con requerimientos, por favor consulte en otros proyectos de la plataforma o bien puede hacerlo a traves del buscador" }, // texto que ira cuando no se necesitan requerimientos, ya sea porque el py no lo necesita aun o este esta completamente terminado.
-    
-    nota_si_requerimientos: { type: String, default: "Deseamos contribuir en el mejoramiento economico de las familias bolivianas, es por ello que presentamos oportunidades de empleo por medio de la adquisicion de servicios, insumos, materiales, etc. Envie su propuesta por medio de WhatsApp al número ####### tambien puede comunicarse a dicho número en caso de que requiera mayor infomación" },
+    nota_no_requerimientos: {
+        type: String,
+        default:
+            "El presente proyecto actualmente no cuenta con requerimientos, por favor consulte en otros proyectos de la plataforma o bien puede hacerlo a traves del buscador",
+    }, // texto que ira cuando no se necesitan requerimientos, ya sea porque el py no lo necesita aun o este esta completamente terminado.
+
+    nota_si_requerimientos: {
+        type: String,
+        default:
+            "Deseamos contribuir en el mejoramiento economico de las familias bolivianas, es por ello que presentamos oportunidades de empleo por medio de la adquisicion de servicios, insumos, materiales, etc. Envie su propuesta por medio de WhatsApp al número ####### tambien puede comunicarse a dicho número en caso de que requiera mayor infomación",
+    },
     existe_requerimientos: { type: Boolean, default: false }, // para mostrar la visibilidad de la tabla de requerimientos
 
     //----------------------------------------------------------------

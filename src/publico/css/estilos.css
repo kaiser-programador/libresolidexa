@@ -51,6 +51,7 @@
 
     /* tamaño de letra de las cabezeras */
     --letra_cabezera: 1.1rem;
+
 }
 
 /* COLOR MAGENTA ORIGINAL */
@@ -409,7 +410,7 @@ footer {
     background: var(--color_texto_resalte);
 }
 /* segundero para digitos decimales */
-.cd {
+.cd, .cd_r {
     display: inline-block;
     width: 2rem;
     text-align: right;
@@ -1249,7 +1250,10 @@ table td {
 /* PARA EL CARD QUE ENGLOBA: "COMO SE CALCULA" */
 
 .borde_como_calcula{
-    border: 0.1rem solid #28a745;
+    /* border: 0.1rem solid #007bff; */
+    /* border: 0.1rem solid #2d8bf1;  COLOR DEL BOTON AZUL */
+    /* EL MISMO COLOR QUE LAS BARRAS GRISES DE LOS GRAFICOS DE "BENEFICIOS" */
+    border: 0.1rem solid #949FB1;
     /* border: 0.1rem solid var(--color_texto_link); */
     border-radius: 0.25rem;
 }

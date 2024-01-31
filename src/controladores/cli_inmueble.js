@@ -20,11 +20,202 @@ const {
 
 const { proyecto_info_cd } = require("../ayudas/funcionesayuda_4");
 
-const { numero_punto_coma, verificarTePyInm } = require("../ayudas/funcionesayuda_3");
+const {
+    numero_punto_coma,
+    verificarTePyInm,
+    funcion_sus_m2_historicos,
+    tipo_cambio,
+} = require("../ayudas/funcionesayuda_3");
 
 const moment = require("moment");
 
 const controladorCliInmueble = {};
+
+/************************************************************************************ */
+/************************************************************************************ */
+// // PARA CALCULO DE TIEMPO EN QUE EL INM TRADICIONAL IGUALA LA PLUSVALIA DE SOLIDEXA
+// RUTA   "post"   /inmueble/operacion/calculo_tiempo
+
+controladorCliInmueble.calculoTiempo = async (req, res) => {
+    try {
+        console.log("el bodyyyyy");
+        console.log(req.body);
+        var codigo_inmueble = req.body.codigo_inmueble;
+        var meta = Number(req.body.meta);
+        var plus_promedio = Number(req.body.plus_promedio); // precio de venta actual al que el inmueble tradicional es vendido (es el promedio de los precios de venta tradicionales en la zona donde se encuentra el inm tradicional)
+
+        console.log(codigo_inmueble);
+        console.log(meta);
+        console.log(plus_promedio);
+
+        var year_espera = 5; // por defecto
+
+        var registro_inmueble = await indiceInmueble.findOne(
+            { codigo_inmueble: codigo_inmueble },
+            {
+                codigo_terreno: 1,
+                tipo_inmueble: 1,
+                _id: 0,
+            }
+        );
+
+        if (registro_inmueble) {
+            var fecha_actual = new Date();
+            // Extraemos el mes utilizando el método getMonth()
+            var mes_actual = fecha_actual.getMonth(); // devolvera un valor numerico entre 0 a 11
+            var year_actual = fecha_actual.getFullYear(); // devuelve en numerico el año actual
+
+            if (mes_actual <= 5) {
+                var semestre = "I";
+            } else {
+                var semestre = "II";
+            }
+
+            // formato: "2019 - II"
+            var periodo = year_actual + " - " + semestre;
+
+            var tipo_inmueble = registro_inmueble.tipo_inmueble; // departamento, oficina, comercial, casa
+            console.log("tipo de inmueble: " + tipo_inmueble);
+            let datos_auxiliares = {
+                tipo_inmueble,
+            };
+            var array_hist_sus_m2 = funcion_sus_m2_historicos(datos_auxiliares);
+            var array_sus_m2 = array_hist_sus_m2.array_sus_m2;
+            var array_periodo = array_hist_sus_m2.array_periodo;
+
+            console.log("array_sus_m2 " + array_sus_m2.length);
+            console.log("array_sus_m2 " + array_periodo.length);
+
+            if (array_sus_m2.length > 0 && array_periodo.length > 0) {
+                for (let i = 0; i < array_periodo.length; i++) {
+                    let elemento = array_periodo[i];
+                    if (elemento == periodo) {
+                        var aux_sus_m2 = array_sus_m2[i];
+                        break; // para salir del bucle for
+                    }
+                }
+                let factor = plus_promedio - aux_sus_m2;
+                for (let j = 0; j < array_sus_m2.length; j++) {
+                    if (array_sus_m2[j] + factor >= meta) {
+                        let aux_periodo = array_periodo[j]; // formato: "2019 - II"
+                        let aux_array = aux_periodo.split(" ");
+                        let year_meta = Number(aux_array[0]);
+                        // entonces calculamos el numero de años de espera
+                        year_espera = year_meta - year_actual;
+                        break; // para salir del bucle for
+                    }
+                }
+            }
+        }
+        res.json({
+            exito: year_espera,
+        });
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+/************************************************************************************ */
+/************************************************************************************ */
+// // PARA CALCULO DE TIEMPO EN QUE EL INM TRADICIONAL IGUALA LA PLUSVALIA DE SOLIDEXA
+// RUTA   "post"   /inmueble/operacion/calculo_banco_p
+
+controladorCliInmueble.calculo_banco_p = async (req, res) => {
+    try {
+        console.log(req.body.precio_solidexa);
+
+        console.log("el bodyyyyy BANCO P");
+        console.log(req.body);
+
+        // aunque de jquery los numeros fueron enviados como valores numericos, aqui se reciben como string, asi que nuevamente deben ser convertidos a numericos
+        var precio_solidexa = Number(req.body.precio_solidexa); // $us
+        var precio_tradicional = Number(req.body.precio_tradicional); // $us
+        var aporte = Number(req.body.aporte); // %
+        var plazo = Number(req.body.plazo); // # años
+        var interes = Number(req.body.interes); // % anual
+        var moneda = req.body.moneda;
+
+        console.log("el valor de precio solidexa: " + precio_solidexa);
+        console.log(precio_solidexa);
+
+        if (moneda == "bs") {
+            var aux_tc = tipo_cambio();
+            var tc = aux_tc.tipo_cambio;
+        } else {
+            var tc = 1;
+        }
+
+        var plazo_meses = plazo * 12;
+        var prestamo_solidexa = precio_solidexa * tc * (1 - aporte / 100); // $us o Bs
+        var prestamo_tradicional = precio_tradicional * tc * (1 - aporte / 100); // $us o Bs
+
+        //----------------------------------------------------------
+        // calculo de interes mensual
+
+        var aux_i = interes / 100; // interes anual en decimal
+
+        // conversion de interes anual a mensual
+        //  ((1+intAnual)^(1/12))-1
+        // Math.pow(base, exponente)
+        var i_mensual = Math.pow(1 + aux_i, 1 / 12) - 1; // interes mensual en decimal
+
+        //----------------------------------------------------------
+        // calculo de cuota mensual
+
+        var aux_numerador = i_mensual * Math.pow(1 + i_mensual, plazo_meses);
+        var aux_denominador = Math.pow(1 + i_mensual, plazo_meses) - 1;
+
+        // $us/mes o Bs/mes
+        var mensualidad_solidexa = prestamo_solidexa * (aux_numerador / aux_denominador);
+        var mensualidad_tradicional = prestamo_tradicional * (aux_numerador / aux_denominador);
+
+        //----------------------------------------------------------
+        // calculo de intereses acumulados
+
+        let interesesTotales_s = 0;
+        let saldoRestante_s = prestamo_solidexa;
+
+        let interesesTotales_t = 0;
+        let saldoRestante_t = prestamo_tradicional;
+
+        for (let i = 0; i < plazo_meses; i++) {
+            //--------------------------------------------------
+            // Calcular los intereses para este período SOLIDEXA
+            var interesesEsteMes_s = saldoRestante_s * i_mensual;
+
+            // Actualizar el saldo restante
+            saldoRestante_s = saldoRestante_s - (mensualidad_solidexa - interesesEsteMes_s);
+
+            // Sumar los intereses de este período al total
+            interesesTotales_s = interesesTotales_s + interesesEsteMes_s;
+
+            //--------------------------------------------------
+            // Calcular los intereses para este período TRADICIONAL
+            var interesesEsteMes_t = saldoRestante_t * i_mensual;
+
+            // Actualizar el saldo restante
+            saldoRestante_t = saldoRestante_t - (mensualidad_tradicional - interesesEsteMes_t);
+
+            // Sumar los intereses de este período al total
+            interesesTotales_t = interesesTotales_t + interesesEsteMes_t;
+            //----------------------------------------------------------
+        }
+
+        // devolvemos resultados redondeados a enteros sin decimales y en tipo numericos
+        res.json({
+            credito_solidexa: Number(prestamo_solidexa.toFixed(0)),
+            credito_tradicional: Number(prestamo_tradicional.toFixed(0)),
+
+            int_acu_solidexa: Number(interesesTotales_s.toFixed(0)),
+            int_acu_tradicional: Number(interesesTotales_t.toFixed(0)),
+
+            mensual_solidexa: Number(mensualidad_solidexa.toFixed(0)),
+            mensual_tradicional: Number(mensualidad_tradicional.toFixed(0)),
+        });
+    } catch (error) {
+        console.log(error);
+    }
+};
 
 /************************************************************************************ */
 /************************************************************************************ */
@@ -222,6 +413,20 @@ controladorCliInmueble.renderVentanaInmueble = async (req, res) => {
 
                 // ------- Para verificación -------
                 //console.log("LOS DATOS A RENDERIZAR DE EMPLEOS DEL INMUEBLE");
+                //console.log(info_inmueble_cli);
+
+                res.render("cli_inmueble", info_inmueble_cli);
+            }
+
+            if (tipo_vista_inmueble == "calculadora") {
+                // para mostrar seleccinada la pestaña de donde no encontramos
+                info_inmueble_cli.calculadora_inm = true;
+
+                var info_inmueble = await inmueble_calculadora(codigo_inmueble);
+                info_inmueble_cli.informacion = info_inmueble;
+
+                // ------- Para verificación -------
+                //console.log("los datos de info_economico del inmueble");
                 //console.log(info_inmueble_cli);
 
                 res.render("cli_inmueble", info_inmueble_cli);
@@ -807,19 +1012,19 @@ async function inmueble_beneficios(paquete_datos) {
                         sobreprecio: 0,
                     },
                     {
-                        nombre: "Constructora 1",
+                        nombre: "Constructora A",
                         contructora_dolar_m2: Number(contructora_dolar_m2_1.toFixed(2)),
                         costo_constructora: Number(costo_constructora_1.toFixed(0)),
                         sobreprecio: Number(sobreprecio_1.toFixed(0)),
                     },
                     {
-                        nombre: "Constructora 2",
+                        nombre: "Constructora B",
                         contructora_dolar_m2: Number(contructora_dolar_m2_2.toFixed(2)),
                         costo_constructora: Number(costo_constructora_2.toFixed(0)),
                         sobreprecio: Number(sobreprecio_2.toFixed(0)),
                     },
                     {
-                        nombre: "Constructora 3",
+                        nombre: "Constructora C",
                         contructora_dolar_m2: Number(contructora_dolar_m2_3.toFixed(2)),
                         costo_constructora: Number(costo_constructora_3.toFixed(0)),
                         sobreprecio: Number(sobreprecio_3.toFixed(0)),
@@ -831,22 +1036,22 @@ async function inmueble_beneficios(paquete_datos) {
                         nombre: "SOLIDEXA",
                         contructora_dolar_m2: numero_punto_coma(volterra_dolar_m2.toFixed(2)),
                         costo_constructora: numero_punto_coma(costo_volterra.toFixed(0)),
-                        sobreprecio: 0,
+                        sobreprecio: "-",
                     },
                     {
-                        nombre: "Constructora 1",
+                        nombre: "Constructora A",
                         contructora_dolar_m2: numero_punto_coma(contructora_dolar_m2_1.toFixed(2)),
                         costo_constructora: numero_punto_coma(costo_constructora_1.toFixed(0)),
                         sobreprecio: numero_punto_coma(Math.abs(sobreprecio_1).toFixed(0)),
                     },
                     {
-                        nombre: "Constructora 2",
+                        nombre: "Constructora B",
                         contructora_dolar_m2: numero_punto_coma(contructora_dolar_m2_2.toFixed(2)),
                         costo_constructora: numero_punto_coma(costo_constructora_2.toFixed(0)),
                         sobreprecio: numero_punto_coma(Math.abs(sobreprecio_2).toFixed(0)),
                     },
                     {
-                        nombre: "Constructora 3",
+                        nombre: "Constructora C",
                         contructora_dolar_m2: numero_punto_coma(contructora_dolar_m2_3.toFixed(2)),
                         costo_constructora: numero_punto_coma(costo_constructora_3.toFixed(0)),
                         sobreprecio: numero_punto_coma(Math.abs(sobreprecio_3).toFixed(0)),
@@ -861,6 +1066,7 @@ async function inmueble_beneficios(paquete_datos) {
                 let n_p = registro_inmueble.direccion_comparativa.length;
                 if (n_p > 0) {
                     var sum_precios = 0;
+                    var sus_m2_solidexa = construccion_inm / area_construida;
                     for (let i = 0; i < n_p; i++) {
                         var aux_sus_m2 = Number(
                             (
@@ -868,6 +1074,7 @@ async function inmueble_beneficios(paquete_datos) {
                                 Number(registro_inmueble.m2_comparativa[i])
                             ).toFixed(2)
                         );
+
                         var aux_precio_inm_volterra = Number(
                             (aux_sus_m2 * area_construida).toFixed(2)
                         );
@@ -879,11 +1086,12 @@ async function inmueble_beneficios(paquete_datos) {
                                 registro_inmueble.precio_comparativa[i].toFixed(0)
                             ),
                             sus_m2: Number(aux_sus_m2.toFixed(2)),
-                            precio_inm_volterra: Number(aux_precio_inm_volterra.toFixed(0)), // precio del inmueble  calculado a los precios que venden sus similares
-                            sobreprecio_venta: Number(
-                                (aux_precio_inm_volterra - construccion_inm).toFixed(0)
-                            ),
-                            area_volterra: Number(area_construida.toFixed(2)), // para repetirlo en la tabla
+
+                            sobreprecio_venta: Number((aux_sus_m2 - sus_m2_solidexa).toFixed(2)), // $us/m2
+
+                            //precio_inm_volterra: Number(aux_precio_inm_volterra.toFixed(0)), // precio del inmueble  calculado a los precios que venden sus similares
+
+                            //area_volterra: Number(area_construida.toFixed(2)), // para repetirlo en la tabla
                         };
 
                         precios_mercado_render[i] = {
@@ -896,15 +1104,45 @@ async function inmueble_beneficios(paquete_datos) {
                                 registro_inmueble.precio_comparativa[i].toFixed(0)
                             ),
                             sus_m2: numero_punto_coma(aux_sus_m2.toFixed(2)),
+                            sobreprecio_venta: numero_punto_coma(
+                                (aux_sus_m2 - sus_m2_solidexa).toFixed(2)
+                            ),
+
+                            /*
                             precio_inm_volterra: numero_punto_coma(
                                 aux_precio_inm_volterra.toFixed(0)
                             ), // precio del inmueble  calculado a los precios que venden sus similares
-                            sobreprecio_venta: numero_punto_coma(
-                                (aux_precio_inm_volterra - construccion_inm).toFixed(0)
-                            ),
-                            area_volterra: numero_punto_coma(area_construida.toFixed(2)), // para repetirlo en la tabla
+                            */
+
+                            //area_volterra: numero_punto_coma(area_construida.toFixed(2)), // para repetirlo en la tabla
                         };
                     }
+                    //---------------------------------------------------------------
+                    // agregamos los datos de SOLIDEXA al inicio de los array necesarios
+                    let datos_solidexa = {
+                        direccion_comparativa: "SOLIDEXA",
+                        m2_comparativa: Number(area_construida.toFixed(2)),
+                        precio_comparativa: Number(construccion_inm.toFixed(0)),
+                        sus_m2: Number(sus_m2_solidexa.toFixed(2)),
+                        sobreprecio_venta: "-",
+                        //area_volterra: Number(area_construida.toFixed(2)), // para repetirlo en la tabla
+                    };
+
+                    // Agregar al inicio del array
+                    precios_mercado.unshift(datos_solidexa);
+
+                    let datos_solidexa_render = {
+                        direccion_comparativa: "SOLIDEXA",
+                        m2_comparativa: numero_punto_coma(area_construida.toFixed(2)),
+                        precio_comparativa: numero_punto_coma(construccion_inm.toFixed(0)),
+                        sus_m2: numero_punto_coma(sus_m2_solidexa.toFixed(2)),
+                        sobreprecio_venta: "-",
+                        //area_volterra: numero_punto_coma(area_construida.toFixed(2)), // para repetirlo en la tabla
+                    };
+
+                    // Agregar al inicio del array
+                    precios_mercado_render.unshift(datos_solidexa_render);
+                    //---------------------------------------------------------------
 
                     var precio_promedio = (sum_precios / n_p).toFixed(0);
                     var precio_promedio_render = numero_punto_coma((sum_precios / n_p).toFixed(0));
@@ -1352,6 +1590,126 @@ async function inmueble_empleos(codigo_inmueble) {
     }
 }
 
+//------------------------------------------------------------------
+
+async function inmueble_calculadora(codigo_inmueble) {
+    try {
+        var registro_inmueble = await indiceInmueble.findOne(
+            { codigo_inmueble: codigo_inmueble },
+            {
+                superficie_inmueble_m2: 1,
+                codigo_terreno: 1,
+                codigo_terreno: 1,
+                precio_comparativa: 1,
+                m2_comparativa: 1,
+                superficie_inmueble_m2: 1,
+                _id: 0,
+            }
+        );
+
+        var solidexa_sus = 0;
+        var solidexa_sus_m2 = 0;
+        var solidexa_m2 = 0;
+
+        var maximo = 0; // por defecto
+        var minimo = 0; // por defecto
+        var promedio = 0; // por defecto
+
+        var maximo_render = "0"; // por defecto
+        var minimo_render = "0"; // por defecto
+        var promedio_render = "0"; // por defecto
+
+        var direccion = "Dirección";
+        var provincia = "Provincia";
+        var ciudad = "Ciudad";
+
+        if (registro_inmueble) {
+            //-------------------------------------------------------------------
+            var datos_segundero = {
+                codigo_objetivo: codigo_inmueble,
+                ci_propietario: "ninguno",
+                tipo_objetivo: "inmueble",
+            };
+
+            // OJO*** PORQUE "segundero_cajas" tambien utiliza "inmueble_card_adm_cli" y estan ambas en esta misma funcion
+            var aux_segundero_cajas = await segundero_cajas(datos_segundero);
+            solidexa_sus = aux_segundero_cajas.precio; // precio actual del inmueble con los descuentos por penalizaciones que pudierra llegar a tener actualmente
+            solidexa_sus_m2 = Number(
+                (solidexa_sus / registro_inmueble.superficie_inmueble_m2).toFixed(2)
+            ); // en valor numerico con 2 decimales
+
+            solidexa_m2 = registro_inmueble.superficie_inmueble_m2; // de la BD ya viene como numerico y redondeado a 2 decimales
+
+            var registro_terreno = await indiceTerreno.findOne(
+                { codigo_terreno: registro_inmueble.codigo_terreno },
+                {
+                    ciudad: 1,
+                    provincia: 1,
+                    direccion: 1,
+                    _id: 0,
+                }
+            );
+
+            if (registro_terreno) {
+                direccion = registro_terreno.direccion;
+                provincia = registro_terreno.provincia;
+                ciudad = registro_terreno.ciudad;
+            }
+
+            let precios_otros = registro_inmueble.precio_comparativa;
+            let m2_otros = registro_inmueble.m2_comparativa;
+            let sus_m2 = [];
+            let sum_sus_m2 = 0;
+            let contador = 0;
+
+            if (precios_otros.length > 0 && m2_otros.length > 0) {
+                for (let d = 0; d < precios_otros.length; d++) {
+                    sus_m2[d] = precios_otros[d] / m2_otros[d];
+                    sum_sus_m2 = sum_sus_m2 + precios_otros[d] / m2_otros[d];
+                    contador = contador + 1;
+                }
+
+                // el valor MAXIMO del array sus_m2
+                var aux_maximo = Math.max(...sus_m2);
+                maximo = Number(aux_maximo.toFixed(2));
+                maximo_render = numero_punto_coma(aux_maximo.toFixed(2));
+                // el valor minimo del array sus_m2
+                var aux_minimo = Math.min(...sus_m2);
+                minimo = Number(aux_minimo.toFixed(2));
+                minimo_render = numero_punto_coma(aux_minimo.toFixed(2));
+                // el valor promedio del array sus_m2
+                var aux_promedio = sum_sus_m2 / contador;
+                promedio = Number(aux_promedio.toFixed(2));
+                promedio_render = numero_punto_coma(aux_promedio.toFixed(2));
+            }
+
+            var datos_calculadora = {
+                direccion,
+                provincia,
+                ciudad,
+
+                solidexa_sus,
+                solidexa_m2,
+                solidexa_sus_m2,
+
+                maximo, // $us/m2 numerico redondeado a 2 decimales
+                minimo, // $us/m2 numerico redondeado a 2 decimales
+                promedio, // $us/m2 numerico redondeado a 2 decimales
+
+                maximo_render,
+                minimo_render,
+                promedio_render,
+            };
+
+            return datos_calculadora;
+        } else {
+            return false;
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 // ------------------------------------------------------------------
 
 async function inmueble_inversor(paquete_datos) {
@@ -1490,6 +1848,7 @@ async function complementos_globales_inm(paquete_datos) {
         { codigo_inmueble: codigo_inmueble },
         {
             codigo_proyecto: 1,
+            estado_inmueble: 1,
         }
     );
 
@@ -1595,6 +1954,17 @@ async function complementos_globales_inm(paquete_datos) {
             var existe_inversor_inmueble = false;
         }
 
+        //----------------------------------------------------------
+        // para mostrar u ocultar la pestaña de calculadora dentro del inmueble
+
+        if (aux_inmueble.estado_inmueble == "completado") {
+            // la pestaña de "calculadora" no sera visible cuando el inmueble este en estado de completado (que equivale a estar construido)
+            var existe_calculadora = false;
+        } else {
+            var existe_calculadora = true;
+        }
+        //----------------------------------------------------------
+
         return {
             codigo_proyecto,
             nombre_proyecto: basico_py.nombre_proyecto,
@@ -1611,6 +1981,8 @@ async function complementos_globales_inm(paquete_datos) {
             imagenes_inm_exclusiva,
 
             existe_inversor_inmueble,
+
+            existe_calculadora,
         };
     }
 }

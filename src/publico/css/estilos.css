@@ -560,6 +560,29 @@ table td {
 }
 
 /* ------------------------------------------ */
+/* CACULADORA DEL INMUEBLE */
+
+.linea_calculadora {
+    border: 2px solid var(--color_bordes_card);
+}
+
+.icono_popover{
+    /* font-size: 1.5rem; */
+    font-size: 1.3rem;
+    /* color: #ffc107; */
+    color: #17a2b8;
+}
+
+/* grafico de calculadora */
+#grafico_plus_sol_tra, #grafico_tiempo_espera{
+    width: 100%; /* O cualquier otro valor deseado */
+    /* Esto permite que la altura se ajuste automáticamente según el ancho */
+    height: auto; 
+    /* min-height: 300px; */
+        
+}
+
+/* ------------------------------------------ */
 /* COLORES DEL CUADRO PRECIO CARD DEL INMUEBLE */
 
 .en_gris {

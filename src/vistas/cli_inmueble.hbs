@@ -95,6 +95,20 @@
     </li>
     {{/if}}
 
+    {{#if global_inm.existe_calculadora}}
+    {{#if calculadora_inm}}
+    <li class="nav-item">
+        <a href="/inmueble/{{codigo_inmueble}}/calculadora" class="nav-link active"
+            id="calculadora_inm-tab" role="tab" aria-controls="calculadora_inm" aria-selected="true">Calculadora</a>
+    </li>
+    {{else}}
+    <li class="nav-item">
+        <a href="/inmueble/{{codigo_inmueble}}/calculadora" class="nav-link" id="calculadora_inm-tab"
+            role="tab" aria-controls="calculadora_inm" aria-selected="false">Calculadora</a>
+    </li>
+    {{/if}}
+    {{/if}}
+
     {{#if global_inm.existe_inversor_inmueble}}
     {{#if inversor_inmueble}}
     <li class="nav-item">
@@ -148,6 +162,12 @@
 </div>
 {{/if}}
 
+{{#if calculadora_inm}}
+<span id="tipo_pestana_inm" data-id="normal"></span>
+<div class="container">
+    {{> cli_inm_calculadora}}
+</div>
+{{/if}}
 
 {{#if inversor_inmueble}}
 <span id="tipo_pestana_inm" data-id="normal"></span>

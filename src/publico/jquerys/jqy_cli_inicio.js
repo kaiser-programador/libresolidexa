@@ -1,6 +1,28 @@
 // PARA CUANDO LA PAGINA SE CARGUE DEL LADO DEL CLIENTE
 
 $(document).ready(function () {
+    //----------------------------------------
+    // para los mensajes de icono informacion
+    $('[data-toggle="popover"]').popover();
+
+    // Cerrar el popover al hacer clic en el botón de cerrar
+    // Cerrar el popover al hacer clic en el popover
+    /*
+    $('.mensaje_peter').on('click', function () {
+        $('[data-toggle="popover"]').popover('toggle');
+      });
+      */
+
+    //   $(document).on('click', function (e) {
+        /*
+        $(document).click(function (e) {
+            if (!$(e.target).closest('[data-toggle="popover"]').length) {
+              $('[data-toggle="popover"]').popover('hide');
+            };
+            */
+            
+    //----------------------------------------
+
     $(".knob").knob({
         draw: function () {
             // "tron" case
@@ -131,11 +153,11 @@ $(document).ready(function () {
         if (tipo_pestana_py == "beneficios_py") {
             //---------------------------------------------------------
             // GRAFICO DE CONTRUCTORAS
-
-            // eliminamos la primera fila de la tabla de constructoras_sobreprecios, PORQUE ESA CORRESPONDE AL DE SOLIDEXA Y ESA NO DEBE YA SER MOSTRADA
+            
             let n_filas = $("#constructoras_sobreprecios .cuerpo_filas .fila_ref").length;
             if (n_filas > 0) {
-                $("#constructoras_sobreprecios .cuerpo_filas .fila_ref").eq(0).remove();
+                // eliminamos la primera fila de la tabla de constructoras_sobreprecios, PORQUE ESA CORRESPONDE AL DE SOLIDEXA Y ESA NO DEBE YA SER MOSTRADA
+                //$("#constructoras_sobreprecios .cuerpo_filas .fila_ref").eq(0).remove();
                 //----------------------------------------------------------------------------
 
                 let n_filas_r = $("#contenedor_constructoras .cuerpo").length;
@@ -276,9 +298,9 @@ $(document).ready(function () {
             //---------------------------------------------------------------------------
             // GRAFICO PRECIOS
 
-            var n_filas = $("#precios_mercado .cuerpo_filas .fila_ref").length;
+            var n_filas = $("#diferencia_ganancias .cuerpo_filas .fila_ref").length;
             if (n_filas > 0) {
-                //$('#precios_mercado .cuerpo_filas .fila_ref').eq(0).remove();
+
                 //----------------------------------------------------------------------------
 
                 let n_filas_r = $("#contenedor_precios_mercado .cuerpo").length;
@@ -294,14 +316,23 @@ $(document).ready(function () {
                         .eq(i)
                         .attr("data-direccion");
                     array_precios_mercado[i] = Number(
-                        $("#contenedor_precios_mercado .cuerpo .precio_inm_volterra")
+                        $("#contenedor_precios_mercado .cuerpo .sus_m2")
                             .eq(i)
-                            .attr("data-convertido")
+                            .attr("data-dolarm2")
                     );
-                    array_color[i] = "#949FB1"; // COLOR GRIS
-                    array_borde[i] = "#919fb5"; // COLOR GRIS
+
+                    if (i==0) {
+                        // el primer lugar del array esta ocupado por info de SOLIDEXA
+                        array_color[i] = "#0a58ae"; // CON COLOR
+                        array_borde[i] = "#065db9"; // CON COLOR
+                    }else{
+                        array_color[i] = "#949FB1"; // COLOR GRIS
+                        array_borde[i] = "#919fb5"; // COLOR GRIS
+                    }
+                    
                 }
 
+                /*
                 var precio_volterra = Number(
                     $("#contenedor_plusvalia .precio_venta").attr("data-precio")
                 );
@@ -311,13 +342,15 @@ $(document).ready(function () {
                 array_precios_mercado.unshift(precio_volterra);
                 array_color.unshift("#0a58ae"); // CON COLOR
                 array_borde.unshift("#065db9"); // CON COLOR
+                */
+
 
                 var datos_precios = {
                     type: "bar",
                     data: {
                         datasets: [
                             {
-                                label: "Precios venta $us",
+                                label: "Precios venta $us/m2",
                                 data: array_precios_mercado,
                                 backgroundColor: array_color,
                                 ////////
@@ -360,10 +393,10 @@ $(document).ready(function () {
             //---------------------------------------------------------------------------
             // GRAFICO CONSTRUCTORAS
 
-            // eliminamos la primera fila de la tabla de constructoras_sobreprecios, PORQUE ESA CORRESPONDE AL DE SOLIDEXA Y ESA NO DEBE YA SER MOSTRADA
             var n_filas = $("#constructoras_sobreprecios .cuerpo_filas .fila_ref").length;
             if (n_filas > 0) {
-                $("#constructoras_sobreprecios .cuerpo_filas .fila_ref").eq(0).remove();
+                // eliminamos la primera fila de la tabla de constructoras_sobreprecios, PORQUE ESA CORRESPONDE AL DE SOLIDEXA Y ESA NO DEBE YA SER MOSTRADA
+                // $("#constructoras_sobreprecios .cuerpo_filas .fila_ref").eq(0).remove();
                 //----------------------------------------------------------------------------
 
                 let n_filas_r = $("#contenedor_constructoras .cuerpo").length;
@@ -905,6 +938,18 @@ $(window).resize(function () {
     if (tipo_ventana == "cliente-inicio") {
         dim_ventana_inicio();
     }
+});
+
+//----------------------------------------------------------
+// solo para cerrar los mensajes "popover" cuando se hace click en cualquier punto de la ventana de la web
+// oculta todos los mensajes "popover" que estuvieran visibles
+$(document).click(function (e) {
+
+    if (!$(e.target).closest('[data-toggle="popover"]').length) {
+        $('[data-toggle="popover"]').popover('hide');
+      }
+
+
 });
 
 //---------------------------------------------

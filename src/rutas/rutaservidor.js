@@ -167,6 +167,20 @@ module.exports = function (servidorDamosRutas) {
         controladorCliInmueble.renderVentanaInmueble
     );
 
+    // PARA CALCULO DE TIEMPO EN QUE EL INM TRADICIONAL IGUALA LA PLUSVALIA DE SOLIDEXA
+    laRuta.post(
+        "/inmueble/operacion/calculo_tiempo",
+        validador.validar_cli_2,
+        controladorCliInmueble.calculoTiempo
+    );
+
+    // PARA CALCULO DE FINANCIAMIENTO BANCARIO PARA PROPIETARIO
+    laRuta.post(
+        "/inmueble/operacion/calculo_banco_p",
+        validador.validar_cli_2,
+        controladorCliInmueble.calculo_banco_p
+    );
+
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     // +++++++++++++++++++++++++   RUTAS ADMINISTRADOR   +++++++++++++++++++++++++++++++++++
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

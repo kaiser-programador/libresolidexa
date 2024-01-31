@@ -20,7 +20,7 @@ const inmuebleEsquema = new Schema({
 
     valor_reserva: { type: Number, default: 0 }, // que requiere el inmueble en $us
 
-    tipo_inmueble: { type: String, default: "" }, // departamento, oficina, comercial, casa
+    tipo_inmueble: { type: String, default: "" }, // Departamento, Oficina, Comercial, Casa
     torre: { type: String, default: "" },
     piso: { type: Number, default: 0 }, // Importante, para que se los resultados sean ordenados por num. piso
     puerta_inmueble: { type: String, default: "" }, // AQUELLO QUE ESTARA EN SUS PUERTAS (ej/ 1A  ,  5B)

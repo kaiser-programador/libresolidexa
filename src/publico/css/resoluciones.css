@@ -626,6 +626,44 @@
     }
 }
 
+/* ---------------------------------------------- */
+/* PARA GRAFICOS DE CALCULADORA INVERSIONISTA */
+
+/* desde 575px para adelante lg */
+@media screen and (min-width: 575px) {
+
+    .gra_velocimetro, .texto_velocimetro {
+        /* visualizamos */
+        display: block;
+    }
+
+    .gra_barras, .texto_barras {
+        /* visualizamos */
+        display: block;
+    }
+
+    .contenedor_desplazamiento {
+        /* ocultamos */
+        display: none;
+    }
+
+}
+
+/* si es menor que 575px */
+@media screen and (max-width: 575px) {
+    .gra_velocimetro, .texto_velocimetro {
+        /* ocultamos */
+        display: none;
+    }
+
+    .contenedor_desplazamiento {
+        /* visualizamos */
+        display: block;
+    }
+}
+
+/* ---------------------------------------------- */
+
 /* .contenedor_somos_impar .textos_somos{
     padding-right: 2rem;
     text-align: left;

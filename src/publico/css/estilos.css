@@ -582,6 +582,21 @@ table td {
         
 }
 
+#contenedor_grafico_i_1, #contenedor_grafico_i_2, #contenedor_grafico_i_3, #contenedor_grafico_i_4{
+    width: 300px; /* O cualquier otro valor deseado */
+    /* Esto permite que la altura se ajuste automáticamente según el ancho */
+    height: 250px; 
+    /* min-height: 300px; */
+}
+
+.contenedor_velocimetro{
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    width: 100%;
+    height: 250px; 
+}
+
 /* ------------------------------------------ */
 /* COLORES DEL CUADRO PRECIO CARD DEL INMUEBLE */
 

@@ -181,6 +181,13 @@ module.exports = function (servidorDamosRutas) {
         controladorCliInmueble.calculo_banco_p
     );
 
+    // PARA CALCULO DE RENDIMIENTOS DE INVERSIONISTA
+    laRuta.post(
+        "/inmueble/operacion/calculo_inversionista",
+        validador.validar_cli_2,
+        controladorCliInmueble.calculo_inversionista
+    );
+
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     // +++++++++++++++++++++++++   RUTAS ADMINISTRADOR   +++++++++++++++++++++++++++++++++++
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

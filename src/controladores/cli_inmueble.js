@@ -186,7 +186,7 @@ controladorCliInmueble.calculo_banco_p = async (req, res) => {
             // Actualizar el saldo restante
             saldoRestante_s = saldoRestante_s - (mensualidad_solidexa - interesesEsteMes_s);
 
-            // Sumar los intereses de este período al total
+            // total de intereses pagados hasta este periodo
             interesesTotales_s = interesesTotales_s + interesesEsteMes_s;
 
             //--------------------------------------------------
@@ -212,6 +212,271 @@ controladorCliInmueble.calculo_banco_p = async (req, res) => {
             mensual_solidexa: Number(mensualidad_solidexa.toFixed(0)),
             mensual_tradicional: Number(mensualidad_tradicional.toFixed(0)),
         });
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+/************************************************************************************ */
+/************************************************************************************ */
+// // PARA CALCULO DE RENDIMIENTOS DEL INVERSIONISTA
+// RUTA   "post"   /inmueble/operacion/calculo_inversionista
+
+controladorCliInmueble.calculo_inversionista = async (req, res) => {
+    try {
+        var solucionado = false; // por defecto
+
+        console.log("el bodyyyyy INVERSIONISTA");
+        console.log(req.body);
+
+        // aunque de jquery los numeros fueron enviados como valores numericos, aqui se reciben como string, asi que nuevamente deben ser convertidos a numericos
+        var inversion_emp = Number(req.body.inversion_emp); // $us
+        var ganancia = Number(req.body.ganancia); // $us/Mes
+        var reinversion = req.body.reinversion; // si o no
+        var inversion_sol = Number(req.body.inversion_sol); // $us
+        var i_financiamiento = Number(req.body.i_financiamiento); // % anual
+        var plazo_financiamiento = Number(req.body.plazo_financiamiento);
+        var codigo_inmueble = req.body.codigo_inmueble;
+
+        var registro_inmueble = await indiceInmueble.findOne(
+            { codigo_inmueble: codigo_inmueble },
+            {
+                codigo_terreno: 1,
+                _id: 0,
+            }
+        );
+
+        if (registro_inmueble) {
+            var registro_terreno = await indiceTerreno.findOne(
+                { codigo_terreno: registro_inmueble.codigo_terreno },
+                {
+                    fecha_inicio_reserva: 1,
+                    fecha_fin_construccion: 1,
+                    _id: 0,
+                }
+            );
+
+            if (registro_terreno) {
+                //----------------------------------------------------------
+                // calculo del total plazo en meses DESDE INICIO CONVOCATORIA HASTA FIN CONTRUCCION
+
+                var diferenciaEnMilisegundos =
+                    registro_terreno.fecha_fin_construccion - registro_terreno.fecha_inicio_reserva;
+
+                // Convertir la diferencia de milisegundos a días
+                var diferenciaEnDias = diferenciaEnMilisegundos / (1000 * 60 * 60 * 24);
+
+                // el número de meses, redondeado al entero inmediato inferior
+                var plazo = Math.floor(diferenciaEnDias / 30); // meses
+
+                //------------------------------------------------------------
+                //------------------------------------------------------------
+                // rendimiento de ahorro bancario
+
+                var datos_segundero = {
+                    codigo_objetivo: codigo_inmueble,
+                    ci_propietario: "ninguno",
+                    tipo_objetivo: "inmueble",
+                };
+
+                var aux_segundero_cajas = await segundero_cajas(datos_segundero);
+                var solidexa_sus = aux_segundero_cajas.precio; // precio actual del inmueble con los descuentos por penalizaciones que pudierra llegar a tener actualmente
+
+                //----------------------------------------------------------
+                // calculo de interes mensual
+
+                // ACTUALIZAR ACORDE AL MERCADO
+                var i_banco = 6.8; // % ANUAL. corresponde a la mejor tasa de interes por tus ahorros que ofrece un banco
+
+                var aux_i = i_banco / 100; // interes anual en decimal
+
+                // conversion de interes anual a mensual
+                //  ((1+intAnual)^(1/12))-1
+                // Math.pow(base, exponente)
+                var i_banco_mes = Math.pow(1 + aux_i, 1 / 12) - 1; // interes mensual en decimal
+                //----------------------------------------------------------
+
+                var val_futuro = solidexa_sus * Math.pow(1 + i_banco_mes, plazo);
+
+                var ganancia_a = Number((val_futuro - solidexa_sus).toFixed(0));
+
+                var rendimiento_a = Number(
+                    (((val_futuro - solidexa_sus) / solidexa_sus) * 100).toFixed(2)
+                );
+
+                var inversion_a = solidexa_sus;
+
+                // para pocicionamiento del angulo de la flecha
+                var angulo_a = Number(((1.8*rendimiento_a)-180).toFixed(2));
+
+                //------------------------------------------------------------
+                //------------------------------------------------------------
+                // rendimiento de emprendimiento
+
+                var plazo_reinv = plazo;
+
+                if (reinversion == "si") {
+                    // ACTUALIZAR ACORDE AL MERCADO
+                    var i_reinversion = 10; // 10% anual (puede ser la MEJOR tasa de interes que ofrece un banco)
+
+                    //----------------------------------------------------------
+                    // calculo de interes mensual
+
+                    var aux_i_reinv = i_reinversion / 100; // interes anual en decimal
+
+                    // conversion de interes anual a mensual
+                    //  ((1+intAnual)^(1/12))-1
+                    // Math.pow(base, exponente)
+                    var i_reinv_mes = Math.pow(1 + aux_i_reinv, 1 / 12) - 1; // interes mensual en decimal
+
+                    //------------------------------------------------------------
+
+                    var sum_gan_reinv = 0; // sumatoria de las ganancias que se obtienen por reinvertir las ganancias mensuales
+
+                    for (let i = 0; i < plazo_reinv - 1; i++) {
+                        let plazo_reinv = plazo_reinv - 1; // ej/ si fueran 10 meses, la primera reinversion no permarecera 10 meses, sino que 9 (por eso se resta 1 mes) porque primero debe transcurrir 1 mes para que el inversionista obtenga su primera ganancia mensual, que es la que se reinvertira
+
+                        let val_futuro_reinv = ganancia * Math.pow(1 + i_reinv_mes, plazo_reinv);
+
+                        sum_gan_reinv = sum_gan_reinv + val_futuro_reinv;
+                    }
+
+                    var inversion_b = inversion_emp;
+                    var ganancia_b = Number((sum_gan_reinv - inversion_emp).toFixed(0));
+                    var rendimiento_b = Number(
+                        (((sum_gan_reinv - inversion_emp) / inversion_emp) * 100).toFixed(2)
+                    );
+
+                    // para pocicionamiento del angulo de la flecha
+                    var angulo_b = Number(((1.8*rendimiento_b)-180).toFixed(2));
+                }
+
+                if (reinversion == "no") {
+                    var inversion_b = inversion_emp;
+                    var ganancia_b = Number((ganancia * plazo).toFixed(0));
+                    var rendimiento_b = Number(
+                        (((ganancia * plazo) / inversion_emp) * 100).toFixed(2)
+                    );
+
+                    // para pocicionamiento del angulo de la flecha
+                    var angulo_b = Number(((1.8*rendimiento_b)-180).toFixed(2));
+                }
+
+                //------------------------------------------------------------
+                //------------------------------------------------------------
+                // rendimiento de SOLIDEXA
+
+                var inversion_c = solidexa_sus;
+                var ganancia_c = Number(aux_segundero_cajas.ahorro.toFixed(0));
+                var rendimiento_c = Number(
+                    ((aux_segundero_cajas.ahorro / solidexa_sus) * 100).toFixed(2)
+                );
+
+                // para pocicionamiento del angulo de la flecha
+                var angulo_c = Number(((1.8*rendimiento_c)-180).toFixed(2));
+
+                //------------------------------------------------------------
+                //------------------------------------------------------------
+                // rendimiento de SOLIDEXA PLUS
+
+                // dinero que el inversionista pone de su propio bolsillo
+                var inversion_d = Number((solidexa_sus * (inversion_sol / 100)).toFixed(0)); // $us
+                // dinero que el inversionista pide prestado a un financiador externo
+                var val_financiamiento = solidexa_sus - inversion_d; // $us
+
+                var plazo_finan = plazo_financiamiento * 12; // meses
+                //----------------------------------------------------------
+                // calculo de interes mensual
+
+                var aux_i_finan = i_financiamiento / 100; // interes anual en decimal
+
+                // conversion de interes anual a mensual
+                //  ((1+intAnual)^(1/12))-1
+                // Math.pow(base, exponente)
+                var i_finan_mes = Math.pow(1 + aux_i_finan, 1 / 12) - 1; // interes mensual en decimal
+
+                //------------------------------------------------------------
+                // calculo del pago mensual por el financiamiento
+
+                var aux_numerador = i_finan_mes * Math.pow(1 + i_finan_mes, plazo_finan);
+                var aux_denominador = Math.pow(1 + i_finan_mes, plazo_finan) - 1;
+
+                // $us/mes
+                var mensualidad_finan = val_financiamiento * (aux_numerador / aux_denominador);
+
+                //------------------------------------------------------------
+
+                let interesesTotales = 0;
+                let saldoRestante = val_financiamiento;
+                let periodo = 0;
+
+                for (let i = 0; i < plazo_finan; i++) {
+                    periodo = periodo + 1;
+                    //--------------------------------------------------
+                    // Calcular los intereses para este período
+                    var interesesEsteMes = saldoRestante * i_finan_mes;
+
+                    // Actualizar el saldo restante
+                    saldoRestante = saldoRestante - (mensualidad_finan - interesesEsteMes);
+
+                    // total de intereses pagados hasta este periodo
+                    interesesTotales = interesesTotales + interesesEsteMes;
+                    //--------------------------------------------------
+
+                    // plazo: es el numero de meses desde inicio convocatoria hasta fin contruccion
+                    if (periodo == plazo) {
+                        // recuerda que se lo vende al precio del mercado tradicional
+                        var venta_inm = solidexa_sus + aux_segundero_cajas.ahorro; // $us
+
+                        var aux_ganancia = venta_inm - saldoRestante - interesesTotales;
+
+                        var inversion_d = Number((inversion_d + interesesTotales).toFixed(0));
+
+                        var ganancia_d = Number(aux_ganancia.toFixed(0));
+
+                        var rendimiento_d = Number(
+                            ((aux_ganancia / (inversion_d + interesesTotales)) * 100).toFixed(2)
+                        );
+
+                        // para pocicionamiento del angulo de la flecha
+                        var angulo_d = Number(((1.8*rendimiento_d)-180).toFixed(2));
+
+                        break; // para salir del bucle for
+                    }
+                }
+
+                //------------------------------------------------------------
+                //------------------------------------------------------------
+
+                var solucionado = true;
+            }
+        }
+
+        if (solucionado) {
+            res.json({
+                exito: "si",
+                inversion_a,
+                ganancia_a,
+                rendimiento_a,
+                inversion_b,
+                ganancia_b,
+                rendimiento_b,
+                inversion_c,
+                ganancia_c,
+                rendimiento_c,
+                inversion_d,
+                ganancia_d,
+                rendimiento_d,
+                angulo_a,
+                angulo_b,
+                angulo_c,
+                angulo_d,
+            });
+        } else {
+            res.json({
+                exito: "no",
+            });
+        }
     } catch (error) {
         console.log(error);
     }

@@ -6,8 +6,6 @@
 $(".calculadora_propietario").click(function (e) {
     $("#contenedor_propietario").css("display", "block");
     $("#contenedor_inversionista").css("display", "none");
-    // limpiesa de los campos de claves maestras
-    $(".clase_calculadora").text("");
     // titulo del tipo de calculadora
     $(".clase_calculadora").text("Propietario");
 });
@@ -15,10 +13,38 @@ $(".calculadora_propietario").click(function (e) {
 $(".calculadora_inversionista").click(function (e) {
     $("#contenedor_propietario").css("display", "none");
     $("#contenedor_inversionista").css("display", "block");
-    // limpiesa de los campos de claves maestras
-    $(".clase_calculadora").text("");
     // titulo del tipo de calculadora
     $(".clase_calculadora").text("Inversionista");
+});
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// PARA LAS FLECHAS DE DESPLAZAMIENTO
+
+$(".flechas_desplazamiento").click(function (e) {
+    let vemos = $(".aux_desplazamiento").attr("data-desplazamiento");
+
+    if (vemos == "barras") {
+        // actualmente se ven barras, entonces ocultamos barras y visualizamos velocimetros
+        $(".gra_barras").css("display", "none");
+        $(".texto_barras").css("display", "none");
+
+        $(".gra_velocimetro").css("display", "block");
+        $(".texto_velocimetro").css("display", "block");
+
+        $(".aux_desplazamiento").attr("data-desplazamiento", "velocimetros");
+    }
+
+    if (vemos == "velocimetros") {
+        // actualmente se ven velocimetros, entonces ocultamos velocimetros y visualizamos barras
+        $(".gra_velocimetro").css("display", "none");
+        $(".texto_velocimetro").css("display", "none");
+
+        $(".gra_barras").css("display", "block");
+        $(".texto_barras").css("display", "block");
+
+        $(".aux_desplazamiento").attr("data-desplazamiento", "barras");
+    }
 });
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -34,6 +60,9 @@ $(".monedaP").click(function (e) {
 //---------------------------------------------------
 
 $(".calcular_plusvalia").click(function (e) {
+    $(".contenedor_1").hide(); // ocultamos
+    //----------------------------------------
+
     let a_precio_tradicional = $("#label_precio_tradicional").val();
     let a_superficie_tradicional = $("#label_superficie_tradicional").val();
 
@@ -59,6 +88,21 @@ $(".calcular_plusvalia").click(function (e) {
         let plus_promedio = Number($(".promedio").attr("data-promedio")); // $us/m2
 
         if (solidexa_sus_m2 <= tradicional_sus_m2) {
+            //-----------------------------------------------------------
+            $(".contenedor_1").show(); // visualizamos
+
+            // eliminamos todos los elementos que contienen a los graficos
+            // los eliminamos para que los graficos nuevos no sean creados encima de los antiguos
+            //  empty(). Este método eliminará todos los hijos del elemento seleccionado, pero conservará el propio elemento.
+            $("#contenedor_plus_sol_tra").empty();
+            $("#contenedor_tiempo_espera").empty();
+
+            //----------------------------------------
+            // ahora creamos nuevamente el elemento que contendra al grafico nuevo
+            // append lo crea como hijo
+            $("#contenedor_plus_sol_tra").append(`<canvas id="grafico_plus_sol_tra"></canvas>`);
+            $("#contenedor_tiempo_espera").append(`<canvas id="grafico_tiempo_espera"></canvas>`);
+            //-----------------------------------------------------------
             // redondeados a entero (sin decimales)
             let plus_solidexa = Number((solidexa_m2 * plus_promedio - solidexa_sus).toFixed(0));
             let plus_tradicional = Number(
@@ -225,6 +269,8 @@ $(".calcular_plusvalia").click(function (e) {
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 $(".calcular_prestamo_p").click(function (e) {
+    $(".contenedor_2").hide(); // ocultamos
+    //---------------------------------------------
     let a_precio_tradicional = $("#label_precio_tradicional").val();
     let aporte_p = $("#label_aporte_p").val();
     let plazo_year_p = $("#label_plazo_year_p").val();
@@ -276,9 +322,9 @@ $(".calcular_prestamo_p").click(function (e) {
             var mensual_solidexa = respuestaServidor.mensual_solidexa;
             var mensual_tradicional = respuestaServidor.mensual_tradicional;
 
-            console.log(int_acu_solidexa);
-
             //----------------------------------------
+            $(".contenedor_2").show(); // visualizamos
+
             // eliminamos todos los elementos que contienen a los graficos
             // los eliminamos para que los graficos nuevos no sean creados encima de los antiguos
             //  empty(). Este método eliminará todos los hijos del elemento seleccionado, pero conservará el propio elemento.
@@ -359,13 +405,10 @@ $(".calcular_prestamo_p").click(function (e) {
             //----------------------------------------
             // GRAFICO DE PAGOS MENSUALES
 
-            if (moneda == "sus") {
-                var moneda_mensual = "$us/Mes";
-            }
-            if (moneda == "bs") {
-                var moneda_mensual = "Bs/Mes";
-            }
-            $(".moneda_mensual").text(moneda_mensual);
+            let aux_n_meses = numero_punto_coma_query(Number((plazo_year_p * 12).toFixed(0)));
+            let n_meses = aux_n_meses + " Meses";
+
+            $(".n_meses").text(n_meses);
 
             var data_b = {
                 labels: ["SOLIDEXA", "Tradicional"],
@@ -400,6 +443,13 @@ $(".calcular_prestamo_p").click(function (e) {
             var r_mensual_solidexa = numero_punto_coma_query(mensual_solidexa);
             var r_mensual_tradicional = numero_punto_coma_query(mensual_tradicional);
 
+            if (moneda == "sus") {
+                var moneda_mensual = "$us/Mes";
+            }
+            if (moneda == "bs") {
+                var moneda_mensual = "Bs/Mes";
+            }
+
             $(".c8").text(r_mensual_solidexa);
             $(".c9").text(moneda_mensual);
             $(".c10").text(r_mensual_tradicional);
@@ -409,6 +459,371 @@ $(".calcular_prestamo_p").click(function (e) {
         });
     }
 });
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// LADO INVERSIONISTA
+
+//---------------------------------------------------
+// PARA SELECCION DE RADIOS TIPO MONEDA PROPIETARIO
+$(".clase_reinversion").click(function (e) {
+    var valorRadioSeleccinado = $(this).val();
+    $("#id_reinversion").val(valorRadioSeleccinado);
+});
+//---------------------------------------------------
+
+$(".calcular_inversion").click(function (e) {
+    $(".opciones_inversion").hide(); // ocultamos
+    //---------------------------------------------
+    let inversion_emp = $("#label_inversion").val();
+    let ganancia = $("#label_ganancia").val();
+    let reinversion = $("#id_reinversion").val();
+    let inversion_sol = $("#label_inv_sol").val();
+    let i_financiamiento = $("#label_financiamiento").val();
+    let plazo_financiamiento = $("#label_plazo_plus").val();
+    let codigo_inmueble = $("#id_objetivo_codigo").attr("data-objetivo_codigo");
+
+    if (
+        inversion_emp == "" ||
+        ganancia == "" ||
+        reinversion == "" ||
+        inversion_sol == "" ||
+        i_financiamiento == "" ||
+        plazo_financiamiento == ""
+    ) {
+        // agregamos los mensajes ALERT DESPUES y al MISMO NIVEL del boton ".ref-calcular_plusvalia"
+        $(".ref-calcular_inversion").after(
+            `<div class="alert alert-danger mt-3">
+                <button type="button" class="close" data-dismiss="alert">
+                    <span>&times;</span>
+                </button>
+                <p class="text-left">Llene todos los campos</p>
+            </div>`
+        );
+    } else {
+        let datosAuxiliar = {
+            inversion_emp,
+            ganancia,
+            reinversion,
+            inversion_sol,
+            i_financiamiento,
+            plazo_financiamiento,
+            codigo_inmueble,
+        };
+        $.ajax({
+            type: "post",
+            url: "/inmueble/operacion/calculo_inversionista",
+            data: datosAuxiliar,
+        }).done(function (respuestaServidor) {
+            var exito = respuestaServidor.exito;
+
+            console.log(respuestaServidor);
+
+            if (exito == "si") {
+                // vienen en tipo numerico y con los correctos redondeos
+                var inversion_a = respuestaServidor.inversion_a;
+                var ganancia_a = respuestaServidor.ganancia_a;
+                var rendimiento_a = respuestaServidor.rendimiento_a;
+                var inversion_b = respuestaServidor.inversion_b;
+                var ganancia_b = respuestaServidor.ganancia_b;
+                var rendimiento_b = respuestaServidor.rendimiento_b;
+                var inversion_c = respuestaServidor.inversion_c;
+                var ganancia_c = respuestaServidor.ganancia_c;
+                var rendimiento_c = respuestaServidor.rendimiento_c;
+                var inversion_d = respuestaServidor.inversion_d;
+                var ganancia_d = respuestaServidor.ganancia_d;
+                var rendimiento_d = respuestaServidor.rendimiento_d;
+                var angulo_a = respuestaServidor.angulo_a;
+                var angulo_b = respuestaServidor.angulo_b;
+                var angulo_c = respuestaServidor.angulo_c;
+                var angulo_d = respuestaServidor.angulo_d;
+
+                //----------------------------------------
+
+                $(".opciones_inversion").show(); // visualizamos
+                // eliminamos todos los elementos que contienen a los graficos
+                // los eliminamos para que los graficos nuevos no sean creados encima de los antiguos
+                //  empty(). Este método eliminará todos los hijos del elemento seleccionado, pero conservará el propio elemento.
+                $("#contenedor_grafico_i_1").empty();
+                $("#contenedor_grafico_i_2").empty();
+                $("#contenedor_grafico_i_3").empty();
+                $("#contenedor_grafico_i_4").empty();
+
+                //----------------------------------------
+                // ahora creamos nuevamente el elemento que contendra al grafico nuevo // append lo crea como hijo
+                $("#contenedor_grafico_i_1").append(`<canvas id="grafico_i_1"></canvas>`);
+                $("#contenedor_grafico_i_2").append(`<canvas id="grafico_i_2"></canvas>`);
+                $("#contenedor_grafico_i_3").append(`<canvas id="grafico_i_3"></canvas>`);
+                $("#contenedor_grafico_i_4").append(`<canvas id="grafico_i_4"></canvas>`);
+
+                //----------------------------------------
+                // grafica barras apiladas
+                // Ahorro bancario
+
+                const data1 = {
+                    labels: ["Ahorro Bancario"],
+                    datasets: [
+                        {
+                            label: "Inversión",
+                            data: [inversion_a],
+                            backgroundColor: "#0a58ae", // Color de las barras para el Precio
+                        },
+                        {
+                            label: "Ganancia",
+                            data: [ganancia_a],
+                            backgroundColor: "#f7c501", // Color de las barras para el Plusvalía
+                        },
+                    ],
+                };
+
+                // Opciones para el gráfico de barras apiladas
+                const options1 = {
+                    // en "false" Esto desactivará la relación de aspecto predeterminada y permitirá que el lienzo del gráfico se ajuste a la altura y el ancho especificados.
+                    maintainAspectRatio: false,
+
+                    scales: {
+                        xAxes: [
+                            {
+                                stacked: true, // Apila las barras horizontalmente
+
+                                // Ajusta el porcentaje de ancho de las barras (por ejemplo, 0.7 para un 70%)
+                                barPercentage: 0.4,
+                            },
+                        ],
+                        yAxes: [
+                            {
+                                stacked: true, // Apila las barras verticalmente
+                            },
+                        ],
+                    },
+                };
+
+                // Obtén el contexto del lienzo
+                const ctx_1 = document.getElementById("grafico_i_1").getContext("2d");
+
+                // Crea el gráfico de barras apiladas
+                const grafico_i_1 = new Chart(ctx_1, {
+                    type: "bar",
+                    data: data1,
+                    options: options1,
+                });
+
+                // RENDERIZAR LOS VALORES
+                let inversion_a_r = numero_punto_coma_query(inversion_a);
+                $(".inve_1").text(inversion_a_r);
+                let ganancia_a_r = numero_punto_coma_query(ganancia_a);
+                $(".gana_1").text(ganancia_a_r);
+                let rendimiento_a_r = numero_punto_coma_query(rendimiento_a);
+                $(".rendi_1").text(rendimiento_a_r);
+
+                // el angulo de la linea
+                $(".linea1").css("transform", `rotate(${angulo_a}deg)`);
+
+                //----------------------------------------
+                // grafica barras apiladas
+                // Emprendimiento
+
+                const data2 = {
+                    labels: ["Emprendimiento"],
+                    datasets: [
+                        {
+                            label: "Inversión",
+                            data: [inversion_b],
+                            backgroundColor: "#0a58ae", // Color de las barras para el Precio
+                        },
+                        {
+                            label: "Ganancia",
+                            data: [ganancia_b],
+                            backgroundColor: "#f7c501", // Color de las barras para el Plusvalía
+                        },
+                    ],
+                };
+
+                // Opciones para el gráfico de barras apiladas
+                const options2 = {
+                    // en "false" Esto desactivará la relación de aspecto predeterminada y permitirá que el lienzo del gráfico se ajuste a la altura y el ancho especificados.
+                    maintainAspectRatio: false,
+
+                    scales: {
+                        xAxes: [
+                            {
+                                stacked: true, // Apila las barras horizontalmente
+
+                                // Ajusta el porcentaje de ancho de las barras (por ejemplo, 0.7 para un 70%)
+                                barPercentage: 0.4,
+                            },
+                        ],
+                        yAxes: [
+                            {
+                                stacked: true, // Apila las barras verticalmente
+                            },
+                        ],
+                    },
+                };
+
+                // Obtén el contexto del lienzo
+                const ctx_2 = document.getElementById("grafico_i_2").getContext("2d");
+
+                // Crea el gráfico de barras apiladas
+                const grafico_i_2 = new Chart(ctx_2, {
+                    type: "bar",
+                    data: data2,
+                    options: options2,
+                });
+
+                // RENDERIZAR LOS VALORES
+                let inversion_b_r = numero_punto_coma_query(inversion_b);
+                $(".inve_2").text(inversion_b_r);
+                let ganancia_b_r = numero_punto_coma_query(ganancia_b);
+                $(".gana_2").text(ganancia_b_r);
+                let rendimiento_b_r = numero_punto_coma_query(rendimiento_b);
+                $(".rendi_2").text(rendimiento_b_r);
+
+                // el angulo de la linea
+                $(".linea2").css("transform", `rotate(${angulo_b}deg)`);
+
+                //----------------------------------------
+                // grafica barras apiladas
+                // SOLIDEXA
+
+                const data3 = {
+                    labels: ["SOLIDEXA"],
+                    datasets: [
+                        {
+                            label: "Inversión",
+                            data: [inversion_c],
+                            backgroundColor: "#0a58ae", // Color de las barras para el Precio
+                        },
+                        {
+                            label: "Ganancia",
+                            data: [ganancia_c],
+                            backgroundColor: "#f7c501", // Color de las barras para el Plusvalía
+                        },
+                    ],
+                };
+
+                // Opciones para el gráfico de barras apiladas
+                const options3 = {
+                    // en "false" Esto desactivará la relación de aspecto predeterminada y permitirá que el lienzo del gráfico se ajuste a la altura y el ancho especificados.
+                    maintainAspectRatio: false,
+
+                    scales: {
+                        xAxes: [
+                            {
+                                stacked: true, // Apila las barras horizontalmente
+
+                                // Ajusta el porcentaje de ancho de las barras (por ejemplo, 0.7 para un 70%)
+                                barPercentage: 0.4,
+                            },
+                        ],
+                        yAxes: [
+                            {
+                                stacked: true, // Apila las barras verticalmente
+                            },
+                        ],
+                    },
+                };
+
+                // Obtén el contexto del lienzo
+                const ctx_3 = document.getElementById("grafico_i_3").getContext("2d");
+
+                // Crea el gráfico de barras apiladas
+                const grafico_i_3 = new Chart(ctx_3, {
+                    type: "bar",
+                    data: data3,
+                    options: options3,
+                });
+
+                // RENDERIZAR LOS VALORES
+                let inversion_c_r = numero_punto_coma_query(inversion_c);
+                $(".inve_3").text(inversion_c_r);
+                let ganancia_c_r = numero_punto_coma_query(ganancia_c);
+                $(".gana_3").text(ganancia_c_r);
+                let rendimiento_c_r = numero_punto_coma_query(rendimiento_c);
+                $(".rendi_3").text(rendimiento_c_r);
+
+                // el angulo de la linea
+                $(".linea3").css("transform", `rotate(${angulo_c}deg)`);
+
+                //----------------------------------------
+                // grafica barras apiladas
+                // SOLIDEXA plus
+
+                const data4 = {
+                    labels: ["SOLIDEXA Plus"],
+                    datasets: [
+                        {
+                            label: "Inversión",
+                            data: [inversion_d],
+                            backgroundColor: "#0a58ae", // Color de las barras para el Precio
+                        },
+                        {
+                            label: "Ganancia",
+                            data: [ganancia_d],
+                            backgroundColor: "#f7c501", // Color de las barras para el Plusvalía
+                        },
+                    ],
+                };
+
+                // Opciones para el gráfico de barras apiladas
+                const options4 = {
+                    // en "false" Esto desactivará la relación de aspecto predeterminada y permitirá que el lienzo del gráfico se ajuste a la altura y el ancho especificados.
+                    maintainAspectRatio: false,
+
+                    scales: {
+                        xAxes: [
+                            {
+                                stacked: true, // Apila las barras horizontalmente
+
+                                // Ajusta el porcentaje de ancho de las barras (por ejemplo, 0.7 para un 70%)
+                                barPercentage: 0.4,
+                            },
+                        ],
+                        yAxes: [
+                            {
+                                stacked: true, // Apila las barras verticalmente
+                            },
+                        ],
+                    },
+                };
+
+                // Obtén el contexto del lienzo
+                const ctx_4 = document.getElementById("grafico_i_4").getContext("2d");
+
+                // Crea el gráfico de barras apiladas
+                const grafico_i_4 = new Chart(ctx_4, {
+                    type: "bar",
+                    data: data4,
+                    options: options4,
+                });
+
+                // RENDERIZAR LOS VALORES
+                let inversion_d_r = numero_punto_coma_query(inversion_d);
+                $(".inve_4").text(inversion_d_r);
+                let ganancia_d_r = numero_punto_coma_query(ganancia_d);
+                $(".gana_4").text(ganancia_d_r);
+                let rendimiento_d_r = numero_punto_coma_query(rendimiento_d);
+                $(".rendi_4").text(rendimiento_d_r);
+
+                // el angulo de la linea
+                $(".linea4").css("transform", `rotate(${angulo_d}deg)`);
+
+                //---------------------------------------------------------------
+            } else {
+                // agregamos los mensajes ALERT DESPUES y al MISMO NIVEL del boton ".ref-calcular_plusvalia"
+                $(".ref-calcular_inversion").after(
+                    `<div class="alert alert-danger mt-3">
+                        <button type="button" class="close" data-dismiss="alert">
+                            <span>&times;</span>
+                        </button>
+                        <p class="text-left">Ocurrió un problema. Inténtelo nuevamente</p>
+                    </div>`
+                );
+            }
+        });
+    }
+});
+
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 function numero_punto_coma_query(numero) {

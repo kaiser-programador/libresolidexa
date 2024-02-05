@@ -14,13 +14,13 @@ $(document).ready(function () {
       */
 
     //   $(document).on('click', function (e) {
-        /*
+    /*
         $(document).click(function (e) {
             if (!$(e.target).closest('[data-toggle="popover"]').length) {
               $('[data-toggle="popover"]').popover('hide');
             };
             */
-            
+
     //----------------------------------------
 
     $(".knob").knob({
@@ -153,7 +153,7 @@ $(document).ready(function () {
         if (tipo_pestana_py == "beneficios_py") {
             //---------------------------------------------------------
             // GRAFICO DE CONTRUCTORAS
-            
+
             let n_filas = $("#constructoras_sobreprecios .cuerpo_filas .fila_ref").length;
             if (n_filas > 0) {
                 // eliminamos la primera fila de la tabla de constructoras_sobreprecios, PORQUE ESA CORRESPONDE AL DE SOLIDEXA Y ESA NO DEBE YA SER MOSTRADA
@@ -300,7 +300,6 @@ $(document).ready(function () {
 
             var n_filas = $("#diferencia_ganancias .cuerpo_filas .fila_ref").length;
             if (n_filas > 0) {
-
                 //----------------------------------------------------------------------------
 
                 let n_filas_r = $("#contenedor_precios_mercado .cuerpo").length;
@@ -316,20 +315,17 @@ $(document).ready(function () {
                         .eq(i)
                         .attr("data-direccion");
                     array_precios_mercado[i] = Number(
-                        $("#contenedor_precios_mercado .cuerpo .sus_m2")
-                            .eq(i)
-                            .attr("data-dolarm2")
+                        $("#contenedor_precios_mercado .cuerpo .sus_m2").eq(i).attr("data-dolarm2")
                     );
 
-                    if (i==0) {
+                    if (i == 0) {
                         // el primer lugar del array esta ocupado por info de SOLIDEXA
                         array_color[i] = "#0a58ae"; // CON COLOR
                         array_borde[i] = "#065db9"; // CON COLOR
-                    }else{
+                    } else {
                         array_color[i] = "#949FB1"; // COLOR GRIS
                         array_borde[i] = "#919fb5"; // COLOR GRIS
                     }
-                    
                 }
 
                 /*
@@ -343,7 +339,6 @@ $(document).ready(function () {
                 array_color.unshift("#0a58ae"); // CON COLOR
                 array_borde.unshift("#065db9"); // CON COLOR
                 */
-
 
                 var datos_precios = {
                     type: "bar",
@@ -533,6 +528,17 @@ $(document).ready(function () {
             //---------------------------------------------------------------------------
         }
 
+        if (tipo_pestana_inm == "calculadora_inm") {
+            $(".calculadora_propietario").click();
+            $(".monedaP").eq(0).click(); // seleccionamos el radio de moneda DOLAR
+            $(".clase_reinversion").eq(0).click(); // seleccionamos el radio de REINVERSION "No"
+
+            // ocultamos los los elementos que contienen a los resultados de los calculos
+            $(".contenedor_1").hide();
+            $(".contenedor_2").hide();
+            $(".opciones_inversion").hide();
+        }
+
         if (tipo_pestana_inm == "inversor_inm") {
             // DENTRO DE LA VENTANA DE "INMUEBLE"
 
@@ -611,7 +617,6 @@ $(document).ready(function () {
 
     function sus_seg() {
         setInterval(() => {
-            
             //----------------------------------------------------------------------------
             // SEGUNDERO DE PLUSVALIA
 
@@ -890,7 +895,6 @@ $(document).ready(function () {
             }
 
             //----------------------------------------------------------------------------
-
         }, 1000);
     }
 
@@ -937,6 +941,49 @@ $(window).resize(function () {
     var tipo_ventana = $("#id_tipo_ventana").attr("data-tipo_ventana");
     if (tipo_ventana == "cliente-inicio") {
         dim_ventana_inicio();
+    } else {
+        // para la pestaña de "calculadora" del inmueble
+        let vemos = $("#id_objetivo_tipo").attr("data-objetivo_tipo");
+        if (vemos == "inmueble") {
+            let tipo_pestana_inm = $("#tipo_pestana_inm").attr("data-id");
+            if (tipo_pestana_inm == "calculadora_inm") {
+                // Obtener el valor de la propiedad CSS 'display' del elemento con el ID 'miElemento'
+                var display_1 = $(".opciones_inversion").css("display");
+                if (display_1 == "block") {
+                    // si el elemento SI esta visible en la ventana
+
+                    var display_2 = $(".contenedor_desplazamiento").css("display");
+
+                    if (display_2 == "none") {
+                        var ancho_ventana = $(window).width(); // resultado en px
+                        // if (ancho_ventana >= 575) {
+                        if (ancho_ventana > 575) {
+                            // si es mayor que 575px
+                            // entonces se visualizara las graficas de barras y velocimetros
+                            $(".gra_velocimetro").css("display", "block");
+                            $(".texto_velocimetro").css("display", "block");
+                            $(".gra_barras").css("display", "block");
+                            $(".texto_barras").css("display", "block");
+                        } else {
+                            // si es menor que 575px
+                        }
+                    }else{
+                        if (display_2 == "block") {
+                            // basta que este visible (esta visible para ancho de ventana menor que 575)
+                            // visualizamos los graficos de barras y ocultamos los graficos de velocimetros
+                            $(".gra_velocimetro").css("display", "none");
+                            $(".texto_velocimetro").css("display", "none");
+                            $(".gra_barras").css("display", "block");
+                            $(".texto_barras").css("display", "block");
+                        }
+                    }
+                } else {
+                    if (display_1 == "none") {
+                        // si el elemento NO esta visible en la ventana
+                    }
+                }
+            }
+        }
     }
 });
 
@@ -944,12 +991,9 @@ $(window).resize(function () {
 // solo para cerrar los mensajes "popover" cuando se hace click en cualquier punto de la ventana de la web
 // oculta todos los mensajes "popover" que estuvieran visibles
 $(document).click(function (e) {
-
     if (!$(e.target).closest('[data-toggle="popover"]').length) {
-        $('[data-toggle="popover"]').popover('hide');
-      }
-
-
+        $('[data-toggle="popover"]').popover("hide");
+    }
 });
 
 //---------------------------------------------

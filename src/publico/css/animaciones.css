@@ -606,3 +606,169 @@ Notese que esta hoja de css, a pesar de encontrarse separado del css principal d
         transform: rotateZ(-360deg);
     }
 }
+
+/* ----------------------------------------------------- */
+/* GRAFICOS DE CALCULADORA Opcion ---> INVERSIONISTA */
+.velocimetro {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    transform: rotate(-45deg); /* Rotar el elemento 45 grados */
+  }
+
+.circulo{
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background-image: conic-gradient(red, yellow, green 270deg);
+    transform: rotate(-90deg); /* Rotar el elemento 45 grados */
+}
+
+.corona{
+    position: absolute;
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    background: var(--color_fondo_secundario);
+    top: 15px;
+    left: 15px;
+}
+
+.cuadrado{
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background: var(--color_fondo_secundario);
+    top: 100px; /* Posición vertical desde arriba */
+    left: 0px; /* Posición horizontal desde la izquierda */
+}
+
+/* flecha */
+.linea1, .linea2, .linea3, .linea4 {
+    position: absolute;
+    top: 100px; /* Posición vertical del extremo fijo */
+    left: 100px; /* Posición horizontal del extremo fijo */
+    width: 40px; /* Longitud de la línea */
+    height: 4px; /* Grosor de la línea */
+    background-color: var(--color_texto_normal); /* Color de la línea */
+    transform-origin: left center; /* Fija el extremo izquierdo de la línea */
+
+    /* Gira la línea 45 grados */
+    /* transform: rotate(45deg); */
+  }
+
+  .linea1{
+    /* Gira la línea x grados */
+    transform: rotate(-180deg);
+  }
+  .linea2{
+    /* Gira la línea x grados */
+    transform: rotate(-180deg);
+  }
+  .linea3{
+    /* Gira la línea x grados */
+    transform: rotate(-180deg);
+  }
+  .linea4{
+    /* Gira la línea x grados */
+    transform: rotate(-180deg);
+  }
+  /* .linea1::after { */
+  .linea_comun::after {
+    content: '';
+    position: absolute;
+    top: -6px; /* Ajusta la posición vertical de la punta */
+    right: -8px; /* Ajusta la posición horizontal de la punta */
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-left: 8px solid var(--color_texto_normal); /* Ancho de la punta */
+    transform: rotate(0deg); /* Gira la punta */
+  }
+
+  .svg_circulo {
+    width: 200px;
+    height: 200px;
+
+    position: absolute;
+    top: 0px; /* Posición vertical desde arriba */
+    left: 0px; /* Posición horizontal desde la izquierda */
+    transform: rotate(-3.5deg); 
+  }
+
+  circle{
+    fill: none;
+    stroke: var(--color_texto_normal);;
+    stroke-width: 9;
+    stroke-dasharray: 5 57;
+  }
+
+  .i1,.i2,.i3,.i4,.i5,.i6,.i7{
+    font-size: 0.7rem;
+  }
+  .i1{
+    position: absolute;
+    top: 92px; /* Posición vertical desde arriba */
+    left: 29px; /* Posición horizontal desde la izquierda */
+    transform: rotate(45deg); 
+  }
+  .i2{
+    position: absolute;
+    top: 45px; /* Posición vertical desde arriba */
+    left: 50px; /* Posición horizontal desde la izquierda */
+    transform: rotate(45deg); 
+  }
+  .i3{
+    position: absolute;
+    top: 28px; /* Posición vertical desde arriba */
+    left: 95px; /* Posición horizontal desde la izquierda */
+    transform: rotate(45deg); 
+  }
+  .i4{
+    position: absolute;
+    top: 48px; /* Posición vertical desde arriba */
+    left: 142px; /* Posición horizontal desde la izquierda */
+    transform: rotate(45deg); 
+  }
+  .i5{
+    position: absolute;
+    top: 83px; /* Posición vertical desde arriba */
+    left: 150px; /* Posición horizontal desde la izquierda */
+    transform: rotate(45deg); 
+  }
+  .i6{
+    position: absolute;
+    top: 133px; /* Posición vertical desde arriba */
+    left: 133px; /* Posición horizontal desde la izquierda */
+    transform: rotate(45deg); 
+  }
+  .i7{
+    position: absolute;
+    top: 156px; /* Posición vertical desde arriba */
+    left: 94px; /* Posición horizontal desde la izquierda */
+    transform: rotate(45deg);
+  }
+
+  .porc_rend {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    top: 0px; /* Posición vertical desde arriba */
+    left: 0px; /* Posición horizontal desde la izquierda */
+    transform: rotate(45deg);
+
+    display: flex;
+    justify-content: center;
+    align-items: end;
+  }
+
+  .flechas_desplazamiento{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+  .flecha_siguiente {
+    font-size: 2rem;
+    /* color: red; */
+    /* color: var(--color_texto_link); */
+}

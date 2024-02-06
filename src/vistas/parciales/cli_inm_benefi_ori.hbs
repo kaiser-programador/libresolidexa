@@ -31,6 +31,7 @@
     <span class="plusvalia" data-plusvalia="{{informacion.plusvalia_sus}}"></span>
 </div>
 
+
 <div class="row mt-5 cuadro_estandart py-3">
     <div class="col-12 d-flex">
         <div class="d-none d-md-flex mr-3 contenedor-detalle-icono">
@@ -39,67 +40,41 @@
 
         <div class="mx-md-4 contenedor-detalle-texto">
 
-            <h4 class="texto-resaltado"><span class="icono_izq d-inline-block d-md-none"><i
-                        class="fas fa-gift"
-                    ></i></span>{{informacion.titulo_plusvalia_inm}}</h4>
+            <h4 class="texto-resaltado"><span class="icono_izq d-inline-block d-md-none"><i class="fas fa-gift"></i></span>{{informacion.titulo_plusvalia_inm}}</h4>
             <p class="escritura" style="text-align: justify;">
                 {{informacion.texto_plusvalia_inm}}
             </p>
 
-            <div class="row mt-2">
+            <div class="row mt-2" style="width: 100%;">
                 <div class="col-12 text-center">
                     <h5 class="texto-link">Plusvalía del inmueble</h5>
+                    <div class="row texto-normal mb-3">
+                        <div class="col-12 col-md-6 text-center text-md-right">
+                            <span>
+                                Precio justo:
+                                <b>{{informacion.costo_volterra_render}} $us</b>
+                            </span>
+                        </div>
+                        <div class="col-12 col-md-6 text-center text-md-left">
+                            <span>
+                                Plusvalía regalo:
+                                <b>{{informacion.plusvalia_sus_render}} $us</b>
+                            </span>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="col-12 col-lg-6">
-                    <div class="contenedor_graf_bene">
-                        <div class="contendor_graf_plusvalia">
+                <div class="col-12 d-flex justify-content-center mb-3">
+                    <div class="contendor_graf_plusvalia barra-deslizadora-mob" style="overflow: auto;">
+                        <div style="width: 40rem;">
                             <canvas id="graficoPlusvalia"></canvas>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-12 col-lg-6">
-                    <div class="contenedor_val_bene">
-                        <div class="row">
-                            <div class="col-6 text-center">
-                                <div>
-                                    <i
-                                        class="fas fa-thumbs-up texto-link"
-                                        style="font-size: 2rem;"
-                                    ></i>
-                                </div>
-                                <div class="my-2">
-                                    <span class="h3 texto-link"><b>{{informacion.costo_volterra_render}}</b></span>
-                                    <span class="h5 texto-link">$us</span>
-                                </div>
-                                <div>
-                                    Es el precio justo del inmueble
-                                    <b>SOLIDEXA</b>.
-                                </div>
-                            </div>
-                            <div class="col-6 text-center">
-                                <div>
-                                    <i
-                                        class="fas fa-gift texto-link"
-                                        style="font-size: 2rem;"
-                                    ></i>
-                                </div>
-                                <div class="my-2">
-                                    <span class="h3 texto-link"><b>{{informacion.plusvalia_sus_render}}</b></span>
-                                    <span class="h5 texto-link">$us</span>
-                                </div>
-                                <div>
-                                    Plusvalía que se concede como beneficio al propietario del inmueble <b>SOLIDEXA</b>.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="col-12">
-                    <p class="text-center h6">
-                        <i>Fuente: Estudio de mercado</i>
+                    <p class="mt-2 text-center h6">
+                        <i>Fuente: Estudio de mercado</i> 
                     </p>
                 </div>
 
@@ -117,68 +92,31 @@
 
         <div class="mx-md-4 contenedor-detalle-texto">
             <div style="width: 100%;">
-                <h4 class="texto-resaltado"><span class="icono_izq d-inline-block d-md-none"><i
-                            class="fas fa-balance-scale"
-                        ></i></span>{{informacion.titulo_precio_inm}}</h4>
+                <h4 class="texto-resaltado"><span class="icono_izq d-inline-block d-md-none"><i class="fas fa-balance-scale"></i></span>{{informacion.titulo_precio_inm}}</h4>
                 <p class="texto-normal escritura" style="text-align: justify;">
                     {{informacion.texto_precio_inm}}
                 </p>
             </div>
 
-            {{! <div class="row mt-2" style="width: 100%;"> }}
+            {{!-- <div class="row mt-2" style="width: 100%;"> --}}
             <div class="row mt-2">
                 <div class="col-12 text-center">
                     <h5 class="texto-link">SOLIDEXA vs Otros inmuebles</h5>
                 </div>
 
-                <div class="col-12 col-lg-6">
-                    <div class="contenedor_graf_bene">
-                        <div class="contendor_graf_precios">
+                <div class="col-12 d-flex justify-content-center mb-3">
+                    {{! barra-deslizadora style="overflow: auto;" }}
+                    <div class="contendor_graf_precios barra-deslizadora-mob" style="overflow: auto;">
+                        {{! style="width: 50rem;" }}
+                        <div style="width: 50rem;">
                             <canvas id="graficoPrecios"></canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-lg-6">
-                    <div class="contenedor_val_bene">
-                        <div class="row">
-                            <div class="col-6 text-center">
-                                <div>
-                                    <i
-                                        class="fas fa-thumbs-up texto-link"
-                                        style="font-size: 2rem;"
-                                    ></i>
-                                </div>
-                                <div class="my-2">
-                                    <span class="h3 texto-link"><b>{{informacion.solid_precio_r}}</b></span>
-                                    <span class="h5 texto-link">$us/m<sup>2</sup></span>
-                                </div>
-                                <div>
-                                    El precio que pagas por el inmueble <b>SOLIDEXA</b> es menor.
-                                </div>
-                            </div>
-                            <div class="col-6 text-center">
-                                <div>
-                                    <i
-                                        class="fas fa-thumbs-down"
-                                        style="font-size: 2rem; color: red;"
-                                    ></i>
-                                </div>
-                                <div class="my-2" style="color: red;">
-                                    <span class="h3"><b>{{informacion.prom_sus_m2_r}}</b></span>
-                                    <span class="h5">$us/m<sup>2</sup></span>
-                                </div>
-                                <div>
-                                    El precio promedio que pagas por el inmueble <b>tradicional</b> es más elevado.
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-12 my-3">
 
-                    {{! <h5 class="text-center mt-4 mb-3 texto-normal">Precios de venta</h5> }}
+                    {{!-- <h5 class="text-center mt-4 mb-3 texto-normal">Precios de venta</h5> --}}
 
                     <div class="d-flex justify-content-center">
                         {{! para un centrado correcto ambos deben tener el msmo valor de width }}
@@ -212,17 +150,17 @@
                             </table>
 
                         </div>
-
+                        
                     </div>
-
+                    
                     <p class="mt-2 text-center h6">
-                        <i>Fuente: Estudio de mercado</i>
+                        <i>Fuente: Estudio de mercado</i> 
                     </p>
 
                 </div>
 
                 <div class="col-12">
-                    <div class="text-justify texto-normal">
+                    <div class="text-justify  texto-normal">
                         <p class="texto-normal" style="text-align: justify;">Analizamos inmuebles
                             próximos a la ubicación del proyecto SOLIDEXA y que guardan similitud
                             con nuestro inmueble.
@@ -244,16 +182,13 @@
         </div>
 
         <div class="mx-md-4 contenedor-detalle-texto">
-            <h4 class="texto-resaltado"><span class="icono_izq d-inline-block d-md-none"><i
-                        class="fas fa-hard-hat"
-                    ></i></span>{{informacion.titulo_construccion_inm}}</h4>
+            <h4 class="texto-resaltado"><span class="icono_izq d-inline-block d-md-none"><i class="fas fa-hard-hat"></i></span>{{informacion.titulo_construccion_inm}}</h4>
             <p class="escritura" style="text-align: justify;">
                 {{informacion.texto_construccion_inm}}
             </p>
             <p class="texto-normal" style="text-align: justify;">
-                Para más información, ponemos a disposicion de nuestros potenciales clientes los
-                detalles del Presupuesto de contrucción del proyecto, en la pestaña "Información
-                económica".
+                Para más información, ponemos a disposicion de nuestros potenciales clientes los detalles
+                del Presupuesto de contrucción del proyecto, en la pestaña "Información económica".
             </p>
 
             <div class="row mt-2">
@@ -261,47 +196,10 @@
                     <h5 class="texto-link">SOLIDEXA vs Constructoras tradicionales</h5>
                 </div>
 
-                <div class="col-12 col-lg-6">
-                    <div class="contenedor_graf_bene">
-                        <div class="contendor_graf_sobrep">
+                <div class="col-12 d-flex justify-content-center mb-3">
+                    <div class="contendor_graf_sobrep barra-deslizadora-mob" style="overflow: auto;">
+                        <div style="width: 40rem;">
                             <canvas id="graficoSobreprecios"></canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-lg-6">
-                    <div class="contenedor_val_bene">
-                        <div class="row">
-                            <div class="col-6 text-center">
-                                <div>
-                                    <i
-                                        class="fas fa-thumbs-up texto-link"
-                                        style="font-size: 2rem;"
-                                    ></i>
-                                </div>
-                                <div class="my-2">
-                                    <span class="h3 texto-link"><b>{{informacion.solid_constru_r}}</b></span>
-                                    <span class="h5 texto-link">$us/m<sup>2</sup></span>
-                                </div>
-                                <div>
-                                    El precio de contrucción del inmueble <b>SOLIDEXA</b> es menor.
-                                </div>
-                            </div>
-                            <div class="col-6 text-center">
-                                <div>
-                                    <i
-                                        class="fas fa-thumbs-down"
-                                        style="font-size: 2rem; color: red;"
-                                    ></i>
-                                </div>
-                                <div class="my-2" style="color: red;">
-                                    <span class="h3"><b>{{informacion.prom_constructoras_r}}</b></span>
-                                    <span class="h5">$us/m<sup>2</sup></span>
-                                </div>
-                                <div>
-                                    El precio promedio de construcción de un inmueble <b>tradicional</b> es más elevado.
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -340,7 +238,7 @@
                     </div>
 
                     <p class="mt-2 text-center h6">
-                        <i>Fuente: Estudio de mercado</i>
+                        <i>Fuente: Estudio de mercado</i> 
                     </p>
 
                 </div>

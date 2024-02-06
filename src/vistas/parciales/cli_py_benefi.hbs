@@ -37,33 +37,56 @@
             <div class="row mt-2">
                 <div class="col-12 text-center">
                     <h5 class="texto-link">Plusvalía del proyecto</h5>
-                    <div class="row texto-normal mb-3">
-                        <div class="col-12 col-md-6 text-center text-md-right">
-                            <span>
-                                Precio justo:
-                                <b>{{contenido_proyecto.costo_volterra_render}} $us</b>
-                            </span>
-                        </div>
-                        <div class="col-12 col-md-6 text-center text-md-left">
-                            <span>
-                                Plusvalía regalo:
-                                <b>{{contenido_proyecto.plusvalias_total_render}} $us</b>
-                            </span>
-                        </div>
-                    </div>
                 </div>
 
-                <div class="col-12 d-flex justify-content-center mb-3">
-                    <div class="contendor_graf_plusvalia barra-deslizadora-mob" style="overflow: auto;">
-                        {{! width: 50rem; }}
-                        <div style="width: 40rem;">
+                <div class="col-12 col-lg-6">
+                    <div class="contenedor_graf_bene">
+                        <div class="contendor_graf_plusvalia">
                             <canvas id="graficoPlusvalia"></canvas>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-12">
-                    <p class="mt-2 text-center h6">
+                <div class="col-12 col-lg-6">
+                    <div class="contenedor_val_bene">
+                        <div class="row">
+                            <div class="col-6 text-center">
+                                <div>
+                                    <i
+                                        class="fas fa-thumbs-up texto-link"
+                                        style="font-size: 2rem;"
+                                    ></i>
+                                </div>
+                                <div class="my-2">
+                                    <span class="h3 texto-link"><b>{{contenido_proyecto.costo_volterra_render}}</b></span>
+                                    <span class="h5 texto-link">$us</span>
+                                </div>
+                                <div>
+                                    Es el precio justo del proyecto
+                                    <b>SOLIDEXA</b>.
+                                </div>
+                            </div>
+                            <div class="col-6 text-center">
+                                <div>
+                                    <i
+                                        class="fas fa-gift texto-link"
+                                        style="font-size: 2rem;"
+                                    ></i>
+                                </div>
+                                <div class="my-2">
+                                    <span class="h3 texto-link"><b>{{contenido_proyecto.plusvalias_total_render}}</b></span>
+                                    <span class="h5 texto-link">$us</span>
+                                </div>
+                                <div>
+                                    Plusvalía que se concede como beneficio entre todos los propietarios del proyecto <b>SOLIDEXA</b>.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 mb-3">
+                    <p class="text-center h6">
                         <i>Fuente: Estudio de mercado</i> 
                     </p>
                 </div>
@@ -100,10 +123,47 @@
                     <h5 class="texto-link">SOLIDEXA vs Constructoras tradicionales</h5>
                 </div>
 
-                <div class="col-12 d-flex justify-content-center mb-3">
-                    <div class="contendor_graf_sobrep barra-deslizadora-mob" style="overflow: auto;">
-                        <div style="width: 40rem;">
+                <div class="col-12 col-lg-6">
+                    <div class="contenedor_graf_bene">
+                        <div class="contendor_graf_sobrep">
                             <canvas id="graficoSobreprecios"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-6">
+                    <div class="contenedor_val_bene">
+                        <div class="row">
+                            <div class="col-6 text-center">
+                                <div>
+                                    <i
+                                        class="fas fa-thumbs-up texto-link"
+                                        style="font-size: 2rem;"
+                                    ></i>
+                                </div>
+                                <div class="my-2">
+                                    <span class="h3 texto-link"><b>{{contenido_proyecto.solid_constru_r}}</b></span>
+                                    <span class="h5 texto-link">$us/m<sup>2</sup></span>
+                                </div>
+                                <div>
+                                    El precio de contrucción del proyecto <b>SOLIDEXA</b> es menor.
+                                </div>
+                            </div>
+                            <div class="col-6 text-center">
+                                <div>
+                                    <i
+                                        class="fas fa-thumbs-down"
+                                        style="font-size: 2rem; color: red;"
+                                    ></i>
+                                </div>
+                                <div class="my-2" style="color: red;">
+                                    <span class="h3"><b>{{contenido_proyecto.prom_constructoras_r}}</b></span>
+                                    <span class="h5">$us/m<sup>2</sup></span>
+                                </div>
+                                <div>
+                                    El precio promedio de construcción <b>tradicional</b> es más elevado.
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -201,7 +201,9 @@ $(document).ready(function () {
                         labels: array_nombre,
                     },
                     options: {
-                        responsive: true,
+                        //responsive: true,
+                        // en "false" Esto desactivará la relación de aspecto predeterminada y permitirá que el lienzo del gráfico se ajuste a la altura y el ancho especificados.
+                        maintainAspectRatio: false,
                         scales: {
                             yAxes: [
                                 {
@@ -238,10 +240,11 @@ $(document).ready(function () {
 
             var datos_plusvalia = {
                 type: "bar",
+
                 data: {
                     datasets: [
                         {
-                            label: "Plusvalía mercado",
+                            label: "Precio justo",
                             data: [costo_construccion, plusvalia],
                             backgroundColor: ["#0a58ae", "#f7c501"],
                             ////////
@@ -253,8 +256,39 @@ $(document).ready(function () {
                     ],
                     labels: ["SOLIDEXA", "Plusvalía"],
                 },
+
+                /*
+                data: {
+                    labels: ["SOLIDEXAaaa", "Plusvalíaaaa"],
+                    datasets: [
+                        {
+                            label: "SOLIDEXA",
+                            data: [costo_construccion],
+                            backgroundColor: "#0a58ae",
+                            ////////
+                            // Bordes y sombras:
+                            borderColor: "#065db9", // Cambia los colores de los bordes de las barras
+                            borderWidth: 2, // 2 Ancho del borde de las barras
+                            ////////
+                        },
+                        {
+                            label: "Plusvalía",
+                            data: [plusvalia],
+                            backgroundColor: "#f7c501",
+                            ////////
+                            // Bordes y sombras:
+                            borderColor: "#ffca28", // Cambia los colores de los bordes de las barras
+                            borderWidth: 2, // 2 Ancho del borde de las barras
+                            ////////
+                        },
+                    ],
+                    
+                },
+                */
                 options: {
-                    responsive: true,
+                    //responsive: true,
+                    // en "false" Esto desactivará la relación de aspecto predeterminada y permitirá que el lienzo del gráfico se ajuste a la altura y el ancho especificados.
+                    maintainAspectRatio: false,
                     scales: {
                         yAxes: [
                             {
@@ -358,7 +392,9 @@ $(document).ready(function () {
                         labels: array_direccion,
                     },
                     options: {
-                        responsive: true,
+                        //responsive: true,
+                        // en "false" Esto desactivará la relación de aspecto predeterminada y permitirá que el lienzo del gráfico se ajuste a la altura y el ancho especificados.
+                        maintainAspectRatio: false,
                         scales: {
                             yAxes: [
                                 {
@@ -435,7 +471,9 @@ $(document).ready(function () {
                         labels: array_nombre,
                     },
                     options: {
-                        responsive: true,
+                        //responsive: true,
+                        // en "false" Esto desactivará la relación de aspecto predeterminada y permitirá que el lienzo del gráfico se ajuste a la altura y el ancho especificados.
+                        maintainAspectRatio: false,
                         scales: {
                             yAxes: [
                                 {
@@ -475,7 +513,7 @@ $(document).ready(function () {
                 data: {
                     datasets: [
                         {
-                            label: "Plusvalía mercado",
+                            label: "Precio justo",
                             data: [pv_volterra, plusvalia],
                             backgroundColor: ["#0a58ae", "#f7c501"],
                             ////////
@@ -488,7 +526,10 @@ $(document).ready(function () {
                     labels: ["SOLIDEXA", "Plusvalía"],
                 },
                 options: {
-                    responsive: true,
+                    //responsive: true,
+                    // en "false" Esto desactivará la relación de aspecto predeterminada y permitirá que el lienzo del gráfico se ajuste a la altura y el ancho especificados.
+                    maintainAspectRatio: false,
+
                     scales: {
                         yAxes: [
                             {
@@ -967,14 +1008,33 @@ $(window).resize(function () {
                         } else {
                             // si es menor que 575px
                         }
-                    }else{
+                    } else {
                         if (display_2 == "block") {
                             // basta que este visible (esta visible para ancho de ventana menor que 575)
-                            // visualizamos los graficos de barras y ocultamos los graficos de velocimetros
-                            $(".gra_velocimetro").css("display", "none");
-                            $(".texto_velocimetro").css("display", "none");
-                            $(".gra_barras").css("display", "block");
-                            $(".texto_barras").css("display", "block");
+                            // visualizamos el grafico que se encuentra especificado en el auxiliar "aux_desplazamiento"
+
+                            //--------------------------------------------------------
+                            let vemos = $(".aux_desplazamiento").attr("data-desplazamiento");
+
+                            if (vemos == "barras") {
+                                // entonces ocultamos velocimetros y visualizamos barras
+
+                                $(".gra_velocimetro").css("display", "none");
+                                $(".texto_velocimetro").css("display", "none");
+
+                                $(".gra_barras").css("display", "block");
+                                $(".texto_barras").css("display", "block");
+                            }
+
+                            if (vemos == "velocimetros") {
+                                // entonces ocultamos barras y visualizamos velocimetros
+                                $(".gra_barras").css("display", "none");
+                                $(".texto_barras").css("display", "none");
+
+                                $(".gra_velocimetro").css("display", "block");
+                                $(".texto_velocimetro").css("display", "block");
+                            }
+                            //--------------------------------------------------------
                         }
                     }
                 } else {

@@ -472,6 +472,7 @@ async function proyecto_descripcion(codigo_proyecto) {
                 dormitorios: 1,
                 banos: 1,
                 garajes: 1,
+                trafico: 1,
                 area_construida: 1,
                 proyecto_descripcion: 1,
                 penalizacion: 1,
@@ -1002,6 +1003,7 @@ controladorAdmProyecto.guardarDatosProyecto = async (req, res) => {
                 proyectoEncontrado.total_oficinas = req.body.total_oficinas;
                 proyectoEncontrado.total_comerciales = req.body.total_comerciales;
                 proyectoEncontrado.total_casas = req.body.total_casas;
+                proyectoEncontrado.trafico = req.body.trafico;
                 //proyectoEncontrado.dormitorios = req.body.dormitorios;
                 //proyectoEncontrado.banos = req.body.banos;
                 proyectoEncontrado.garajes = req.body.garajes;

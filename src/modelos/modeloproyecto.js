@@ -38,6 +38,8 @@ const proyectoEsquema = new Schema({
     proyecto_descripcion: { type: String, default: "" },
     penalizacion: { type: Number, default: 15 }, // castigo por incumplimiento de pago en %
 
+    trafico:{ type: Number, default: 0 }, // numero de personas por hora
+
     titulo_garantia_1: { type: String, default: "" }, // posible "Garantía fiduciaria"
     garantia_1: { type: String, default: "" }, // posible "Garantía fiduciaria"
     titulo_garantia_2: { type: String, default: "" }, // posible "Garantía hipotecaria"

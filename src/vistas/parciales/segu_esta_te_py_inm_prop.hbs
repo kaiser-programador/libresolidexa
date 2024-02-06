@@ -747,7 +747,14 @@
                             <tr>
                                 <td class="h5 text-left">
                                     <i class="fas fa-hard-hat icono_py_grales"></i>
-                                    <span>Precio Justo<sup><b>a</b></sup></span>
+                                    {{!-- <span>Precio Justo<sup><b>a</b></sup></span> --}}
+                                    <span>Precio Justo</span>
+                                    <i
+                                        class="icono_popover fas fa-info-circle ml-1"
+                                        data-toggle="popover"
+                                        data-html="true"
+                                        data-content="{{informacion.nota_precio_justo}}"
+                                    ></i>
                                 </td>
 
                                 <td class="text-right h5">
@@ -849,6 +856,23 @@
 
                             <tr>
                                 <td class="h5 text-left">
+                                    <i class="fas fa-walking icono_py_grales"></i>
+                                    <span>Tráfico</span>
+                                    <i
+                                        class="icono_popover fas fa-info-circle ml-1"
+                                        data-toggle="popover"
+                                        data-html="true"
+                                        data-content="Número promedio de personas que circulan por hora en las cercanías del inmueble."
+                                    ></i>
+                                </td>
+
+                                <td class="text-right h5">
+                                    <span>{{informacion.trafico}}</span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="h5 text-left">
                                     <i class="fas fa-clock icono_py_grales"></i>
                                     <span>Construcción</span>
                                 </td>
@@ -861,12 +885,12 @@
 
                         </tbody>
                     </table>
-                    <div class="alert alert-primary mt-3">
+                    {{!-- <div class="alert alert-primary mt-3">
                         <span><sup><b>a&nbsp;</b></sup></span>
                         <span>
-                            <span class="escritura">{{informacion.nota_precio_justo}}</span>
+                            <span class="escritura">informacion.nota_precio_justo</span>
                         </span>
-                    </div>
+                    </div> --}}
                 </div>
             {{/if}}
 
@@ -897,7 +921,14 @@
                             <tr>
                                 <td class="h5 text-left">
                                     <i class="fas fa-hard-hat icono_py_grales"></i>
-                                    <span>Precio Justo<sup><b>a</b></sup></span>
+                                    {{!-- <span>Precio Justo<sup><b>a</b></sup></span> --}}
+                                    <span>Precio Justo</span>
+                                    <i
+                                        class="icono_popover fas fa-info-circle ml-1"
+                                        data-toggle="popover"
+                                        data-html="true"
+                                        data-content="{{informacion.nota_precio_justo}}"
+                                    ></i>
                                 </td>
 
                                 <td class="text-right h5">
@@ -965,6 +996,23 @@
 
                             <tr>
                                 <td class="h5 text-left">
+                                    <i class="fas fa-walking icono_py_grales"></i>
+                                    <span>Tráfico</span>
+                                    <i
+                                        class="icono_popover fas fa-info-circle ml-1"
+                                        data-toggle="popover"
+                                        data-html="true"
+                                        data-content="Número promedio de personas que circulan por hora en las cercanías del inmueble."
+                                    ></i>
+                                </td>
+
+                                <td class="text-right h5">
+                                    <span>{{informacion.trafico}}</span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="h5 text-left">
                                     <i class="fas fa-clock icono_py_grales"></i>
                                     <span>Construcción</span>
                                 </td>
@@ -978,12 +1026,12 @@
                         </tbody>
                     </table>
 
-                    <div class="alert alert-primary mt-3">
+                    {{!-- <div class="alert alert-primary mt-3">
                         <span><sup><b>a&nbsp;</b></sup></span>
                         <span>
-                            <span class="escritura">{{informacion.nota_precio_justo}}</span>
+                            <span class="escritura">informacion.nota_precio_justo</span>
                         </span>
-                    </div>
+                    </div> --}}
 
                 </div>
             {{/if}}

@@ -307,7 +307,7 @@ controladorCliInmueble.calculo_inversionista = async (req, res) => {
                 var inversion_a = solidexa_sus;
 
                 // para pocicionamiento del angulo de la flecha
-                var angulo_a = Number(((1.8*rendimiento_a)-180).toFixed(2));
+                var angulo_a = Number((1.8 * rendimiento_a - 180).toFixed(2));
 
                 //------------------------------------------------------------
                 //------------------------------------------------------------
@@ -348,7 +348,7 @@ controladorCliInmueble.calculo_inversionista = async (req, res) => {
                     );
 
                     // para pocicionamiento del angulo de la flecha
-                    var angulo_b = Number(((1.8*rendimiento_b)-180).toFixed(2));
+                    var angulo_b = Number((1.8 * rendimiento_b - 180).toFixed(2));
                 }
 
                 if (reinversion == "no") {
@@ -359,7 +359,7 @@ controladorCliInmueble.calculo_inversionista = async (req, res) => {
                     );
 
                     // para pocicionamiento del angulo de la flecha
-                    var angulo_b = Number(((1.8*rendimiento_b)-180).toFixed(2));
+                    var angulo_b = Number((1.8 * rendimiento_b - 180).toFixed(2));
                 }
 
                 //------------------------------------------------------------
@@ -373,7 +373,7 @@ controladorCliInmueble.calculo_inversionista = async (req, res) => {
                 );
 
                 // para pocicionamiento del angulo de la flecha
-                var angulo_c = Number(((1.8*rendimiento_c)-180).toFixed(2));
+                var angulo_c = Number((1.8 * rendimiento_c - 180).toFixed(2));
 
                 //------------------------------------------------------------
                 //------------------------------------------------------------
@@ -439,7 +439,7 @@ controladorCliInmueble.calculo_inversionista = async (req, res) => {
                         );
 
                         // para pocicionamiento del angulo de la flecha
-                        var angulo_d = Number(((1.8*rendimiento_d)-180).toFixed(2));
+                        var angulo_d = Number((1.8 * rendimiento_d - 180).toFixed(2));
 
                         break; // para salir del bucle for
                     }
@@ -798,6 +798,7 @@ async function inmueble_descripcion(paquete_datos) {
                     mensaje_segundero_py_inm_c: 1, // para RECOMPENSA
                     mensaje_segundero_py_inm_d: 1, // para RECOMPENSA
                     nota_precio_justo: 1,
+                    trafico: 1,
                     _id: 0,
                 }
             );
@@ -1257,6 +1258,10 @@ async function inmueble_beneficios(paquete_datos) {
                 var contructora_dolar_m2_3 = Number(registro_proyecto.contructora_dolar_m2_3);
                 var volterra_dolar_m2 = Number(registro_proyecto.volterra_dolar_m2);
 
+                var prom_constructoras = (contructora_dolar_m2_1+contructora_dolar_m2_2+contructora_dolar_m2_3)/3;
+                var prom_constructoras_r = numero_punto_coma(prom_constructoras.toFixed(0));
+                var solid_constru_r = numero_punto_coma(volterra_dolar_m2.toFixed(0));
+
                 var area_construida = Number(registro_inmueble.superficie_inmueble_m2); // m2 del INMUEBLE
 
                 var costo_constructora_1 = area_construida * contructora_dolar_m2_1;
@@ -1330,8 +1335,9 @@ async function inmueble_beneficios(paquete_datos) {
 
                 let n_p = registro_inmueble.direccion_comparativa.length;
                 if (n_p > 0) {
-                    var sum_precios = 0;
+                    var sum_precios = 0; // $us
                     var sus_m2_solidexa = construccion_inm / area_construida;
+                    var sum_sus_m2 = 0; // $us/m2 sumatoria de todos los inm tradicionales
                     for (let i = 0; i < n_p; i++) {
                         var aux_sus_m2 = Number(
                             (
@@ -1381,6 +1387,11 @@ async function inmueble_beneficios(paquete_datos) {
 
                             //area_volterra: numero_punto_coma(area_construida.toFixed(2)), // para repetirlo en la tabla
                         };
+
+                        sum_sus_m2 =
+                            sum_sus_m2 +
+                            Number(registro_inmueble.precio_comparativa[i]) /
+                                Number(registro_inmueble.m2_comparativa[i]);
                     }
                     //---------------------------------------------------------------
                     // agregamos los datos de SOLIDEXA al inicio de los array necesarios
@@ -1418,9 +1429,19 @@ async function inmueble_beneficios(paquete_datos) {
                     // ------- Para verificación -------
                     //console.log("precio mercado render");
                     //console.log(precio_promedio_render);
+
+                    var prom_sus_m2 = sum_sus_m2/n_p;
+                    var prom_sus_m2_r = numero_punto_coma((prom_sus_m2).toFixed(0));
+
+                    var solid_precio_r = numero_punto_coma(sus_m2_solidexa.toFixed(0));
                 }
 
                 var info_inmueble_beneficios = {
+                    //--------------------------------
+                    prom_constructoras_r, // $us/m2 promedio de todas la constructoras fuera de solidexa
+                    prom_sus_m2_r, // // $us/m2 promedio de todos los inm tradicionales
+                    solid_constru_r, // $us/m2 construccion solidexa
+                    solid_precio_r, // $us/m2 precio solidexa
                     //--------------------------------
                     // precios CONSTRUCTORAS - SOLIDEXA
                     constructoras,

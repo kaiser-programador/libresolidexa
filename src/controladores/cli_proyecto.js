@@ -486,6 +486,7 @@ async function proyecto_descripcion(codigo_proyecto) {
                 total_oficinas: 1,
                 total_comerciales: 1,
                 total_casas: 1,
+                trafico: 1,
                 garajes: 1,
                 area_construida: 1,
                 proyecto_descripcion: 1,
@@ -999,6 +1000,11 @@ async function proyecto_beneficios(codigo_proyecto) {
             var contructora_dolar_m2_3 = Number(registro_proyecto.contructora_dolar_m2_3);
             var volterra_dolar_m2 = Number(registro_proyecto.volterra_dolar_m2);
 
+            var prom_constructoras =
+                (contructora_dolar_m2_1 + contructora_dolar_m2_2 + contructora_dolar_m2_3) / 3;
+            var prom_constructoras_r = numero_punto_coma(prom_constructoras.toFixed(0));
+            var solid_constru_r = numero_punto_coma(volterra_dolar_m2.toFixed(0));
+
             var area_construida = Number(registro_proyecto.area_construida); // m2 de todos los inmuebles y areas del proyecto en TOTAL
 
             var costo_constructora_1 = area_construida * contructora_dolar_m2_1;
@@ -1070,6 +1076,9 @@ async function proyecto_beneficios(codigo_proyecto) {
             //-------------------------------------------------------------------------------
 
             var info_proyecto_beneficios = {
+                prom_constructoras_r,
+                solid_constru_r,
+                //-----------------------------------
                 constructoras,
                 constructoras_render,
                 area_construida,

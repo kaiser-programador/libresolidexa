@@ -988,58 +988,40 @@ $(window).resize(function () {
         if (vemos == "inmueble") {
             let tipo_pestana_inm = $("#tipo_pestana_inm").attr("data-id");
             if (tipo_pestana_inm == "calculadora_inm") {
-                // Obtener el valor de la propiedad CSS 'display' del elemento con el ID 'miElemento'
+                // Obtener el valor de la propiedad CSS 'display' del elemento con la clase 'opciones_inversion'
                 var display_1 = $(".opciones_inversion").css("display");
                 if (display_1 == "block") {
                     // si el elemento SI esta visible en la ventana
 
-                    var display_2 = $(".contenedor_desplazamiento").css("display");
+                    var ancho_ventana = $(window).width(); // resultado en px
+                    // if (ancho_ventana >= 575) {
+                    if (ancho_ventana > 575) {
+                        // si es mayor que 575px
+                        // entonces se visualizara las graficas de barras y velocimetros
 
-                    if (display_2 == "none") {
-                        var ancho_ventana = $(window).width(); // resultado en px
-                        // if (ancho_ventana >= 575) {
-                        if (ancho_ventana > 575) {
-                            // si es mayor que 575px
-                            // entonces se visualizara las graficas de barras y velocimetros
-                            $(".gra_velocimetro").css("display", "block");
-                            $(".texto_velocimetro").css("display", "block");
-                            $(".gra_barras").css("display", "block");
-                            $(".texto_barras").css("display", "block");
-                        } else {
-                            // si es menor que 575px
-                        }
+                        $(".gra_velocimetro").css("display", "block");
+                        $(".texto_velocimetro").css("display", "block");
+                        $(".gra_barras").css("display", "block");
+                        $(".texto_barras").css("display", "block");
+
+                        // se ocultara las flechas de desplazamiento
+                        $(".contenedor_desplazamiento").css("display", "none");
                     } else {
-                        if (display_2 == "block") {
-                            // basta que este visible (esta visible para ancho de ventana menor que 575)
-                            // visualizamos el grafico que se encuentra especificado en el auxiliar "aux_desplazamiento"
+                        // si es menor que 575px
 
-                            //--------------------------------------------------------
-                            let vemos = $(".aux_desplazamiento").attr("data-desplazamiento");
+                        // se visualizara las flechas de desplazamiento
+                        $(".contenedor_desplazamiento").css("display", "block");
 
-                            if (vemos == "barras") {
-                                // entonces ocultamos velocimetros y visualizamos barras
+                        //--------------------------------------------------------
+                        // visualizamos siempre el grafico de barras
 
-                                $(".gra_velocimetro").css("display", "none");
-                                $(".texto_velocimetro").css("display", "none");
+                        $(".gra_velocimetro").css("display", "none");
+                        $(".texto_velocimetro").css("display", "none");
+                        $(".gra_barras").css("display", "block");
+                        $(".texto_barras").css("display", "block");
 
-                                $(".gra_barras").css("display", "block");
-                                $(".texto_barras").css("display", "block");
-                            }
-
-                            if (vemos == "velocimetros") {
-                                // entonces ocultamos barras y visualizamos velocimetros
-                                $(".gra_barras").css("display", "none");
-                                $(".texto_barras").css("display", "none");
-
-                                $(".gra_velocimetro").css("display", "block");
-                                $(".texto_velocimetro").css("display", "block");
-                            }
-                            //--------------------------------------------------------
-                        }
-                    }
-                } else {
-                    if (display_1 == "none") {
-                        // si el elemento NO esta visible en la ventana
+                        // para que cuando se de en el boton de desplazamiento el proximo grafico que se visualice sea el de "velocimetros"
+                        $(".aux_desplazamiento").attr("data-desplazamiento", "barras");
                     }
                 }
             }

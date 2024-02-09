@@ -15,6 +15,18 @@
             <h3 class="texto-resaltado">
                 <span>Calculadora</span>
                 <span class="clase_calculadora"></span>
+                <i
+                    class="popover_calculadora_p icono_popover fas fa-info-circle ml-1"
+                    data-toggle="popover"
+                    data-html="true"
+                    data-content="Descubre por qué el {{cabezera_cli.tipo_inmueble}} {{cabezera_cli.codigo}} es la mejor opción para ser propietario frente a otros inmuebles tradicionales disponibles en el mercado."
+                ></i>
+                <i
+                    class="popover_calculadora_i icono_popover fas fa-info-circle ml-1"
+                    data-toggle="popover"
+                    data-html="true"
+                    data-content="Descubre por qué el {{cabezera_cli.tipo_inmueble}} {{cabezera_cli.codigo}} es la mejor opción de inversión frente a otras alternativas disponibles."
+                ></i>
             </h3>
         </div>
     </div>
@@ -67,12 +79,16 @@
 
                 <hr class="linea_calculadora" />
 
-                <div class="text-center">
-                    <h4 class="texto-resaltado">
+                <div>
+                    <h4 class="text-center texto-resaltado">
                         Plusvalía
                     </h4>
                     <div class="alert alert-primary mt-3">
-                        Deseas adquirir este inmueble para que forme parte de tu patrimonio
+                        Observa cómo SOLIDEXA te recompensa con una mejor plusvalía en comparación
+                        con otros inmuebles tradicionales del mercado.<br />
+                        Esta plusvalía es ganancia que beneficiara al futuro propietario de este
+                        inmueble en lugar de beneficiar a intermediarios, desarrolladores
+                        inmobiliarios o constructoras tradicionales.
                     </div>
                 </div>
                 <div class="row">
@@ -86,7 +102,7 @@
                                     class="icono_popover fas fa-info-circle ml-1"
                                     data-toggle="popover"
                                     data-html="true"
-                                    data-content="Este es un mensaje explicativo TRADICIONAL."
+                                    data-content="Ingresa los datos del precio y la superficie del inmueble tradicional que encontraste en el mercado y que deseas comparar con el inmueble SOLIDEXA."
                                 ></i>
                             </h5>
                         </div>
@@ -145,7 +161,7 @@
                                     class="icono_popover fas fa-info-circle ml-1"
                                     data-toggle="popover"
                                     data-html="true"
-                                    data-content="El intervalo de precios limites minimo y maximo corresponden a la zona donde se encuentra ubicada el inmueble SOLIDEXA"
+                                    data-content="Se muestra el rango de precios límites mínimo y máximo correspondientes a la zona donde se encuentra ubicado el inmueble SOLIDEXA"
                                 ></i>
                             </h5>
                             <h6 class="texto-link">
@@ -213,8 +229,8 @@
                                     ></i>
                                 </div>
                                 <div class="my-2">
-                                    <span class="h2 texto-link"><b class="c1"></b></span>
-                                    <span class="h4 texto-link"><b>$us</b></span>
+                                    <span class="h3 texto-link"><b class="c1"></b></span>
+                                    <span class="h5 texto-link">$us</span>
                                 </div>
                             </div>
                             <div class="col-6 text-center">
@@ -225,8 +241,8 @@
                                     ></i>
                                 </div>
                                 <div class="my-2">
-                                    <span class="h2" style="color: red;"><b class="c2"></b></span>
-                                    <span class="h4" style="color: red;"><b>$us</b></span>
+                                    <span class="h3" style="color: red;"><b class="c2"></b></span>
+                                    <span class="h5" style="color: red;">$us</span>
                                 </div>
                             </div>
                         </div>
@@ -268,8 +284,8 @@
                                     ></i>
                                 </div>
                                 <div class="my-2">
-                                    <span class="h2" style="color: red;"><b class="c3"></b></span>
-                                    <span class="h4" style="color: red;"><b>Años</b></span>
+                                    <span class="h3" style="color: red;"><b class="c3"></b></span>
+                                    <span class="h5" style="color: red;">Años</span>
                                 </div>
                             </div>
                             <div class="col-lg-2"></div>
@@ -279,7 +295,7 @@
                             <div class="col-lg-2"></div>
                             <div class="col-12 col-lg-8 text-center">
                                 <p>
-                                    Es el tiempo que le toma al inmueble
+                                    Es el tiempo que le tomaría al inmueble
                                     <b>tradicional</b>
                                     igualar la plusvalía de SOLIDEXA.
                                 </p>
@@ -298,14 +314,16 @@
 
                 <hr class="linea_calculadora mt-5" />
 
-                <div class="text-center">
-                    <h4 class="texto-resaltado">
+                <div>
+                    <h4 class="text-center texto-resaltado">
                         Financiamiento Bancario
                     </h4>
 
                     <div class="alert alert-primary mt-3">
-                        Debido al precio justo de los inmuebles de SOLIDEXA, esto se ve reflejado en
-                        el financiamiento bancario que pagaras menos intereses.
+                        Si estás planeando financiar la compra de un inmueble mediante un préstamo
+                        bancario, aprovecha el precio justo de SOLIDEXA para obtener pagos mensuales
+                        más bajos y reducir los intereses en comparación con un inmueble
+                        tradicional.
                     </div>
                 </div>
                 <div class="row">
@@ -320,7 +338,7 @@
                                     class="icono_popover fas fa-info-circle ml-1"
                                     data-toggle="popover"
                                     data-html="true"
-                                    data-content="Aporte propio que estás dispuesto a pagar de tu propio bolsillo."
+                                    data-content="El porcentaje de dinero que estás dispuesto a invertir de tu propio bolsillo para cubrir una parte del pago del inmueble SOLIDEXA."
                                 ></i>
                             </label>
                             <div class="col-8 input-group">
@@ -341,13 +359,13 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="label_plazo_year_p" class="col-4 col-form-label"><b
+                            <label for="label_plazo_year_pp" class="col-4 col-form-label"><b
                                 >Plazo</b>
                                 <i
                                     class="icono_popover fas fa-info-circle ml-1"
                                     data-toggle="popover"
                                     data-html="true"
-                                    data-content="Duración del préstamo bancario en años."
+                                    data-content="Tiempo de duración del prestamo bancario. Elige el mayor tiempo posible, idealmente superior a los 5 años."
                                 ></i>
                             </label>
                             <div class="col-8 input-group">
@@ -378,7 +396,7 @@
                                     class="icono_popover fas fa-info-circle ml-1"
                                     data-toggle="popover"
                                     data-html="true"
-                                    data-content="Tasa compuesta de interés anual que el banco exige por el préstamo."
+                                    data-content="Tasa de interés compuesta anual que el banco exige por el préstamo. Te recomendamos buscar la tasa de interés más baja, preferiblemente por debajo del 15%."
                                 ></i>
                             </label>
                             <div class="col-8 input-group">
@@ -463,8 +481,9 @@
                                     ></i>
                                 </div>
                                 <div class="my-2">
-                                    <span class="h2 texto-link"><b class="c4"></b></span>
-                                    <span class="h4 texto-link"><b class="c5"></b></span>
+                                    <span class="h3 texto-link"><b class="c4"></b></span>
+                                    {{! <span class="h5 texto-link"><b class="c5"></b></span> }}
+                                    <span class="h5 texto-link c5"></span>
                                 </div>
                             </div>
                             <div class="col-6 text-center">
@@ -475,8 +494,9 @@
                                     ></i>
                                 </div>
                                 <div class="my-2">
-                                    <span class="h2" style="color: red;"><b class="c6"></b></span>
-                                    <span class="h4" style="color: red;"><b class="c7"></b></span>
+                                    <span class="h3" style="color: red;"><b class="c6"></b></span>
+                                    {{! <span class="h5" style="color: red;"><b class="c7"></b></span> }}
+                                    <span class="h5 c7" style="color: red;"></span>
                                 </div>
                             </div>
                         </div>
@@ -519,8 +539,9 @@
                                     ></i>
                                 </div>
                                 <div class="my-2">
-                                    <span class="h2 texto-link"><b class="c8"></b></span>
-                                    <span class="h4 texto-link"><b class="c9"></b></span>
+                                    <span class="h3 texto-link"><b class="c8"></b></span>
+                                    {{! <span class="h5 texto-link"><b class="c9"></b></span> }}
+                                    <span class="h5 texto-link c9"></span>
                                 </div>
                             </div>
                             <div class="col-6 text-center">
@@ -531,8 +552,9 @@
                                     ></i>
                                 </div>
                                 <div class="my-2">
-                                    <span class="h2" style="color: red;"><b class="c10"></b></span>
-                                    <span class="h4" style="color: red;"><b class="c11"></b></span>
+                                    <span class="h3" style="color: red;"><b class="c10"></b></span>
+                                    {{! <span class="h5" style="color: red;"><b class="c11"></b></span> }}
+                                    <span class="h5 c11" style="color: red;"></span>
                                 </div>
                             </div>
                         </div>
@@ -572,11 +594,8 @@
                 Inversionista
             </h4>
             <div class="alert alert-primary mt-3">
-                Se calculará el rendimiento de cada oportunidad de inversión utilizando un período
-                de
-                <b><span class="n_evaluacion">18</span> meses</b>, este periodo corresponde al
-                tiempo que transcurre desde la fase de reserva del proyecto hasta la totalidad de su
-                construcción.
+                Si estás pensando en invertir tu dinero, compara diversas oportunidades de inversión
+                y descubre por qué el inmueble SOLIDEXA destaca como la mejor opción.
             </div>
         </div>
 
@@ -591,7 +610,7 @@
                             class="icono_popover fas fa-info-circle ml-1"
                             data-toggle="popover"
                             data-html="true"
-                            data-content="Estás considerando emprender un negocio que te proporcione ingresos mensuales."
+                            data-content="Estás pensando en iniciar tu propio negocio para generar ingresos mensuales."
                         ></i>
                     </h5>
                 </div>
@@ -602,7 +621,7 @@
                             class="icono_popover fas fa-info-circle ml-1"
                             data-toggle="popover"
                             data-html="true"
-                            data-content="El capital de dinero que esperas invertir en tu idea de negocio."
+                            data-content="La suma de dinero que esperas invertir en tu idea de negocio."
                         ></i>
                     </label>
                     <div class="col-8 input-group">
@@ -652,7 +671,7 @@
                             class="icono_popover fas fa-info-circle ml-1"
                             data-toggle="popover"
                             data-html="true"
-                            data-content="Si deseas aumentar tus ganancias mediante la reinversión de tu ganancia neta mensual a una tasa anual compuesta del 10%."
+                            data-content="Deseas reinvertir tu ganancia neta mensual a una tasa anual compuesta del 10% para aumentar tus ganancias."
                         ></i>
                     </label>
                     <div class="col-8">
@@ -690,7 +709,7 @@
                             class="icono_popover fas fa-info-circle ml-1"
                             data-toggle="popover"
                             data-html="true"
-                            data-content="Este es un mensaje explicativo TRADICIONAL."
+                            data-content="Descubre cómo multiplicar tus ganancias con el inmueble SOLIDEXA mediante la aplicación de apalancamiento financiero."
                         ></i>
                     </h5>
                 </div>
@@ -702,7 +721,7 @@
                             class="icono_popover fas fa-info-circle ml-1"
                             data-toggle="popover"
                             data-html="true"
-                            data-content="La cantidad que estás dispuesto a invertir de tu propio bolsillo en el inmueble SOLIDEXA."
+                            data-content="El porcentaje de dinero que estás dispuesto a invertir de tu propio bolsillo para cubrir una parte del pago del inmueble SOLIDEXA."
                         ></i>
                     </label>
                     <div class="col-8 input-group">
@@ -724,12 +743,12 @@
 
                 <div class="text-center mb-3">
                     <h5 class="texto-link">
-                        <b>Financiamiento</b>
+                        <b>Apalancamiento</b>
                         <i
                             class="icono_popover fas fa-info-circle ml-1"
                             data-toggle="popover"
                             data-html="true"
-                            data-content="Financiamiento externo que utilizaras como apalancamiento para invertir en el inmueble SOLIDEXA."
+                            data-content="Es la fuente de financiamiento externo que utilizarás para complementar el pago del inmueble SOLIDEXA."
                         ></i>
                     </h5>
                 </div>
@@ -740,7 +759,7 @@
                             class="icono_popover fas fa-info-circle ml-1"
                             data-toggle="popover"
                             data-html="true"
-                            data-content="Tasa compuesta de interés anual que exige el financiador externo."
+                            data-content="Tasa de interés compuesto anual que pagarás a la fuente de financiamiento externo. Te recomendamos buscar la tasa de interés más baja, preferiblemente por debajo del 15%."
                         ></i>
                     </label>
                     <div class="col-8 input-group">
@@ -766,7 +785,7 @@
                             class="icono_popover fas fa-info-circle ml-1"
                             data-toggle="popover"
                             data-html="true"
-                            data-content="Duración del financiamiento en años."
+                            data-content="Tiempo de duración del financiamiento. Elige el mayor tiempo posible, idealmente superior a los {{informacion.meses_min}} meses."
                         ></i>
                     </label>
                     <div class="col-8 input-group">
@@ -789,7 +808,6 @@
 
             <div class="col-lg-3"></div>
             <div class="col-12 col-lg-6">
-
                 <div class="ref-calcular_inversion text-center">
                     <div class="calcular_inversion btn btn-primary">Calcular</div>
                 </div>
@@ -799,9 +817,17 @@
 
         </div>
 
-        <div class="row my-3 contenedor_desplazamiento">
+        <div class="row">
             <div class="col-12">
-                <div>
+                <div class="texto_inversiones alert alert-primary mt-3" style="display: none;">
+
+                </div>
+            </div>
+        </div>
+
+        <div class="row contenedor_desplazamiento" style="display: none;">
+            <div class="col-12">
+                <div class="contenedor_flechas">
                     <div class="flechas_desplazamiento btn btn-primary">
                         <i class="fas fa-arrow-left flecha_siguiente"></i>
                     </div>
@@ -823,10 +849,10 @@
                         <h5 class="texto-link">
                             <b>Ahorro Bancario</b>
                             <i
-                                class="icono_popover fas fa-info-circle ml-1"
+                                class="p_ahorro icono_popover fas fa-info-circle ml-1"
                                 data-toggle="popover"
                                 data-html="true"
-                                data-content="Estos son los rendimientos que obtendrias si en lugar de invertir los 38000 $us en el inmueble SOLIDEXA, los inviertes en un DPF de un banco que te pagara la mejor tasa de interes 6.8 % por 18 meses."
+                                data-content=""
                             ></i>
                         </h5>
                     </div>
@@ -885,20 +911,20 @@
                                 <div class="col-6 col-sm-12">
                                     <div class="texto-link">
                                         <div>
-                                            <span class="h2"><b class="gana_1"></b></span>
-                                            <span class="h4"><b>$us</b></span>
+                                            <span class="h3"><b class="gana_1"></b></span>
+                                            <span class="h5">$us</span>
                                         </div>
                                         <div>
-                                            <span class="h4"><b>Ganancia</b></span>
+                                            <span class="h5"><b>Ganancia</b></span>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-6 col-sm-12">
-                                    <div class="mt-3" style="color: red;">
+                                    <div class="mt-sm-3" style="color: red;">
                                         <div>
                                             <span class="h5"><b class="inve_1"></b></span>
-                                            <span class="h5"><b>$us</b></span>
+                                            <span class="h5">$us</span>
                                         </div>
                                         <div>
                                             <span class="h5"><b>Inversión</b></span>
@@ -911,23 +937,23 @@
                         <div class="col-12 col-sm-6 text-center texto_velocimetro">
                             <div class="texto-link">
                                 <div>
-                                    <span class="h2"><b class="rendi_1">0</b></span>
-                                    <span class="h4"><b>%</b></span>
+                                    <span class="h3"><b class="rendi_1">0</b></span>
+                                    <span class="h5">%</span>
                                 </div>
                                 <div>
-                                    <span class="h4"><b>Rendimiento</b></span>
+                                    <span class="h5"><b>Rendimiento</b></span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-12 col-xl-6">
+                <div class="col-12 col-xl-6 mt-5 mt-lg-0">
                     <div class="text-center mb-2">
                         <h5 class="texto-link">
                             <b>Emprendimiento</b>
                             <i
-                                class="icono_popover fas fa-info-circle ml-1"
+                                class="p_emprendimiento icono_popover fas fa-info-circle ml-1"
                                 data-toggle="popover"
                                 data-html="true"
                                 data-content="Emprendes un negocio propio."
@@ -989,20 +1015,20 @@
                                 <div class="col-6 col-sm-12">
                                     <div class="texto-link">
                                         <div>
-                                            <span class="h2"><b class="gana_2"></b></span>
-                                            <span class="h4"><b>$us</b></span>
+                                            <span class="h3"><b class="gana_2"></b></span>
+                                            <span class="h5">$us</span>
                                         </div>
                                         <div>
-                                            <span class="h4"><b>Ganancia</b></span>
+                                            <span class="h5"><b>Ganancia</b></span>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-6 col-sm-12">
-                                    <div class="mt-3" style="color: red;">
+                                    <div class="mt-sm-3" style="color: red;">
                                         <div>
                                             <span class="h5"><b class="inve_2"></b></span>
-                                            <span class="h5"><b>$us</b></span>
+                                            <span class="h5">$us</span>
                                         </div>
                                         <div>
                                             <span class="h5"><b>Inversión</b></span>
@@ -1015,11 +1041,11 @@
                         <div class="col-12 col-sm-6 text-center texto_velocimetro">
                             <div class="texto-link">
                                 <div>
-                                    <span class="h2"><b class="rendi_2">0</b></span>
-                                    <span class="h4"><b>%</b></span>
+                                    <span class="h3"><b class="rendi_2">0</b></span>
+                                    <span class="h5">%</span>
                                 </div>
                                 <div>
-                                    <span class="h4"><b>Rendimiento</b></span>
+                                    <span class="h5"><b>Rendimiento</b></span>
                                 </div>
                             </div>
                         </div>
@@ -1033,7 +1059,7 @@
                         <h5 class="texto-link">
                             <b>SOLIDEXA</b>
                             <i
-                                class="icono_popover fas fa-info-circle ml-1"
+                                class="p_solidexa icono_popover fas fa-info-circle ml-1"
                                 data-toggle="popover"
                                 data-html="true"
                                 data-content="Invirtiendo en SOLIDEXA en el inmueble."
@@ -1095,20 +1121,20 @@
                                 <div class="col-6 col-sm-12">
                                     <div class="texto-link">
                                         <div>
-                                            <span class="h2"><b class="gana_3"></b></span>
-                                            <span class="h4"><b>$us</b></span>
+                                            <span class="h3"><b class="gana_3"></b></span>
+                                            <span class="h5">$us</span>
                                         </div>
                                         <div>
-                                            <span class="h4"><b>Ganancia</b></span>
+                                            <span class="h5"><b>Ganancia</b></span>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-6 col-sm-12">
-                                    <div class="mt-3" style="color: red;">
+                                    <div class="mt-sm-3" style="color: red;">
                                         <div>
                                             <span class="h5"><b class="inve_3"></b></span>
-                                            <span class="h5"><b>$us</b></span>
+                                            <span class="h5">$us</span>
                                         </div>
                                         <div>
                                             <span class="h5"><b>Inversión</b></span>
@@ -1121,23 +1147,23 @@
                         <div class="col-12 col-sm-6 text-center texto_velocimetro">
                             <div class="texto-link">
                                 <div>
-                                    <span class="h2"><b class="rendi_3">0</b></span>
-                                    <span class="h4"><b>%</b></span>
+                                    <span class="h3"><b class="rendi_3">0</b></span>
+                                    <span class="h5">%</span>
                                 </div>
                                 <div>
-                                    <span class="h4"><b>Rendimiento</b></span>
+                                    <span class="h5"><b>Rendimiento</b></span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-12 col-xl-6">
+                <div class="col-12 col-xl-6 mt-5 mt-lg-0">
                     <div class="text-center mb-2">
                         <h5 class="texto-link">
                             <b>SOLIDEXA Plus</b>
                             <i
-                                class="icono_popover fas fa-info-circle ml-1"
+                                class="p_solidexa_p icono_popover fas fa-info-circle ml-1"
                                 data-toggle="popover"
                                 data-html="true"
                                 data-content="Apalancamiento con SOLIDEXA plus."
@@ -1199,20 +1225,20 @@
                                 <div class="col-6 col-sm-12">
                                     <div class="texto-link">
                                         <div>
-                                            <span class="h2"><b class="gana_4"></b></span>
-                                            <span class="h4"><b>$us</b></span>
+                                            <span class="h3"><b class="gana_4"></b></span>
+                                            <span class="h5">$us</span>
                                         </div>
                                         <div>
-                                            <span class="h4"><b>Ganancia</b></span>
+                                            <span class="h5"><b>Ganancia</b></span>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="col-6 col-sm-12">
-                                    <div class="mt-3" style="color: red;">
+                                    <div class="mt-sm-3" style="color: red;">
                                         <div>
                                             <span class="h5"><b class="inve_4"></b></span>
-                                            <span class="h5"><b>$us</b></span>
+                                            <span class="h5">$us</span>
                                         </div>
                                         <div>
                                             <span class="h5"><b>Inversión</b></span>
@@ -1225,17 +1251,23 @@
                         <div class="col-12 col-sm-6 text-center texto_velocimetro">
                             <div class="texto-link">
                                 <div>
-                                    <span class="h2"><b class="rendi_4">0</b></span>
-                                    <span class="h4"><b>%</b></span>
+                                    <span class="h3"><b class="rendi_4">0</b></span>
+                                    <span class="h5">%</span>
                                 </div>
                                 <div>
-                                    <span class="h4"><b>Rendimiento</b></span>
+                                    <span class="h5"><b>Rendimiento</b></span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
+            </div>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <div class="conclusion_inversion text-left alert alert-primary mt-3">
+                    </div>
+                </div>
             </div>
         </div>
 

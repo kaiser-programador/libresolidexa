@@ -38,15 +38,9 @@ const controladorCliInmueble = {};
 
 controladorCliInmueble.calculoTiempo = async (req, res) => {
     try {
-        console.log("el bodyyyyy");
-        console.log(req.body);
         var codigo_inmueble = req.body.codigo_inmueble;
         var meta = Number(req.body.meta);
         var plus_promedio = Number(req.body.plus_promedio); // precio de venta actual al que el inmueble tradicional es vendido (es el promedio de los precios de venta tradicionales en la zona donde se encuentra el inm tradicional)
-
-        console.log(codigo_inmueble);
-        console.log(meta);
-        console.log(plus_promedio);
 
         var year_espera = 5; // por defecto
 
@@ -75,16 +69,13 @@ controladorCliInmueble.calculoTiempo = async (req, res) => {
             var periodo = year_actual + " - " + semestre;
 
             var tipo_inmueble = registro_inmueble.tipo_inmueble; // departamento, oficina, comercial, casa
-            console.log("tipo de inmueble: " + tipo_inmueble);
+
             let datos_auxiliares = {
                 tipo_inmueble,
             };
             var array_hist_sus_m2 = funcion_sus_m2_historicos(datos_auxiliares);
             var array_sus_m2 = array_hist_sus_m2.array_sus_m2;
             var array_periodo = array_hist_sus_m2.array_periodo;
-
-            console.log("array_sus_m2 " + array_sus_m2.length);
-            console.log("array_sus_m2 " + array_periodo.length);
 
             if (array_sus_m2.length > 0 && array_periodo.length > 0) {
                 for (let i = 0; i < array_periodo.length; i++) {
@@ -122,11 +113,6 @@ controladorCliInmueble.calculoTiempo = async (req, res) => {
 
 controladorCliInmueble.calculo_banco_p = async (req, res) => {
     try {
-        console.log(req.body.precio_solidexa);
-
-        console.log("el bodyyyyy BANCO P");
-        console.log(req.body);
-
         // aunque de jquery los numeros fueron enviados como valores numericos, aqui se reciben como string, asi que nuevamente deben ser convertidos a numericos
         var precio_solidexa = Number(req.body.precio_solidexa); // $us
         var precio_tradicional = Number(req.body.precio_tradicional); // $us
@@ -134,9 +120,6 @@ controladorCliInmueble.calculo_banco_p = async (req, res) => {
         var plazo = Number(req.body.plazo); // # años
         var interes = Number(req.body.interes); // % anual
         var moneda = req.body.moneda;
-
-        console.log("el valor de precio solidexa: " + precio_solidexa);
-        console.log(precio_solidexa);
 
         if (moneda == "bs") {
             var aux_tc = tipo_cambio();
@@ -225,9 +208,6 @@ controladorCliInmueble.calculo_banco_p = async (req, res) => {
 controladorCliInmueble.calculo_inversionista = async (req, res) => {
     try {
         var solucionado = false; // por defecto
-
-        console.log("el bodyyyyy INVERSIONISTA");
-        console.log(req.body);
 
         // aunque de jquery los numeros fueron enviados como valores numericos, aqui se reciben como string, asi que nuevamente deben ser convertidos a numericos
         var inversion_emp = Number(req.body.inversion_emp); // $us
@@ -471,6 +451,8 @@ controladorCliInmueble.calculo_inversionista = async (req, res) => {
                 angulo_b,
                 angulo_c,
                 angulo_d,
+                i_ahorro: i_banco, // % mejor tasa interes para ahorro en banco
+                plazo, // # meses intero inferior desde que el py es puesto en convocatoria hasta su total contruccion.
             });
         } else {
             res.json({
@@ -1258,7 +1240,8 @@ async function inmueble_beneficios(paquete_datos) {
                 var contructora_dolar_m2_3 = Number(registro_proyecto.contructora_dolar_m2_3);
                 var volterra_dolar_m2 = Number(registro_proyecto.volterra_dolar_m2);
 
-                var prom_constructoras = (contructora_dolar_m2_1+contructora_dolar_m2_2+contructora_dolar_m2_3)/3;
+                var prom_constructoras =
+                    (contructora_dolar_m2_1 + contructora_dolar_m2_2 + contructora_dolar_m2_3) / 3;
                 var prom_constructoras_r = numero_punto_coma(prom_constructoras.toFixed(0));
                 var solid_constru_r = numero_punto_coma(volterra_dolar_m2.toFixed(0));
 
@@ -1430,8 +1413,8 @@ async function inmueble_beneficios(paquete_datos) {
                     //console.log("precio mercado render");
                     //console.log(precio_promedio_render);
 
-                    var prom_sus_m2 = sum_sus_m2/n_p;
-                    var prom_sus_m2_r = numero_punto_coma((prom_sus_m2).toFixed(0));
+                    var prom_sus_m2 = sum_sus_m2 / n_p;
+                    var prom_sus_m2_r = numero_punto_coma(prom_sus_m2.toFixed(0));
 
                     var solid_precio_r = numero_punto_coma(sus_m2_solidexa.toFixed(0));
                 }
@@ -1885,7 +1868,6 @@ async function inmueble_calculadora(codigo_inmueble) {
             {
                 superficie_inmueble_m2: 1,
                 codigo_terreno: 1,
-                codigo_terreno: 1,
                 precio_comparativa: 1,
                 m2_comparativa: 1,
                 superficie_inmueble_m2: 1,
@@ -1932,6 +1914,8 @@ async function inmueble_calculadora(codigo_inmueble) {
                     ciudad: 1,
                     provincia: 1,
                     direccion: 1,
+                    fecha_inicio_reserva: 1,
+                    fecha_fin_construccion: 1,
                     _id: 0,
                 }
             );
@@ -1940,6 +1924,21 @@ async function inmueble_calculadora(codigo_inmueble) {
                 direccion = registro_terreno.direccion;
                 provincia = registro_terreno.provincia;
                 ciudad = registro_terreno.ciudad;
+
+                
+//----------------------------------------------------------
+                // calculo del total plazo en meses DESDE INICIO CONVOCATORIA HASTA FIN CONTRUCCION
+
+                var diferenciaEnMilisegundos =
+                    registro_terreno.fecha_fin_construccion - registro_terreno.fecha_inicio_reserva;
+
+                // Convertir la diferencia de milisegundos a días
+                var diferenciaEnDias = diferenciaEnMilisegundos / (1000 * 60 * 60 * 24);
+
+                // el número de meses, redondeado al entero inmediato inferior
+                var plazo = Math.floor(diferenciaEnDias / 30); // meses
+
+                //------------------------------------------------------------
             }
 
             let precios_otros = registro_inmueble.precio_comparativa;
@@ -1985,6 +1984,7 @@ async function inmueble_calculadora(codigo_inmueble) {
                 maximo_render,
                 minimo_render,
                 promedio_render,
+                meses_min: plazo*3, // #meses minimo para el tiempo de financiamiento del apalancamiento
             };
 
             return datos_calculadora;

@@ -749,7 +749,7 @@ table td {
     align-items: end;
   }
 
-  .flechas_desplazamiento{
+  .contenedor_flechas{
     width: 100%;
     display: flex;
     justify-content: space-between;

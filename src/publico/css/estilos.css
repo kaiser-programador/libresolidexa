@@ -574,12 +574,23 @@ table td {
 }
 
 /* grafico de calculadora propietario */
-#grafico_plus_sol_tra, #grafico_tiempo_espera{
+#grafico_plus_sol_tra, #grafico_tiempo_espera, #contendor_graf_comision{
     width: 100%; /* O cualquier otro valor deseado */
     /* Esto permite que la altura se ajuste automáticamente según el ancho */
     height: auto; 
     /* min-height: 300px; */
         
+}
+
+.contenedor_val_comision{
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    width: 100%;
+
+    /* 100% de altura para que ocupe todo el espacio disponible, asi se autoajusta a las alturas de las ventanas en diferentes tamaños */
+    height: 100%;
+    padding-bottom: 2rem;
 }
     
 /* grafico de calculadora inversionista */

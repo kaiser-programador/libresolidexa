@@ -573,11 +573,17 @@ $(document).ready(function () {
             $(".calculadora_propietario").click();
             $(".monedaP").eq(0).click(); // seleccionamos el radio de moneda DOLAR
             $(".clase_reinversion").eq(0).click(); // seleccionamos el radio de REINVERSION "No"
-
+            $(".comisionP").eq(0).click(); // seleccionamos el radio de comisión "no"
+            
             // ocultamos los los elementos que contienen a los resultados de los calculos
             $(".contenedor_1").hide();
             $(".contenedor_2").hide();
+            $(".total_comision").hide();
             $(".opciones_inversion").hide();
+
+            // guardamos el ancho actual de la ventana, esto para evitar errores en la visualizacion de los graficos de barras con los velocimetros
+            var anchoActual = $(window).width();
+            $(".ancho_ventana").attr("data-ancho_ventana", anchoActual);
         }
 
         if (tipo_pestana_inm == "inversor_inm") {
@@ -988,41 +994,50 @@ $(window).resize(function () {
         if (vemos == "inmueble") {
             let tipo_pestana_inm = $("#tipo_pestana_inm").attr("data-id");
             if (tipo_pestana_inm == "calculadora_inm") {
-                // Obtener el valor de la propiedad CSS 'display' del elemento con la clase 'opciones_inversion'
-                var display_1 = $(".opciones_inversion").css("display");
-                if (display_1 == "block") {
-                    // si el elemento SI esta visible en la ventana
+                var anchoAnterior = Number($(".ancho_ventana").attr("data-ancho_ventana"));
+                var anchoActual = $(window).width();
 
-                    var ancho_ventana = $(window).width(); // resultado en px
-                    // if (ancho_ventana >= 575) {
-                    if (ancho_ventana > 575) {
-                        // si es mayor que 575px
-                        // entonces se visualizara las graficas de barras y velocimetros
+                if (anchoActual !== anchoAnterior) {
+                    // si el ancho actual es diferente al ancho anterior, con esto se evita que el grafico de velocimetro cambie bruscamente a grafico de barras al momento de deslizar con los dedos la pantalla en pantalla celular.
+                    // Obtener el valor de la propiedad CSS 'display' del elemento con la clase 'opciones_inversion'
+                    var display_1 = $(".opciones_inversion").css("display");
+                    if (display_1 == "block") {
+                        // si el elemento SI esta visible en la ventana
 
-                        $(".gra_velocimetro").css("display", "block");
-                        $(".texto_velocimetro").css("display", "block");
-                        $(".gra_barras").css("display", "block");
-                        $(".texto_barras").css("display", "block");
+                        var ancho_ventana = $(window).width(); // resultado en px
+                        // if (ancho_ventana >= 575) {
+                        if (ancho_ventana > 575) {
+                            // si es mayor que 575px
+                            // entonces se visualizara las graficas de barras y velocimetros
 
-                        // se ocultara las flechas de desplazamiento
-                        $(".contenedor_desplazamiento").css("display", "none");
-                    } else {
-                        // si es menor que 575px
+                            $(".gra_velocimetro").css("display", "block");
+                            $(".texto_velocimetro").css("display", "block");
+                            $(".gra_barras").css("display", "block");
+                            $(".texto_barras").css("display", "block");
 
-                        // se visualizara las flechas de desplazamiento
-                        $(".contenedor_desplazamiento").css("display", "block");
+                            // se ocultara las flechas de desplazamiento
+                            $(".contenedor_desplazamiento").css("display", "none");
+                        } else {
+                            // si es menor que 575px
 
-                        //--------------------------------------------------------
-                        // visualizamos siempre el grafico de barras
+                            // se visualizara las flechas de desplazamiento
+                            $(".contenedor_desplazamiento").css("display", "block");
 
-                        $(".gra_velocimetro").css("display", "none");
-                        $(".texto_velocimetro").css("display", "none");
-                        $(".gra_barras").css("display", "block");
-                        $(".texto_barras").css("display", "block");
+                            //--------------------------------------------------------
+                            // visualizamos siempre el grafico de barras para que sus dimensiones de ancho y altura no se anulen automaticamente poniendose a valor CERO.
 
-                        // para que cuando se de en el boton de desplazamiento el proximo grafico que se visualice sea el de "velocimetros"
-                        $(".aux_desplazamiento").attr("data-desplazamiento", "barras");
+                            $(".gra_velocimetro").css("display", "none");
+                            $(".texto_velocimetro").css("display", "none");
+                            $(".gra_barras").css("display", "block");
+                            $(".texto_barras").css("display", "block");
+
+                            // para que cuando se de en el boton de desplazamiento el proximo grafico que se visualice sea el de "velocimetros"
+                            $(".aux_desplazamiento").attr("data-desplazamiento", "barras");
+                        }
                     }
+
+                    // actualizamos el ancho de la ventana actual
+                    $(".ancho_ventana").attr("data-ancho_ventana",anchoActual);
                 }
             }
         }

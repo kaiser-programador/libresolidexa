@@ -9,6 +9,9 @@
     <span class="solidexa_sus_m2" data-solidexa_sus_m2="{{informacion.solidexa_sus_m2}}"></span>
 </div>
 
+{{! para guardado del ancho actual de la ventana }}
+<span class="ancho_ventana" data-ancho_ventana=""></span>
+
 <div class="row mt-5 cuadro_estandart py-3">
     <div class="col-12 mb-2">
         <div class="text-center">
@@ -19,13 +22,14 @@
                     class="popover_calculadora_p icono_popover fas fa-info-circle ml-1"
                     data-toggle="popover"
                     data-html="true"
-                    data-content="Descubre por qué el {{cabezera_cli.tipo_inmueble}} {{cabezera_cli.codigo}} es la mejor opción para ser propietario frente a otros inmuebles tradicionales disponibles en el mercado."
+                    data-content="<span>Descubre por qué el <b>{{cabezera_cli.tipo_inmueble}} {{cabezera_cli.codigo}}</b> es la mejor opción para ser propietario frente a otros inmuebles tradicionales disponibles en el mercado.</span>"
                 ></i>
+
                 <i
                     class="popover_calculadora_i icono_popover fas fa-info-circle ml-1"
                     data-toggle="popover"
                     data-html="true"
-                    data-content="Descubre por qué el {{cabezera_cli.tipo_inmueble}} {{cabezera_cli.codigo}} es la mejor opción de inversión frente a otras alternativas disponibles."
+                    data-content="Descubre por qué el <b>{{cabezera_cli.tipo_inmueble}} {{cabezera_cli.codigo}}</b> es la mejor opción de inversión frente a otras alternativas disponibles."
                 ></i>
             </h3>
         </div>
@@ -147,6 +151,62 @@
                             </div>
                         </div>
 
+                        <div class="form-group row">
+                            <label for="label_comision" class="col-4 col-form-label"><b>Comisión</b>
+                                <i
+                                    class="icono_popover fas fa-info-circle ml-1"
+                                    data-toggle="popover"
+                                    data-html="true"
+                                    data-content="Al comprar el inmueble tradicional, es probable que debas pagar una comisión al agente inmobiliario u otro intermediario. En caso de que así sea, por favor especifica el porcentaje de comisión de ese intermediario."
+                                ></i>
+                            </label>
+                            <div class="col-8">
+                                <label class="mt-2 mr-5">
+                                    <input
+                                        type="radio"
+                                        name="comision"
+                                        value="no"
+                                        class="comisionP"
+                                        required
+                                    />
+                                    No
+                                </label>
+                                <label class="mt-2">
+                                    <input
+                                        type="radio"
+                                        name="comision"
+                                        value="si"
+                                        class="comisionP"
+                                        required
+                                    />
+                                    Si
+                                </label>
+                            </div>
+                        </div>
+
+                        <span class="comision_si_no" data-comision=""></span>
+
+                        <div class="form-group row">
+                            <label for="label_input_comision" class="col-4 col-form-label"><b
+                                ></b></label>
+                            <div class="col-8 input-group">
+                                <input
+                                    name="input_comision"
+                                    type="number"
+                                    step="0.01"
+                                    class="form-control"
+                                    id="label_input_comision"
+                                    min="0"
+                                    max="100"
+                                    value="0"
+                                    required
+                                />
+                                <div class="input-group-append">
+                                    <span class="input-group-text bg-warning">%</span>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="ref-calcular_plusvalia text-center">
                             <div class="calcular_plusvalia btn btn-primary">Calcular</div>
                         </div>
@@ -261,7 +321,6 @@
                                 </p>
                             </div>
                         </div>
-
                     </div>
 
                     <div class="col-12 col-lg-6 mt-5 mt-lg-0 contenedor_1">
@@ -302,7 +361,71 @@
                             </div>
                             <div class="col-lg-2"></div>
                         </div>
+                    </div>
 
+                    <div class="col-12 mt-5 total_comision">
+                        <div class="row mt-2">
+                            <div class="col-12">
+                                <div class="text-center mb-2">
+                                    <h5 class="texto-link">
+                                        <b>Comisión desperdiciada</b>
+                                    </h5>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6">
+                                <div class="contenedor_comision">
+                                    <div id="contendor_graf_comision">
+                                        <canvas id="grafico_comision"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6">
+                                <div class="contenedor_val_comision">
+                                    <div class="row">
+                                        <div class="col-6 text-center">
+                                            <div>
+                                                <i
+                                                    class="fas fa-thumbs-down"
+                                                    style="font-size: 2rem; color: red;"
+                                                ></i>
+                                            </div>
+                                            <div class="my-2" style="color: red;">
+                                                <span class="h3"><b class="val_comision"></b></span>
+                                                <span class="h5">$us</span>
+                                            </div>
+                                            <div style="color: red;">
+                                                <span class="h5"><b>Comisión</b></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 text-center">
+                                            <div>
+                                                <i
+                                                    class="fas fa-trash-alt"
+                                                    style="font-size: 2rem; color: red;"
+                                                ></i>
+                                            </div>
+                                            <div class="my-2" style="color: red;">
+                                                <span class="h3"><b
+                                                        class="val_oportunidad"
+                                                    ></b></span>
+                                                <span class="h5">$us</span>
+                                            </div>
+                                            <div style="color: red;">
+                                                <span class="h5"><b>Oportunidad</b></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 mt-2">
+                                            <div class="texto_comision alert alert-primary">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
                     </div>
 
                 </div>

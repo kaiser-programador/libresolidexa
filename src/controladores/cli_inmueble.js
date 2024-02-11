@@ -293,8 +293,6 @@ controladorCliInmueble.calculo_inversionista = async (req, res) => {
                 //------------------------------------------------------------
                 // rendimiento de emprendimiento
 
-                var plazo_reinv = plazo;
-
                 if (reinversion == "si") {
                     // ACTUALIZAR ACORDE AL MERCADO
                     var i_reinversion = 10; // 10% anual (puede ser la MEJOR tasa de interes que ofrece un banco)
@@ -312,19 +310,23 @@ controladorCliInmueble.calculo_inversionista = async (req, res) => {
                     //------------------------------------------------------------
 
                     var sum_gan_reinv = 0; // sumatoria de las ganancias que se obtienen por reinvertir las ganancias mensuales
+                    var plazo_reinv = plazo;
 
-                    for (let i = 0; i < plazo_reinv - 1; i++) {
-                        let plazo_reinv = plazo_reinv - 1; // ej/ si fueran 10 meses, la primera reinversion no permarecera 10 meses, sino que 9 (por eso se resta 1 mes) porque primero debe transcurrir 1 mes para que el inversionista obtenga su primera ganancia mensual, que es la que se reinvertira
+                    // for (let i = 0; i < plazo - 1; i++) {
+                    for (let i = 0; i < plazo; i++) {
+                        plazo_reinv = plazo_reinv - 1; // ej/ si fueran 10 meses, la primera reinversion no permarecera 10 meses, sino que 9 (por eso se resta 1 mes) porque primero debe transcurrir 1 mes para que el inversionista obtenga su primera ganancia mensual, que es la que se reinvertira
 
                         let val_futuro_reinv = ganancia * Math.pow(1 + i_reinv_mes, plazo_reinv);
+
+                        //console.log(val_futuro_reinv);
 
                         sum_gan_reinv = sum_gan_reinv + val_futuro_reinv;
                     }
 
                     var inversion_b = inversion_emp;
-                    var ganancia_b = Number((sum_gan_reinv - inversion_emp).toFixed(0));
+                    var ganancia_b = Number((sum_gan_reinv).toFixed(0));
                     var rendimiento_b = Number(
-                        (((sum_gan_reinv - inversion_emp) / inversion_emp) * 100).toFixed(2)
+                        (((sum_gan_reinv) / inversion_emp) * 100).toFixed(2)
                     );
 
                     // para pocicionamiento del angulo de la flecha

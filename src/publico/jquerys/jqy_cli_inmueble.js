@@ -18,7 +18,7 @@ $(".calculadora_inversionista").click(function (e) {
     $("#contenedor_inversionista").css("display", "block");
     // titulo del tipo de calculadora
     $(".clase_calculadora").text("Inversionista");
-    
+
     $(".popover_calculadora_p").css("display", "none");
     $(".popover_calculadora_i").css("display", "inline-block");
 });
@@ -63,16 +63,49 @@ $(".monedaP").click(function (e) {
     var valorRadioSeleccinado = $(this).val();
     $("#id_input_monedaP").val(valorRadioSeleccinado);
 });
+
+//---------------------------------------------------
+// PARA SELECCION DE RADIOS COMISIÓN SI O NO
+$(".comisionP").click(function (e) {
+    var valorRadioSeleccinado = $(this).val();
+    if (valorRadioSeleccinado == "si") {
+        // habilitamos el input para introducir % de comisión
+        $("#label_input_comision").prop("disabled", false);
+        // llenamos con 3 el input
+        $("#label_input_comision").val(3);
+    }
+    if (valorRadioSeleccinado == "no") {
+        // llenamos con CERO el input
+        $("#label_input_comision").val(0);
+        // DEShabilitamos el input para introducir % de comisión
+        $("#label_input_comision").prop("disabled", true);
+    }
+
+    $(".comision_si_no").attr("data-comision", valorRadioSeleccinado);
+});
 //---------------------------------------------------
 
 $(".calcular_plusvalia").click(function (e) {
     $(".contenedor_1").hide(); // ocultamos
+    $(".total_comision").hide(); // ocultamos
     //----------------------------------------
+
+    let comision_si_no = $(".comision_si_no").attr("data-comision");
+    let aux_val_comision = $("#label_input_comision").val(); // formato string
+    let val_comision = Number($("#label_input_comision").val()); // formato numerico
+
+    // si se indica que si existe comision, pero que el input de comision se encuentra vacio
+    var input_comision = undefined;
+    if (comision_si_no == "si" && aux_val_comision == "") {
+        input_comision = "vacio";
+    }
+
+    console.log(input_comision);
 
     let a_precio_tradicional = $("#label_precio_tradicional").val();
     let a_superficie_tradicional = $("#label_superficie_tradicional").val();
 
-    if (a_precio_tradicional == "" || a_superficie_tradicional == "") {
+    if (a_precio_tradicional == "" || a_superficie_tradicional == "" || input_comision == "vacio") {
         // agregamos los mensajes ALERT DESPUES y al MISMO NIVEL del boton ".ref-calcular_plusvalia"
         $(".ref-calcular_plusvalia").after(
             `<div class="alert alert-danger mt-3">
@@ -253,6 +286,90 @@ $(".calcular_plusvalia").click(function (e) {
                 //------------------------------------
             });
             //----------------------------------------
+            // calculo de COMISION DESPERDICIADA
+
+            if (comision_si_no == "si" && aux_val_comision != "") {
+                $(".total_comision").show(); // visualizamos
+
+                // eliminamos todos los elementos que contienen a los graficos
+                // los eliminamos para que los graficos nuevos no sean creados encima de los antiguos
+                //  empty(). Este método eliminará todos los hijos del elemento seleccionado, pero conservará el propio elemento.
+                $("#contendor_graf_comision").empty();
+
+                //----------------------------------------
+                // ahora creamos nuevamente el elemento que contendra al grafico nuevo
+                // append lo crea como hijo
+                $("#contendor_graf_comision").append(`<canvas id="grafico_comision"></canvas>`);
+                //-----------------------------------------------------------
+
+                var num_comision = Number((precio_tradicional * (val_comision / 100)).toFixed(0));
+                var rend_solidexa = plus_solidexa / solidexa_sus;
+                var num_oportunidad = Number(
+                    (precio_tradicional * (val_comision / 100) * rend_solidexa).toFixed(0)
+                );
+
+                //----------------------------------------
+                // para graficar barras
+                // Datos para el gráfico de barras apiladas
+                const data_c = {
+                    labels: ["Comisión desperdiciada"],
+                    datasets: [
+                        {
+                            label: "Comisión",
+                            data: [num_comision],
+                            backgroundColor: "#0a58ae", // Color de las barras para el Precio
+                        },
+                        {
+                            label: "Ganancia perdida",
+                            data: [num_oportunidad],
+                            backgroundColor: "#f7c501", // Color de las barras para el Plusvalía
+                        },
+                    ],
+                };
+
+                // Opciones para el gráfico de barras apiladas
+                const options_c = {
+                    scales: {
+                        xAxes: [
+                            {
+                                stacked: true, // Apila las barras horizontalmente
+
+                                // Ajusta el porcentaje de ancho de las barras (por ejemplo, 0.7 para un 70%)
+                                barPercentage: 0.3,
+                            },
+                        ],
+                        yAxes: [
+                            {
+                                stacked: true, // Apila las barras verticalmente
+                            },
+                        ],
+                    },
+                };
+
+                // Obtén el contexto del lienzo
+                const ctx_c = document.getElementById("grafico_comision").getContext("2d");
+
+                // Crea el gráfico de barras apiladas
+                const myChart = new Chart(ctx_c, {
+                    type: "bar",
+                    data: data_c,
+                    options: options_c,
+                });
+
+                // RENDERIZAR LOS VALORES
+                let r_comision = numero_punto_coma_query(num_comision);
+                let r_oportunidad = numero_punto_coma_query(num_oportunidad);
+
+                $(".val_comision").text(r_comision);
+                $(".val_oportunidad").text(r_oportunidad);
+
+                // utilizamos ".html" para que respete los elementos html que encierran
+                $(".texto_comision").html(
+                    `
+                    Cuando pagas una comisión de <b>${r_comision} $us</b> al comprar el inmueble tradicional, pierdes la oportunidad de obtener una ganancia de <b>${r_oportunidad} $us</b>. Habrías asegurado esa ganancia al utilizar ese dinero para adquirir el inmueble SOLIDEXA en lugar de gastarlo en el tradicional.
+                    `
+                );
+            }
         } else {
             // agregamos los mensajes ALERT DESPUES y al MISMO NIVEL del boton ".ref-calcular_plusvalia"
             $(".ref-calcular_plusvalia").after(
@@ -509,7 +626,6 @@ $(".calcular_inversion").click(function (e) {
             </div>`
         );
     } else {
-
         $(".ref-calcular_inversion").after(
             `<div class="alerta_i alert alert-success mt-3">
                 <button type="button" class="close" data-dismiss="alert">
@@ -538,7 +654,6 @@ $(".calcular_inversion").click(function (e) {
             //console.log(respuestaServidor);
 
             if (exito == "si") {
-
                 $(".alerta_i").remove(); // eliminamos todos los alert de calculo de inversionista
 
                 // vienen en tipo numerico y con los correctos redondeos
@@ -592,13 +707,14 @@ $(".calcular_inversion").click(function (e) {
                     // texto_inversiones
                     $(".texto_inversiones").css("display", "block");
                     // utilizamos ".html" para que respete los elementos html que encierran
-                    $(".texto_inversiones")
-                        .html(`El rendimiento de cada oportunidad de inversión fue calculado utilizando un período de <b>${plazo} meses</b>, que corresponde al tiempo que transcurre desde la fase de reserva del proyecto SOLIDEXA hasta su total construcción.`);
+                    $(".texto_inversiones").html(
+                        `El rendimiento de cada oportunidad de inversión fue calculado utilizando un período de <b>${plazo} meses</b>, que corresponde al tiempo que transcurre desde la fase de reserva del proyecto SOLIDEXA hasta su total construcción.`
+                    );
 
                     // popover
                     $(".p_ahorro").attr(
                         "data-content",
-                        `Esta es la ganancia y el rendimiento que obtines si en lugar de invertir los ${inversion_a} $us en el inmueble SOLIDEXA, decides invertirlos en un Depósito a Plazo Fijo (DPF) en un banco que ofrezca la mejor tasa de interés, que sería del ${i_ahorro} % durante ${plazo} meses.`
+                        `Esta es la ganancia y el rendimiento que obtienes si en lugar de invertir los ${inversion_a} $us en el inmueble SOLIDEXA, decides invertirlos en un Depósito a Plazo Fijo (DPF) en un banco que ofrezca la mejor tasa de interés, que sería del ${i_ahorro} % durante ${plazo} meses.`
                     );
 
                     $(".p_emprendimiento").attr(
@@ -887,10 +1003,10 @@ $(".calcular_inversion").click(function (e) {
                     $(".linea4").css("transform", `rotate(${angulo_d}deg)`);
 
                     //---------------------------------------------------------------
-                    var a_sup_1=ganancia_c-ganancia_a;
-                    var a_sup_2=ganancia_c-ganancia_b;
-                    var a_sup_3=ganancia_d-ganancia_a;
-                    var a_sup_4=ganancia_d-ganancia_b;
+                    var a_sup_1 = ganancia_c - ganancia_a;
+                    var a_sup_2 = ganancia_c - ganancia_b;
+                    var a_sup_3 = ganancia_d - ganancia_a;
+                    var a_sup_4 = ganancia_d - ganancia_b;
 
                     var sup_1 = numero_punto_coma_query(a_sup_1.toFixed(0));
                     var sup_2 = numero_punto_coma_query(a_sup_2.toFixed(0));
@@ -899,9 +1015,8 @@ $(".calcular_inversion").click(function (e) {
 
                     // CONCLUSIÓN
                     // utilizamos ".html" para que respete los elementos html que encierran
-                    $(".conclusion_inversion")
-                        .html(`
-                        <h5>Conclusión:</h5>
+                    $(".conclusion_inversion").html(`
+                        <h5><b>Conclusión:</b></h5>
                         <p class="text-left">
                         SOLIDEXA destaca como la opción de inversión más sólida entre las alternativas que se han propuesto.
                         </p>
@@ -912,7 +1027,7 @@ $(".calcular_inversion").click(function (e) {
                         <b>SOLIDEXA Plus</b> supera con <b>${sup_3} $us</b> de ganancia a la opción Ahorro Bancario y supera con <b>${sup_4} $us</b> de ganancia a la alternativa de Emprendimiento.
                         </p>
                         `);
-                    
+
                     //---------------------------------------------------------------
                 } else {
                     // agregamos los mensajes ALERT DESPUES y al MISMO NIVEL del boton ".ref-calcular_plusvalia"

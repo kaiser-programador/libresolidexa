@@ -310,6 +310,19 @@ body {
     border-radius: 0rem !important;
 }
 
+.moneda_1_calculadora,
+.moneda_2_calculadora,
+.moneda_3_calculadora {
+    border: 0.12rem solid var(--color_texto_link) !important;
+}
+
+.moneda_1_calculadora_seleccionado,
+.moneda_2_calculadora_seleccionado,
+.moneda_3_calculadora_seleccionado {
+    background-color: var(--color_texto_link) !important;
+    color: var(--color_fondo_principal) !important;
+}
+
 .numero_banos,
 .numero_habitaciones {
     border: 0.12rem solid var(--color_texto_link) !important;

@@ -119,18 +119,10 @@ controladorCliInmueble.calculo_banco_p = async (req, res) => {
         var aporte = Number(req.body.aporte); // %
         var plazo = Number(req.body.plazo); // # años
         var interes = Number(req.body.interes); // % anual
-        var moneda = req.body.moneda;
-
-        if (moneda == "bs") {
-            var aux_tc = tipo_cambio();
-            var tc = aux_tc.tipo_cambio;
-        } else {
-            var tc = 1;
-        }
 
         var plazo_meses = plazo * 12;
-        var prestamo_solidexa = precio_solidexa * tc * (1 - aporte / 100); // $us o Bs
-        var prestamo_tradicional = precio_tradicional * tc * (1 - aporte / 100); // $us o Bs
+        var prestamo_solidexa = precio_solidexa * (1 - aporte / 100); // $us o Bs
+        var prestamo_tradicional = precio_tradicional * (1 - aporte / 100); // $us o Bs
 
         //----------------------------------------------------------
         // calculo de interes mensual
@@ -213,7 +205,7 @@ controladorCliInmueble.calculo_inversionista = async (req, res) => {
         var inversion_emp = Number(req.body.inversion_emp); // $us
         var ganancia = Number(req.body.ganancia); // $us/Mes
         var reinversion = req.body.reinversion; // si o no
-        var inversion_sol = Number(req.body.inversion_sol); // $us
+        var inversion_sol = Number(req.body.inversion_sol); // %
         var i_financiamiento = Number(req.body.i_financiamiento); // % anual
         var plazo_financiamiento = Number(req.body.plazo_financiamiento);
         var codigo_inmueble = req.body.codigo_inmueble;
@@ -222,6 +214,8 @@ controladorCliInmueble.calculo_inversionista = async (req, res) => {
             { codigo_inmueble: codigo_inmueble },
             {
                 codigo_terreno: 1,
+                inversion_estado: 1, // $us
+                periodo_estado: 1, // Meses
                 _id: 0,
             }
         );
@@ -240,6 +234,7 @@ controladorCliInmueble.calculo_inversionista = async (req, res) => {
                 //----------------------------------------------------------
                 // calculo del total plazo en meses DESDE INICIO CONVOCATORIA HASTA FIN CONTRUCCION
 
+                /*
                 var diferenciaEnMilisegundos =
                     registro_terreno.fecha_fin_construccion - registro_terreno.fecha_inicio_reserva;
 
@@ -248,6 +243,9 @@ controladorCliInmueble.calculo_inversionista = async (req, res) => {
 
                 // el número de meses, redondeado al entero inmediato inferior
                 var plazo = Math.floor(diferenciaEnDias / 30); // meses
+                */
+
+                var plazo = registro_inmueble.periodo_estado; // meses que tendra validez para la construccion, la inversion que el inmueble requiere
 
                 //------------------------------------------------------------
                 //------------------------------------------------------------
@@ -260,7 +258,12 @@ controladorCliInmueble.calculo_inversionista = async (req, res) => {
                 };
 
                 var aux_segundero_cajas = await segundero_cajas(datos_segundero);
+
+                /*
                 var solidexa_sus = aux_segundero_cajas.precio; // precio actual del inmueble con los descuentos por penalizaciones que pudierra llegar a tener actualmente
+                */
+
+                var solidexa_sus = registro_inmueble.inversion_estado;
 
                 //----------------------------------------------------------
                 // calculo de interes mensual
@@ -324,10 +327,8 @@ controladorCliInmueble.calculo_inversionista = async (req, res) => {
                     }
 
                     var inversion_b = inversion_emp;
-                    var ganancia_b = Number((sum_gan_reinv).toFixed(0));
-                    var rendimiento_b = Number(
-                        (((sum_gan_reinv) / inversion_emp) * 100).toFixed(2)
-                    );
+                    var ganancia_b = Number(sum_gan_reinv.toFixed(0));
+                    var rendimiento_b = Number(((sum_gan_reinv / inversion_emp) * 100).toFixed(2));
 
                     // para pocicionamiento del angulo de la flecha
                     var angulo_b = Number((1.8 * rendimiento_b - 180).toFixed(2));
@@ -354,9 +355,16 @@ controladorCliInmueble.calculo_inversionista = async (req, res) => {
                     ((aux_segundero_cajas.ahorro / solidexa_sus) * 100).toFixed(2)
                 );
 
-                // para pocicionamiento del angulo de la flecha
-                var angulo_c = Number((1.8 * rendimiento_c - 180).toFixed(2));
+                var aux_rendimiento_c = (aux_segundero_cajas.ahorro / solidexa_sus) * 100;
 
+                if (aux_rendimiento_c >= 150) {
+                    // si el rendimiento sobresaldra de la escala del velocimetro, entonces poner la aguja en el maximo 150%
+                    // para pocicionamiento del angulo de la flecha
+                    var angulo_c = Number((1.8 * 150 - 180).toFixed(2));
+                } else {
+                    // para pocicionamiento del angulo de la flecha
+                    var angulo_c = Number((1.8 * rendimiento_c - 180).toFixed(2));
+                }
                 //------------------------------------------------------------
                 //------------------------------------------------------------
                 // rendimiento de SOLIDEXA PLUS
@@ -405,7 +413,7 @@ controladorCliInmueble.calculo_inversionista = async (req, res) => {
                     interesesTotales = interesesTotales + interesesEsteMes;
                     //--------------------------------------------------
 
-                    // plazo: es el numero de meses desde inicio convocatoria hasta fin contruccion
+                    // plazo: meses que tendra validez para la construccion, la inversion que el inmueble requiere
                     if (periodo == plazo) {
                         // recuerda que se lo vende al precio del mercado tradicional
                         var venta_inm = solidexa_sus + aux_segundero_cajas.ahorro; // $us
@@ -420,8 +428,16 @@ controladorCliInmueble.calculo_inversionista = async (req, res) => {
                             ((aux_ganancia / (inversion_d + interesesTotales)) * 100).toFixed(2)
                         );
 
-                        // para pocicionamiento del angulo de la flecha
-                        var angulo_d = Number((1.8 * rendimiento_d - 180).toFixed(2));
+                        var aux_rendimiento_d =
+                            (aux_ganancia / (inversion_d + interesesTotales)) * 100;
+                        if (aux_rendimiento_d >= 150) {
+                            // si el rendimiento sobresaldra de la escala del velocimetro, entonces poner la aguja en el maximo 150%
+                            // para pocicionamiento del angulo de la flecha
+                            var angulo_d = Number((1.8 * 150 - 180).toFixed(2));
+                        } else {
+                            // para pocicionamiento del angulo de la flecha
+                            var angulo_d = Number((1.8 * rendimiento_d - 180).toFixed(2));
+                        }
 
                         break; // para salir del bucle for
                     }
@@ -1872,7 +1888,8 @@ async function inmueble_calculadora(codigo_inmueble) {
                 codigo_terreno: 1,
                 precio_comparativa: 1,
                 m2_comparativa: 1,
-                superficie_inmueble_m2: 1,
+                inversion_estado: 1,
+                periodo_estado: 1,
                 _id: 0,
             }
         );
@@ -1927,8 +1944,7 @@ async function inmueble_calculadora(codigo_inmueble) {
                 provincia = registro_terreno.provincia;
                 ciudad = registro_terreno.ciudad;
 
-                
-//----------------------------------------------------------
+                //----------------------------------------------------------
                 // calculo del total plazo en meses DESDE INICIO CONVOCATORIA HASTA FIN CONTRUCCION
 
                 var diferenciaEnMilisegundos =
@@ -1970,6 +1986,9 @@ async function inmueble_calculadora(codigo_inmueble) {
                 promedio_render = numero_punto_coma(aux_promedio.toFixed(2));
             }
 
+            var aux_moneda_sus = tipo_cambio();
+            var moneda_sus = aux_moneda_sus.tipo_cambio;
+
             var datos_calculadora = {
                 direccion,
                 provincia,
@@ -1986,7 +2005,10 @@ async function inmueble_calculadora(codigo_inmueble) {
                 maximo_render,
                 minimo_render,
                 promedio_render,
-                meses_min: plazo*3, // #meses minimo para el tiempo de financiamiento del apalancamiento
+                meses_min: plazo * 3, // #meses minimo para el tiempo de financiamiento del apalancamiento
+                inversion_estado: numero_punto_coma(registro_inmueble.inversion_estado),
+                periodo_estado: numero_punto_coma(registro_inmueble.periodo_estado),
+                moneda_sus,
             };
 
             return datos_calculadora;

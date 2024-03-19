@@ -58,13 +58,6 @@ $(".flechas_desplazamiento").click(function (e) {
 // LADO PROPIETARIO
 
 //---------------------------------------------------
-// PARA SELECCION DE RADIOS TIPO MONEDA PROPIETARIO
-$(".monedaP").click(function (e) {
-    var valorRadioSeleccinado = $(this).val();
-    $("#id_input_monedaP").val(valorRadioSeleccinado);
-});
-
-//---------------------------------------------------
 // PARA SELECCION DE RADIOS COMISIÓN SI O NO
 $(".comisionP").click(function (e) {
     var valorRadioSeleccinado = $(this).val();
@@ -87,6 +80,7 @@ $(".comisionP").click(function (e) {
 
 $(".calcular_plusvalia").click(function (e) {
     $(".contenedor_1").hide(); // ocultamos
+    $(".contenedor_moneda_1").hide(); // ocultamos
     $(".total_comision").hide(); // ocultamos
     //----------------------------------------
 
@@ -99,8 +93,6 @@ $(".calcular_plusvalia").click(function (e) {
     if (comision_si_no == "si" && aux_val_comision == "") {
         input_comision = "vacio";
     }
-
-    console.log(input_comision);
 
     let a_precio_tradicional = $("#label_precio_tradicional").val();
     let a_superficie_tradicional = $("#label_superficie_tradicional").val();
@@ -129,6 +121,7 @@ $(".calcular_plusvalia").click(function (e) {
         if (solidexa_sus_m2 <= tradicional_sus_m2) {
             //-----------------------------------------------------------
             $(".contenedor_1").show(); // visualizamos
+            $(".contenedor_moneda_1").show(); // visualizamos
 
             // eliminamos todos los elementos que contienen a los graficos
             // los eliminamos para que los graficos nuevos no sean creados encima de los antiguos
@@ -213,7 +206,14 @@ $(".calcular_plusvalia").click(function (e) {
             let r_aux_perdida = numero_punto_coma_query(aux_perdida);
             $(".c2").text(r_aux_perdida);
 
-            //----------------------------------------
+            //-----------------------------------------------------------
+            // almacenamiento de los datos para futuros cambios de moneda
+            $(".m1_solidexa_sus").attr("valor_sus", solidexa_sus);
+            $(".m1_tradicional_sus").attr("valor_sus", precio_tradicional);
+            $(".m1_plus_solidexa_sus").attr("valor_sus", plus_solidexa);
+            $(".m1_plus_tradicional_sus").attr("valor_sus", plus_tradicional);
+            //---------------------------------------------------------------
+            //---------------------------------------------------------------
             // CALCULO DE NUMERO DE AÑOS EN EL QUE LA PLUSVALIA TRADICIONAL IGUALARIA AL DE SOLIDEXA
 
             let codigo_inmueble = $("#id_objetivo_codigo").attr("data-objetivo_codigo");
@@ -350,7 +350,7 @@ $(".calcular_plusvalia").click(function (e) {
                 const ctx_c = document.getElementById("grafico_comision").getContext("2d");
 
                 // Crea el gráfico de barras apiladas
-                const myChart = new Chart(ctx_c, {
+                const myChart2 = new Chart(ctx_c, {
                     type: "bar",
                     data: data_c,
                     options: options_c,
@@ -369,6 +369,18 @@ $(".calcular_plusvalia").click(function (e) {
                     Cuando pagas una comisión de <b>${r_comision} $us</b> al comprar el inmueble tradicional, pierdes la oportunidad de obtener una ganancia de <b>${r_oportunidad} $us</b>. Habrías asegurado esa ganancia al utilizar ese dinero para adquirir el inmueble SOLIDEXA en lugar de gastarlo en el tradicional.
                     `
                 );
+
+                //-----------------------------------------------------------
+                // almacenamiento de los datos para futuros cambios de moneda
+                $(".m1_comision_sus").attr("valor_sus", num_comision);
+                $(".m1_oportunidad_sus").attr("valor_sus", num_oportunidad);
+                //---------------------------------------------------------------
+            } else {
+                //-----------------------------------------------------------
+                // almacenamiento de los datos para futuros cambios de moneda
+                $(".m1_comision_sus").attr("valor_sus", 0);
+                $(".m1_oportunidad_sus").attr("valor_sus", 0);
+                //---------------------------------------------------------------
             }
         } else {
             // agregamos los mensajes ALERT DESPUES y al MISMO NIVEL del boton ".ref-calcular_plusvalia"
@@ -393,19 +405,18 @@ $(".calcular_plusvalia").click(function (e) {
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 $(".calcular_prestamo_p").click(function (e) {
     $(".contenedor_2").hide(); // ocultamos
+    $(".contenedor_moneda_2").hide(); // ocultamos
     //---------------------------------------------
     let a_precio_tradicional = $("#label_precio_tradicional").val();
     let aporte_p = $("#label_aporte_p").val();
     let plazo_year_p = $("#label_plazo_year_p").val();
     let interes_anual_p = $("#label_interes_anual_p").val();
-    let monedaP = $("#id_input_monedaP").val(); // sus o bs
 
     if (
         a_precio_tradicional == "" ||
         aporte_p == "" ||
         plazo_year_p == "" ||
-        interes_anual_p == "" ||
-        monedaP == ""
+        interes_anual_p == ""
     ) {
         // agregamos los mensajes ALERT DESPUES y al MISMO NIVEL del boton ".ref-calcular_plusvalia"
         $(".ref-calcular_prestamo_p").after(
@@ -422,7 +433,6 @@ $(".calcular_prestamo_p").click(function (e) {
         var aporte = Number(aporte_p); // $us
         var plazo = Number(plazo_year_p);
         var interes = Number(interes_anual_p); // $us
-        var moneda = monedaP; // sus o bs
 
         var datosAuxiliar = {
             precio_solidexa,
@@ -430,7 +440,6 @@ $(".calcular_prestamo_p").click(function (e) {
             aporte,
             plazo,
             interes,
-            moneda,
         };
 
         $.ajax({
@@ -445,8 +454,20 @@ $(".calcular_prestamo_p").click(function (e) {
             var mensual_solidexa = respuestaServidor.mensual_solidexa;
             var mensual_tradicional = respuestaServidor.mensual_tradicional;
 
+            //-----------------------------------------------------------
+            // almacenamiento de los datos para futuros cambios de moneda
+            $(".m2_credito_solidexa_sus").attr("valor_sus", credito_solidexa);
+            $(".m2_credito_tradicional_sus").attr("valor_sus", credito_tradicional);
+            $(".m2_int_acu_solidexa_sus").attr("valor_sus", int_acu_solidexa);
+            $(".m2_int_acu_tradicional_sus").attr("valor_sus", int_acu_tradicional);
+            $(".m2_mensual_solidexa_sus").attr("valor_sus", mensual_solidexa);
+            $(".m2_mensual_tradicional_sus").attr("valor_sus", mensual_tradicional);
+
+            //---------------------------------------------------------------
+
             //----------------------------------------
             $(".contenedor_2").show(); // visualizamos
+            $(".contenedor_moneda_2").show(); // visualizamos
 
             // eliminamos todos los elementos que contienen a los graficos
             // los eliminamos para que los graficos nuevos no sean creados encima de los antiguos
@@ -464,12 +485,7 @@ $(".calcular_prestamo_p").click(function (e) {
             // para graficar barras PRESTAMO + INTERESES ACUMULADOS
             // Datos para el gráfico de barras apiladas
 
-            if (moneda == "sus") {
-                var uni_moneda = "$us";
-            }
-            if (moneda == "bs") {
-                var uni_moneda = "Bs";
-            }
+            var uni_moneda = "$us";
 
             const data_a = {
                 labels: ["SOLIDEXA", "Tradicional"],
@@ -566,12 +582,7 @@ $(".calcular_prestamo_p").click(function (e) {
             var r_mensual_solidexa = numero_punto_coma_query(mensual_solidexa);
             var r_mensual_tradicional = numero_punto_coma_query(mensual_tradicional);
 
-            if (moneda == "sus") {
-                var moneda_mensual = "$us/Mes";
-            }
-            if (moneda == "bs") {
-                var moneda_mensual = "Bs/Mes";
-            }
+            var moneda_mensual = "$us/Mes";
 
             $(".c8").text(r_mensual_solidexa);
             $(".c9").text(moneda_mensual);
@@ -676,6 +687,22 @@ $(".calcular_inversion").click(function (e) {
                 var i_ahorro = respuestaServidor.i_ahorro;
                 var plazo = respuestaServidor.plazo;
 
+                //-----------------------------------------------------------
+                // almacenamiento de los datos para futuros cambios de moneda
+                $(".inversion_a_sus").attr("valor_sus", inversion_a);
+                $(".inversion_b_sus").attr("valor_sus", inversion_b);
+                $(".inversion_c_sus").attr("valor_sus", inversion_c);
+                $(".inversion_d_sus").attr("valor_sus", inversion_d);
+
+                $(".ganancia_a_sus").attr("valor_sus", ganancia_a);
+                $(".ganancia_b_sus").attr("valor_sus", ganancia_b);
+                $(".ganancia_c_sus").attr("valor_sus", ganancia_c);
+                $(".ganancia_d_sus").attr("valor_sus", ganancia_d);
+
+                $(".el_plazo").attr("valor", plazo);
+                $(".i_ahorro").attr("valor", i_ahorro);
+                //---------------------------------------------------------------
+
                 if (
                     rendimiento_c > rendimiento_a &&
                     rendimiento_c > rendimiento_b &&
@@ -708,7 +735,7 @@ $(".calcular_inversion").click(function (e) {
                     $(".texto_inversiones").css("display", "block");
                     // utilizamos ".html" para que respete los elementos html que encierran
                     $(".texto_inversiones").html(
-                        `El rendimiento de cada oportunidad de inversión fue calculado utilizando un período de <b>${plazo} meses</b>, que corresponde al tiempo que transcurre desde la fase de reserva del proyecto SOLIDEXA hasta su total construcción.`
+                        `El rendimiento de cada oportunidad de inversión fue calculado utilizando un período de <b>${plazo} meses</b>, que corresponde al plazo que se otorga al inversionista para que pueda obtener ganancias con la inversión que realice en cualquiera de las opciones presentadas.`
                     );
 
                     // popover
@@ -1018,7 +1045,7 @@ $(".calcular_inversion").click(function (e) {
                     $(".conclusion_inversion").html(`
                         <h5><b>Conclusión:</b></h5>
                         <p class="text-left">
-                        SOLIDEXA destaca como la opción de inversión más sólida entre las alternativas que se han propuesto.
+                        <b>SOLIDEXA</b> destaca como la opción de inversión más sólida entre las alternativas que se han propuesto.
                         </p>
                         <p class="text-left">
                         <b>SOLIDEXA</b> supera con <b>${sup_1} $us</b> de ganancia a la opción Ahorro Bancario y supera con <b>${sup_2} $us</b> de ganancia a la alternativa de Emprendimiento.
@@ -1054,6 +1081,773 @@ $(".calcular_inversion").click(function (e) {
             }
         });
     }
+});
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// SELECCION DE TIPO MONEDA 1
+$(".moneda_1_calculadora").click(function (e) {
+    // si estos botones estan visibles, es porque existen resultados que necesitan ser cambiados al tipo de moneda seleccionada.
+
+    e.preventDefault();
+
+    let moneda = $(this).attr("data-moneda");
+    let tc = Number($(".moneda_sus").attr("data-moneda_sus")); // TC: 1 $us = 7 Bs
+
+    //--------------------------------------------------------------------
+
+    let solidexa_sus = Number($(".m1_solidexa_sus").attr("valor_sus"));
+    let tradicional_sus = Number($(".m1_tradicional_sus").attr("valor_sus"));
+    let plus_solidexa_sus = Number($(".m1_plus_solidexa_sus").attr("valor_sus"));
+    let plus_tradicional_sus = Number($(".m1_plus_tradicional_sus").attr("valor_sus"));
+    let comision_sus = Number($(".m1_comision_sus").attr("valor_sus"));
+    let oportunidad_sus = Number($(".m1_oportunidad_sus").attr("valor_sus"));
+
+    if (moneda == "sus") {
+        var solidexa = solidexa_sus;
+        var tradicional = tradicional_sus;
+        var plus_solidexa = plus_solidexa_sus;
+        var plus_tradicional = plus_tradicional_sus;
+        var comision = comision_sus;
+        var oportunidad = oportunidad_sus;
+
+        var la_moneda = "$us";
+    }
+
+    if (moneda == "bs") {
+        var solidexa = Number((tc * solidexa_sus).toFixed(0));
+        var tradicional = Number((tc * tradicional_sus).toFixed(0));
+        var plus_solidexa = Number((tc * plus_solidexa_sus).toFixed(0));
+        var plus_tradicional = Number((tc * plus_tradicional_sus).toFixed(0));
+        var comision = Number((tc * comision_sus).toFixed(0));
+        var oportunidad = Number((tc * oportunidad_sus).toFixed(0));
+
+        var la_moneda = "Bs";
+    }
+
+    $(".m1").text(la_moneda);
+
+    //--------------------------------------------------------------------
+
+    // eliminamos todos los elementos que contienen a los graficos
+    // los eliminamos para que los graficos nuevos no sean creados encima de los antiguos
+    //  empty(). Este método eliminará todos los hijos del elemento seleccionado, pero conservará el propio elemento.
+    $("#contenedor_plus_sol_tra").empty();
+    $("#contenedor_tiempo_espera").empty();
+
+    //----------------------------------------
+    // ahora creamos nuevamente el elemento que contendra al grafico nuevo
+    // append lo crea como hijo
+    $("#contenedor_plus_sol_tra").append(`<canvas id="grafico_plus_sol_tra"></canvas>`);
+    $("#contenedor_tiempo_espera").append(`<canvas id="grafico_tiempo_espera"></canvas>`);
+
+    // para graficar barras
+    // Datos para el gráfico de barras apiladas
+    const data = {
+        labels: ["SOLIDEXA", "Tradicional"],
+        datasets: [
+            {
+                label: "Precio",
+                data: [solidexa, tradicional],
+                backgroundColor: "#0a58ae", // Color de las barras para el Precio
+            },
+            {
+                label: "Plusvalía",
+                data: [plus_solidexa, plus_tradicional],
+                backgroundColor: "#f7c501", // Color de las barras para el Plusvalía
+            },
+        ],
+    };
+
+    // Opciones para el gráfico de barras apiladas
+    const options = {
+        scales: {
+            xAxes: [
+                {
+                    stacked: true, // Apila las barras horizontalmente
+
+                    // Ajusta el porcentaje de ancho de las barras (por ejemplo, 0.7 para un 70%)
+                    barPercentage: 0.4,
+                },
+            ],
+            yAxes: [
+                {
+                    stacked: true, // Apila las barras verticalmente
+                },
+            ],
+        },
+    };
+
+    // Obtén el contexto del lienzo
+    const ctx = document.getElementById("grafico_plus_sol_tra").getContext("2d");
+
+    // Crea el gráfico de barras apiladas
+    const myChart = new Chart(ctx, {
+        type: "bar",
+        data: data,
+        options: options,
+    });
+
+    // renderizamos los valores con punto mil
+    let r_plus_solidexa = numero_punto_coma_query(plus_solidexa);
+    $(".c1").text(r_plus_solidexa);
+
+    let aux_perdida = plus_solidexa - plus_tradicional;
+    let r_aux_perdida = numero_punto_coma_query(aux_perdida);
+    $(".c2").text(r_aux_perdida);
+
+    //------------------------------------
+    // graficamos las plusvalias de los inmuebles solidexa y tradicional con la linea de referencia
+
+    var data_t = {
+        labels: ["SOLIDEXA", "Tradicional"],
+        datasets: [
+            {
+                label: "Plusvalía",
+                data: [plus_solidexa, plus_tradicional],
+                backgroundColor: "#f7c501", // Color de las barras para el Plusvalia
+            },
+        ],
+    };
+
+    const opciones_t = {
+        plugins: {
+            annotation: {
+                annotations: {
+                    line1: {
+                        type: "line",
+                        mode: "horizontal",
+                        scaleID: "y",
+                        value: plus_solidexa, // Valor en el eje Y donde quieres la línea horizontal
+                        borderColor: "#0a58ae", // Color de la línea
+                        borderWidth: 1000, // Ancho de la línea
+                        //borderDash: [5, 5] // Patrón de guiones y espacios para hacer la línea entrecortada
+                    },
+                },
+            },
+        },
+        scales: {
+            xAxes: [
+                {
+                    // Ajusta el porcentaje de ancho de las barras (por ejemplo, 0.7 para un 70%)
+                    barPercentage: 0.4,
+                },
+            ],
+        },
+    };
+
+    const graf_tiempo_espera = document.getElementById("grafico_tiempo_espera").getContext("2d");
+    const mi_grafico = new Chart(graf_tiempo_espera, {
+        type: "bar",
+        data: data_t,
+        options: opciones_t,
+    });
+
+    //-----------------------------------------------------------
+    // si existen comision desperdiciada
+    if (comision != 0 && oportunidad != 0) {
+        // eliminamos todos los elementos que contienen a los graficos
+        // los eliminamos para que los graficos nuevos no sean creados encima de los antiguos
+        //  empty(). Este método eliminará todos los hijos del elemento seleccionado, pero conservará el propio elemento.
+        $("#contendor_graf_comision").empty();
+
+        //----------------------------------------
+        // ahora creamos nuevamente el elemento que contendra al grafico nuevo
+        // append lo crea como hijo
+        $("#contendor_graf_comision").append(`<canvas id="grafico_comision"></canvas>`);
+
+        // para graficar barras
+        // Datos para el gráfico de barras apiladas
+        const data_c = {
+            labels: ["Comisión desperdiciada"],
+            datasets: [
+                {
+                    label: "Comisión",
+                    data: [comision],
+                    backgroundColor: "#0a58ae", // Color de las barras para el Precio
+                },
+                {
+                    label: "Ganancia perdida",
+                    data: [oportunidad],
+                    backgroundColor: "#f7c501", // Color de las barras para el Plusvalía
+                },
+            ],
+        };
+
+        // Opciones para el gráfico de barras apiladas
+        const options_c = {
+            scales: {
+                xAxes: [
+                    {
+                        stacked: true, // Apila las barras horizontalmente
+
+                        // Ajusta el porcentaje de ancho de las barras (por ejemplo, 0.7 para un 70%)
+                        barPercentage: 0.3,
+                    },
+                ],
+                yAxes: [
+                    {
+                        stacked: true, // Apila las barras verticalmente
+                    },
+                ],
+            },
+        };
+
+        // Obtén el contexto del lienzo
+        const ctx_c = document.getElementById("grafico_comision").getContext("2d");
+
+        // Crea el gráfico de barras apiladas
+        const myChart2 = new Chart(ctx_c, {
+            type: "bar",
+            data: data_c,
+            options: options_c,
+        });
+
+        // RENDERIZAR LOS VALORES
+        let r_comision = numero_punto_coma_query(comision);
+        let r_oportunidad = numero_punto_coma_query(oportunidad);
+
+        $(".val_comision").text(r_comision);
+        $(".val_oportunidad").text(r_oportunidad);
+
+        // utilizamos ".html" para que respete los elementos html que encierran
+        $(".texto_comision").html(
+            `
+            Cuando pagas una comisión de <b>${r_comision} ${la_moneda}</b> al comprar el inmueble tradicional, pierdes la oportunidad de obtener una ganancia de <b>${r_oportunidad} ${la_moneda}</b>. Habrías asegurado esa ganancia al utilizar ese dinero para adquirir el inmueble SOLIDEXA en lugar de gastarlo en el tradicional.
+            `
+        );
+    }
+
+    //--------------------------------------------------------------------
+    // despintamos todos
+    $(".moneda_1_calculadora").removeClass("moneda_1_calculadora_seleccionado");
+
+    // luego pintamos este boton seleccionada con this
+    $(this).addClass("moneda_1_calculadora_seleccionado");
+});
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// SELECCION DE TIPO MONEDA 2
+$(".moneda_2_calculadora").click(function (e) {
+    // si estos botones estan visibles, es porque existen resultados que necesitan ser cambiados al tipo de moneda seleccionada.
+
+    e.preventDefault();
+
+    let moneda = $(this).attr("data-moneda");
+    let tc = Number($(".moneda_sus").attr("data-moneda_sus")); // TC: 1 $us = 7 Bs
+
+    let credito_solidexa_sus = Number($(".m2_credito_solidexa_sus").attr("valor_sus"));
+    let credito_tradicional_sus = Number($(".m2_credito_tradicional_sus").attr("valor_sus"));
+    let int_acu_solidexa_sus = Number($(".m2_int_acu_solidexa_sus").attr("valor_sus"));
+    let int_acu_tradicional_sus = Number($(".m2_int_acu_tradicional_sus").attr("valor_sus"));
+    let mensual_solidexa_sus = Number($(".m2_mensual_solidexa_sus").attr("valor_sus"));
+    let mensual_tradicional_sus = Number($(".m2_mensual_tradicional_sus").attr("valor_sus"));
+
+    if (moneda == "sus") {
+        var credito_solidexa = credito_solidexa_sus;
+        var credito_tradicional = credito_tradicional_sus;
+        var int_acu_solidexa = int_acu_solidexa_sus;
+        var int_acu_tradicional = int_acu_tradicional_sus;
+        var mensual_solidexa = mensual_solidexa_sus;
+        var mensual_tradicional = mensual_tradicional_sus;
+
+        var la_moneda = "$us";
+        var moneda_mensual = "$us/Mes";
+    }
+
+    if (moneda == "bs") {
+        var credito_solidexa = Number((tc * credito_solidexa_sus).toFixed(0));
+        var credito_tradicional = Number((tc * credito_tradicional_sus).toFixed(0));
+        var int_acu_solidexa = Number((tc * int_acu_solidexa_sus).toFixed(0));
+        var int_acu_tradicional = Number((tc * int_acu_tradicional_sus).toFixed(0));
+        var mensual_solidexa = Number((tc * mensual_solidexa_sus).toFixed(0));
+        var mensual_tradicional = Number((tc * mensual_tradicional_sus).toFixed(0));
+
+        var la_moneda = "Bs";
+        var moneda_mensual = "Bs/Mes";
+    }
+
+    //---------------------------------------------------------------------
+
+    // eliminamos todos los elementos que contienen a los graficos
+    // los eliminamos para que los graficos nuevos no sean creados encima de los antiguos
+    //  empty(). Este método eliminará todos los hijos del elemento seleccionado, pero conservará el propio elemento.
+    $("#contenedor_banco_sol_tra").empty();
+    $("#contenedor_int_acu").empty();
+
+    //----------------------------------------
+    // ahora creamos nuevamente el elemento que contendra al grafico nuevo
+    // append lo crea como hijo
+    $("#contenedor_banco_sol_tra").append(`<canvas id="grafico_prestamo_p"></canvas>`);
+    $("#contenedor_int_acu").append(`<canvas id="grafico_interes_acumulado"></canvas>`);
+
+    //----------------------------------------
+    // para graficar barras PRESTAMO + INTERESES ACUMULADOS
+    // Datos para el gráfico de barras apiladas
+
+    const data_a = {
+        labels: ["SOLIDEXA", "Tradicional"],
+        datasets: [
+            {
+                label: "Prestamo",
+                data: [credito_solidexa, credito_tradicional],
+                backgroundColor: "#0a58ae",
+            },
+            {
+                label: "Interés",
+                data: [int_acu_solidexa, int_acu_tradicional],
+                backgroundColor: "#f7c501",
+            },
+        ],
+    };
+
+    // Opciones para el gráfico de barras apiladas
+    const opciones_a = {
+        scales: {
+            xAxes: [
+                {
+                    stacked: true, // Apila las barras horizontalmente
+
+                    // Ajusta el porcentaje de ancho de las barras (por ejemplo, 0.7 para un 70%)
+                    barPercentage: 0.4,
+                },
+            ],
+            yAxes: [
+                {
+                    stacked: true, // Apila las barras verticalmente
+                },
+            ],
+        },
+    };
+
+    // Obtén el contexto del lienzo
+    const ctx_a = document.getElementById("grafico_prestamo_p").getContext("2d");
+
+    // Crea el gráfico de barras apiladas
+    const myChart_a = new Chart(ctx_a, {
+        type: "bar",
+        data: data_a,
+        options: opciones_a,
+    });
+
+    // RENDERIZAMOS LOS VALORES
+    var r_int_acu_solidexa = numero_punto_coma_query(int_acu_solidexa);
+    var r_int_acu_tradicional = numero_punto_coma_query(int_acu_tradicional);
+
+    $(".c4").text(r_int_acu_solidexa);
+    $(".c5").text(la_moneda);
+    $(".c6").text(r_int_acu_tradicional);
+    $(".c7").text(la_moneda);
+
+    //----------------------------------------
+    // GRAFICO DE PAGOS MENSUALES
+
+    var data_b = {
+        labels: ["SOLIDEXA", "Tradicional"],
+        datasets: [
+            {
+                label: "Pago mensual",
+                data: [mensual_solidexa, mensual_tradicional],
+                backgroundColor: "#f7c501", // Color de las barras para el Plusvalia
+            },
+        ],
+    };
+
+    const opciones_b = {
+        scales: {
+            xAxes: [
+                {
+                    // Ajusta el porcentaje de ancho de las barras (por ejemplo, 0.7 para un 70%)
+                    barPercentage: 0.4,
+                },
+            ],
+        },
+    };
+
+    const ctx_b = document.getElementById("grafico_interes_acumulado").getContext("2d");
+    const myChart_b = new Chart(ctx_b, {
+        type: "bar",
+        data: data_b,
+        options: opciones_b,
+    });
+
+    // RENDERIZAMOS LOS VALORES
+    var r_mensual_solidexa = numero_punto_coma_query(mensual_solidexa);
+    var r_mensual_tradicional = numero_punto_coma_query(mensual_tradicional);
+
+    $(".c8").text(r_mensual_solidexa);
+    $(".c9").text(moneda_mensual);
+    $(".c10").text(r_mensual_tradicional);
+    $(".c11").text(moneda_mensual);
+
+    //--------------------------------------------------------------------
+    // despintamos todos
+    $(".moneda_2_calculadora").removeClass("moneda_2_calculadora_seleccionado");
+
+    // luego pintamos este boton seleccionada con this
+    $(this).addClass("moneda_2_calculadora_seleccionado");
+});
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// SELECCION DE TIPO MONEDA 3
+$(".moneda_3_calculadora").click(function (e) {
+    // si estos botones estan visibles, es porque existen resultados que necesitan ser cambiados al tipo de moneda seleccionada.
+
+    e.preventDefault();
+
+    let moneda = $(this).attr("data-moneda");
+    let tc = Number($(".moneda_sus").attr("data-moneda_sus")); // TC: 1 $us = 7 Bs
+
+    let inversion_a_sus = Number($(".inversion_a_sus").attr("valor_sus"));
+    let inversion_b_sus = Number($(".inversion_b_sus").attr("valor_sus"));
+    let inversion_c_sus = Number($(".inversion_c_sus").attr("valor_sus"));
+    let inversion_d_sus = Number($(".inversion_d_sus").attr("valor_sus"));
+
+    let ganancia_a_sus = Number($(".ganancia_a_sus").attr("valor_sus"));
+    let ganancia_b_sus = Number($(".ganancia_b_sus").attr("valor_sus"));
+    let ganancia_c_sus = Number($(".ganancia_c_sus").attr("valor_sus"));
+    let ganancia_d_sus = Number($(".ganancia_d_sus").attr("valor_sus"));
+
+    let plazo = Number($(".el_plazo").attr("valor"));
+    let i_ahorro = Number($(".i_ahorro").attr("valor"));
+
+    if (moneda == "sus") {
+        var inversion_a = inversion_a_sus;
+        var inversion_b = inversion_b_sus;
+        var inversion_c = inversion_c_sus;
+        var inversion_d = inversion_d_sus;
+
+        var ganancia_a = ganancia_a_sus;
+        var ganancia_b = ganancia_b_sus;
+        var ganancia_c = ganancia_c_sus;
+        var ganancia_d = ganancia_d_sus;
+
+        var la_moneda = "$us";
+    }
+
+    if (moneda == "bs") {
+        var inversion_a = Number((tc * inversion_a_sus).toFixed(0));
+        var inversion_b = Number((tc * inversion_b_sus).toFixed(0));
+        var inversion_c = Number((tc * inversion_c_sus).toFixed(0));
+        var inversion_d = Number((tc * inversion_d_sus).toFixed(0));
+
+        var ganancia_a = Number((tc * ganancia_a_sus).toFixed(0));
+        var ganancia_b = Number((tc * ganancia_b_sus).toFixed(0));
+        var ganancia_c = Number((tc * ganancia_c_sus).toFixed(0));
+        var ganancia_d = Number((tc * ganancia_d_sus).toFixed(0));
+
+        var la_moneda = "Bs";
+    }
+
+    $(".m3").text(la_moneda);
+
+    //----------------------------------------------------------
+
+    // popover
+    $(".p_ahorro").attr(
+        "data-content",
+        `Esta es la ganancia y el rendimiento que obtienes si en lugar de invertir los ${inversion_a} ${la_moneda} en el inmueble SOLIDEXA, decides invertirlos en un Depósito a Plazo Fijo (DPF) en un banco que ofrezca la mejor tasa de interés, que sería del ${i_ahorro} % durante ${plazo} meses.`
+    );
+
+    $(".p_emprendimiento").attr(
+        "data-content",
+        `Los ${inversion_b} ${la_moneda} que inviertes en tu negocio, al cabo de ${plazo} meses te habrán generado una ganancia acumulada de ${ganancia_b} ${la_moneda}`
+    );
+
+    $(".p_solidexa").attr(
+        "data-content",
+        `Al invertir en el precio justo del inmueble SOLIDEXA, obtienes una plusvalía de ${ganancia_c} ${la_moneda}. Esta ganancia se queda contigo en lugar de ir a parar a manos de intermediarios, desarrolladores inmobiliarios o constructoras tradicionales.`
+    );
+
+    $(".p_solidexa_p").attr(
+        "data-content",
+        `Aplicar el apalancamiento financiero a un inmueble competitivo como el de SOLIDEXA puede hacer que tu inversión de ${inversion_d} ${la_moneda} obtenga una ganancia multiplicada de ${ganancia_d} ${la_moneda}.`
+    );
+
+    //--------------------------------------------------------------------
+
+    // eliminamos todos los elementos que contienen a los graficos
+    // los eliminamos para que los graficos nuevos no sean creados encima de los antiguos
+    //  empty(). Este método eliminará todos los hijos del elemento seleccionado, pero conservará el propio elemento.
+    $("#contenedor_grafico_i_1").empty();
+    $("#contenedor_grafico_i_2").empty();
+    $("#contenedor_grafico_i_3").empty();
+    $("#contenedor_grafico_i_4").empty();
+
+    //----------------------------------------
+    // ahora creamos nuevamente el elemento que contendra al grafico nuevo // append lo crea como hijo
+    $("#contenedor_grafico_i_1").append(`<canvas id="grafico_i_1"></canvas>`);
+    $("#contenedor_grafico_i_2").append(`<canvas id="grafico_i_2"></canvas>`);
+    $("#contenedor_grafico_i_3").append(`<canvas id="grafico_i_3"></canvas>`);
+    $("#contenedor_grafico_i_4").append(`<canvas id="grafico_i_4"></canvas>`);
+
+    //----------------------------------------
+    // grafica barras apiladas
+    // Ahorro bancario
+
+    const data1 = {
+        labels: ["Ahorro Bancario"],
+        datasets: [
+            {
+                label: "Inversión",
+                data: [inversion_a],
+                backgroundColor: "#0a58ae", // Color de las barras para el Precio
+            },
+            {
+                label: "Ganancia",
+                data: [ganancia_a],
+                backgroundColor: "#f7c501", // Color de las barras para el Plusvalía
+            },
+        ],
+    };
+
+    // Opciones para el gráfico de barras apiladas
+    const options1 = {
+        // en "false" Esto desactivará la relación de aspecto predeterminada y permitirá que el lienzo del gráfico se ajuste a la altura y el ancho especificados.
+        maintainAspectRatio: false,
+
+        scales: {
+            xAxes: [
+                {
+                    stacked: true, // Apila las barras horizontalmente
+
+                    // Ajusta el porcentaje de ancho de las barras (por ejemplo, 0.7 para un 70%)
+                    barPercentage: 0.4,
+                },
+            ],
+            yAxes: [
+                {
+                    stacked: true, // Apila las barras verticalmente
+                },
+            ],
+        },
+    };
+
+    // Obtén el contexto del lienzo
+    const ctx_1 = document.getElementById("grafico_i_1").getContext("2d");
+
+    // Crea el gráfico de barras apiladas
+    const grafico_i_1 = new Chart(ctx_1, {
+        type: "bar",
+        data: data1,
+        options: options1,
+    });
+
+    // RENDERIZAR LOS VALORES
+    let inversion_a_r = numero_punto_coma_query(inversion_a);
+    $(".inve_1").text(inversion_a_r);
+    let ganancia_a_r = numero_punto_coma_query(ganancia_a);
+    $(".gana_1").text(ganancia_a_r);
+
+    //----------------------------------------
+    // grafica barras apiladas
+    // Emprendimiento
+
+    const data2 = {
+        labels: ["Emprendimiento"],
+        datasets: [
+            {
+                label: "Inversión",
+                data: [inversion_b],
+                backgroundColor: "#0a58ae", // Color de las barras para el Precio
+            },
+            {
+                label: "Ganancia",
+                data: [ganancia_b],
+                backgroundColor: "#f7c501", // Color de las barras para el Plusvalía
+            },
+        ],
+    };
+
+    // Opciones para el gráfico de barras apiladas
+    const options2 = {
+        // en "false" Esto desactivará la relación de aspecto predeterminada y permitirá que el lienzo del gráfico se ajuste a la altura y el ancho especificados.
+        maintainAspectRatio: false,
+
+        scales: {
+            xAxes: [
+                {
+                    stacked: true, // Apila las barras horizontalmente
+
+                    // Ajusta el porcentaje de ancho de las barras (por ejemplo, 0.7 para un 70%)
+                    barPercentage: 0.4,
+                },
+            ],
+            yAxes: [
+                {
+                    stacked: true, // Apila las barras verticalmente
+                },
+            ],
+        },
+    };
+
+    // Obtén el contexto del lienzo
+    const ctx_2 = document.getElementById("grafico_i_2").getContext("2d");
+
+    // Crea el gráfico de barras apiladas
+    const grafico_i_2 = new Chart(ctx_2, {
+        type: "bar",
+        data: data2,
+        options: options2,
+    });
+
+    // RENDERIZAR LOS VALORES
+    let inversion_b_r = numero_punto_coma_query(inversion_b);
+    $(".inve_2").text(inversion_b_r);
+    let ganancia_b_r = numero_punto_coma_query(ganancia_b);
+    $(".gana_2").text(ganancia_b_r);
+
+    //----------------------------------------
+    // grafica barras apiladas
+    // SOLIDEXA
+
+    const data3 = {
+        labels: ["SOLIDEXA"],
+        datasets: [
+            {
+                label: "Inversión",
+                data: [inversion_c],
+                backgroundColor: "#0a58ae", // Color de las barras para el Precio
+            },
+            {
+                label: "Ganancia",
+                data: [ganancia_c],
+                backgroundColor: "#f7c501", // Color de las barras para el Plusvalía
+            },
+        ],
+    };
+
+    // Opciones para el gráfico de barras apiladas
+    const options3 = {
+        // en "false" Esto desactivará la relación de aspecto predeterminada y permitirá que el lienzo del gráfico se ajuste a la altura y el ancho especificados.
+        maintainAspectRatio: false,
+
+        scales: {
+            xAxes: [
+                {
+                    stacked: true, // Apila las barras horizontalmente
+
+                    // Ajusta el porcentaje de ancho de las barras (por ejemplo, 0.7 para un 70%)
+                    barPercentage: 0.4,
+                },
+            ],
+            yAxes: [
+                {
+                    stacked: true, // Apila las barras verticalmente
+                },
+            ],
+        },
+    };
+
+    // Obtén el contexto del lienzo
+    const ctx_3 = document.getElementById("grafico_i_3").getContext("2d");
+
+    // Crea el gráfico de barras apiladas
+    const grafico_i_3 = new Chart(ctx_3, {
+        type: "bar",
+        data: data3,
+        options: options3,
+    });
+
+    // RENDERIZAR LOS VALORES
+    let inversion_c_r = numero_punto_coma_query(inversion_c);
+    $(".inve_3").text(inversion_c_r);
+    let ganancia_c_r = numero_punto_coma_query(ganancia_c);
+    $(".gana_3").text(ganancia_c_r);
+
+    //----------------------------------------
+    // grafica barras apiladas
+    // SOLIDEXA plus
+
+    const data4 = {
+        labels: ["SOLIDEXA Plus"],
+        datasets: [
+            {
+                label: "Inversión",
+                data: [inversion_d],
+                backgroundColor: "#0a58ae", // Color de las barras para el Precio
+            },
+            {
+                label: "Ganancia",
+                data: [ganancia_d],
+                backgroundColor: "#f7c501", // Color de las barras para el Plusvalía
+            },
+        ],
+    };
+
+    // Opciones para el gráfico de barras apiladas
+    const options4 = {
+        // en "false" Esto desactivará la relación de aspecto predeterminada y permitirá que el lienzo del gráfico se ajuste a la altura y el ancho especificados.
+        maintainAspectRatio: false,
+
+        scales: {
+            xAxes: [
+                {
+                    stacked: true, // Apila las barras horizontalmente
+
+                    // Ajusta el porcentaje de ancho de las barras (por ejemplo, 0.7 para un 70%)
+                    barPercentage: 0.4,
+                },
+            ],
+            yAxes: [
+                {
+                    stacked: true, // Apila las barras verticalmente
+                },
+            ],
+        },
+    };
+
+    // Obtén el contexto del lienzo
+    const ctx_4 = document.getElementById("grafico_i_4").getContext("2d");
+
+    // Crea el gráfico de barras apiladas
+    const grafico_i_4 = new Chart(ctx_4, {
+        type: "bar",
+        data: data4,
+        options: options4,
+    });
+
+    // RENDERIZAR LOS VALORES
+    let inversion_d_r = numero_punto_coma_query(inversion_d);
+    $(".inve_4").text(inversion_d_r);
+    let ganancia_d_r = numero_punto_coma_query(ganancia_d);
+    $(".gana_4").text(ganancia_d_r);
+
+    //---------------------------------------------------------------
+    // CONCLUSIÓN
+    var a_sup_1 = ganancia_c - ganancia_a;
+    var a_sup_2 = ganancia_c - ganancia_b;
+    var a_sup_3 = ganancia_d - ganancia_a;
+    var a_sup_4 = ganancia_d - ganancia_b;
+
+    var sup_1 = numero_punto_coma_query(a_sup_1.toFixed(0));
+    var sup_2 = numero_punto_coma_query(a_sup_2.toFixed(0));
+    var sup_3 = numero_punto_coma_query(a_sup_3.toFixed(0));
+    var sup_4 = numero_punto_coma_query(a_sup_4.toFixed(0));
+
+    // utilizamos ".html" para que respete los elementos html que encierran
+
+    $(".conclusion_inversion").html(`
+        <h5><b>Conclusión:</b></h5>
+        <p class="text-left">
+        <b>SOLIDEXA</b> destaca como la opción de inversión más sólida entre las alternativas que se han propuesto.
+        </p>
+        <p class="text-left">
+        <b>SOLIDEXA</b> supera con <b>${sup_1} ${la_moneda}</b> de ganancia a la opción Ahorro Bancario y supera con <b>${sup_2} ${la_moneda}</b> de ganancia a la alternativa de Emprendimiento.
+        </p>
+        <p class="text-left">
+        <b>SOLIDEXA Plus</b> supera con <b>${sup_3} ${la_moneda}</b> de ganancia a la opción Ahorro Bancario y supera con <b>${sup_4} ${la_moneda}</b> de ganancia a la alternativa de Emprendimiento.
+        </p>
+        `);
+
+    //--------------------------------------------------------------------
+    // despintamos todos
+    $(".moneda_3_calculadora").removeClass("moneda_3_calculadora_seleccionado");
+
+    // luego pintamos este boton seleccionada con this
+    $(this).addClass("moneda_3_calculadora_seleccionado");
 });
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

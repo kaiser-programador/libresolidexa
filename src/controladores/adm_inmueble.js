@@ -608,6 +608,8 @@ async function inmueble_estados(codigo_inmueble) {
             { codigo_inmueble: codigo_inmueble },
             {
                 estado_inmueble: 1,
+                inversion_estado: 1,
+                periodo_estado: 1,
                 _id: 0,
             }
         );
@@ -964,6 +966,16 @@ controladorAdmInmueble.guardarEstadoInmueble = async (req, res) => {
                     { $set: { estado_inmueble: req.body.nuevo_estado } }
                 ); // guardamos el registro con el dato modificado
 
+                await indiceInmueble.updateOne(
+                    { codigo_inmueble: codigo_inmueble },
+                    { $set: { inversion_estado: Number(req.body.inversion) } }
+                ); // guardamos el registro con el dato modificado
+
+                await indiceInmueble.updateOne(
+                    { codigo_inmueble: codigo_inmueble },
+                    { $set: { periodo_estado: Number(req.body.periodo) } }
+                ); // guardamos el registro con el dato modificado
+
                 if (req.body.nuevo_estado == "guardado") {
                     await indiceInmueble.updateOne(
                         { codigo_inmueble: codigo_inmueble },
@@ -1194,7 +1206,6 @@ async function eliminadorDocumentosInmueble(codigo_inmueble) {
         });
 
         if (registroDocumentosInmueble.length > 0) {
-
             const storage = getStorage();
 
             // eliminamos los ARCHIVOS DOCUMENTOS PDF uno por uno (sean publicos o privados del propietario dueño de este inmueble)

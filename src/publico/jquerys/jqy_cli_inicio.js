@@ -571,13 +571,14 @@ $(document).ready(function () {
 
         if (tipo_pestana_inm == "calculadora_inm") {
             $(".calculadora_propietario").click();
-            $(".monedaP").eq(0).click(); // seleccionamos el radio de moneda DOLAR
             $(".clase_reinversion").eq(0).click(); // seleccionamos el radio de REINVERSION "No"
             $(".comisionP").eq(0).click(); // seleccionamos el radio de comisión "no"
             
             // ocultamos los los elementos que contienen a los resultados de los calculos
             $(".contenedor_1").hide();
+            $(".contenedor_moneda_1").hide();
             $(".contenedor_2").hide();
+            $(".contenedor_moneda_2").hide();
             $(".total_comision").hide();
             $(".opciones_inversion").hide();
 

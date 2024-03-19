@@ -183,8 +183,12 @@ $("#guardar_estado_inmueble").click(function (e) {
     // **OK
     var codigo_inmueble = $("#id_objetivo_codigo").attr("data-objetivo_codigo");
     let nuevo_estado = $(".radio_input_estado").val();
+    let inversion = $("#a_inversion_estado").val();
+    let periodo = $("#a_periodo_estado").val();
     var paqueteDatos = {
         nuevo_estado,
+        inversion,
+        periodo
     };
 
     $.ajax({

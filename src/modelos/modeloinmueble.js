@@ -44,6 +44,15 @@ const inmuebleEsquema = new Schema({
     recompensa: { type: Number, default: 0 }, // en moneda nacional "Bs"
 
     // ------------------------------------------------------------
+    // PARA CUANDO EL INMUEBLE ESTE EN ESTADO DE: DISPONIBLE O REMATE. UTIL PARA CALCULADORA DE INVERSIONISTA
+    
+    // Debe cubrir el pago de las cuotas anteriores y la presente exigida cuota de construcción del inmueble.
+    inversion_estado: { type: Number, default: 0 },
+    periodo_estado: { type: Number, default: 0 },
+
+    // Meses que cubre la presente exigida cuota de construcción del inmueble
+
+    // ------------------------------------------------------------
 
     plusvalia_sus: { type: Number, default: 0 }, //  ( = precio mercado corriente de inmueble similares - precio construccion SOLIDEXA)
 

@@ -1,16 +1,20 @@
 {{! PAGOS EFECTUADOS POR EL PROPIETARIO }}
 
-{{!-- <div class="col-12 col-sm-6 mt-4"> --}}
+{{! <div class="col-12 col-sm-6 mt-4"> }}
 <div class="p-3 col-12 col-lg-9 col-xl-6">
 
-    <h5>PAGOS EFECTUADOS $us</h5>
+    <h5>RESERVA, APROBACIÓN</h5>
+
+    <p class="text-left">
+        Pagos cuando el inmueble es adquirido en estado de Reservación y su posterior pago por tramites de Aprobación.
+    </p>
 
     <div class="form-group row">
         <label class="col-12 col-sm-5 col-lg-4 col-form-label">
-            Reserva $us
+            Reserva
         </label>
 
-        <div class="col-12 col-sm-7 col-lg-8">
+        <div class="col-12 col-sm-7 col-lg-8 input-group">
             <input
                 type="number"
                 id="pagado_reserva"
@@ -19,6 +23,9 @@
                 value="{{contenido_propietario.propietario_pagos.pagado_reserva}}"
                 required
             />
+            <div class="input-group-append">
+                <span class="input-group-text bg-warning">$us</span>
+            </div>
         </div>
 
     </div>
@@ -26,7 +33,7 @@
     <div class="form-group row">
 
         <label class="col-12 col-sm-5 col-lg-4 col-form-label">
-            Fecha Reserva
+            Fecha Pago
         </label>
 
         <div class="col-12 col-sm-7 col-lg-8">
@@ -44,10 +51,10 @@
 
     <div class="form-group row">
         <label class="col-12 col-sm-5 col-lg-4 col-form-label">
-            Pago $us
+            Aprobación
         </label>
 
-        <div class="col-12 col-sm-7 col-lg-8">
+        <div class="col-12 col-sm-7 col-lg-8 input-group">
             <input
                 type="number"
                 id="pagado_pago"
@@ -57,6 +64,9 @@
                 required
                 title="Incluye el pago por Reserva si es que existiese"
             />
+            <div class="input-group-append">
+                <span class="input-group-text bg-warning">$us</span>
+            </div>
         </div>
 
     </div>
@@ -81,7 +91,10 @@
     <br />
 
     {{! tabla de DESGLOCE DE PAGOS }}
-    <h5 class="mb-3">DESGLOSE DE PAGOS</h5>
+    <h5>REMATE, CONSTRUCCIÓN</h5>
+    <p class="text-left">
+        Pagos cuando el inmueble es adquirido en estado de Remate o el pago de sus correspondientes cuotas en estado de Construcción.
+    </p>
     <div class="row madre_tabla">
         <div class="col-12">
 
@@ -131,7 +144,9 @@
                                             <button
                                                 class="boton_fila_arriba d-block btn p-1"
                                                 data-id="{{numero}}"
-                                            ><i class="fas fa-arrow-circle-up size_iconos"></i></button>
+                                            ><i
+                                                    class="fas fa-arrow-circle-up size_iconos"
+                                                ></i></button>
                                             <button
                                                 class="boton_fila_abajo d-block btn mx-1 p-1"
                                                 data-id="{{numero}}"
@@ -141,7 +156,9 @@
                                             <button
                                                 class="boton_fila_eliminar d-block btn p-1"
                                                 data-id="{{numero}}"
-                                            ><i class="fas fa-window-close size_iconos"></i></button>
+                                            ><i
+                                                    class="fas fa-window-close size_iconos"
+                                                ></i></button>
                                         </div>
                                     </td>
                                 </tr>
@@ -171,13 +188,16 @@
 
                                 <td>
                                     <div class="d-flex">
-                                        <button class="boton_fila_arriba d-block btn p-1" data-id="1"><i
-                                                class="fas fa-arrow-circle-up size_iconos"
-                                            ></i></button>
+                                        <button
+                                            class="boton_fila_arriba d-block btn p-1"
+                                            data-id="1"
+                                        ><i class="fas fa-arrow-circle-up size_iconos"></i></button>
                                         <button
                                             class="boton_fila_abajo d-block btn p-1 mx-1"
                                             data-id="1"
-                                        ><i class="fas fa-arrow-circle-down size_iconos"></i></button>
+                                        ><i
+                                                class="fas fa-arrow-circle-down size_iconos"
+                                            ></i></button>
                                         <button
                                             class="boton_fila_eliminar d-block btn p-1"
                                             data-id="1"

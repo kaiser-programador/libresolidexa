@@ -105,7 +105,9 @@ $(".contenido ").on("click", "#eliminar_datos_pagos_propietario", function () {
                 var tipoRespuesta = respuestaServidor.exito;
 
                 if (tipoRespuesta == "si") {
-                    alert("El propietario fue eliminado, se procedera a recargar la actual ventana");
+                    alert(
+                        "El propietario fue eliminado, se procedera a recargar la actual ventana"
+                    );
                     // usamos el metodo DE RECARGAR/ACTUALIZAR LA PAGINA, porque asi no sera necesario borrar uno por uno los inputs de dotos y los inputs de tablas
                     location.reload();
                 }
@@ -149,6 +151,71 @@ $(".contenido ").on("click", "#eliminar_datos_pagos_propietario", function () {
     }
 });
 
+/* *************************************************************************** */
+// AL MOMENTO DE HACER CLICK EN "AGREGAR NUEVO PROPIETARIO", PERTENECE A "INMUEBLE"
+
+$(".contenido ").on("click", "#agregar_nuevo_propietario", function () {
+    // IMPORTANTE, CUANDO SE USE ESTE METODO DE "ON", NO DEBE USARSE EL "PREVENTDEFAULT"
+    //e.preventDefault(); // Cancelamos el evento por defecto del elemento
+
+    let $seleccionado = $(this);
+    var ci_propietario = $seleccionado.attr("data-ci");
+
+    var codigo_inmueble = $("#id_objetivo_codigo").attr("data-objetivo_codigo");
+
+    const respuestaEliminar = confirm("¿Desea agregar un nuevo propietario?");
+
+    // si la respuesta es "true"
+    if (respuestaEliminar) {
+        var paqueteDatos = {
+            codigo_inmueble,
+            ci_propietario,
+        };
+
+        // ahora enviamos una peticion al servidor, un AJAX de tipo "delete"
+        $.ajax({
+            url: "/laapirest/inmueble/" + codigo_inmueble + "/accion/nuevo_propietario_inmueble",
+            type: "POST",
+            data: paqueteDatos,
+        }).done(function (respuestaServidor) {
+            // ------- Para verificación -------
+            //console.log("los datos de respuesta del servidor");
+            //console.log(respuestaServidor);
+
+            var tipoRespuesta = respuestaServidor.exito;
+
+            if (tipoRespuesta == "si") {
+                alert("Se procedera a recargar la actual ventana");
+                // usamos el metodo DE RECARGAR/ACTUALIZAR LA PAGINA, porque asi no sera necesario borrar uno por uno los inputs de dotos y los inputs de tablas
+                location.reload();
+            }
+
+            if (tipoRespuesta == "no") {
+                // con "after" el nuevo contenido se pondra DESPUES y al MISMO NIVEL
+                $(".ref_boton_datos_pagos_propietario").after(
+                    `<div class="alert alert-danger mt-3">
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>&times;</span>
+                            </button>
+                            <strong>Ocurrio un problema, intentelo nuevamente!</strong>
+                        </div>`
+                );
+            }
+
+            if (tipoRespuesta == "denegado") {
+                $(".ref_boton_datos_pagos_propietario").after(
+                    `<div class="alert alert-danger mt-3">
+                        <button type="button" class="close" data-dismiss="alert">
+                            <span>&times;</span>
+                        </button>
+                        <strong>El inmueble presente se encuentra bloqueado, por tanto no es posible realizar cambios</strong>
+                    </div>`
+                );
+            }
+        });
+    }
+});
+
 /**************************************************************************** */
 // DIRIGIRSE A LA PAGINA DEL INVERSOR DEL PRESENTE INMUEBLE
 /*
@@ -188,7 +255,7 @@ $("#guardar_estado_inmueble").click(function (e) {
     var paqueteDatos = {
         nuevo_estado,
         inversion,
-        periodo
+        periodo,
     };
 
     $.ajax({

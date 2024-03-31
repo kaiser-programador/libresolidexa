@@ -826,6 +826,7 @@ async function inmueble_descripcion(paquete_datos) {
 
                 inm_descripcion.plazo = registro_proyecto.meses_construccion;
                 inm_descripcion.nota_precio_justo = registro_proyecto.nota_precio_justo;
+                inm_descripcion.trafico = registro_proyecto.trafico;
 
                 // corregimos que estado estara como "true"
                 if (registro_terreno.estado_terreno == "reserva") {

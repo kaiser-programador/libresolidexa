@@ -692,8 +692,8 @@ async function resumen_propietario(codigo_propietario) {
                 // pagado_pago: 1,
                 // fecha_pagado_pago: 1,
 
-                // tiene_mensuales: 1,
-                // pagos_mensuales: 1,
+                tiene_mensuales: 1,
+                pagos_mensuales: 1,
 
                 _id: 0,
             }
@@ -717,19 +717,19 @@ async function resumen_propietario(codigo_propietario) {
                     //var fecha_estado = historial_inversiones[i].fecha_pagado_reserva;
                     var fecha_estado = inm_propietario[i].fecha_pagado_reserva;
                 } else {
-                    if (historial_inversiones[i].tiene_pago) {
-                        //var fecha_estado = historial_inversiones[i].fecha_pagado_pago;
-                        var fecha_estado = inm_propietario[i].fecha_pagado_pago;
+                    if (historial_inversiones[i].tiene_mensuales) {
+                        // pagos_mensuales:  [ [1, "2023-09-08", 88.77], [ ], [ ]]
+                        var auxiliar_fecha = inm_propietario[i].pagos_mensuales[0][1]; // la fecha esta en formato string
+
+                        var fecha_estado = auxiliar_fecha + "T00:00:00.000Z";
                     }
                 }
 
-                if (historial_inversiones[i].tiene_reserva || historial_inversiones[i].tiene_pago) {
-                    //var fecha_estado_inversion = moment(fecha_estado).format("LL");
-                    // Usamos "utc" para que una fecha ej/ 2023-09-02T00:00:00.000Z se muestre "2023-09-02T00:00:00.000Z" y no un dia menos.
-                    // el "utc" es util para fechas que son guardadas desde inputs que admiten: dia, mes, año (sin horas). Pero para fechas guardadas como: 2023-08-18T20:50:22.055Z el uso del "utc" no es necesario usarlo.
-                    var fecha_estado_inversion = moment.utc(fecha_estado).format("LL");
-                    historial_inversiones[i].fecha_estado_inversion = fecha_estado_inversion;
-                }
+                //var fecha_estado_inversion = moment(fecha_estado).format("LL");
+                // Usamos "utc" para que una fecha ej/ 2023-09-02T00:00:00.000Z se muestre "2023-09-02T00:00:00.000Z" y no un dia menos.
+                // el "utc" es util para fechas que son guardadas desde inputs que admiten: dia, mes, año (sin horas). Pero para fechas guardadas como: 2023-08-18T20:50:22.055Z el uso del "utc" no es necesario usarlo.
+                var fecha_estado_inversion = moment.utc(fecha_estado).format("LL");
+                historial_inversiones[i].fecha_estado_inversion = fecha_estado_inversion;
 
                 var paquete_inmueble_i = {
                     codigo_inmueble: historial_inversiones[i].codigo_inmueble,
@@ -860,7 +860,10 @@ async function resumen_propietario(codigo_propietario) {
 
         if (reg_nombre_prop) {
             if (registro_empresa.texto_segundero_prop_recom_iz != undefined) {
-                if (registro_empresa.texto_segundero_prop_recom_iz.indexOf("/nom_propietario/") != -1) {
+                if (
+                    registro_empresa.texto_segundero_prop_recom_iz.indexOf("/nom_propietario/") !=
+                    -1
+                ) {
                     var significado_aux_0 = registro_empresa.texto_segundero_prop_recom_iz;
                     var significado_re_iz_aux = significado_aux_0.replace(
                         "/nom_propietario/",
@@ -909,9 +912,10 @@ async function resumen_propietario(codigo_propietario) {
             mensaje_segundero: mensaje_segundero_pro,
 
             texto_segundero_recom_iz: significado_re_iz_aux,
-            texto_segundero_recom_de:significado_re_de_aux,
+            texto_segundero_recom_de: significado_re_de_aux,
         };
         //-------------------------------------------------------------------------------
+
         return total_resumen_propietario;
     } catch (error) {
         console.log(error);

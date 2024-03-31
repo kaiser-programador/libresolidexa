@@ -2639,7 +2639,7 @@ controladorAdministradorGeneral.guardarDatosPagosPropietario = async (req, res) 
                     });
 
                     if (inversionesInmueble.length > 0) {
-                        // se cambiara el estado a "pasivo" TODAS las inversiones existentes que tiene el inmueble, porque codigos mas abajo el unico activo sera el propitario que esta siendo registrado en esta opcion
+                        // se cambiara el estado a "pasivo" TODAS las inversiones existentes que tiene el inmueble, porque en lineas de codigos mas abajo el unico activo sera el propietario que esta siendo registrado en esta opcion
                         await indiceInversiones.updateMany(
                             //  REVISAR ESTE "updateMany"
                             { codigo_inmueble: codigo_inmueble },

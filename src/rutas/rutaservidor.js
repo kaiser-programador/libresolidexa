@@ -585,6 +585,13 @@ module.exports = function (servidorDamosRutas) {
         controladorAdmInmueble.eliminar_propietario_inmueble
     );
 
+    // PARA AGREGAR NUEVO PROPIETARIO DE UN INMUEBLE
+    laRuta.post(
+        "/laapirest/inmueble/:codigo_inmueble/accion/nuevo_propietario_inmueble",
+        validador.validar_adm,
+        controladorAdmInmueble.nuevo_propietario_inmueble
+    );
+
     // PARA GUARDAR EL ESTADO DEL INMUEBLE  **OK
     laRuta.post(
         "/laapirest/inmueble/:codigo_inmueble/accion/guardar_estado_inmueble",

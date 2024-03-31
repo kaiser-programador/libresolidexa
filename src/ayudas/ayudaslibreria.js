@@ -142,7 +142,9 @@ function armadorCodigos() {
 
     let codigoCreado; // del tipo    ##aa#a
 
-    codigoCreado = caracteresNumericos.charAt(Math.floor(Math.random() * caracteresNumericos.length));
+    codigoCreado = caracteresNumericos.charAt(
+        Math.floor(Math.random() * caracteresNumericos.length)
+    );
     codigoCreado =
         codigoCreado +
         caracteresNumericos.charAt(Math.floor(Math.random() * caracteresNumericos.length));
@@ -202,6 +204,7 @@ libreriaFunciones.barra_progreso_card = async function (paquete_datos) {
                 {
                     codigo_terreno: 1,
                     valor_reserva: 1,
+                    valor_aprobacion: 1,
                     precio_construccion: 1,
                     _id: 0,
                 }
@@ -230,10 +233,8 @@ libreriaFunciones.barra_progreso_card = async function (paquete_datos) {
         var card_porcentaje_render = "0"; // (string) para mostrar visiblemente al cliente
 
         var card_financiamiento = 0;
-        var card_financiamiento_render = "0";
 
         var card_meta = 0;
-        var card_meta_render = "0";
         //-------------------------------------------------------------------------------
 
         if (datos_terreno) {
@@ -254,57 +255,61 @@ libreriaFunciones.barra_progreso_card = async function (paquete_datos) {
                     }
                 );
 
-                if (datos_terreno.estado_terreno == "reserva") {
-                    card_meta = datos_inmueble.valor_reserva;
-                    card_meta_render = numero_punto_coma(card_meta);
-                    if (registro_pagos && registro_pagos.tiene_reserva) {
-                        card_financiamiento = registro_pagos.pagado_reserva;
-                        card_financiamiento_render = numero_punto_coma(card_financiamiento);
-                        card_porcentaje = 100;
-                        card_porcentaje_render = "100";
-                    }
-                }
+                if (registro_pagos) {
+                    if (datos_terreno.estado_terreno == "reserva") {
+                        card_meta = datos_inmueble.valor_reserva;
 
-                if (datos_terreno.estado_terreno == "pago") {
-                    card_meta = datos_inmueble.precio_construccion;
-                    card_meta_render = numero_punto_coma(card_meta);
-                    if (registro_pagos && registro_pagos.tiene_pago) {
-                        card_financiamiento = registro_pagos.pagado_pago;
-                        card_financiamiento_render = numero_punto_coma(card_financiamiento);
-                        card_porcentaje = 100;
-                        card_porcentaje_render = "100";
-                    }
-                }
+                        if (registro_pagos && registro_pagos.tiene_reserva) {
+                            card_financiamiento = registro_pagos.pagado_reserva;
 
-                if (datos_terreno.estado_terreno == "aprobacion") {
-                    //card_meta = datos_inmueble.valor_reserva + datos_inmueble.precio_construccion;
-                    card_meta = datos_inmueble.precio_construccion;
-                    card_meta_render = numero_punto_coma(card_meta);
-                    // en la condicionante if, consideramos "registro_pagos.tiene_pago", porque solo es tomado en cuenta este pago, ya que considera el monto de reserva
-                    if (registro_pagos && registro_pagos.tiene_pago) {
-                        //card_financiamiento = registro_pagos.pagado_reserva + registro_pagos.pagado_pago;
-                        card_financiamiento = registro_pagos.pagado_pago;
-
-                        card_financiamiento_render = numero_punto_coma(card_financiamiento);
-
-                        card_porcentaje = 100;
-                        card_porcentaje_render = "100";
-                    }
-                }
-
-                if (datos_terreno.estado_terreno == "construccion") {
-                    //card_meta = datos_inmueble.valor_reserva + datos_inmueble.precio_construccion;
-                    card_meta = datos_inmueble.precio_construccion;
-                    card_meta_render = numero_punto_coma(card_meta);
-                    if (registro_pagos && registro_pagos.tiene_mensuales) {
-                        var sum_pago = 0;
-                        for (let k = 0; k < pagos_mensuales.length; k++) {
-                            // PAGOS MENSUALES
-                            //  [ [1, "2023-09-08", 88.77], [ ], [ ]]
-                            sum_pago = sum_pago + registro_pagos.pagos_mensuales[k][2];
+                            card_porcentaje = 100;
+                            card_porcentaje_render = "100";
                         }
-                        card_financiamiento = sum_pago;
-                        card_financiamiento_render = numero_punto_coma(card_financiamiento);
+                    }
+
+                    // estado en que se espera que los propietarios que reservaron su inmueble, ahora paguen el valor de aprobacion, para que con este dinero se tramite los permisos, aprobacion de contruccion en la alcaldia, etc
+                    if (datos_terreno.estado_terreno == "pago") {
+                        card_meta = datos_inmueble.valor_aprobacion;
+
+                        if (registro_pagos && registro_pagos.tiene_pago) {
+                            card_financiamiento = registro_pagos.pagado_pago;
+
+                            card_porcentaje = 100;
+                            card_porcentaje_render = "100";
+                        }
+                    }
+
+                    if (datos_terreno.estado_terreno == "aprobacion") {
+                        card_meta = datos_inmueble.valor_aprobacion;
+
+                        // en la condicionante if, consideramos "registro_pagos.tiene_pago", porque solo es tomado en cuenta este pago, ya que considera el monto de reserva
+                        if (registro_pagos && registro_pagos.tiene_pago) {
+                            //card_financiamiento = registro_pagos.pagado_reserva + registro_pagos.pagado_pago;
+                            card_financiamiento = registro_pagos.pagado_pago;
+
+                            card_porcentaje = 100;
+                            card_porcentaje_render = "100";
+                        }
+                    }
+
+                    if (datos_terreno.estado_terreno == "construccion") {
+                        card_meta = datos_inmueble.precio_construccion;
+
+                        var sum_mensuales = 0;
+                        if (registro_pagos && registro_pagos.tiene_mensuales) {
+                            for (let k = 0; k < registro_pagos.pagos_mensuales.length; k++) {
+                                // PAGOS MENSUALES
+                                //  [ [1, "2023-09-08", 88.77], [ ], [ ]]
+                                sum_mensuales =
+                                    sum_mensuales + registro_pagos.pagos_mensuales[k][2];
+                            }
+                        }
+
+                        // sumatoria total de todos los pagos que hizo el propietario activo del inmueble, si se tratase de un propietario que adquirio el inm por remate, este propietario tendra los valores de reserva y aprobacion en cero, por tanto solo sera contabilizado los pagos que hizo en "pagos mensuales"
+                        card_financiamiento =
+                            registro_pagos.pagado_reserva +
+                            registro_pagos.pagado_pago +
+                            sum_mensuales;
 
                         var fecha_inicio = datos_terreno.fecha_inicio_construccion;
                         var fecha_fin = datos_terreno.fecha_fin_construccion;
@@ -319,21 +324,25 @@ libreriaFunciones.barra_progreso_card = async function (paquete_datos) {
                         card_porcentaje = Number(string_card_porcentaje); // numerico con 2 decimales
                         card_porcentaje_render = numero_punto_coma(card_porcentaje); // string con coma decimal
                     }
-                }
 
-                if (datos_terreno.estado_terreno == "construido") {
-                    if (registro_pagos && registro_pagos.tiene_mensuales) {
-                        var sum_pago = 0;
-                        for (let k = 0; k < registro_pagos.pagos_mensuales.length; k++) {
-                            // PAGOS MENSUALES
-                            //  [ [1, "2023-09-08", 88.77], [ ], [ ]]
-                            sum_pago = sum_pago + registro_pagos.pagos_mensuales[k][2];
+                    if (datos_terreno.estado_terreno == "construido") {
+                        var sum_mensuales = 0;
+                        if (registro_pagos && registro_pagos.tiene_mensuales) {
+                            for (let k = 0; k < registro_pagos.pagos_mensuales.length; k++) {
+                                // PAGOS MENSUALES
+                                //  [ [1, "2023-09-08", 88.77], [ ], [ ]]
+                                sum_mensuales =
+                                    sum_mensuales + registro_pagos.pagos_mensuales[k][2];
+                            }
                         }
 
-                        card_financiamiento = sum_pago;
-                        card_financiamiento_render = numero_punto_coma(card_financiamiento);
-                        card_meta = card_financiamiento;
-                        card_meta_render = card_financiamiento_render;
+                        // sumatoria total de todos los pagos que hizo el propietario activo del inmueble, si se tratase de un propietario que adquirio el inm por remate, este propietario tendra los valores de reserva y aprobacion en cero, por tanto solo sera contabilizado los pagos que hizo en "pagos mensuales"
+                        card_financiamiento =
+                            registro_pagos.pagado_reserva +
+                            registro_pagos.pagado_pago +
+                            sum_mensuales;
+
+                        card_meta = datos_inmueble.precio_construccion;
 
                         card_porcentaje = 100;
                         card_porcentaje_render = "100";
@@ -350,6 +359,7 @@ libreriaFunciones.barra_progreso_card = async function (paquete_datos) {
                     { codigo_proyecto: codigo_objetivo },
                     {
                         valor_reserva: 1,
+                        valor_aprobacion: 1,
                         precio_construccion: 1,
                         _id: 0,
                     }
@@ -357,21 +367,26 @@ libreriaFunciones.barra_progreso_card = async function (paquete_datos) {
 
                 // valores por defecto
                 var sum_reserva = 0;
+                var sum_aprobacion = 0;
                 var sum_construccion = 0;
 
                 for (let t = 0; t < proyecto_inmuebles.length; t++) {
                     sum_reserva = sum_reserva + proyecto_inmuebles[t].valor_reserva;
+
+                    sum_aprobacion = sum_aprobacion + proyecto_inmuebles[t].valor_aprobacion;
+
                     sum_construccion = sum_construccion + proyecto_inmuebles[t].precio_construccion;
                 }
 
                 //------------------------------------------
                 // usamos "find", porque recopilaremos a TODOS los propietarios "activos" que tengan pagos del proyecto
+                // solo puede existir un propitario activo por inmueble (este propietario activo es el actual propietario del inmueble)
                 var registro_pagos = await indiceInversiones.find(
                     { codigo_proyecto: codigo_objetivo, estado_propietario: "activo" },
                     {
                         tiene_reserva: 1,
                         pagado_reserva: 1,
-                        tiene_pago: 1,
+                        tiene_pago: 1, // pago para tramites de aprobacion, permisos de contruccion, etc
                         pagado_pago: 1,
                         tiene_mensuales: 1,
                         pagos_mensuales: 1,
@@ -387,7 +402,8 @@ libreriaFunciones.barra_progreso_card = async function (paquete_datos) {
                 if (registro_pagos.length > 0) {
                     for (let t = 0; t < registro_pagos.length; t++) {
                         if (registro_pagos[t].tiene_reserva) {
-                            sum_pagado_reserva = sum_pagado_reserva + registro_pagos[t].pagado_reserva;
+                            sum_pagado_reserva =
+                                sum_pagado_reserva + registro_pagos[t].pagado_reserva;
                         }
                         if (registro_pagos[t].tiene_pago) {
                             sum_pagado_pago = sum_pagado_pago + registro_pagos[t].pagado_pago;
@@ -405,10 +421,8 @@ libreriaFunciones.barra_progreso_card = async function (paquete_datos) {
 
                 if (datos_terreno.estado_terreno == "reserva") {
                     card_meta = sum_reserva;
-                    card_meta_render = numero_punto_coma(card_meta);
 
                     card_financiamiento = sum_pagado_reserva;
-                    card_financiamiento_render = numero_punto_coma(card_financiamiento);
 
                     let aux_card_porcentaje = ((card_financiamiento / card_meta) * 100).toFixed(2);
                     card_porcentaje = Number(aux_card_porcentaje); // numerico con 2 decimales
@@ -416,12 +430,11 @@ libreriaFunciones.barra_progreso_card = async function (paquete_datos) {
                     card_porcentaje_render = numero_punto_coma(card_porcentaje); // string con coma decimal
                 }
 
+                // estado en que se espera que los propietarios que reservaron su inmueble, ahora paguen el valor de aprobacion, para que con este dinero se tramite los permisos, aprobacion de contruccion en la alcaldia, etc
                 if (datos_terreno.estado_terreno == "pago") {
-                    card_meta = sum_construccion;
-                    card_meta_render = numero_punto_coma(card_meta);
+                    card_meta = sum_aprobacion;
 
                     card_financiamiento = sum_pagado_pago;
-                    card_financiamiento_render = numero_punto_coma(card_financiamiento);
 
                     let aux_card_porcentaje = ((card_financiamiento / card_meta) * 100).toFixed(2);
                     card_porcentaje = Number(aux_card_porcentaje); // numerico con 2 decimales
@@ -430,13 +443,10 @@ libreriaFunciones.barra_progreso_card = async function (paquete_datos) {
                 }
 
                 if (datos_terreno.estado_terreno == "aprobacion") {
-                    //card_meta = sum_reserva + sum_construccion;
-                    card_meta = sum_construccion;
-                    card_meta_render = numero_punto_coma(card_meta);
+                    card_meta = sum_aprobacion;
 
                     //card_financiamiento = sum_pagado_reserva + sum_pagado_pago;
                     card_financiamiento = sum_pagado_pago;
-                    card_financiamiento_render = numero_punto_coma(card_financiamiento);
 
                     let aux_card_porcentaje = ((card_financiamiento / card_meta) * 100).toFixed(2);
                     card_porcentaje = Number(aux_card_porcentaje); // numerico con 2 decimales
@@ -445,12 +455,11 @@ libreriaFunciones.barra_progreso_card = async function (paquete_datos) {
                 }
 
                 if (datos_terreno.estado_terreno == "construccion") {
-                    //card_meta = sum_reserva + sum_construccion;
                     card_meta = sum_construccion;
-                    card_meta_render = numero_punto_coma(card_meta);
 
-                    card_financiamiento = sum_pagado_mensuales;
-                    card_financiamiento_render = numero_punto_coma(card_financiamiento);
+                    // sumatoria total de todos los pagos que hizo el propietario activo del inmueble, si se tratase de un propietario que adquirio el inm por remate, este propietario tendra los valores de reserva y aprobacion en cero, por tanto solo sera contabilizado los pagos que hizo en "pagos mensuales"
+                    card_financiamiento =
+                        sum_pagado_reserva + sum_pagado_pago + sum_pagado_mensuales;
 
                     var fecha_inicio = datos_terreno.fecha_inicio_construccion;
                     var fecha_fin = datos_terreno.fecha_fin_construccion;
@@ -467,10 +476,11 @@ libreriaFunciones.barra_progreso_card = async function (paquete_datos) {
                 }
 
                 if (datos_terreno.estado_terreno == "construido") {
-                    card_financiamiento = sum_pagado_mensuales;
-                    card_financiamiento_render = numero_punto_coma(card_financiamiento);
-                    card_meta_render = card_financiamiento_render;
-                    card_meta = card_financiamiento;
+                    card_meta = sum_construccion; // sumatoria de todos los precios justos de los inmuebles que conforman el proyecto
+
+                    // sumatoria total de todos los pagos que hizo el propietario activo del inmueble, si se tratase de un propietario que adquirio el inm por remate, este propietario tendra los valores de reserva y aprobacion en cero, por tanto solo sera contabilizado los pagos que hizo en "pagos mensuales"
+                    card_financiamiento =
+                        sum_pagado_reserva + sum_pagado_pago + sum_pagado_mensuales;
 
                     card_porcentaje = 100;
                     card_porcentaje_render = "100";
@@ -498,7 +508,6 @@ libreriaFunciones.barra_progreso_card = async function (paquete_datos) {
         //---------------------------------------------
 
         return resultados;
-        
     } catch (error) {
         console.log(error);
     }

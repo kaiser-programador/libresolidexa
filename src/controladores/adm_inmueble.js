@@ -9,6 +9,7 @@ const {
     indiceGuardados,
     indiceImagenesProyecto,
     indiceImagenesSistema,
+    indiceTerreno,
 } = require("../modelos/indicemodelo");
 
 const {
@@ -127,6 +128,7 @@ controladorAdmInmueble.renderizarVentanaInmueble = async (req, res) => {
 
                 // estos valores seran utililes solo para la pestaña de "Propietario". Para no hacer la consulta nuevamente a la base de datos del inmueble
                 valor_reserva: 1,
+                valor_aprobacion: 1,
                 precio_construccion: 1,
                 precio_competencia: 1,
 
@@ -211,11 +213,13 @@ controladorAdmInmueble.renderizarVentanaInmueble = async (req, res) => {
 
             if (tipo_ventana_inmueble == "propietario") {
                 var reserva_inm = inmuebleExiste.valor_reserva;
+                var aprobacion_inm = inmuebleExiste.valor_aprobacion;
                 var precio_justo_inm = inmuebleExiste.precio_construccion;
                 var competencia_inm = inmuebleExiste.precio_competencia;
                 var plusvalia_inm = competencia_inm - precio_justo_inm;
 
                 info_inmueble.reserva_render = numero_punto_coma(reserva_inm);
+                info_inmueble.aprobacion_render = numero_punto_coma(aprobacion_inm);
                 info_inmueble.precio_render = numero_punto_coma(precio_justo_inm.toFixed(0));
                 info_inmueble.plusvalia_render = numero_punto_coma(plusvalia_inm.toFixed(0));
 
@@ -280,6 +284,7 @@ async function inmueble_descripcion(codigo_inmueble) {
                 estado_inmueble: 1,
                 fecha_creacion: 1,
                 valor_reserva: 1,
+                valor_aprobacion: 1,
                 financiado: 1,
                 pagos_mensuales: 1,
                 tipo_inmueble: 1,
@@ -678,6 +683,7 @@ controladorAdmInmueble.guardarDatosInmueble = async (req, res) => {
                 // INFORMACION BASICA html
 
                 inmuebleEncontrado.valor_reserva = Number(req.body.valor_reserva);
+                inmuebleEncontrado.valor_aprobacion = Number(req.body.valor_aprobacion);
 
                 inmuebleEncontrado.titulo_garantia_1 = req.body.titulo_garantia_1;
                 inmuebleEncontrado.garantia_1 = req.body.garantia_1;
@@ -770,6 +776,23 @@ controladorAdmInmueble.guardarDatosInmueble = async (req, res) => {
                     (sum_precios / auxPrecioComparativa.length).toFixed(0)
                 ); // es el promedio de los precios de la competencia
                 // -------------------------------------------------------
+                // guardado de CIUDAD a la que pertenece el inmueble
+
+                var codigo_terreno = inmuebleEncontrado.codigo_terreno;
+
+                var aux_terreno = await indiceTerreno.findOne(
+                    {
+                        codigo_terreno: codigo_terreno,
+                    },
+                    {
+                        ciudad: 1,
+                    }
+                );
+
+                if(aux_terreno){
+                    inmuebleEncontrado.ciudad = aux_terreno.ciudad;
+                }
+                // -------------------------------------------------------
 
                 // LOS DATOS LLENADOS EN EL FORMULARIO, SERAN GUARDADOS EN LA BASE DE DATOS
                 await inmuebleEncontrado.save();
@@ -856,6 +879,7 @@ controladorAdmInmueble.eliminar_propietario_inmueble = async (req, res) => {
 
                 //--------------------------------------------------------
                 // ELIMINACION DE LOS DOCUMENTOS PRIVADOS DEL INMUEBLE QUE TIENE CON SU PROPIETARIO
+                // ASI SE AHORRA ESPACIO EN EL SERVIDOR
 
                 var registroDocumentosPrivados = await indiceDocumentos.find({
                     codigo_inmueble: codigo_inmueble,
@@ -906,6 +930,7 @@ controladorAdmInmueble.eliminar_propietario_inmueble = async (req, res) => {
                 //-------------------------------------------------------
                 // eliminamos todos los datos (informacion que esta guardada en la base de datos) del propietario en este inmueble
                 //await registroInversion.remove(); // no usamos para no tener problemas con problemas de caducidad de remove
+
                 await indiceInversiones.deleteOne({
                     codigo_inmueble: codigo_inmueble,
                     ci_propietario: ci_propietario,
@@ -916,6 +941,129 @@ controladorAdmInmueble.eliminar_propietario_inmueble = async (req, res) => {
                 var ci_administrador = req.user.ci_administrador; // extraido de la SESION guardada del administrador
                 var accion_administrador =
                     "Elimina propietario: " + ci_propietario + " de inmueble: " + codigo_inmueble;
+                var aux_accion_adm = {
+                    ci_administrador,
+                    accion_administrador,
+                };
+                await guardarAccionAdministrador(aux_accion_adm);
+                //-------------------------------------------------------------------
+
+                res.json({
+                    exito: "si",
+                });
+            } else {
+                // si el acceso es denegado
+                res.json({
+                    exito: "denegado",
+                });
+            }
+        } else {
+            res.json({
+                exito: "no",
+            });
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+/************************************************************************************** */
+/************************************************************************************** */
+// PARA AGREGAR A UN NUEVO PROPIETARIO DE UN INMUEBLE
+
+controladorAdmInmueble.nuevo_propietario_inmueble = async (req, res) => {
+    // la ruta que entra a este controlador es: post
+    // "/laapirest/inmueble/:codigo_inmueble/accion/nuevo_propietario_inmueble"
+
+    try {
+        // ------- Para verificación -------
+        //console.log("los datos del paquete de datos es:");
+        //console.log(req.body);
+
+        const ci_propietario = req.body.ci_propietario;
+        const codigo_inmueble = req.body.codigo_inmueble;
+
+        // -----------------------------------------------------------
+
+        const registroInversion = await indiceInversiones.findOne({
+            codigo_inmueble: codigo_inmueble,
+            ci_propietario: ci_propietario,
+        });
+
+        if (registroInversion) {
+            var acceso = await verificadorTerrenoBloqueado(registroInversion.codigo_terreno);
+
+            if (acceso == "permitido") {
+                const storage = getStorage();
+
+                //--------------------------------------------------------
+                // ELIMINACION DE LOS DOCUMENTOS PRIVADOS DEL INMUEBLE QUE TIENE CON SU PROPIETARIO
+                // ASI SE AHORRA ESPACIO EN EL SERVIDOR
+
+                var registroDocumentosPrivados = await indiceDocumentos.find({
+                    codigo_inmueble: codigo_inmueble,
+                    clase_documento: "Propietario",
+                    ci_propietario: ci_propietario,
+                });
+
+                if (registroDocumentosPrivados) {
+                    // eliminamos los ARCHIVOS DOCUMENTOS PDF uno por uno (sean publicos o privados)
+                    for (let i = 0; i < registroDocumentosPrivados.length; i++) {
+                        /*
+                        let documentoNombreExtension =
+                            registroDocumentosPrivados[i].codigo_documento + ".pdf";
+                        // eliminamos el ARCHIVO DOCUMENTO DE LA CARPETA DONDE ESTA GUARDADA
+                        await fs.unlink(
+                            pache.resolve("./src/publico/subido/" + documentoNombreExtension)
+                        ); // "+" es para concatenar
+                        */
+
+                        //--------------------------------------------------
+
+                        //const storage = getStorage();
+
+                        var nombre_y_ext = registroDocumentosPrivados[i].codigo_documento + ".pdf";
+
+                        // para encontrar en la carpeta "subido" en firebase con el nombre y la extension de la imagen incluida
+                        var direccionActualImagen = "subido/" + nombre_y_ext;
+
+                        // Crear una referencia al archivo que se eliminará
+                        var desertRef = ref(storage, direccionActualImagen);
+
+                        // Eliminar el archivo y esperar la promesa
+                        await deleteObject(desertRef);
+
+                        // Archivo eliminado con éxito
+                        //console.log("Archivo eliminado DE FIREBASE con éxito");
+
+                        //--------------------------------------------------
+                    }
+                    // luego de eliminar todos los ARCHIVOS DOCUMENTO, procedemos a ELIMINARLO DE LA BASE DE DATOS. Esto para ahorrar espacio en el servidor
+                    await indiceDocumentos.deleteMany({
+                        codigo_inmueble: codigo_inmueble,
+                        clase_documento: "Propietario",
+                        ci_propietario: ci_propietario,
+                    }); // "deleteMany" para que elimine TODOS los que coinciden con las condiciones
+                }
+
+                //-------------------------------------------------------
+                // NO SE ELIMINA EL REGISTRO DE LOS PAGOS DEL ACTUAL PROPIETARIO DEL INMUEBLE (que sera reemplazado por el nuevo), SOLO SE CAMBIARA EL ESTADO "estado_propietario" de "activo" a "pasivo"
+
+                // guarda y actualiza la base de datos (si existe con anterioridad esa propiedad ya llenada con dato, lo sobreescribe con los datos nuevos)
+                await indiceInversiones.updateOne(
+                    { codigo_inmueble: codigo_inmueble, ci_propietario: ci_propietario },
+                    { $set: { estado_propietario: "pasivo" } }
+                );
+
+                //------------------------------------------------------------------
+                // guardamos en el historial de acciones
+                var ci_administrador = req.user.ci_administrador; // extraido de la SESION guardada del administrador
+                var accion_administrador =
+                    "El propietario: " +
+                    ci_propietario +
+                    " de inmueble: " +
+                    codigo_inmueble +
+                    " cambia su estado de activo a pasivo";
                 var aux_accion_adm = {
                     ci_administrador,
                     accion_administrador,

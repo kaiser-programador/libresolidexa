@@ -592,7 +592,7 @@ $(document).ready(function () {
 
             //----------------------------------------------------------------------------
             // para segunderos $us/seg
-            sus_seg();
+            ////////sus_seg(); EN ESTA VENTANA NO EXISTE SEGUNDERO
         }
     }
 

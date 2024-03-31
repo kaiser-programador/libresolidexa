@@ -3,8 +3,35 @@
 <div class="contenido container-fluid">
     
     <div class="row mt-4">
-        {{!-- se muestra el campo para llenar nuevo propietario, solo si no existe propietario activo para este inmueble, es decir cuando "existe_propietario" es FALSE --}}
-        {{#unless contenido_propietario.existe_propietario}}
+
+        {{#if contenido_propietario.existe_propietario}}
+
+            <div class="col-12 col-sm-6 col-lg-4">
+                <div class="card mb-2">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5>NUEVO PROPIETARIO</h5>
+                        <i class="d-block fas fa-user-plus size_iconos"></i>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="text-center">
+                            <button
+                                type="button"
+                                class="btn btn-primary mr-3"
+                                id="agregar_nuevo_propietario"
+                                data-ci="{{contenido_propietario.propietario_datos.ci_propietario}}"
+                                >
+                                Agregar
+                            </button>
+                        </div>
+                        <div class="mt-2">
+                            Al agregar un nuevo propietario, el propietario actual cambiara su estado de "activo" a "pasivo"
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        {{else}}
             <div class="col-12 col-sm-6 col-lg-4">
                 <div class="card mb-2">
                     <div class="card-header d-flex justify-content-between align-items-center">
@@ -38,7 +65,7 @@
                     </div>
                 </div>
             </div>
-        {{/unless}}
+        {{/if}}
         <div class="col-12 col-sm-6 col-lg-4">
             <div class="card mb-2">
                 <div class="card-header d-flex justify-content-between align-items-center">
@@ -47,7 +74,34 @@
                 </div>
 
                 <div class="card-body">
+
                     <div class="row">
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-6">
+                                    Precio Justo:
+                                </div>
+                                <div class="col-6">
+                                    <span>{{precio_render}}</span> <span>$us</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-6">
+                                    Plusvalía:
+                                </div>
+                                <div class="col-6">
+                                    <span>{{plusvalia_render}}</span> <span>$us</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
                         <div class="col-12">
                             <div class="row">
                                 <div class="col-6">
@@ -64,29 +118,14 @@
                         <div class="col-12">
                             <div class="row">
                                 <div class="col-6">
-                                    Precio Justo:
+                                    Aprobación:
                                 </div>
                                 <div class="col-6">
-                                    <span>{{precio_render}}</span> <span>$us</span>
+                                    <span>{{aprobacion_render}}</span> <span>$us</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="row mt-4">
-                        <div class="col-12">
-                            <div class="row">
-                                <div class="col-6">
-                                    Plusvalía:
-                                </div>
-                                <div class="col-6">
-                                    <span>{{plusvalia_render}}</span> <span>$us</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-
                 </div>
             </div>
         </div>
@@ -94,7 +133,7 @@
 
     
 
-    <div class="card mt-4">
+    <div class="card my-4">
         <div class="card-header ref_boton_datos_pagos_propietario">
             <div class="d-flex justify-content-between">
                 <h5>INFORMACIÓN PROPIETARIO</h5>
@@ -109,19 +148,8 @@
                     >
                     Guardar
                     </button>
-
-                    <button
-                        type="button"
-                        class="btn btn-danger"
-                        id="eliminar_datos_pagos_propietario"
-                        data-ci="{{contenido_propietario.propietario_datos.ci_propietario}}"
-                    >
-                        Eliminar
-                    </button>
                 </div>
-                
             </div>
-            
         </div>
 
         <div class="card-body">

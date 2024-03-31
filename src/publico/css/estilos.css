@@ -40,6 +40,8 @@
     --color_texto_link: rgb(0, 123, 255);
     --color_texto_inputs: rgb(0, 0, 0);
 
+    --color_borde_progreso: rgb(201, 189, 189);
+
     --color_bordes_card: rgb(214, 209, 209);
     /* --color_bordes_card: rgb(172, 165, 165); */
     --redondeo_borde: 0.6em;
@@ -1504,4 +1506,12 @@ table td {
     border: 0.1rem solid #949FB1;
     /* border: 0.1rem solid var(--color_texto_link); */
     border-radius: 0.25rem;
+}
+
+
+/* para borde de las barras de progreso */
+
+.progress {
+    /* border: 0.5px solid rgb(214, 209, 209) !important; */
+    border: 1.2px solid var(--color_borde_progreso) !important;
 }

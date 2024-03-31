@@ -10,15 +10,16 @@ const inmuebleEsquema = new Schema({
     codigo_inmueble: { type: String, default: "" },
     ciudad: { type: String, default: "" }, // util para busquedas de inmuebles por ciudad
 
-    ci_propietario: { type: String, default: "" }, // ci del propietario actual (que lo tiene reservado) o final, en caso de que no exista entonces estara vacio ""
+    //ci_propietario: { type: String, default: "" }, // ci del propietario actual (que lo tiene reservado) o final, en caso de que no exista entonces estara vacio ""
 
     // guardado, disponible, reservado, pendiente_pago, pagado_pago, pendiente_aprobacion, pagos (construccion), remate, completado (construido)
     estado_inmueble: { type: String, default: "guardado" }, //
     fecha_creacion: { type: Date, default: Date.now },
 
-    // NO EXISTE FECHA INICIO Y FIN DE REMATE EN INMUEBLE, PORQUE SI ENTRA EN REMATE, ESTARA EN ESE ESTADO HASTA QUE LOGRE SER COMPRADO POR UN NUEVO PROPIETARIO, ASI QUE EL CAMBIO DE ESTADO DE REMATE SE LO HARA MANUALMENTE DESDE EL LADO DEL GESTIONADOR
+    // NO EXISTE FECHA INICIO Y FIN DE REMATE EN INMUEBLE, PORQUE SI ENTRA EN REMATE, ESTARA EN ESE ESTADO HASTA QUE LOGRE SER COMPRADO POR UN NUEVO PROPIETARIO, ASI QUE EL CAMBIO DE ESTADO DE REMATE SE LO HARA MANUALMENTE DESDE EL LADO DEL ADMINISTRADOR
 
     valor_reserva: { type: Number, default: 0 }, // que requiere el inmueble en $us
+    valor_aprobacion: { type: Number, default: 0 }, // que requiere el inmueble en $us para los tramites, permisos construccion, etc.
 
     tipo_inmueble: { type: String, default: "" }, // Departamento, Oficina, Comercial, Casa
     torre: { type: String, default: "" },
@@ -45,12 +46,12 @@ const inmuebleEsquema = new Schema({
 
     // ------------------------------------------------------------
     // PARA CUANDO EL INMUEBLE ESTE EN ESTADO DE: DISPONIBLE O REMATE. UTIL PARA CALCULADORA DE INVERSIONISTA
-    
+
     // Debe cubrir el pago de las cuotas anteriores y la presente exigida cuota de construcción del inmueble.
     inversion_estado: { type: Number, default: 0 },
-    periodo_estado: { type: Number, default: 0 },
 
     // Meses que cubre la presente exigida cuota de construcción del inmueble
+    periodo_estado: { type: Number, default: 0 },
 
     // ------------------------------------------------------------
 

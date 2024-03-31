@@ -264,6 +264,7 @@ async function progreso_obra_inm(paquete_datos) {
             obj_porcentajes.porcentaje_obra_inm = 100;
             obj_porcentajes.porcentaje_obra_inm_render = "100";
         } else {
+            // en inmueble el estado de "pagos" corresponde a su estado de contruccion, por tanto no confundir con pagos de aprobacion
             if (estado_inmueble == "pagos" || estado_inmueble == "remate") {
                 let tiempo_duracion_construccion =
                     info_terreno.fecha_fin_construccion - info_terreno.fecha_inicio_construccion; //resultados en milisegundos

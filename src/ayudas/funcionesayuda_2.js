@@ -1036,7 +1036,7 @@ async function aux_inmueble_segundero(aux_paquete_datos) {
             {
                 codigo_terreno: 1,
                 estado_inmueble: 1,
-                ci_propietario: 1, // Util para RECOMPENSA POR TIEMPO DE ESPERA
+                //ci_propietario: 1, // Util para RECOMPENSA POR TIEMPO DE ESPERA
                 recompensa: 1, // Util para RECOMPENSA POR TIEMPO DE ESPERA
                 _id: 0,
             }
@@ -1111,18 +1111,18 @@ async function aux_inmueble_segundero(aux_paquete_datos) {
         // Calcular el número de meses, redondeado al entero inmediato inferior
         var meses_r = Math.floor(diferenciaEnDias / 30); // meses espera de recompensa
 
-        if (inmueble_i.ci_propietario != "") {
-            var registro = await indiceInversiones.findOne(
-                { codigo_inmueble: codigo_inmueble, tiene_reserva: true },
-                {
-                    fecha_pagado_reserva: 1,
-                    _id: 0,
-                }
-            );
-
-            if (registro) {
-                continuar = true;
+        // para la visualizacion del segundero de recompensa, siempre se tomara la fecha de reserva de dicho inmueble, independiemtemente del inversionista que realizo el pago de reservacion.
+        // IMPORTANTE: no borrar las inversiones que se realizan en el inmueble, porque de borrarlos y se corre el riesgo de eliminar el registro donde se encontraba la fecha del pago de reserva del inmueble. De manera que en lugar de eliminarlos, poner el estado_propietario en "pasivo"
+        var registro = await indiceInversiones.findOne(
+            { codigo_inmueble: codigo_inmueble, tiene_reserva: true },
+            {
+                fecha_pagado_reserva: 1,
+                _id: 0,
             }
+        );
+
+        if (registro) {
+            continuar = true;
         }
 
         if (continuar) {

@@ -311,6 +311,27 @@
                 </div>
             </div>
 
+            <h5>APROBACIÓN</h5>
+            {{! para los tramites, permisos construccion, etc. }}
+            <div class="form-group row">
+                <label for="label_valor_aprobacion" class="col-sm-12 col-lg-4 col-form-label">Valor aprobación</label>
+                <div class="col-sm-12 col-lg-8 input-group">
+                    <input
+                        name="valor_aprobacion"
+                        type="number"
+                        step="0.01"
+                        class="form-control"
+                        id="label_valor_aprobacion"
+                        title="para los tramites, permisos construccion, etc."
+                        value="{{contenido_inmueble.valor_aprobacion}}"
+                        min="1"
+                    />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg-warning">$us</span>
+                    </div>
+                </div>
+            </div>
+
             <h5>TIPO DE INMUEBLE</h5>
 
             <div>

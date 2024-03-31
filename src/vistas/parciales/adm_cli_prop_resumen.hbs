@@ -29,32 +29,6 @@
 
 {{!-- ------------------------------------------------------- --}}
 
-<div id="contenedor_seg_plus" hidden>
-    {{! usamos data-  para no tener problemas con nombre que tengan añadidos espacios largos o saltos de lineas provocados por handlebars }}
-    {{#each informacion.val_segundero_cajas.array_plusvalia}}
-        <div class="cuerpo_plus">
-            <span class="plus_r" data-plus_r="{{plus_r}}"></span>
-            <span class="plus_fechaInicio" data-plus_fechaInicio="{{plus_fechaInicio}}"></span>
-            <span class="plus_fechaFin" data-plus_fechaFin="{{plus_fechaFin}}"></span>
-        </div>
-    {{/each}}
-</div>
-{{!-- ------------------------------------------------------- --}}
-{{!-- DATOS PARA SEGUNDERO DE RECOMPENSA --}}
-
-<div id="contenedor_seg_recom" hidden>
-    {{! usamos data-  para no tener problemas con nombre que tengan añadidos espacios largos o saltos de lineas provocados por handlebars }}
-    {{#each informacion.val_segundero_cajas.array_recompensa}}
-        <div class="cuerpo_recom">
-            <span class="recom_r" data-recom_r="{{recom_r}}"></span>
-            <span class="recom_fechaInicio" data-recom_fechaInicio="{{recom_fechaInicio}}"></span>
-            <span class="recom_fechaFin" data-recom_fechaFin="{{recom_fechaFin}}"></span>
-        </div>
-    {{/each}}
-</div>
-
-
-
 <div class="contenido container">
     
     {{> segu_esta_te_py_inm_prop}}

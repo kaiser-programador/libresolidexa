@@ -517,7 +517,7 @@ async function proyecto_descripcion(codigo_proyecto) {
             // capitales del proyecto
             var resultado_capitales = await proyecto_info_cd(codigo_proyecto);
             aux_objeto.meta = resultado_capitales.meta;
-            aux_objeto.financiado = resultado_capitales.financiado;
+            aux_objeto.financiado = resultado_capitales.financiado_num;
             aux_objeto.porcentaje = resultado_capitales.porcentaje;
 
             return aux_objeto;

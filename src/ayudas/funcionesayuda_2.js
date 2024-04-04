@@ -559,6 +559,20 @@ funcionesAyuda_2.datos_pagos_propietario = async function (paquete_propietario) 
         // reconversion del "string" a "objeto"
         var propietario_pagos = JSON.parse(aux_string);
 
+        //----------------------------------------------
+        // para color de estado de propietario.
+        // activo: color link, pasivo: color rojo
+
+        if (propietario_pagos.estado_propietario=="activo") {
+            //agregamos la propiedad "es_activo" al objeto
+            propietario_pagos.es_activo = true;
+        }
+        if (propietario_pagos.estado_propietario=="pasivo") {
+            //agregamos la propiedad "es_activo" al objeto
+            propietario_pagos.es_activo = false;
+        }
+        //----------------------------------------------
+
         if (propietario_pagos.tiene_reserva) {
             // para mostrar el pago en formato español con punto mil y coma decimal PARA LA VENTANA DE INMUEBLE EN SU PESTAÑA PROPIETARIO
             propietario_pagos.pagado_reserva_render = numero_punto_coma(

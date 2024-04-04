@@ -1,6 +1,6 @@
 {{! PARA PESTAÑA INVERSOR DESDE EL LADO DEL CLIENTE PUBLICO (SOLO PODRA SER VISTO POR LOS PROPIETARIOS DEL INMUEBLE) }}
 
-{{!-- <span id="tipo_pestana_inm" data-id="inversor_inm"></span> --}}
+{{! <span id="tipo_pestana_inm" data-id="inversor_inm"></span> }}
 
 <div class="row cuadro_estandart mt-4 py-3">
     <div class="col-12 col-lg-6">
@@ -56,10 +56,18 @@
                                     Estado:
                                 </td>
 
-                                <td class="text-left">
-                                    <span
-                                    >&nbsp;&nbsp;{{informacion.propietario_pagos.estado_propietario}}</span>
-                                </td>
+                                {{#if informacion.propietario_pagos.es_activo}}
+                                    <td class="text-left texto-link">
+                                        <span>&nbsp;&nbsp;<b
+                                            >Activo</b></span>
+                                    </td>
+                                {{else}}
+                                    <td class="text-left" style="color: red;">
+                                        <span>&nbsp;&nbsp;<b
+                                            >Pasivo</b></span>
+                                    </td>
+                                {{/if}}
+
                             </tr>
 
                         </tbody>
@@ -84,11 +92,7 @@
                 {{#each informacion.documentos}}
                     <div class="mt-3">
                         <i class="fas fa-file-pdf estilo-pdf-garantia"></i>
-                        <a
-                            class="ml-3"
-                            href="{{url}}"
-                            target="_blank"
-                        >
+                        <a class="ml-3" href="{{url}}" target="_blank">
                             {{nombre_documento}}
                         </a>
                     </div>
@@ -111,7 +115,9 @@
         </div>
 
         <div class="mx-md-4 contenedor-detalle-texto">
-            <h4 class="texto-resaltado"><span class="icono_izq d-inline-block d-md-none"><i class="fas fa-file-invoice-dollar"></i></span>Pagos efectuados</h4>
+            <h4 class="texto-resaltado"><span class="icono_izq d-inline-block d-md-none"><i
+                        class="fas fa-file-invoice-dollar"
+                    ></i></span>Reserva, Aprobación</h4>
 
             <div class="row mt-4">
                 <div class="col-12 col-lg-10 col-xl-12">
@@ -131,7 +137,7 @@
                         <div class="col-12 col-sm-6 col-xl-3">
                             <p class="text-left texto-link">
                                 {{! <b>Fecha Reserva</b> }}
-                                Fecha Reserva
+                                Fecha Pago
                             </p>
                         </div>
                         <div class="col-12 col-sm-6 col-xl-3">
@@ -149,8 +155,7 @@
                     <div class="row">
                         <div class="col-12 col-sm-6 col-xl-3">
                             <p class="text-left texto-link">
-                                {{! <b>Pago</b> }}
-                                Pago
+                                Aprobación
                             </p>
                         </div>
                         <div class="col-12 col-sm-6 col-xl-3">
@@ -175,7 +180,7 @@
 
             </div>
 
-            <h4 class="my-4 texto-resaltado">Desglose de pagos</h4>
+            <h4 class="my-4 texto-resaltado">Remate, Construcción</h4>
 
             {{! tabla de pagos mensuales }}
             <div class="row madre_tabla">
@@ -187,9 +192,14 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th class="text-left texto-resaltado">#&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                                    <th class="text-left texto-resaltado">Fecha&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                                    <th class="text-left texto-resaltado">Valor $us.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                    <th
+                                        class="text-left texto-resaltado"
+                                    >#&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                    <th
+                                        class="text-left texto-resaltado"
+                                    >Fecha&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                                    <th class="text-left texto-resaltado">Valor
+                                        $us.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
                                 </tr>
                             </thead>
 

@@ -305,6 +305,7 @@ $("#idSubirImagen").on("submit", function (e) {
                                 alt="${orden_imagen}"
                                 title="${orden_imagen}"
                                 class="estilo_imagen card-img-top"
+                                loading="lazy"
                             />
                             <h5 class="text-center mt-2">${titulo_imagen}</h5>
                             <p class="mt-2">${texto_imagen}</p>
@@ -345,7 +346,7 @@ $("#idSubirImagen").on("submit", function (e) {
 
                             <div class="card-body">
                                 <img src="${url}" alt="${nombre_imagen}"
-                                    title="${codigo_imagen}" class="estilo_imagen card-img-top">
+                                    title="${codigo_imagen}" class="estilo_imagen card-img-top" loading="lazy">
                             </div>
 
                             <div class="card-footer">
@@ -387,7 +388,7 @@ $("#idSubirImagen").on("submit", function (e) {
 
                                 <img src="${url}"
                                     alt="${nombre_imagen}" title="${codigo_imagen}"
-                                    class="estilo_imagen card-img-top">
+                                    class="estilo_imagen card-img-top" loading="lazy">
                                 <div class="card-body">
 
                                     <button class="boton_seleccionar_deseleccionar_imagen_jquery btn btn-success mb-2"
@@ -425,7 +426,7 @@ $("#idSubirImagen").on("submit", function (e) {
     
                                 <div class="card-body">
                                     <img src="${url}" alt="${nombre_imagen}"
-                                        title="${codigo_imagen}" class="estilo_imagen card-img-top">
+                                        title="${codigo_imagen}" class="estilo_imagen card-img-top" loading="lazy">
     
                                 </div>
                             </div>
@@ -675,6 +676,7 @@ $("#idSubirImagenEmpresa").on("submit", function (e) {
                                 alt="${imagen}"
                                 title="${imagen}"
                                 class="estilo_imagen card-img-top"
+                                loading="lazy"
                             />
                         </div>
     

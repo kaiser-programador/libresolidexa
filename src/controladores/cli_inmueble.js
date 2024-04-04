@@ -1879,7 +1879,8 @@ async function inmueble_empleos(codigo_inmueble) {
 }
 
 //------------------------------------------------------------------
-
+// si se entra en esta funcion quiere decir que existe "Calculadora" y que se accedio desde esa pestaña.
+// la pestaña de "calculadora" sera visible cuando el inmueble este en estado de: disponible, pendiente_pago, remate. ESTO YA ESTA PREVIAMENTE DETERMINADO EN LA FUNCION: complementos_globales_inm
 async function inmueble_calculadora(codigo_inmueble) {
     try {
         var registro_inmueble = await indiceInmueble.findOne(
@@ -2268,11 +2269,15 @@ async function complementos_globales_inm(paquete_datos) {
         //----------------------------------------------------------
         // para mostrar u ocultar la pestaña de calculadora dentro del inmueble
 
-        if (aux_inmueble.estado_inmueble == "completado") {
-            // la pestaña de "calculadora" no sera visible cuando el inmueble este en estado de completado (que equivale a estar construido)
-            var existe_calculadora = false;
-        } else {
+        if (
+            aux_inmueble.estado_inmueble == "disponible" ||
+            aux_inmueble.estado_inmueble == "pendiente_pago" ||
+            aux_inmueble.estado_inmueble == "remate"
+        ) {
+            // la pestaña de "calculadora" sera visible cuando el inmueble este en estado de: disponible, pendiente_pago, remate
             var existe_calculadora = true;
+        } else {
+            var existe_calculadora = false;
         }
         //----------------------------------------------------------
 

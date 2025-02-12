@@ -10,11 +10,10 @@ const {
     indiceEmpresa,
     indiceTerreno,
     indiceRequerimientos,
-    indiceImagenesSistema,
 } = require("../modelos/indicemodelo");
 
 const { cards_inicio_cli_adm } = require("../ayudas/funcionesayuda_0");
-const { pie_pagina_adm } = require("../ayudas/funcionesayuda_2");
+const { numero_punto_coma } = require("../ayudas/funcionesayuda_3");
 
 const controladorInicio = {};
 
@@ -65,7 +64,11 @@ controladorInicio.inicioSistema = async (req, res) => {
         //console.log("estamos en el controlador de inicio sistema");
 
         // ------- Para verificación -------
+        //console.log("TIPO NAVEGACION");
+        //console.log(req.tipo_navegacion);
+
         /*
+        // ------- Para verificación -------
         console.log("DATOS del administrador ingreso");
         console.log(req.user);
         console.log("el id del administrador ingreso");
@@ -77,31 +80,8 @@ controladorInicio.inicioSistema = async (req, res) => {
         // ---------------------------------------------------------------
         // para las url de imagen inicio del sistema horizontal y vertical
 
-        var url_inicio_h = ""; // vacio por defecto
-        var url_inicio_v = ""; // vacio por defecto
-
-        const registro_img_sistema_h = await indiceImagenesSistema.findOne(
-            { tipo_imagen: "inicio_horizontal" },
-            {
-                url: 1,
-                _id: 0,
-            }
-        );
-
-        const registro_img_sistema_v = await indiceImagenesSistema.findOne(
-            { tipo_imagen: "inicio_vertical" },
-            {
-                url: 1,
-                _id: 0,
-            }
-        );
-
-        if (registro_img_sistema_h) {
-            url_inicio_h = registro_img_sistema_h.url;
-        }
-        if (registro_img_sistema_v) {
-            url_inicio_v = registro_img_sistema_v.url;
-        }
+        var url_inicio_h = "/rutavirtualpublico/imagenes/imagenes_sistema/inicio_horizontal.jpg";
+        var url_inicio_v = "/rutavirtualpublico/imagenes/imagenes_sistema/inicio_vertical.jpg";
 
         // ---------------------------------------------------------------
 
@@ -115,8 +95,6 @@ controladorInicio.inicioSistema = async (req, res) => {
                 n_empleos: 1,
                 n_ahorros: 1,
                 n_resp_social: 1,
-                texto_footer: 1,
-                year_derecho: 1,
                 _id: 0,
             }
         );
@@ -127,9 +105,18 @@ controladorInicio.inicioSistema = async (req, res) => {
 
             // reconversion del "string" a "objeto"
             var datos_empresa = JSON.parse(aux_string);
-            // es_ninguno: true  // para las opciones de navegacion de la ventana en estado comprimido
 
-            var pie_pagina = await pie_pagina_adm();
+            //----------------------------------------
+            // agregando valores render con punto mil
+            datos_empresa.r_construidos= numero_punto_coma(n_construidos);
+            datos_empresa.r_proyectos= numero_punto_coma(n_proyectos);
+            datos_empresa.r_inmuebles= numero_punto_coma(n_inmuebles);
+            datos_empresa.r_empleos= numero_punto_coma(n_empleos);
+            datos_empresa.r_ahorros= numero_punto_coma(n_ahorros);
+            datos_empresa.r_resp_social= numero_punto_coma(n_resp_social);
+            //----------------------------------------
+
+            // es_ninguno: true  // para las opciones de navegacion de la ventana en estado comprimido
 
             //res.render("inicio", { es_ninguno: true }); //increible que borrandolo FUNCIONE
             //////// res.render("cli_inmueble", info_inmueble_cli);
@@ -142,11 +129,6 @@ controladorInicio.inicioSistema = async (req, res) => {
                 datos_empresa,
                 url_inicio_h,
                 url_inicio_v,
-                pie_pagina_adm: {
-                    texto_footer: pie_pagina.texto_footer,
-                    year_derecho: pie_pagina.year_derecho,
-                    mision_vision: pie_pagina.mision_vision,
-                },
             }); //increible que borrandolo FUNCIONE
         } else {
             var datos_empresa = {}; // lo enviamos como objeto vacio
@@ -269,9 +251,6 @@ controladorInicio.proyectosVariosTipos = async (req, res) => {
             codigo_usuario,
         };
         var cards_inicio = await cards_inicio_cli_adm(paquete_info);
-
-        var pie_pagina = await pie_pagina_adm();
-        cards_inicio.pie_pagina_adm = pie_pagina;
 
         if (
             tipo_ventana == "guardado_terreno" ||

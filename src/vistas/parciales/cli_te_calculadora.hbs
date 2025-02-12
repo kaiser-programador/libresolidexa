@@ -1,0 +1,1053 @@
+{{! para la CALCULADORA DEL TERRENO (FRACCIONES DE TERRENO) }}
+<div id="contenedor_calculadora" hidden>
+    <span class="solidexa_bs" data-solidexa_bs="{{informacion.solidexa_te_bs}}"></span>
+    <span class="solidexa_te_m2" data-solidexa_te_m2="{{informacion.solidexa_te_m2}}"></span>
+    <span class="solidexa_te_bsm2" data-solidexa_te_bsm2="{{informacion.solidexa_te_bsm2}}"></span>
+    <span class="minimo_bsm2" data-minimo_bsm2="{{informacion.minimo_bsm2}}"></span>
+    <span class="promedio_bsm2" data-promedio_bsm2="{{informacion.promedio_bsm2}}"></span>
+    <span class="maximo_bsm2" data-maximo_bsm2="{{informacion.maximo_bsm2}}"></span>
+    <span class="fraccion_bs" data-fraccion_bs="{{informacion.fraccion_bs}}"></span>
+    <span class="descuento_bs" data-descuento_bs="{{informacion.descuento_bs}}"></span>
+    <span class="p_f_mensual" data-p_f_mensual="{{informacion.p_f_mensual}}"></span>
+    <span class="p_f_total" data-p_f_total="{{informacion.p_f_total}}"></span>
+    <span class="dias_maximo" data-dias_maximo="{{informacion.dias_maximo}}"></span>
+    <span class="tc_ine" data-tc_ine="{{informacion.tc_ine}}"></span>
+    <span class="tc_paralelo" data-tc_paralelo="{{informacion.tc_paralelo}}"></span>
+    <span class="inflacion_ine" data-inflacion_ine="{{informacion.inflacion_ine}}"></span>
+    <span class="meses_maximo" data-meses_maximo="{{informacion.meses_maximo}}"></span>
+    <span class="existe_descuento" data-existe_descuento="{{informacion.existe_descuento}}"></span>
+</div>
+
+
+{{! para guardado del ancho actual de la ventana }}
+<span class="ancho_ventana" data-ancho_ventana=""></span>
+
+<div class="row mt-5 cuadro_estandart py-3">
+
+    <div class="col-12">
+        <div class="d-flex justify-content-center">
+            <div>
+                <div class="btn boton-linea-secundario bg-unidad" id="calTeCopropietario">
+                    <div>
+                        <i class="fas fa-binoculars"></i>
+                    </div>
+                    <div>
+                        <span>Copropietario</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ml-2">
+                <div class="btn boton-linea-secundario" id="calTeComparar">
+                    <div>
+                        <i class="fas fa-binoculars"></i>
+                    </div>
+                    <div>
+                        <span>Comparar</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div id="m-calTeCopropietario" class="encuadre text-center mt-3">
+            Al adquirir fracciones de terreno te conviertes en copropietario del terreno y obtienes
+            beneficios
+        </div>
+
+        <div id="m-calTeComparar" class="encuadre text-center mt-3" style="display: none;">
+            Compare el terreno SOLIDEXA con otros terrenos.
+        </div>
+    </div>
+
+    <div class="col-12">
+        <hr class="linea_calculadora" />
+    </div>
+
+    <div class="col-12" id="c-calTeCopropietario">
+        <div class="row">
+            <div class="col-12">
+                <div class="row">
+
+                    <div class="col-12 col-sm-6 col-lg-4">
+
+                        <div class="text-center mb-3">
+                            <div class="titulo_3">
+                                Fracciones
+                                <i
+                                    class="icono_popover fas fa-info-circle ml-1"
+                                    data-toggle="popover"
+                                    data-html="true"
+                                    data-content="Ingresa la cantidad de fracciones de terreno que deseas adquirir para conocer los beneficios y ganancias que te generaran."
+                                ></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="fraccion_te" class="col-4 col-form-label"><div
+                                    class="titulo_4"
+                                >Precio</div></label>
+                            <div class="col-8 input-group">
+                                {{! type text para mostrar punto mil, coma decimal }}
+                                <input
+                                    type="text"
+                                    class="form-control input_respuesta"
+                                    id="fraccion_te"
+                                    value="{{informacion.fraccion_bs_render}}"
+                                    title="Precio unitario de fracción"
+                                    data-bs="{{informacion.fraccion_bs}}"
+                                    readonly
+                                />
+                                <div class="input-group-append d-block">
+                                    <span class="input-group-text bg-unidad">Bs</span>
+                                </div>
+                            </div>
+                            <div class="col-12 text-right color-gris">Valor siempre en Bs</div>
+                        </div>
+
+                        <div class="my-3 mx-1">
+
+                            <div class="d-flex justify-content-between">
+                                <div class="text-left">
+                                    <div class="color-gris">Min.</div>
+                                    <div class="texto-normal">
+                                        <div
+                                            class="titulo_4 limite_min"
+                                            data-minimo="0"
+                                        >0</div>
+                                    </div>
+                                </div>
+
+                                <div class="text-right">
+                                    <div class="color-gris">Max.</div>
+                                    <div class="texto-normal">
+                                        <div
+                                            class="titulo_4 limite_max"
+                                            data-maximo="{{informacion.nf_maximo}}"
+                                        >{{informacion.nf_maximo}}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <input
+                                type="range"
+                                id="range_fracciones"
+                                min="0"
+                                max="{{informacion.nf_maximo}}"
+                                step="1"
+                                value="0"
+                                class="custom-range w-100"
+                            />
+
+                            <div class="row">
+                                <div class="col-4"></div>
+                                <div class="col-4">
+                                    <div class="input-group">
+                                        <input
+                                            type="number"
+                                            value="0"
+                                            class="form-control text-center"
+                                            id="input_fracciones"
+                                            min="0"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="col-4"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="valor_adquiridos" class="col-4 col-form-label"><div
+                                    class="titulo_4"
+                                >Valor</div></label>
+                            <div class="col-8 input-group">
+                                {{! type text para mostrar punto mil, coma decimal }}
+                                <input
+                                    type="text"
+                                    class="form-control input_respuesta"
+                                    id="valor_adquiridos"
+                                    value="0"
+                                    readonly
+                                />
+                                <div class="input-group-append d-block">
+                                    <span class="input-group-text bg-unidad">Bs</span>
+                                </div>
+                            </div>
+                            <div class="col-12 text-right color-gris">Valor siempre en Bs</div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="participacion_x" class="col-4 col-form-label"><div
+                                    class="titulo_4"
+                                >Participación<i
+                                        class="icono_popover fas fa-info-circle ml-1"
+                                        data-toggle="popover"
+                                        data-html="true"
+                                        data-content="Es el porcentaje de participación que obtienes sobre el terreno gracias a la compra de fracciones de esta propiedad."
+                                    ></i></div>
+
+                            </label>
+                            <div class="col-8 input-group">
+                                {{! type text para mostrar punto mil, coma decimal }}
+                                <input
+                                    type="text"
+                                    class="form-control input_respuesta"
+                                    id="participacion"
+                                    value="0"
+                                    readonly
+                                />
+                                <div class="input-group-append d-block">
+                                    <span class="input-group-text bg-unidad">%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-lg-4">
+
+                        <div class="text-center mb-3">
+                            <div class="titulo_3">
+                                Economía nacional
+                            </div>
+                        </div>
+
+                        <div class="form-check mt-3">
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    class="form-check-input"
+                                    id="ajustar_economia"
+                                />
+                                <div class="titulo_4">Ajustar</div>
+                            </label>
+                            <i
+                                class="icono_popover fas fa-info-circle ml-1"
+                                data-toggle="popover"
+                                data-html="true"
+                                data-content="Seleccione esta opción si desea ajustar los valores de Tipo de cambio paralelo y/o Inflación acorde a la realidad que se vive en el país, caso contrario se trabajara con los valores por defecto."
+                            ></i>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="tc_paralelo_x" class="col-4 col-form-label"><div
+                                    class="titulo_4"
+                                >T.C. paralelo
+                                    <i
+                                        class="icono_popover fas fa-info-circle ml-1"
+                                        data-toggle="popover"
+                                        data-html="true"
+                                        data-content="Especifica el tipo de cambio del mercado paralelo o el tipo de cambio al cual esta siendo ofertado el terreno tradicional."
+                                    ></i></div>
+                            </label>
+
+                            <div class="col-8 input-group">
+                                <input
+                                    type="number"
+                                    step="1"
+                                    class="input_respuesta form-control"
+                                    id="tc_paralelo"
+                                    min="6"
+                                    value="{{informacion.tc_paralelo}}"
+                                    title="Tipo de cambio paralelo"
+                                    readonly
+                                />
+                                <div class="input-group-append d-block">
+                                    <span class="input-group-text bg-unidad">Bs/$us</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="inflacion" class="col-4 col-form-label"><div
+                                    class="titulo_4"
+                                >Inflación</div></label>
+                            <div class="col-8 input-group">
+                                <input
+                                    type="number"
+                                    step="1"
+                                    class="input_respuesta form-control"
+                                    id="inflacion"
+                                    min="3"
+                                    value="{{informacion.inflacion_ine}}"
+                                    readonly
+                                />
+                                <div class="input-group-append d-block">
+                                    <span class="input-group-text bg-unidad">%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    {{! d-none: Oculta el elemento en todos los tamaños de pantalla. }}
+                    {{! d-lg-block: Muestra el elemento únicamente en pantallas grandes a partir de lg }}
+                    <div class="col-lg-4 d-none d-lg-block">
+
+                        <div class="text-center mb-3">
+                            <div class="titulo_3">
+                                Terreno
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="precio_te" class="col-4 col-form-label"><div
+                                    class="titulo_4"
+                                >Precio</div></label>
+                            <div class="col-8 input-group">
+                                {{! type text para mostrar punto mil, coma decimal }}
+                                <input
+                                    type="text"
+                                    class="form-control input_respuesta elvalorinput"
+                                    id="precio_te"
+                                    value="{{informacion.solidexa_te_bs_render}}"
+                                    title="Precio unitario de fracción"
+                                    data-bs="{{informacion.solidexa_te_bs}}"
+                                    readonly
+                                />
+                                <div class="input-group-append d-block">
+                                    <span class="input-group-text bg-unidad lamoneda">Bs</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-3">
+                            <div class="titulo_3">
+                                Precio
+                                <span class="lamoneda">Bs</span>/m<sup>2</sup>
+                                <i
+                                    class="icono_popover fas fa-info-circle ml-1"
+                                    data-toggle="popover"
+                                    data-html="true"
+                                    data-content="Se muestra el rango de precios límites mínimo y máximo correspondientes a la zona donde se encuentra ubicado el terreno SOLIDEXA"
+                                ></i>
+                            </div>
+
+                            <div class="text-center">
+                                <div class="titulo_4 m-0">
+                                    {{informacion.ubicacion}}
+                                </div>
+                                <div class="mb-2">
+                                    {{informacion.direccion}}
+                                </div>
+                            </div>
+
+                            <div class="pb-4">
+                                <div class="row">
+                                    <div class="col-4 text-center">
+                                        <div class="color-gris">Min.</div>
+                                        <div class="texto-normal">
+                                            <div
+                                                class="titulo_4"
+                                                data-bs="{{informacion.minimo_bsm2}}"
+                                            >{{informacion.minimo_bsm2_render}}</div>
+                                            <div class="titulo_4">456</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-4 text-center">
+                                        <div class="color-gris">Promedio</div>
+                                        <div class="texto-normal">
+                                            <div
+                                                class="titulo_4"
+                                                data-bs="{{informacion.promedio_bsm2}}"
+                                            >{{informacion.promedio_bsm2_render}}</div>
+                                            <div class="titulo_4">526,15</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-4 text-center">
+                                        <div class="color-gris">Max.</div>
+                                        <div class="texto-normal">
+                                            <div
+                                                class="titulo_4"
+                                                data-bs="{{informacion.maximo_bsm2}}"
+                                            >{{informacion.maximo_bsm2_render}}</div>
+                                            <div class="titulo_4">1.254</div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="ref-cal_te_copropietario text-center">
+                            <div class="btn boton-primario" id="cal_te_copropietario">Calcular</div>
+                        </div>
+                        {{! abajo de este boton apareceren mensajes de "complete todos los campos, o el precio que introduce no corresponden a la zona donde se encuentra el inmueble solidexa" }}
+                    </div>
+
+                </div>
+
+                <div class="row mt-5 contenedor_1">
+
+                    <div class="col-12 col-lg-6">
+
+                        <div class="text-center mb-2">
+                            <div class="titulo_2">
+                                Beneficio inversión $us
+                            </div>
+                        </div>
+                        <div id="contenedor_1_g_1">
+                            <canvas id="grafico_21_1"></canvas>
+                            {{! <canvas id="grafico_plus_sol_tra" width="200" height="200"></canvas> }}
+                            {{! <canvas id="grafico_plus_soli_trad" width="400" height="400"></canvas> }}
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-6 text-center texto-normal">
+                                <div class="icono_1">
+                                    <i class="fas fa-arrow-up"></i>
+                                </div>
+                                <div class="my-2">
+                                    <span class="titulo_3 21_1_1"></span>
+                                    {{! siempre estara en moneda DOLARES }}
+                                    <span class="titulo_4 m1">$us</span>
+                                </div>
+                                <div class="color-gris">SOLIDEXA</div>
+                            </div>
+                            <div class="col-6 text-center color-tradicional">
+                                <div class="icono_1">
+                                    <i class="fas fa-arrow-down"></i>
+                                </div>
+                                <div class="my-2">
+                                    <span class="titulo_3 21_1_2"></span>
+                                    {{! siempre estara en moneda DOLARES }}
+                                    <span class="titulo_4 m1">$us</span>
+                                </div>
+                                <div class="color-gris">Tradicional</div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6 text-center">
+                                <p>
+                                    es el valor que adquieren tus
+                                    <span class="inversion_bs"></span>
+                                    <span>Bs</span>
+                                    convertidos a dolares gracias al ser invertidos en fracciones
+                                    del terreno SOLIDEXA.
+                                </p>
+                            </div>
+                            <div class="col-6 text-center">
+                                <p>
+                                    es el valor que adquieren tus
+                                    <span class="inversion_bs"></span>
+                                    <span>Bs</span>
+                                    convertidos a dolares en el mercado paralelo.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-6 mt-5 mt-lg-0">
+                        <div class="text-center mb-2">
+                            <div class="titulo_2 texto-normal">
+                                Beneficio compra m<sup>2</sup>
+                            </div>
+                        </div>
+                        <div id="contenedor_1_g_2">
+                            <canvas id="grafico_21_2"></canvas>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-6 text-center texto-normal">
+                                <div class="icono_1">
+                                    <i class="fas fa-arrow-up"></i>
+                                </div>
+                                <div class="my-2">
+                                    <span class="titulo_3 21_2_1"></span>
+                                    <span class="titulo_4 m1">
+                                        m<sup>2</sup>
+                                    </span>
+                                </div>
+                                <div class="color-gris">SOLIDEXA</div>
+                            </div>
+                            <div class="col-6 text-center color-tradicional">
+                                <div class="icono_1">
+                                    <i class="fas fa-arrow-down"></i>
+                                </div>
+                                <div class="my-2">
+                                    <span class="titulo_3 21_2_2"></span>
+                                    <span class="titulo_4 m1">
+                                        m<sup>2</sup>
+                                    </span>
+                                </div>
+                                <div class="color-gris">Tradicional</div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6 text-center">
+                                <p>
+                                    Cantidad adicional de superficie que se obtiene con SOLIDEXA.
+                                </p>
+                            </div>
+                            <div class="col-6 text-center">
+                                <p>
+                                    Cantidad de superficie que se pierde con tradicional.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{! ---------- }}
+                <div class="row mt-5 contenedor_1">
+
+                    <div class="col-12 col-lg-6">
+
+                        <div class="text-center mb-2">
+                            <div class="titulo_2">
+                                Ganancia plusvalía
+                            </div>
+                        </div>
+                        <div id="contenedor_1_g_3">
+                            <canvas id="grafico_12_1"></canvas>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-12 text-center texto-normal">
+                                <div class="icono_1">
+                                    <i class="fas fa-arrow-up"></i>
+                                </div>
+                                <div class="my-2">
+                                    <span class="titulo_3 12_1_1"></span>
+                                    <span class="titulo_4 m1 lamoneda">Bs</span>
+                                </div>
+                                <div class="color-gris">SOLIDEXA</div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <p>
+                                    Ganancia obtenida por plusvalía al cabo de los
+                                    <span>{{informacion.meses_maximo}}</span>
+                                    meses de espera.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-6 mt-5 mt-lg-0">
+                        <div class="text-center mb-2">
+                            <div class="titulo_2 texto-normal">
+                                Ganancia estandart
+                            </div>
+                        </div>
+                        <div id="contenedor_1_g_4">
+                            <canvas id="grafico_12_2"></canvas>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-12 text-center texto-normal">
+                                <div class="icono_1">
+                                    <i class="fas fa-arrow-up"></i>
+                                </div>
+                                <div class="my-2">
+                                    <span class="titulo_3 12_2_1"></span>
+                                    <span class="titulo_4 m1">
+                                        m<sup>2</sup>
+                                    </span>
+                                </div>
+                                <div class="color-gris">SOLIDEXA</div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <p>
+                                    Ganancia estandart obtenida al cabo de los
+                                    <span>{{informacion.meses_maximo}}</span>
+                                    meses de espera.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{! ---------- }}
+                <div class="row mt-5 contenedor_1">
+
+                    <div class="col-12">
+
+                        <div class="text-center mb-2">
+                            <div class="titulo_2">
+                                Inflación
+                            </div>
+                            <div class="titulo_3">
+                                Protegido Vs Desprotegido
+                            </div>
+                        </div>
+                        <div id="contenedor_1_g_5">
+                            <canvas id="grafico_x21_1"></canvas>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-6 text-center texto-normal">
+                                <div class="icono_1">
+                                    <i class="fas fa-arrow-up"></i>
+                                </div>
+                                <div class="my-2">
+                                    <span class="titulo_3 x21_1_1"></span>
+                                    <span class="titulo_4 m1 lamoneda">Bs</span>
+                                </div>
+                                <div class="color-gris">Protegido</div>
+                            </div>
+                            <div class="col-6 text-center color-tradicional">
+                                <div class="icono_1">
+                                    <i class="fas fa-arrow-down"></i>
+                                </div>
+                                <div class="my-2">
+                                    <span class="titulo_3 x21_1_2"></span>
+                                    <span class="titulo_4 m1 lamoneda">Bs</span>
+                                </div>
+                                <div class="color-gris">Desprotegido</div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6 text-center">
+                                <p>
+                                    Valor que alcalza tus
+                                    <span class="clase_inversion"></span>
+                                    <span class="lamoneda">Bs</span>
+                                    al cabo de los
+                                    <span>{{informacion.meses_maximo}}</span>
+                                    meses por encontrarse protegidos con la adquisición de
+                                    fracciones de terreno SOLIDEXA.
+                                </p>
+                            </div>
+                            <div class="col-6 text-center">
+                                <p>
+                                    Perdida del poder de compra que tus
+                                    <span class="clase_inversion"></span>
+                                    <span class="lamoneda">Bs</span>
+                                    alcanzan al cabo de los
+                                    <span>{{informacion.meses_maximo}}</span>
+                                    meses por no estar protegido frente a la inflación.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{! ------ }}
+                <div class="row mt-5 contenedor_1">
+
+                    <div class="col-12 col-lg-6">
+
+                        <div class="text-center mb-2">
+                            <div class="titulo_2">
+                                Devaluación
+                            </div>
+                            <div class="titulo_3">
+                                Protegido Vs Desprotegido
+                            </div>
+                        </div>
+                        <div id="contenedor_1_g_6">
+                            <canvas id="grafico_21_3"></canvas>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-6 text-center texto-normal">
+                                <div class="icono_1">
+                                    <i class="fas fa-arrow-up"></i>
+                                </div>
+                                <div class="my-2">
+                                    <span class="titulo_3 21_3_1"></span>
+                                    {{! siempre estara en moneda DOLARES }}
+                                    <span class="titulo_4 m1">$us</span>
+                                </div>
+                                <div class="color-gris">Protegido</div>
+                            </div>
+                            <div class="col-6 text-center color-tradicional">
+                                <div class="icono_1">
+                                    <i class="fas fa-arrow-down"></i>
+                                </div>
+                                <div class="my-2">
+                                    <span class="titulo_3 21_3_2"></span>
+                                    {{! siempre estara en moneda DOLARES }}
+                                    <span class="titulo_4 m1">$us</span>
+                                </div>
+                                <div class="color-gris">Desprotegido</div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6 text-center">
+                                <p>
+                                    es el valor que adquieren tus
+                                    <span class="inversion_bs"></span>
+                                    <span>Bs</span>
+                                    al cabo de los
+                                    <span>{{informacion.meses_maximo}}</span>
+                                    meses convertidos a dolares gracias al ser invertios en
+                                    fracciones del terreno SOLIDEXA.
+                                </p>
+                            </div>
+                            <div class="col-6 text-center">
+                                <p>
+                                    es el valor que adquieren tus
+                                    <span class="inversion_bs"></span>
+                                    <span>Bs</span>
+                                    al cabo de los
+                                    <span>{{informacion.meses_maximo}}</span>
+                                    meses convertidos a dolares en el mercado paralelo.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    {{! ========================================= }}
+    <div class="col-12" id="c-calTeComparar" style="display: none;">
+        <div class="row">
+            <div class="col-12">
+                <div class="row">
+
+                    {{! d-none: Oculta el elemento en todos los tamaños de pantalla. }}
+                    {{! d-lg-block: Muestra el elemento únicamente en pantallas grandes a partir de lg }}
+                    <div class="d-none d-sm-block col-sm-2 col-lg-4"></div>
+
+                    <div class="col-12 col-sm-8 col-lg-4">
+
+                        <div class="text-center mb-3">
+                            <div class="titulo_3">
+                                Terreno tradicional
+                                <i
+                                    class="icono_popover fas fa-info-circle ml-1"
+                                    data-toggle="popover"
+                                    data-html="true"
+                                    data-content="Ingrese el precio por M2 del terreno que desea comparar con SOLIDEXA. El precio debe estar dentro de los límites de precios correspondientes a la zona especificada."
+                                ></i>
+                            </div>
+
+                            <div class="text-center">
+                                <div class="titulo_4 m-0">
+                                    {{informacion.ubicacion}}
+                                </div>
+                                <div class="mb-2">
+                                    {{informacion.direccion}}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="precio_te_otro" class="col-4 col-form-label"><div
+                                    class="titulo_4"
+                                >Precio</div></label>
+                            <div class="col-8 input-group">
+                                <input
+                                    type="number"
+                                    step="1"
+                                    class="form-control"
+                                    id="precio_te_otro"
+                                    min="0"
+                                />
+                                <div class="input-group-append d-block">
+                                    <span class="input-group-text bg-unidad lamoneda">Bs</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="superficie_te_otro" class="col-4 col-form-label"><div
+                                    class="titulo_4"
+                                >Superficie</div></label>
+                            <div class="col-8 input-group">
+                                <input
+                                    type="number"
+                                    step="1"
+                                    class="form-control"
+                                    id="superficie_te_otro"
+                                    min="0"
+                                />
+                                <div class="input-group-append d-block">
+                                    <span class="input-group-text bg-unidad">M2</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="my-3 mx-1">
+                            <div class="d-flex justify-content-between">
+                                <div class="text-left">
+                                    <div class="color-gris">Min.</div>
+                                    <div class="texto-normal">
+                                        <div
+                                            class="titulo_4"
+                                            data-bs="{{informacion.minimo_bsm2}}"
+                                        >{{informacion.minimo_bsm2_render}}</div>
+                                        <div class="titulo_4">456</div>
+                                    </div>
+                                </div>
+
+                                <div class="text-center">
+                                    <div class="color-gris">Promedio</div>
+                                    <div class="texto-normal">
+                                        <div
+                                            class="titulo_4"
+                                            data-bs="{{informacion.promedio_bsm2}}"
+                                        >{{informacion.promedio_bsm2_render}}</div>
+                                        <div class="titulo_4">526,15</div>
+                                    </div>
+                                </div>
+
+                                <div class="text-right">
+                                    <div class="color-gris">Max.</div>
+                                    <div class="texto-normal">
+                                        <div
+                                            class="titulo_4"
+                                            data-bs="{{informacion.maximo_bsm2}}"
+                                        >{{informacion.maximo_bsm2_render}}</div>
+                                        <div class="titulo_4">1.254</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="my-2 progress" style="height: 0.8rem;">
+                                <div
+                                    id="p_tradicional_precio_m2"
+                                    class="progress-bar"
+                                    role="progressbar"
+                                    style="width: 0%;"
+                                ></div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-3"></div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input
+                                                type="number"
+                                                step="1"
+                                                class="form-control text-center"
+                                                id="i_tradicional_precio_m2"
+                                                value="0"
+                                                readonly
+                                            />
+                                            <div class="input-group-append d-block">
+                                                <span class="input-group-text bg-unidad"><span
+                                                        class="lamoneda"
+                                                    >Bs</span>/M2</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-3"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-check mt-3">
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    class="form-check-input"
+                                    id="ajustar_comision"
+                                />
+                                <div class="titulo_4">Intermediario</div>
+                            </label>
+                            <i
+                                class="icono_popover fas fa-info-circle ml-1"
+                                data-toggle="popover"
+                                data-html="true"
+                                data-content="Al comprar un terreno tradicional, es probable que debas pagar una comisión al agente inmobiliario u otro intermediario. En caso de que así sea, por favor selecciona la casilla para indicar el porcentaje de comisión de ese intermediario."
+                            ></i>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="input_comision" class="col-4 col-form-label"><div
+                                    class="titulo_4"
+                                >Comisión</div></label>
+                            <div class="col-8 input-group">
+                                <input
+                                    type="number"
+                                    step="1"
+                                    class="input_respuesta form-control"
+                                    id="input_comision"
+                                    min="0"
+                                    value="0"
+                                    readonly
+                                />
+                                <div class="input-group-append d-block">
+                                    <span class="input-group-text bg-unidad">%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{! d-none: Oculta el elemento en todos los tamaños de pantalla. }}
+                    {{! d-lg-block: Muestra el elemento únicamente en pantallas grandes a partir de lg }}
+                    <div class="d-none d-sm-block col-sm-2 col-lg-4"></div>
+
+                    <div class="col-12">
+                        <div class="ref-cal_te_comparacion text-center">
+                            <div class="btn boton-primario" id="cal_te_comparacion">Calcular</div>
+                        </div>
+                        {{! abajo de este boton apareceren mensajes de "complete todos los campos, o el precio que introduce no corresponden a la zona donde se encuentra el inmueble solidexa" }}
+                    </div>
+
+                </div>
+
+                <div class="row mt-5 contenedor_2">
+
+                    <div class="col-12 col-lg-6">
+
+                        <div class="text-center mb-2">
+                            <div class="titulo_2">
+                                Ganancia plusvalía
+                            </div>
+                            <div class="titulo_3">
+                                SOLIDEXA vs Tradicional
+                            </div>
+                        </div>
+                        <div id="contenedor_2_g_1">
+                            <canvas id="grafico_22_1"></canvas>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-6 text-center texto-normal">
+                                <div class="icono_1">
+                                    <i class="fas fa-arrow-up"></i>
+                                </div>
+                                <div class="my-2">
+                                    <span class="titulo_3 22_1_1"></span>
+                                    <span class="titulo_4 m1 lamoneda">Bs</span>
+                                    <span class="titulo_4">/m<sup>2</sup></span>
+                                </div>
+                                <div class="color-gris">SOLIDEXA</div>
+                            </div>
+                            <div class="col-6 text-center color-tradicional">
+                                <div class="icono_1">
+                                    <i class="fas fa-arrow-down"></i>
+                                </div>
+                                <div class="my-2">
+                                    <span class="titulo_3 22_1_2"></span>
+                                    <span class="titulo_4 m1 lamoneda">Bs</span>
+                                    <span class="titulo_4">/m<sup>2</sup></span>
+                                </div>
+                                <div class="color-gris">Tradicional</div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6 text-center">
+                                <p>
+                                    Es la plusvalia que presenta el terreno SOLIDEXA.
+                                </p>
+                            </div>
+                            <div class="col-6 text-center">
+                                <p>
+                                    Es la plusvalía que presenta el terreno tradicional.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-6 mt-5 mt-lg-0">
+                        <div class="text-center mb-2">
+                            <div class="titulo_2">
+                                Tiempo de espera
+                            </div>
+                        </div>
+                        <div id="contenedor_2_g_2">
+                            <canvas id="grafico_21_4"></canvas>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-lg-2"></div>
+                            <div class="col-12 col-lg-8 text-center color-tradicional">
+                                <div class="icono_1">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="my-2">
+                                    <span class="titulo_3 21_4_1"></span>
+                                    <span class="titulo_4 m1">Años</span>
+                                </div>
+                                <div class="color-gris">Tradicional</div>
+                            </div>
+                            <div class="col-lg-2"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-2"></div>
+                            <div class="col-12 col-lg-8 text-center">
+                                <p>
+                                    Es el tiempo que le tomaría al terreno tradicional igualar la
+                                    plusvalía de SOLIDEXA.
+                                </p>
+                            </div>
+                            <div class="col-lg-2"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-5 contenedor_3">
+                    <div class="col-12">
+                        <div class="text-center mb-2">
+                            <div class="titulo_2">
+                                Comisión desperdiciada
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-6">
+                        <div class="contenedor_comision">
+                            <div id="contenedor_3_g_1">
+                                <canvas id="grafico_12_3"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-6 mt-5 mt-lg-0">
+                        <div class="contenedor_val_comision">
+                            <div class="row">
+                                <div class="col-6 text-center color-tradicional">
+                                    <div class="icono_1">
+                                        <i class="fas fa-thumbs-down"></i>
+                                    </div>
+                                    <div class="my-2">
+                                        <span class="titulo_3 12_3_1"></span>
+                                        <span class="titulo_4 m1 lamoneda">Bs</span>
+                                    </div>
+                                    <div class="color-gris">Comisión</div>
+                                </div>
+                                <div class="col-6 text-center color-tradicional">
+                                    <div class="icono_1">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </div>
+                                    <div class="my-2">
+                                        <span class="titulo_3 12_3_2"></span>
+                                        <span class="titulo_4 m1 lamoneda">Bs</span>
+                                    </div>
+                                    <div class="color-gris">Oportunidad</div>
+                                </div>
+                                <div class="col-12 mt-2">
+                                    <div class="texto_comision">
+                                        Cuando pagas una comisión de
+                                        <b><span class="r_comision"></span></b>
+                                        al comprar el terreno tradicional, pierdes la oportunidad
+                                        de obtener una ganancia de
+                                        <b><span class="r_oportunidad"></span></b>. Habrías
+                                        asegurado esa ganancia al utilizar ese dinero para adquirir
+                                        el terreno SOLIDEXA en lugar de gastarlo en el tradicional.
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>

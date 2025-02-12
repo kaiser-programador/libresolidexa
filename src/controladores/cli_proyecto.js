@@ -9,18 +9,15 @@ const {
     indiceEmpresa,
     indiceRequerimientos,
     indiceImagenesEmpresa_sf,
-    indiceImagenesSistema,
 } = require("../modelos/indicemodelo");
 
 const { inmueble_card_adm_cli } = require("../ayudas/funcionesayuda_1");
 
-const {
-    cabezeras_adm_cli,
-    pie_pagina_cli,
-    segundero_cajas,
-} = require("../ayudas/funcionesayuda_2");
+const { cabezeras_adm_cli } = require("../ayudas/funcionesayuda_2");
 
-const { numero_punto_coma, verificarTePyInm } = require("../ayudas/funcionesayuda_3");
+const { numero_punto_coma, verificarTePyInmFracc } = require("../ayudas/funcionesayuda_3");
+
+const { super_info_py } = require("../ayudas/funcionesayuda_5");
 
 const moment = require("moment");
 
@@ -40,7 +37,7 @@ controladorCliProyecto.renderVentanaProyecto = async (req, res) => {
             codigo_objetivo: codigo_proyecto,
             tipo: "proyecto",
         };
-        var verificacion = await verificarTePyInm(paqueteria_datos);
+        var verificacion = await verificarTePyInmFracc(paqueteria_datos);
 
         if (verificacion == true) {
             // ------- Para verificación -------
@@ -54,24 +51,7 @@ controladorCliProyecto.renderVentanaProyecto = async (req, res) => {
             info_proyecto_cli.codigo_proyecto = codigo_proyecto;
             info_proyecto_cli.navegador_cliente = true;
             info_proyecto_cli.cab_py_cli = true;
-            //info_proyecto_cli.estilo_cabezera = "cabezera_estilo_proyecto";
-
-            //----------------------------------------------------
-            // para la url de la cabezera
-            var url_cabezera = ""; // vacio por defecto
-            const registro_cabezera = await indiceImagenesSistema.findOne(
-                { tipo_imagen: "cabecera_proyecto" },
-                {
-                    url: 1,
-                    _id: 0,
-                }
-            );
-
-            if (registro_cabezera) {
-                url_cabezera = registro_cabezera.url;
-            }
-
-            info_proyecto_cli.url_cabezera = url_cabezera;
+            info_proyecto_cli.estilo_cabezera = "cabezera_estilo_proyecto";
 
             //----------------------------------------------------
 
@@ -91,26 +71,14 @@ controladorCliProyecto.renderVentanaProyecto = async (req, res) => {
             var aux_cabezera = {
                 codigo_objetivo: codigo_proyecto,
                 tipo: "proyecto",
-                lado: "cliente",
             };
 
             var cabezera_cli = await cabezeras_adm_cli(aux_cabezera);
             info_proyecto_cli.cabezera_cli = cabezera_cli;
 
-            var pie_pagina = await pie_pagina_cli();
-            info_proyecto_cli.pie_pagina_cli = pie_pagina;
-
             info_proyecto_cli.global_py = await complementos_globales_py(codigo_proyecto);
 
             info_proyecto_cli.es_proyecto = true; // para menu navegacion comprimido
-
-            //----------------------------------------------------
-            // paquete para actualizar el numero de vistas segun el tipo de la ventana
-            var paquete_vista = {
-                codigo_proyecto,
-                ventana: tipo_vista_proyecto,
-            };
-            info_proyecto_cli.nv_ventana = await n_vista_ventana(paquete_vista);
 
             //----------------------------------------------------
             // paquete para mostrar en la pestaña "Inmuebles" (si es que existiesen) el numero de inmuebles dependiendo del estado. Y numero de requerimientos
@@ -192,16 +160,9 @@ controladorCliProyecto.renderVentanaProyecto = async (req, res) => {
                             _id: 0,
                         }
                     );
-
                     if (registro_terreno) {
-                        if (registro_terreno.estado_terreno == "reserva") {
+                        if (registro_terreno.estado_terreno == "reservacion") {
                             info_proyecto_cli.estado_py_reserva = true;
-                        }
-                        if (registro_terreno.estado_terreno == "aprobacion") {
-                            info_proyecto_cli.estado_py_aprobacion = true;
-                        }
-                        if (registro_terreno.estado_terreno == "pago") {
-                            info_proyecto_cli.estado_py_pago = true;
                         }
                         if (registro_terreno.estado_terreno == "construccion") {
                             info_proyecto_cli.estado_py_construccion = true;
@@ -234,13 +195,11 @@ controladorCliProyecto.renderVentanaProyecto = async (req, res) => {
                 let aux_n_todos = contenido_proyecto.length;
                 let aux_n_disponible = 0;
                 let aux_n_reservado = 0;
-                let aux_n_pendiente_aprobacion = 0;
-                let aux_n_pendiente_pago = 0;
-                let aux_n_pagado_pago = 0;
-                let aux_n_en_pago = 0;
+                let aux_n_construccion = 0;
                 let aux_n_remate = 0;
-                let aux_n_completado = 0;
-                // guardado, disponible, reservado, pendiente, pagado, pagos, remate, completado
+                let aux_n_construido = 0;
+
+                // guardado, disponible, reservado, construccion, remate, construido  OK
                 if (contenido_proyecto.length > 0) {
                     for (let i = 0; i < contenido_proyecto.length; i++) {
                         let aux_estado_inmueble = contenido_proyecto[i].estado_inmueble;
@@ -250,23 +209,14 @@ controladorCliProyecto.renderVentanaProyecto = async (req, res) => {
                         if (aux_estado_inmueble == "reservado") {
                             aux_n_reservado = aux_n_reservado + 1;
                         }
-                        if (aux_estado_inmueble == "pendiente_aprobacion") {
-                            aux_n_pendiente_aprobacion = aux_n_pendiente_aprobacion + 1;
-                        }
-                        if (aux_estado_inmueble == "pendiente_pago") {
-                            aux_n_pendiente_pago = aux_n_pendiente_pago + 1;
-                        }
-                        if (aux_estado_inmueble == "pagado_pago") {
-                            aux_n_pagado_pago = aux_n_pagado_pago + 1;
-                        }
-                        if (aux_estado_inmueble == "pagos") {
-                            aux_n_en_pago = aux_n_en_pago + 1;
+                        if (aux_estado_inmueble == "construccion") {
+                            aux_n_construccion = aux_n_construccion + 1;
                         }
                         if (aux_estado_inmueble == "remate") {
                             aux_n_remate = aux_n_remate + 1;
                         }
-                        if (aux_estado_inmueble == "completado") {
-                            aux_n_completado = aux_n_completado + 1;
+                        if (aux_estado_inmueble == "construido") {
+                            aux_n_construido = aux_n_construido + 1;
                         }
                     }
                 }
@@ -292,28 +242,10 @@ controladorCliProyecto.renderVentanaProyecto = async (req, res) => {
                     info_proyecto_cli.badge_reservado = false;
                 }
 
-                if (aux_n_pendiente_aprobacion > 0) {
-                    info_proyecto_cli.badge_pendiente_aprobacion = true;
+                if (aux_n_construccion > 0) {
+                    info_proyecto_cli.badge_construccion = true;
                 } else {
-                    info_proyecto_cli.badge_pendiente_aprobacion = false;
-                }
-
-                if (aux_n_pendiente_pago > 0) {
-                    info_proyecto_cli.badge_pendiente_pago = true;
-                } else {
-                    info_proyecto_cli.badge_pendiente_pago = false;
-                }
-
-                if (aux_n_pagado_pago > 0) {
-                    info_proyecto_cli.badge_pagado_pago = true;
-                } else {
-                    info_proyecto_cli.badge_pagado_pago = false;
-                }
-
-                if (aux_n_en_pago > 0) {
-                    info_proyecto_cli.badge_en_pago = true;
-                } else {
-                    info_proyecto_cli.badge_en_pago = false;
+                    info_proyecto_cli.badge_construccion = false;
                 }
 
                 if (aux_n_remate > 0) {
@@ -322,10 +254,10 @@ controladorCliProyecto.renderVentanaProyecto = async (req, res) => {
                     info_proyecto_cli.badge_remate = false;
                 }
 
-                if (aux_n_completado > 0) {
-                    info_proyecto_cli.badge_completado = true;
+                if (aux_n_construido > 0) {
+                    info_proyecto_cli.badge_construido = true;
                 } else {
-                    info_proyecto_cli.badge_completado = false;
+                    info_proyecto_cli.badge_construido = false;
                 }
 
                 //-----------------------------------------------
@@ -333,12 +265,9 @@ controladorCliProyecto.renderVentanaProyecto = async (req, res) => {
                 info_proyecto_cli.n_todos = aux_n_todos;
                 info_proyecto_cli.n_disponible = aux_n_disponible;
                 info_proyecto_cli.n_reservado = aux_n_reservado;
-                info_proyecto_cli.n_pendiente_aprobacion = aux_n_pendiente_aprobacion;
-                info_proyecto_cli.n_pendiente_pago = aux_n_pendiente_pago;
-                info_proyecto_cli.n_pagado_pago = aux_n_pagado_pago;
-                info_proyecto_cli.n_en_pago = aux_n_en_pago;
+                info_proyecto_cli.n_construccion = aux_n_construccion;
                 info_proyecto_cli.n_remate = aux_n_remate;
-                info_proyecto_cli.n_completado = aux_n_completado;
+                info_proyecto_cli.n_construido = aux_n_construido;
 
                 //--------------------------------------------------------------
 
@@ -477,7 +406,6 @@ async function proyecto_descripcion(codigo_proyecto) {
                 codigo_terreno: 1,
                 codigo_proyecto: 1,
                 nombre_proyecto: 1,
-                proyecto_ganador: 1,
                 meses_construccion: 1,
 
                 tipo_proyecto: 1,
@@ -490,7 +418,6 @@ async function proyecto_descripcion(codigo_proyecto) {
                 garajes: 1,
                 area_construida: 1,
                 proyecto_descripcion: 1,
-                penalizacion: 1,
 
                 titulo_garantia_1: 1,
                 garantia_1: 1,
@@ -509,8 +436,6 @@ async function proyecto_descripcion(codigo_proyecto) {
 
                 mensaje_segundero_py_inm_a: 1,
                 mensaje_segundero_py_inm_b: 1,
-                mensaje_segundero_py_inm_c: 1, // para RECOMPENSA
-                mensaje_segundero_py_inm_d: 1, // para RECOMPENSA
                 nota_precio_justo: 1,
 
                 _id: 0,
@@ -534,6 +459,16 @@ async function proyecto_descripcion(codigo_proyecto) {
                     titulo_ubi_otros_3: 1,
                     ubi_otros_3: 1,
                     link_googlemap: 1,
+
+                    precio_bs: 1,
+                    descuento_bs: 1,
+                    rend_fraccion_mensual: 1,
+                    superficie: 1,
+                    fecha_inicio_convocatoria: 1,
+                    fecha_inicio_reservacion: 1,
+                    fecha_fin_reservacion: 1,
+                    fecha_fin_construccion: 1,
+
                     _id: 0,
                 }
             );
@@ -557,14 +492,15 @@ async function proyecto_descripcion(codigo_proyecto) {
                 py_descripcion.resplandor_4 = false;
                 py_descripcion.resplandor_5 = false;
 
+                // guardado, convocatoria, anteproyecto, reservacion, construccion, construido OK
                 // corregimos que estado estara como "true"
-                if (registro_terreno.estado_terreno == "reserva") {
+                if (registro_terreno.estado_terreno == "convocatoria") {
                     py_descripcion.resplandor_1 = true;
                 }
-                if (registro_terreno.estado_terreno == "pago") {
+                if (registro_terreno.estado_terreno == "anteproyecto") {
                     py_descripcion.resplandor_2 = true;
                 }
-                if (registro_terreno.estado_terreno == "aprobacion") {
+                if (registro_terreno.estado_terreno == "reservacion") {
                     py_descripcion.resplandor_3 = true;
                 }
                 if (registro_terreno.estado_terreno == "construccion") {
@@ -579,25 +515,7 @@ async function proyecto_descripcion(codigo_proyecto) {
                 } else {
                     var mensaje_segundero = registro_proyecto.mensaje_segundero_py_inm_a;
                 }
-
-                // Reserva, Pago y Aprobación
-                if (
-                    registro_terreno.estado_terreno == "reserva" ||
-                    registro_terreno.estado_terreno == "pago" ||
-                    registro_terreno.estado_terreno == "aprobacion"
-                ) {
-                    var texto_segundero_recom_iz = registro_proyecto.mensaje_segundero_py_inm_c;
-                }
-
-                // Construcción Y Construido
-                if (
-                    registro_terreno.estado_terreno == "construccion" ||
-                    registro_terreno.estado_terreno == "construido"
-                ) {
-                    var texto_segundero_recom_iz = registro_proyecto.mensaje_segundero_py_inm_d;
-                }
-
-                py_descripcion.texto_segundero_recom_iz = texto_segundero_recom_iz;
+                py_descripcion.mensaje_segundero = mensaje_segundero;
 
                 //-------------------------------------------------------------------
                 // para tipo de proyecto: edificio || condominio
@@ -681,100 +599,72 @@ async function proyecto_descripcion(codigo_proyecto) {
                         puntos_up_c[i - 1] = { punto: array_up[i] };
                     }
                 }
+
                 //-------------------------------------------------------------------
-                var datos_segundero = {
-                    codigo_objetivo: codigo_proyecto,
-                    tipo_objetivo: "proyecto",
+                var datos_funcion = {
+                    //------------------------------
+                    // datos del proyecto
+                    codigo_proyecto,
+
+                    //------------------------------
+                    // datos del terreno
+                    estado_terreno: registro_terreno.estado_terreno,
+                    precio_terreno: registro_terreno.precio_bs,
+                    descuento_terreno: registro_terreno.descuento_bs,
+                    rend_fraccion_mensual: registro_terreno.rend_fraccion_mensual,
+                    superficie_terreno: registro_terreno.superficie,
+                    fecha_inicio_convocatoria: registro_terreno.fecha_inicio_convocatoria,
+                    fecha_inicio_reservacion: registro_terreno.fecha_inicio_reservacion,
+                    fecha_fin_reservacion: registro_terreno.fecha_fin_reservacion,
+                    fecha_fin_construccion: registro_terreno.fecha_fin_construccion,
                 };
+                var resultado = await super_info_py(datos_funcion);
 
-                // OJO*** PORQUE "segundero_cajas" tambien utiliza "inmueble_card_adm_cli" y estan ambas en esta misma funcion
-                var aux_segundero_cajas = await segundero_cajas(datos_segundero);
-                var aux_cajas = {
-                    // despues de sumar todos valores de plusvalia, precio y valor total
-                    // convertimos a numeros con separadores de punto, coma
-                    valor_total: numero_punto_coma(aux_segundero_cajas.total),
-                    precio: numero_punto_coma(aux_segundero_cajas.precio),
-                    plusvalia: numero_punto_coma(aux_segundero_cajas.ahorro),
-                    //plusvalia_construida: aux_segundero_cajas.ahorro, // util solo para propietario, aqui ya viene con su valor por defecto con CERO
-                    //-------------------------------------------------
-                    // para RECOMPENSA
-                    recompensa: numero_punto_coma(aux_segundero_cajas.recompensa),
-                    meses: numero_punto_coma(aux_segundero_cajas.meses),
-                    //-------------------------------------------------
-                };
+                var inmuebles_total = resultado.inmuebles_total;
+                var inmuebles_disponibles = resultado.inmuebles_disponibles;
+                var dormitorios_total = resultado.dormitorios_total;
+                var banos_total = resultado.banos_total;
+                var derecho_suelo = resultado.derecho_suelo;
+                var derecho_suelo_render = resultado.derecho_suelo_render;
+                var precio_justo = resultado.precio_justo;
+                var precio_justo_render = resultado.precio_justo_render;
+                var plusvalia = resultado.plusvalia;
+                var plusvalia_render = resultado.plusvalia_render;
+                var descuento_suelo = resultado.descuento_suelo;
+                var descuento_suelo_render = resultado.descuento_suelo_render;
+                var plazo_titulo = resultado.plazo_titulo;
+                var plazo_tiempo = resultado.plazo_tiempo;
+                var p_financiamiento = resultado.p_financiamiento;
+                var p_financiamiento_render = resultado.p_financiamiento_render;
+                var financiamiento = resultado.financiamiento;
+                var financiamiento_render = resultado.financiamiento_render;
+                var meta = resultado.meta;
+                var meta_render = resultado.meta_render;
+                var array_segundero = resultado.array_segundero;
+                //-------------------------------------------------------------------
 
-                py_descripcion.val_segundero_cajas = aux_segundero_cajas;
-                py_descripcion.val_cajas = aux_cajas;
-                py_descripcion.construccion = numero_punto_coma(
-                    aux_segundero_cajas.construccion.toFixed(0)
-                );
+                py_descripcion.precio_justo = precio_justo;
+                py_descripcion.precio_justo_render = precio_justo_render;
+                py_descripcion.plusvalia = plusvalia;
+                py_descripcion.plusvalia_render = plusvalia_render;
+                py_descripcion.precio_tradicional = precio_justo + plusvalia;
+                py_descripcion.precio_tradicional_render = numero_punto_coma(precio_tradicional);
 
-                //-------------------------------------------------------------------------------
-                // PARA LA SIGNIFICADO DE SEGUNDERO
+                py_descripcion.derecho_suelo = derecho_suelo;
+                py_descripcion.derecho_suelo_render = derecho_suelo_render;
+                py_descripcion.descuento_suelo = descuento_suelo;
+                py_descripcion.descuento_suelo_render = descuento_suelo_render;
 
-                var registro_empresa = await indiceEmpresa.findOne(
-                    {},
-                    {
-                        texto_segundero_py: 1,
-                        texto_segundero_recom_inm_py: 1,
-                        _id: 0,
-                    }
-                );
+                py_descripcion.financiamiento = financiamiento;
+                py_descripcion.financiamiento_render = financiamiento_render;
+                py_descripcion.p_financiamiento = p_financiamiento;
+                py_descripcion.p_financiamiento_render = p_financiamiento_render;
+                py_descripcion.plazo_titulo = plazo_titulo;
+                py_descripcion.plazo_tiempo = plazo_tiempo;
+                py_descripcion.array_segundero = array_segundero;
 
-                if (registro_empresa.texto_segundero_py != undefined) {
-                    if (
-                        registro_empresa.texto_segundero_py.indexOf("/sus_precio/") != -1 &&
-                        registro_empresa.texto_segundero_py.indexOf("/sus_total/") != -1 &&
-                        registro_empresa.texto_segundero_py.indexOf("/sus_plusvalia/") != -1
-                    ) {
-                        var significado_aux_0 = registro_empresa.texto_segundero_py;
-                        var significado_aux_1 = significado_aux_0.replace(
-                            "/sus_precio/",
-                            aux_cajas.precio
-                        );
-                        var significado_aux_2 = significado_aux_1.replace(
-                            "/sus_total/",
-                            aux_cajas.valor_total
-                        );
-                        var significado_aux = significado_aux_2.replace(
-                            "/sus_plusvalia/",
-                            aux_cajas.plusvalia
-                        );
-                    } else {
-                        var significado_aux = "Significado";
-                    }
-                } else {
-                    var significado_aux = "Significado";
-                }
-
-                py_descripcion.significado_segundero = significado_aux;
-                py_descripcion.mensaje_segundero = mensaje_segundero;
-
-                //---------------------------------------------------------------
-                // para mensaje debajo de segundero RECOMPENSA lado DERECHO
-
-                if (registro_empresa.texto_segundero_recom_inm_py != undefined) {
-                    if (
-                        registro_empresa.texto_segundero_recom_inm_py.indexOf("/n_meses/") != -1 &&
-                        registro_empresa.texto_segundero_recom_inm_py.indexOf("/bs_espera/") != -1
-                    ) {
-                        var significado_re_aux_0 = registro_empresa.texto_segundero_recom_inm_py;
-                        var significado_re_aux_1 = significado_re_aux_0.replace(
-                            "/n_meses/",
-                            aux_cajas.meses
-                        );
-                        var significado_re_de_aux = significado_re_aux_1.replace(
-                            "/bs_espera/",
-                            aux_cajas.recompensa
-                        );
-                    } else {
-                        var significado_re_de_aux = "Significado";
-                    }
-                } else {
-                    var significado_re_de_aux = "Significado";
-                }
-
-                py_descripcion.texto_segundero_recom_de = significado_re_de_aux;
+                py_descripcion.dormitorios_total = dormitorios_total;
+                py_descripcion.banos_total = banos_total;
 
                 //-------------------------------------------------------------------------------
 
@@ -812,36 +702,6 @@ async function proyecto_descripcion(codigo_proyecto) {
                     }
                 }
                 py_descripcion.documentos_descripcion = documentos_descripcion;
-
-                //-------------------------------------------------------------------
-                // numero totales de dormitorios, baños del proyecto
-                // (numero total de garajes ya esta determinado en la base de datos de proyecto)
-
-                var registro_inmuebles = await indiceInmueble.find(
-                    {
-                        codigo_proyecto: codigo_proyecto,
-                    },
-                    {
-                        dormitorios_inmueble: 1,
-                        banos_inmueble: 1,
-                        // garaje_inmueble: 1,
-                        _id: 0,
-                    }
-                );
-
-                var nt_dormitorios = 0;
-                var nt_banos = 0;
-
-                if (registro_inmuebles.length > 0) {
-                    for (let i = 0; i < registro_inmuebles.length; i++) {
-                        nt_dormitorios =
-                            nt_dormitorios + registro_inmuebles[i].dormitorios_inmueble;
-                        nt_banos = nt_banos + registro_inmuebles[i].banos_inmueble;
-                    }
-                }
-
-                py_descripcion.nt_dormitorios = nt_dormitorios;
-                py_descripcion.nt_banos = nt_banos;
 
                 //-------------------------------------------------------------------
 
@@ -963,6 +823,7 @@ async function proyecto_beneficios(codigo_proyecto) {
                 codigo_proyecto: codigo_proyecto,
             },
             {
+                codigo_terreno: 1,
                 contructora_dolar_m2_1: 1,
                 contructora_dolar_m2_2: 1,
                 contructora_dolar_m2_3: 1,
@@ -981,17 +842,50 @@ async function proyecto_beneficios(codigo_proyecto) {
             }
         );
 
-        if (registro_proyecto) {
-            // sin importar el estado del proyecto, armaremos los datos como si se tratase para todos, ya en el html, con las condicionantes if, se renderizaran los datos que deban ser mostrados
+        var registro_terreno = await indiceTerreno.findOne(
+            {
+                codigo_terreno: registro_proyecto.codigo_terreno,
+            },
+            {
+                estado_terreno: 1,
+                precio_bs: 1,
+                descuento_bs: 1,
+                rend_fraccion_mensual: 1,
+                superficie: 1,
+                fecha_inicio_convocatoria: 1,
+                fecha_inicio_reservacion: 1,
+                fecha_fin_reservacion: 1,
+                fecha_fin_construccion: 1,
+                _id: 0,
+            }
+        );
 
+        if (registro_proyecto && registro_terreno) {
             //-------------------------------------------------------------------------------
 
-            var datos_segundero = {
-                codigo_objetivo: codigo_proyecto,
-                tipo_objetivo: "proyecto",
-            };
+            var datos_funcion = {
+                //------------------------------
+                // datos del proyecto
+                codigo_proyecto,
 
-            var capitalesProyecto = await segundero_cajas(datos_segundero);
+                //------------------------------
+                // datos del terreno
+                estado_terreno: registro_terreno.estado_terreno,
+                precio_terreno: registro_terreno.precio_bs,
+                descuento_terreno: registro_terreno.descuento_bs,
+                rend_fraccion_mensual: registro_terreno.rend_fraccion_mensual,
+                superficie_terreno: registro_terreno.superficie,
+                fecha_inicio_convocatoria: registro_terreno.fecha_inicio_convocatoria,
+                fecha_inicio_reservacion: registro_terreno.fecha_inicio_reservacion,
+                fecha_fin_reservacion: registro_terreno.fecha_fin_reservacion,
+                fecha_fin_construccion: registro_terreno.fecha_fin_construccion,
+            };
+            var resultado = await super_info_py(datos_funcion);
+
+            var precio_justo = resultado.precio_justo;
+            var precio_justo_render = resultado.precio_justo_render;
+            var plusvalia = resultado.plusvalia;
+            var plusvalia_render = resultado.plusvalia_render;
 
             //-------------------------------------------------------------------------------
             // COSTO CONTRUCCION
@@ -1046,50 +940,64 @@ async function proyecto_beneficios(codigo_proyecto) {
             var constructoras_render = [
                 {
                     nombre: "SOLIDEXA",
-                    contructora_dolar_m2: numero_punto_coma(volterra_dolar_m2.toFixed(2)),
-                    costo_constructora: numero_punto_coma(costo_volterra.toFixed(0)),
-                    sobreprecio: "-",
+                    contructora_dolar_m2: Number(volterra_dolar_m2.toFixed(2)),
+                    contructora_dolar_m2_r: numero_punto_coma(volterra_dolar_m2.toFixed(2)),
+                    costo_constructora: Number(costo_volterra.toFixed(0)),
+                    costo_constructora_r: numero_punto_coma(costo_volterra.toFixed(0)),
+                    sobreprecio: 0,
+                    sobreprecio_r: "-",
                 },
                 {
                     nombre: "Constructora A",
-                    contructora_dolar_m2: numero_punto_coma(contructora_dolar_m2_1.toFixed(2)),
-                    costo_constructora: numero_punto_coma(costo_constructora_1.toFixed(0)),
-                    sobreprecio: numero_punto_coma(Math.abs(sobreprecio_1).toFixed(0)),
+                    contructora_dolar_m2: Number(contructora_dolar_m2_1.toFixed(2)),
+                    contructora_dolar_m2_r: numero_punto_coma(contructora_dolar_m2_1.toFixed(2)),
+                    costo_constructora: Number(costo_constructora_1.toFixed(0)),
+                    costo_constructora_r: numero_punto_coma(costo_constructora_1.toFixed(0)),
+                    sobreprecio: Number(Math.abs(sobreprecio_1).toFixed(0)),
+                    sobreprecio_r: numero_punto_coma(Math.abs(sobreprecio_1).toFixed(0)),
                 },
                 {
                     nombre: "Constructora B",
-                    contructora_dolar_m2: numero_punto_coma(contructora_dolar_m2_2.toFixed(2)),
-                    costo_constructora: numero_punto_coma(costo_constructora_2.toFixed(0)),
-                    sobreprecio: numero_punto_coma(Math.abs(sobreprecio_2).toFixed(0)),
+                    contructora_dolar_m2: Number(contructora_dolar_m2_2.toFixed(2)),
+                    contructora_dolar_m2_r: numero_punto_coma(contructora_dolar_m2_2.toFixed(2)),
+                    costo_constructora: Number(costo_constructora_2.toFixed(0)),
+                    costo_constructora_r: numero_punto_coma(costo_constructora_2.toFixed(0)),
+                    sobreprecio: Number(Math.abs(sobreprecio_2).toFixed(0)),
+                    sobreprecio_r: numero_punto_coma(Math.abs(sobreprecio_2).toFixed(0)),
                 },
                 {
                     nombre: "Constructora C",
-                    contructora_dolar_m2: numero_punto_coma(contructora_dolar_m2_3.toFixed(2)),
-                    costo_constructora: numero_punto_coma(costo_constructora_3.toFixed(0)),
-                    sobreprecio: numero_punto_coma(Math.abs(sobreprecio_3).toFixed(0)),
+                    contructora_dolar_m2: Number(contructora_dolar_m2_3.toFixed(2)),
+                    contructora_dolar_m2_r: numero_punto_coma(contructora_dolar_m2_3.toFixed(2)),
+                    costo_constructora: Number(costo_constructora_3.toFixed(0)),
+                    costo_constructora_r: numero_punto_coma(costo_constructora_3.toFixed(0)),
+                    sobreprecio: Number(Math.abs(sobreprecio_3).toFixed(0)),
+                    sobreprecio_r: numero_punto_coma(Math.abs(sobreprecio_3).toFixed(0)),
                 },
             ];
 
             //-------------------------------------------------------------------------------
             // PLUSVALIAS DE REGALO
-            var plusvalias_total = Number(capitalesProyecto.ahorro.toFixed(2));
+            var plusvalias_total = plusvalia;
             //-------------------------------------------------------------------------------
 
             var info_proyecto_beneficios = {
                 prom_constructoras_r,
+                prom_constructoras: Math.round(prom_constructoras),
                 solid_constru_r,
+                solid_constru: Math.round(volterra_dolar_m2),
                 //-----------------------------------
+                precio_justo,
+                precio_justo_render,
                 constructoras,
                 constructoras_render,
                 area_construida,
                 area_construida_render: numero_punto_coma(area_construida.toFixed(2)),
                 volterra_dolar_m2,
                 volterra_dolar_m2_render: numero_punto_coma(volterra_dolar_m2.toFixed(2)),
-                costo_volterra: Number(costo_volterra.toFixed(0)),
-                costo_volterra_render: numero_punto_coma(costo_volterra.toFixed(0)),
 
                 plusvalias_total,
-                plusvalias_total_render: numero_punto_coma(plusvalias_total),
+                plusvalias_total_render: plusvalia_render,
 
                 nombre_proyecto: registro_proyecto.nombre_proyecto,
 
@@ -1156,10 +1064,19 @@ async function proyecto_info_economico(codigo_proyecto) {
                     t_posi = t_posi + 1;
                     valores_tabla[t_posi] = {
                         presupuesto_items: registro_proyecto.presupuesto_proyecto[t][1],
-                        presupuesto_valores: numero_punto_coma(
+                        presupuesto_valores: Number(
                             registro_proyecto.presupuesto_proyecto[t][2]
                         ),
-                        sus_m2: numero_punto_coma(
+                        presupuesto_valores_r: numero_punto_coma(
+                            registro_proyecto.presupuesto_proyecto[t][2]
+                        ),
+                        sus_m2: Number(
+                            (
+                                Number(registro_proyecto.presupuesto_proyecto[t][2]) /
+                                Number(area_construida)
+                            ).toFixed(2)
+                        ), // redondeado a 2 decimales
+                        sus_m2_r: numero_punto_coma(
                             (
                                 Number(registro_proyecto.presupuesto_proyecto[t][2]) /
                                 Number(area_construida)
@@ -1204,8 +1121,10 @@ async function proyecto_info_economico(codigo_proyecto) {
 
             var info_proyecto_info_economico = {
                 nombre_proyecto: registro_proyecto.nombre_proyecto,
-                sus_m2_total: numero_punto_coma((total_presupuesto / area_construida).toFixed(2)),
-                total_presupuesto: numero_punto_coma(total_presupuesto.toFixed(0)),
+                sus_m2_total: Number((total_presupuesto / area_construida).toFixed(2)),
+                sus_m2_total_r: numero_punto_coma((total_presupuesto / area_construida).toFixed(2)),
+                total_presupuesto: Number(total_presupuesto.toFixed(0)),
+                total_presupuesto_r: numero_punto_coma(total_presupuesto.toFixed(0)),
                 area_construida: numero_punto_coma(registro_proyecto.area_construida),
                 valores_tabla,
                 documentacion,
@@ -1233,6 +1152,7 @@ async function proyecto_empleos(codigo_proyecto) {
                 codigo_proyecto: codigo_proyecto,
             },
             {
+                codigo_terreno: 1,
                 nombre_proyecto: 1,
                 descripcion_empleo: 1,
 
@@ -1241,19 +1161,26 @@ async function proyecto_empleos(codigo_proyecto) {
             }
         );
 
-        var registro_empresa = await indiceEmpresa.findOne(
-            {},
+        var registro_terreno = await indiceTerreno.findOne(
             {
-                nombre_empresa: 1,
-                significado_py_propietarios: 1,
-                significado_py_empresa: 1,
-                significado_py_pais: 1,
+                codigo_terreno: registro_proyecto.codigo_terreno,
+            },
+            {
+                estado_terreno: 1,
+                precio_bs: 1,
+                descuento_bs: 1,
+                rend_fraccion_mensual: 1,
+                superficie: 1,
+                fecha_inicio_convocatoria: 1,
+                fecha_inicio_reservacion: 1,
+                fecha_fin_reservacion: 1,
+                fecha_fin_construccion: 1,
                 _id: 0,
             }
         );
 
         //console.log("estamos a punto de entrar");
-        if (registro_proyecto && registro_empresa) {
+        if (registro_proyecto && registro_terreno) {
             //console.log("estamos dentro");
             let n_filas = registro_proyecto.tabla_empleos_sociedad.length;
             var sum_valores = 0;
@@ -1291,6 +1218,9 @@ async function proyecto_empleos(codigo_proyecto) {
                         empleo_tipo: registro_proyecto.tabla_empleos_sociedad[t][2],
                         empleo_cantidad: registro_proyecto.tabla_empleos_sociedad[t][3],
                         empleo_beneficio: numero_punto_coma(
+                            registro_proyecto.tabla_empleos_sociedad[t][4].toFixed(0)
+                        ),
+                        empleo_beneficio_n: Number(
                             registro_proyecto.tabla_empleos_sociedad[t][4].toFixed(0)
                         ),
 
@@ -1331,76 +1261,45 @@ async function proyecto_empleos(codigo_proyecto) {
             //----------------------------------------------------------
             // para los significados de los empleos
 
-            //-------------
-            var aux_n_inm = await indiceInmueble.find(
-                {
-                    codigo_proyecto: codigo_proyecto,
-                },
-                {
-                    codigo_inmueble: 1,
-                    _id: 0,
-                }
-            );
+            var datos_funcion = {
+                //------------------------------
+                // datos del proyecto
+                codigo_proyecto,
 
-            //-------------
-            var datos_segundero = {
-                codigo_objetivo: codigo_proyecto,
-                tipo_objetivo: "proyecto",
+                //------------------------------
+                // datos del terreno
+                estado_terreno: registro_terreno.estado_terreno,
+                precio_terreno: registro_terreno.precio_bs,
+                descuento_terreno: registro_terreno.descuento_bs,
+                rend_fraccion_mensual: registro_terreno.rend_fraccion_mensual,
+                superficie_terreno: registro_terreno.superficie,
+                fecha_inicio_convocatoria: registro_terreno.fecha_inicio_convocatoria,
+                fecha_inicio_reservacion: registro_terreno.fecha_inicio_reservacion,
+                fecha_fin_reservacion: registro_terreno.fecha_fin_reservacion,
+                fecha_fin_construccion: registro_terreno.fecha_fin_construccion,
             };
-            var aux_segundero_cajas = await segundero_cajas(datos_segundero);
-            //-------------
+            var resultado = await super_info_py(datos_funcion);
 
-            let significado_py_propietarios_0 = registro_empresa.significado_py_propietarios;
-            let significado_py_empresa_0 = registro_empresa.significado_py_empresa;
-            let significado_py_pais_0 = registro_empresa.significado_py_pais;
+            var inmuebles_total = resultado.inmuebles_total;
+            var plusvalia_render = resultado.plusvalia_render;
+            var plusvalia = resultado.plusvalia;
 
-            let nom_empre = registro_empresa.nombre_empresa;
-            let py_nfp = numero_punto_coma(aux_n_inm.length);
-            let py_dfp = numero_punto_coma(aux_segundero_cajas.ahorro); // es la plusvalia total de proyecto
+            //------------------------
+
+            let py_nfp = numero_punto_coma(inmuebles_total);
+            let py_dfp = plusvalia_render; // es la plusvalia total de proyecto
+            let py_dfp_n = plusvalia;
             let py_inm_nfe = n_directos;
             let py_dfe = numero_punto_coma(sus_directos.toFixed(0));
+            let py_dfe_n = Number(sus_directos.toFixed(0));
             let py_inm_nfb = n_indirectos;
             let py_dfb = numero_punto_coma(sus_indirectos.toFixed(0));
-
-            //--------------- Verificacion ----------------
-            //console.log("/py_nfp/ " + py_nfp);
-            //console.log("/py_dfp/ " + py_dfp);
-            //console.log("/nom_empre/ " + nom_empre);
-            //console.log("/py_inm_nfe/ " + py_inm_nfe);
-            //console.log("/py_dfe/ " + py_dfe);
-            //console.log("/nom_empre/ " + nom_empre);
-            //console.log("/py_inm_nfb/ " + py_inm_nfb);
-            //console.log("/py_dfb/ " + py_dfb);
-            //---------------------------------------------
-
-            // "replace" reemplaza solo la primera coincidencia.
-
-            var significado_py_propietarios_1 = significado_py_propietarios_0.replace(
-                "/py_nfp/",
-                py_nfp
-            );
-            var significado_py_propietarios = significado_py_propietarios_1.replace(
-                "/py_dfp/",
-                py_dfp
-            );
-
-            var significado_py_empresa_1 = significado_py_empresa_0.replace(
-                "/nom_empre/",
-                nom_empre
-            );
-            var significado_py_empresa_2 = significado_py_empresa_1.replace(
-                "/py_inm_nfe/",
-                py_inm_nfe
-            );
-            var significado_py_empresa = significado_py_empresa_2.replace("/py_dfe/", py_dfe);
-
-            var significado_py_pais_1 = significado_py_pais_0.replace("/nom_empre/", nom_empre);
-            var significado_py_pais_2 = significado_py_pais_1.replace("/py_inm_nfb/", py_inm_nfb);
-            var significado_py_pais = significado_py_pais_2.replace("/py_dfb/", py_dfb);
+            let py_dfb_n = Number(sus_indirectos.toFixed(0));
 
             // ---------------------------------------------------------------------
             var info_proyecto_info_economico = {
                 total_beneficio: numero_punto_coma(total_beneficio.toFixed(0)),
+                total_beneficio_n: Number(total_beneficio.toFixed(0)),
                 total_beneficiarios,
                 nombre_proyecto: registro_proyecto.nombre_proyecto,
 
@@ -1411,13 +1310,13 @@ async function proyecto_empleos(codigo_proyecto) {
 
                 py_nfp,
                 py_dfp,
+                py_dfp_n,
                 py_inm_nfe,
                 py_dfe,
+                py_dfe_n,
                 py_inm_nfb,
                 py_dfb,
-                significado_py_propietarios,
-                significado_py_empresa,
-                significado_py_pais,
+                py_dfb_n,
             };
 
             return info_proyecto_info_economico;
@@ -1674,9 +1573,11 @@ async function proyecto_resp_social(codigo_proyecto) {
                         rs_numero: registro_proyecto.tabla_rs_proyecto[j][0],
                         rs_item: registro_proyecto.tabla_rs_proyecto[j][1],
                         rs_unidad: registro_proyecto.tabla_rs_proyecto[j][2],
-                        rs_pu: numero_punto_coma(registro_proyecto.tabla_rs_proyecto[j][3]),
+                        rs_pu: Number(registro_proyecto.tabla_rs_proyecto[j][3]),
+                        rs_pu_r: numero_punto_coma(registro_proyecto.tabla_rs_proyecto[j][3]),
                         rs_cantidad: numero_punto_coma(registro_proyecto.tabla_rs_proyecto[j][4]),
-                        rs_total: numero_punto_coma(registro_proyecto.tabla_rs_proyecto[j][5]),
+                        rs_total: Number(registro_proyecto.tabla_rs_proyecto[j][5]),
+                        rs_total_r: numero_punto_coma(registro_proyecto.tabla_rs_proyecto[j][5]),
                     };
                 }
             }
@@ -1686,7 +1587,8 @@ async function proyecto_resp_social(codigo_proyecto) {
             var info_proyecto_resp_social = {
                 beneficiario_rs: registro_proyecto.beneficiario_rs,
                 descripcion_rs: registro_proyecto.descripcion_rs,
-                monto_dinero_rs: numero_punto_coma(registro_proyecto.monto_dinero_rs),
+                monto_dinero_rs: registro_proyecto.monto_dinero_rs,
+                monto_dinero_rs_r: numero_punto_coma(registro_proyecto.monto_dinero_rs),
                 link_youtube_rs: registro_proyecto.link_youtube_rs,
                 fecha_entrega_rs: moment.utc(registro_proyecto.fecha_entrega_rs).format("LL"), // llevando la fecha a formato latino
 
@@ -1698,91 +1600,6 @@ async function proyecto_resp_social(codigo_proyecto) {
             return info_proyecto_resp_social;
         } else {
             return false;
-        }
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-// -----------------------------------------------------------------------------------
-
-async function n_vista_ventana(paquete_vista) {
-    try {
-        var codigo_proyecto = paquete_vista.codigo_proyecto;
-        var ventana = paquete_vista.ventana;
-
-        const registro_proyecto = await indiceProyecto.findOne(
-            { codigo_proyecto: codigo_proyecto },
-            {
-                v_descripcion: 1,
-                v_inmuebles: 1,
-                v_garantias: 1,
-                v_beneficios: 1,
-                v_info_economico: 1,
-                v_empleos: 1,
-                v_resp_social: 1,
-                v_requerimientos: 1,
-                _id: 0,
-            }
-        );
-        if (registro_proyecto) {
-            if (ventana == "descripcion") {
-                var n_vista = registro_proyecto.v_descripcion + 1;
-                await indiceProyecto.updateOne(
-                    { codigo_proyecto: codigo_proyecto },
-                    { $set: { v_descripcion: n_vista } }
-                );
-            }
-            if (ventana == "inmuebles") {
-                var n_vista = registro_proyecto.v_inmuebles + 1;
-                await indiceProyecto.updateOne(
-                    { codigo_proyecto: codigo_proyecto },
-                    { $set: { v_inmuebles: n_vista } }
-                );
-            }
-            if (ventana == "garantias") {
-                var n_vista = registro_proyecto.v_garantias + 1;
-                await indiceProyecto.updateOne(
-                    { codigo_proyecto: codigo_proyecto },
-                    { $set: { v_garantias: n_vista } }
-                );
-            }
-            if (ventana == "beneficios") {
-                var n_vista = registro_proyecto.v_beneficios + 1;
-                await indiceProyecto.updateOne(
-                    { codigo_proyecto: codigo_proyecto },
-                    { $set: { v_beneficios: n_vista } }
-                );
-            }
-            if (ventana == "info_economico") {
-                var n_vista = registro_proyecto.v_info_economico + 1;
-                await indiceProyecto.updateOne(
-                    { codigo_proyecto: codigo_proyecto },
-                    { $set: { v_info_economico: n_vista } }
-                );
-            }
-            if (ventana == "empleos") {
-                var n_vista = registro_proyecto.v_empleos + 1;
-                await indiceProyecto.updateOne(
-                    { codigo_proyecto: codigo_proyecto },
-                    { $set: { v_empleos: n_vista } }
-                );
-            }
-            if (ventana == "requerimientos") {
-                var n_vista = registro_proyecto.v_requerimientos + 1;
-                await indiceProyecto.updateOne(
-                    { codigo_proyecto: codigo_proyecto },
-                    { $set: { v_requerimientos: n_vista } }
-                );
-            }
-            if (ventana == "resp_social") {
-                var n_vista = registro_proyecto.v_resp_social + 1;
-                await indiceProyecto.updateOne(
-                    { codigo_proyecto: codigo_proyecto },
-                    { $set: { v_resp_social: n_vista } }
-                );
-            }
-            return n_vista;
         }
     } catch (error) {
         console.log(error);
@@ -1820,9 +1637,12 @@ async function valores_badge(paquete_badge) {
             );
 
             if (registro_terreno) {
-                // guardado, disponible, reservado, pendiente, pagado, pendiente_aprobacion, pagos (construccion), remate, completado (construido)
+                // guardado, disponible, reservado, pendiente, pagado, pagos (construccion), remate, completado (construido)
 
-                if (registro_terreno.estado_terreno == "reserva") {
+                // guardado, convocatoria, anteproyecto, reservacion, construccion, construido OK
+
+                if (registro_terreno.estado_terreno == "reservacion") {
+                    // estado_inmueble: "disponible" considera tanto inmuebles del tipo ENTEROS como COPROPIETARIOS
                     var registro_inmuebles = await indiceInmueble.find(
                         { codigo_proyecto: codigo_proyecto, estado_inmueble: "disponible" },
                         {
@@ -1836,38 +1656,8 @@ async function valores_badge(paquete_badge) {
                     }
                 }
 
-                if (registro_terreno.estado_terreno == "pago") {
-                    var registro_inmuebles = await indiceInmueble.find(
-                        { codigo_proyecto: codigo_proyecto, estado_inmueble: "pendiente_pago" },
-                        {
-                            codigo_inmueble: 1,
-                        }
-                    );
-
-                    if (registro_inmuebles.length > 0) {
-                        badge_resultados.existe_n_inmuebles = true;
-                        badge_resultados.n_inmuebles = registro_inmuebles.length;
-                    }
-                }
-
-                if (registro_terreno.estado_terreno == "aprobacion") {
-                    var registro_inmuebles = await indiceInmueble.find(
-                        {
-                            codigo_proyecto: codigo_proyecto,
-                            estado_inmueble: "pendiente_aprobacion",
-                        },
-                        {
-                            codigo_inmueble: 1,
-                        }
-                    );
-
-                    if (registro_inmuebles.length > 0) {
-                        badge_resultados.existe_n_inmuebles = true;
-                        badge_resultados.n_inmuebles = registro_inmuebles.length;
-                    }
-                }
-
                 if (registro_terreno.estado_terreno == "construccion") {
+                    // estado_inmueble: "remate" para inmuebles del tipo ENTEROS
                     var registro_inmuebles = await indiceInmueble.find(
                         { codigo_proyecto: codigo_proyecto, estado_inmueble: "remate" },
                         {
@@ -1875,9 +1665,18 @@ async function valores_badge(paquete_badge) {
                         }
                     );
 
-                    if (registro_inmuebles.length > 0) {
+                    // estado_inmueble: "disponible" para inmuebles del tipo COPROPIETARIOS
+                    var registro_inmuebles_co = await indiceInmueble.find(
+                        { codigo_proyecto: codigo_proyecto, estado_inmueble: "disponible" },
+                        {
+                            codigo_inmueble: 1,
+                        }
+                    );
+
+                    if (registro_inmuebles.length > 0 || registro_inmuebles_co.length > 0) {
                         badge_resultados.existe_n_inmuebles = true;
-                        badge_resultados.n_inmuebles = registro_inmuebles.length;
+                        badge_resultados.n_inmuebles =
+                            registro_inmuebles.length + registro_inmuebles_co.length;
                     }
                 }
             }
@@ -1904,8 +1703,6 @@ async function valores_badge(paquete_badge) {
 }
 
 // -----------------------------------------------------------------------------------
-
-// ------------------------------------------------------------------
 // para informacion global de proyecto que se mostrara en todas las ventanas
 
 async function complementos_globales_py(codigo_proyecto) {
@@ -2010,41 +1807,6 @@ async function complementos_globales_py(codigo_proyecto) {
         };
     }
 }
-
-// ------------------------------------------------------------------
-// para informacion PIE DE PAGINA DE VENTANAS DEL LADO DEL CLIENTE
-
-/** 
-async function pie_py() {
-    // informacion para pie de página
-    var registro_datos_empresa = await indiceEmpresa.findOne(
-        {},
-        {
-            whatsapp: 1,
-            telefono_fijo: 1,
-            facebook: 1,
-            tiktok: 1,
-            youtube: 1,
-            direccion: 1,
-            year_derecho: 1,
-        }
-    );
-
-    if (registro_datos_empresa) {
-        return {
-            whatsapp: registro_datos_empresa.whatsapp,
-            telefono_fijo: registro_datos_empresa.telefono_fijo,
-            facebook: registro_datos_empresa.facebook,
-            tiktok: registro_datos_empresa.tiktok,
-            youtube: registro_datos_empresa.youtube,
-            direccion: registro_datos_empresa.direccion,
-            year_derecho: registro_datos_empresa.year_derecho,
-        };
-    } else {
-        return {};
-    }
-}
-*/
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

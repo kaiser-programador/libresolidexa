@@ -6,18 +6,11 @@ const {
     indiceTerreno,
     indiceEmpresa,
     indiceRequerimientos,
-    indiceImagenesSistema,
 } = require("../modelos/indicemodelo");
 
 const { cards_inicio_cli_adm } = require("../ayudas/funcionesayuda_0");
 
-const {
-    inmueble_card_adm_cli,
-    proyecto_card_adm_cli,
-    terreno_card_adm_cli,
-} = require("../ayudas/funcionesayuda_1");
-
-const { pie_pagina_cli } = require("../ayudas/funcionesayuda_2");
+const { inmueble_card_adm_cli, terreno_card_adm_cli } = require("../ayudas/funcionesayuda_1");
 
 const moment = require("moment");
 
@@ -33,44 +26,25 @@ controladorClienteInicio.inicioCliente = async (req, res) => {
         // ------- Para verificación -------
         //console.log("ESTAMOS EN LA VENTANA DE INICIO DEL LADO DEL CLIENTE OK");
 
+        // ------- Para verificación -------
+        //console.log("TIPO NAVEGACION");
+        //console.log(req.tipo_navegacion);
+
         /*
         // ------- Para verificación -------
-        console.log("DATOS del administrador ingreso");
+        console.log("DATOS del cliente ingreso");
         console.log(req.user);
-        console.log("el id del administrador ingreso");
+        console.log("el id del cliente ingreso");
         console.log(req.user.id);
-        console.log("el CI del administrador ingreso");
+        console.log("el CI del cliente ingreso");
         console.log(req.user.ci_administrador);
         */
 
         // ---------------------------------------------------------------
         // para las url de imagen inicio del sistema horizontal y vertical
 
-        var url_inicio_h = ""; // vacio por defecto
-        var url_inicio_v = ""; // vacio por defecto
-
-        const registro_img_sistema_h = await indiceImagenesSistema.findOne(
-            { tipo_imagen: "inicio_horizontal" },
-            {
-                url: 1,
-                _id: 0,
-            }
-        );
-
-        const registro_img_sistema_v = await indiceImagenesSistema.findOne(
-            { tipo_imagen: "inicio_vertical" },
-            {
-                url: 1,
-                _id: 0,
-            }
-        );
-
-        if (registro_img_sistema_h) {
-            url_inicio_h = registro_img_sistema_h.url;
-        }
-        if (registro_img_sistema_v) {
-            url_inicio_v = registro_img_sistema_v.url;
-        }
+        var url_inicio_h = "/rutavirtualpublico/imagenes/imagenes_sistema/inicio_horizontal.jpg";
+        var url_inicio_v = "/rutavirtualpublico/imagenes/imagenes_sistema/inicio_vertical.jpg";
 
         // ---------------------------------------------------------------
 
@@ -95,6 +69,16 @@ controladorClienteInicio.inicioCliente = async (req, res) => {
             // reconversion del "string" a "objeto"
             var datos_empresa = JSON.parse(aux_string);
 
+            //----------------------------------------
+            // agregando valores render con punto mil
+            datos_empresa.r_construidos = numero_punto_coma(n_construidos);
+            datos_empresa.r_proyectos = numero_punto_coma(n_proyectos);
+            datos_empresa.r_inmuebles = numero_punto_coma(n_inmuebles);
+            datos_empresa.r_empleos = numero_punto_coma(n_empleos);
+            datos_empresa.r_ahorros = numero_punto_coma(n_ahorros);
+            datos_empresa.r_resp_social = numero_punto_coma(n_resp_social);
+            //----------------------------------------
+
             /*
             // ------- Para verificación -------
             console.log("VEMOS SI EL CLIENTE ES VALIDADO");
@@ -110,9 +94,6 @@ controladorClienteInicio.inicioCliente = async (req, res) => {
 
             // es_ninguno: true  // para las opciones de navegacion de la ventana en estado comprimido
             datos_empresa.es_ninguno = true;
-
-            var pie_pagina = await pie_pagina_cli();
-            datos_empresa.pie_pagina_cli = pie_pagina;
 
             datos_empresa.navegador_cliente = true;
 
@@ -138,9 +119,6 @@ controladorClienteInicio.inicioCliente = async (req, res) => {
 
             // es_ninguno: true  // para las opciones de navegacion de la ventana en estado comprimido
             datos_empresa.es_ninguno = true;
-
-            var pie_pagina = await pie_pagina_cli();
-            datos_empresa.pie_pagina_cli = pie_pagina;
 
             datos_empresa.navegador_cliente = true;
 
@@ -196,7 +174,7 @@ controladorClienteInicio.buscarInmueble = async (req, res) => {
             inversor_autenticado,
             tipo_resultado_inmuebles: true, // para si mostrar el formato de resultados de inmuebles
             tipo_resultado_requerimientos: false, // para no mostrar el formato de resultados de requerimientos
-            tipo_resultado_proyectos: false, // para no mostrar el formato de resultados de proyectos
+            tipo_resultado_fracciones_terreno: false, // para no mostrar el formato de resultados de proyectos
         };
         resultado_renderizar.ordenador_externo = true; // porque SI existen cards que ordenar
         resultado_renderizar.encabezado_titulo = "Resultado inmuebles";
@@ -204,43 +182,20 @@ controladorClienteInicio.buscarInmueble = async (req, res) => {
             resultado_renderizar.es_disponible = true;
             resultado_renderizar.encabezado_texto = "Disponibles";
         }
-        if (tipo_busqueda == "pendiente_aprobacion") {
-            resultado_renderizar.es_pendiente_aprobacion = true;
-            resultado_renderizar.encabezado_texto = "Pendientes Aprobación";
-        }
-        if (tipo_busqueda == "pendiente_pago") {
-            resultado_renderizar.es_pendiente_pago = true;
-            resultado_renderizar.encabezado_texto = "Pendientes Pago";
-        }
+
         if (tipo_busqueda == "remate") {
             resultado_renderizar.es_remate = true;
             resultado_renderizar.encabezado_texto = "En Remates";
         }
 
-        //resultado_renderizar.estilo_cabezera = "cabezera_estilo_resultados";
-
-        //----------------------------------------------------
-        // para la url de la cabezera
-        var url_cabezera = ""; // vacio por defecto
-        const registro_cabezera = await indiceImagenesSistema.findOne(
-            { tipo_imagen: "cabecera_resultados_inmuebles" },
-            {
-                url: 1,
-                _id: 0,
-            }
-        );
-
-        if (registro_cabezera) {
-            url_cabezera = registro_cabezera.url;
+        if (tipo_busqueda == "fraccion") {
+            resultado_renderizar.es_fraccion = true;
+            resultado_renderizar.encabezado_texto = "Fracciones";
         }
 
-        resultado_renderizar.url_cabezera = url_cabezera;
+        resultado_renderizar.estilo_cabezera = "cabezera_estilo_resultados";
 
         //----------------------------------------------------
-
-        // informacion para pie de página
-        var pie_pagina = await pie_pagina_cli();
-        resultado_renderizar.pie_pagina_cli = pie_pagina;
 
         // si es TRUE y solo si es true, entonces se mostrara su ci
         if (req.inversor_autenticado) {
@@ -259,33 +214,55 @@ controladorClienteInicio.buscarInmueble = async (req, res) => {
 
         // EN TODAS LAS OPCIONES DE BUSQUEDA ESTARA DISPONIBLE EL FILTRO DE PRECIO DE COMPRA DEL INMUEBLE PARA LOS FUTUROS DUEÑOS INTEREZADOS
 
-        var inmuebles_buscar = await indiceInmueble.find(
-            { estado_inmueble: tipo_busqueda },
-            {
-                codigo_inmueble: 1,
-                codigo_terreno: 1,
-                codigo_proyecto: 1,
-                _id: 0,
-            }
-        );
+        if (tipo_busqueda == "disponible") {
+            // precio deseado del inmueble
+            var precio_requerido = req.body.html_input_precio_disponible_busq;
+
+            // inmuebles del tipo ENTERO que esten DISPONIBLES para ser reservados (se reservan pagando el derecho de suelo)
+            var inmuebles_buscar = await indiceInmueble.find(
+                { estado_inmueble: "disponible", fraccionado: false },
+                {
+                    codigo_inmueble: 1,
+                    codigo_terreno: 1,
+                    codigo_proyecto: 1,
+                    _id: 0,
+                }
+            );
+        }
+
+        if (tipo_busqueda == "remate") {
+            // precio deseado del inmueble
+            var precio_requerido = req.body.html_input_precio_remate_busq;
+
+            // inmuebles del tipo ENTERO que esten en REMATE para ser ADQUIRIDOS
+            var inmuebles_buscar = await indiceInmueble.find(
+                { estado_inmueble: "remate", fraccionado: false },
+                {
+                    codigo_inmueble: 1,
+                    codigo_terreno: 1,
+                    codigo_proyecto: 1,
+                    _id: 0,
+                }
+            );
+        }
+
+        if (tipo_busqueda == "fraccion") {
+            // precio deseado del inmueble
+            var precio_requerido = req.body.html_input_precio_fraccion_busq;
+
+            // inmuebles del tipo FRACCIONADO que tienen fracciones de inmuebles DISPONIBLES
+            var inmuebles_buscar = await indiceInmueble.find(
+                { estado_inmueble: "disponible", fraccionado: true },
+                {
+                    codigo_inmueble: 1,
+                    codigo_terreno: 1,
+                    codigo_proyecto: 1,
+                    _id: 0,
+                }
+            );
+        }
 
         if (inmuebles_buscar.length > 0) {
-            if (tipo_busqueda == "disponible") {
-                var precio_requerido = req.body.html_input_precio_disponible_busq;
-            }
-
-            if (tipo_busqueda == "pendiente_aprobacion") {
-                var precio_requerido = req.body.html_input_precio_pendiente_apro_busq;
-            }
-
-            if (tipo_busqueda == "pendiente_pago") {
-                var precio_requerido = req.body.html_input_precio_pendiente_pago_busq;
-            }
-
-            if (tipo_busqueda == "remate") {
-                var precio_requerido = req.body.html_input_precio_remate_busq;
-            }
-
             for (let i = 0; i < inmuebles_buscar.length; i++) {
                 let codigo_inmueble_i = inmuebles_buscar[i].codigo_inmueble;
                 let codigo_proyecto_i = inmuebles_buscar[i].codigo_proyecto;
@@ -527,10 +504,6 @@ controladorClienteInicio.buscarInmueble = async (req, res) => {
                 };
 
                 var inmueble_card_i = await inmueble_card_adm_cli(paquete_inmueble_i);
-                /*
-                contenido_inm_py[i] = await inmueble_card_adm_cli(paquete_inmueble_i);
-                contenido_inm_py[i].card_externo = true; // para que muestre info de card EXTERIORES
-                */
 
                 inmueble_card_i.card_externo = true; // para que muestre info de card EXTERIONES
 
@@ -538,7 +511,11 @@ controladorClienteInicio.buscarInmueble = async (req, res) => {
                     inmueble_card_i.factor_tiempo_tiempo = "En remate"; // (esto porque no deseamos que muestre el tiempo de FINALIZA ....)
                 }
 
-                if (Number(inmueble_card_i.precio_actual_inm) >= Number(precio_requerido)) {
+                if (tipo_busqueda == "fraccion") {
+                    inmueble_card_i.factor_tiempo_tiempo = "Fracciones disponibles"; // (esto porque no deseamos que muestre el tiempo de FINALIZA ....)
+                }
+
+                if (inmueble_card_i.precio_justo >= Number(precio_requerido)) {
                     ok_precio_requerido = true;
                 }
 
@@ -637,10 +614,10 @@ controladorClienteInicio.buscarInmueble = async (req, res) => {
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// PARA LA BUSQUEDA DE PROYECTOS DESDE EL BUSCADOR PRINCIPAL LADO DEL CLIENTE
+// PARA LA BUSQUEDA DE TERRENOS QUE TIENEN A LA VENTA FRACCIONES DE TERRENO, DESDE EL BUSCADOR PRINCIPAL LADO DEL CLIENTE
 
-controladorClienteInicio.buscarProyectos = async (req, res) => {
-    // RUTA POST  "/proyectos/resultados"
+controladorClienteInicio.buscarFraccionesTerreno = async (req, res) => {
+    // RUTA POST  "/fracciones_terreno/resultados"
     // "POST" porque se estan enviando datos del formulario para que sean leidos del lado del servidor
 
     try {
@@ -650,16 +627,7 @@ controladorClienteInicio.buscarProyectos = async (req, res) => {
 
         // coincide con la forma de guardado que esta en la base de datos de terreno. Así sera facil en la utilizacion de filtros en la busqueda de la base de datos de terreno
         // Beni, Chuquisaca, Cochabamba, La Paz, Oruro, Pando, Potosí, Santa Cruz, Tarija
-        let ciudad_busqueda = req.body.name_ciudad_busq_py;
-
-        let tipo_busqueda = req.body.name_radio_py_busq;
-
-        // ------- Para verificación -------
-        //console.log("EL RADIO ELEGIDO BUSQUEDA DE PROYECTOS");
-        //console.log(tipo_busqueda);
-
-        var aux_palabras_clave = req.body.html_palabras_proyecto;
-        var palabras_clave = aux_palabras_clave.toLowerCase(); // TODO A minuscula
+        let ciudad_busqueda = req.body.name_ciudad_busq_frac_te;
 
         moment.locale("es");
 
@@ -671,462 +639,98 @@ controladorClienteInicio.buscarProyectos = async (req, res) => {
             inversor_autenticado,
             tipo_resultado_inmuebles: false, // para no mostrar el formato de resultados de inmuebles
             tipo_resultado_requerimientos: false, // para no mostrar el formato de resultados de requerimientos
-            tipo_resultado_proyectos: true, // para si mostrar el formato de resultados de proyectos
+            tipo_resultado_fracciones_terreno: true, // para si mostrar el formato de resultados de terrenos que tienen fracciones disponibles
             es_ninguno: true, // para menu navegacion comprimido
         };
         resultado_renderizar.ordenador_externo = true; // porque SI existen cards que ordenar
-        resultado_renderizar.encabezado_titulo = "Resultado proyectos";
-
-        // informacion para pie de página
-        var pie_pagina = await pie_pagina_cli();
-        resultado_renderizar.pie_pagina_cli = pie_pagina;
+        resultado_renderizar.encabezado_titulo = "Resultado fracciones terreno";
 
         // si es TRUE y solo si es true, entonces se mostrara su ci
         if (req.inversor_autenticado) {
             resultado_renderizar.ci_propietario = req.user.ci_propietario;
         }
 
-        var codigos_resultados = []; // vacio que sera llenado con los codigos de los proyectos (o codigos de terrenos para el caso de convocatorias) que cumplen con todas las condiciones de busqueda
+        var codigos_resultados = []; // vacio que sera llenado con los codigos de los codigos de terrenos que cumplen con todas las condiciones de busqueda
         var posi = -1; // para ir almacenando los proyectos en el array: "proyectos_resultados"
 
         // por defecto
-        var proyectos_renderizar = []; // cards de proyectos (terrenos en caso de convocatoria) que cumplen con las condiciones de busqueda, asuminos vacio por defecto
+        var terrenos_renderizar = []; // cards de terrenos que cumplen con las condiciones de busqueda, asuminos vacio por defecto
 
         // por defecto
         resultado_renderizar.existen_resultados = false;
 
-        if (tipo_busqueda == "reservacion") {
-            resultado_renderizar.es_reservacion = true;
-            resultado_renderizar.proyectos_reserva = true; // para mostrar el menu desplegable de ordenacion
-            resultado_renderizar.encabezado_texto = "Reservación";
-            //resultado_renderizar.estilo_cabezera = "cabezera_estilo_reserva";
+        resultado_renderizar.es_convocatoria = true;
+        resultado_renderizar.terrenos_convocatoria = true; // para mostrar el menu desplegable de ordenacion
+        resultado_renderizar.encabezado_texto = "Fracciones terreno";
 
-            //----------------------------------------------------
-            // para la url de la cabezera
-            var url_cabezera = ""; // vacio por defecto
-            const registro_cabezera = await indiceImagenesSistema.findOne(
-                { tipo_imagen: "cabecera_reserva" },
-                {
-                    url: 1,
-                    _id: 0,
-                }
-            );
+        resultado_renderizar.estilo_cabezera = "cabezera_estilo_terreno";
 
-            if (registro_cabezera) {
-                url_cabezera = registro_cabezera.url;
-            }
+        //----------------------------------------------------
 
-            resultado_renderizar.url_cabezera = url_cabezera;
+        // con los filtros que se les impuso en ".find", ya estan cumpliendo con la condicion de busqueda por ciudad
 
-            //----------------------------------------------------
-
-            var estado_buscar = "reserva";
-        }
-
-        if (tipo_busqueda == "aprobacion") {
-            resultado_renderizar.es_aprobacion = true;
-            resultado_renderizar.proyectos_aprobacion = true; // para mostrar el menu desplegable de ordenacion
-            resultado_renderizar.encabezado_texto = "Aprobación";
-            //resultado_renderizar.estilo_cabezera = "cabezera_estilo_aprobacion";
-
-            //----------------------------------------------------
-            // para la url de la cabezera
-            var url_cabezera = ""; // vacio por defecto
-            const registro_cabezera = await indiceImagenesSistema.findOne(
-                { tipo_imagen: "cabecera_aprobacion" },
-                {
-                    url: 1,
-                    _id: 0,
-                }
-            );
-
-            if (registro_cabezera) {
-                url_cabezera = registro_cabezera.url;
-            }
-
-            resultado_renderizar.url_cabezera = url_cabezera;
-
-            //----------------------------------------------------
-
-            var estado_buscar = "aprobacion";
-        }
-
-        if (tipo_busqueda == "pago") {
-            resultado_renderizar.es_pago = true;
-            resultado_renderizar.proyectos_pago = true; // para mostrar el menu desplegable de ordenacion
-            resultado_renderizar.encabezado_texto = "Pago";
-            //resultado_renderizar.estilo_cabezera = "cabezera_estilo_pago";
-
-            //----------------------------------------------------
-            // para la url de la cabezera
-            var url_cabezera = ""; // vacio por defecto
-            const registro_cabezera = await indiceImagenesSistema.findOne(
-                { tipo_imagen: "cabecera_pago" },
-                {
-                    url: 1,
-                    _id: 0,
-                }
-            );
-
-            if (registro_cabezera) {
-                url_cabezera = registro_cabezera.url;
-            }
-
-            resultado_renderizar.url_cabezera = url_cabezera;
-
-            //----------------------------------------------------
-
-            var estado_buscar = "pago";
-        }
-
-        if (tipo_busqueda == "construccion") {
-            resultado_renderizar.es_construccion = true;
-            resultado_renderizar.proyectos_construccion = true; // para mostrar el menu desplegable de ordenacion
-            resultado_renderizar.encabezado_texto = "Construcción";
-            //resultado_renderizar.estilo_cabezera = "cabezera_estilo_construccion";
-
-            //----------------------------------------------------
-            // para la url de la cabezera
-            var url_cabezera = ""; // vacio por defecto
-            const registro_cabezera = await indiceImagenesSistema.findOne(
-                { tipo_imagen: "cabecera_construccion" },
-                {
-                    url: 1,
-                    _id: 0,
-                }
-            );
-
-            if (registro_cabezera) {
-                url_cabezera = registro_cabezera.url;
-            }
-
-            resultado_renderizar.url_cabezera = url_cabezera;
-
-            //----------------------------------------------------
-
-            var estado_buscar = "construccion";
-        }
-
-        if (tipo_busqueda == "construido") {
-            resultado_renderizar.es_construido = true;
-            resultado_renderizar.proyectos_construido = true; // para mostrar el menu desplegable de ordenacion
-            resultado_renderizar.encabezado_texto = "Construido";
-            //resultado_renderizar.estilo_cabezera = "cabezera_estilo_construido";
-
-            //----------------------------------------------------
-            // para la url de la cabezera
-            var url_cabezera = ""; // vacio por defecto
-            const registro_cabezera = await indiceImagenesSistema.findOne(
-                { tipo_imagen: "cabecera_construido" },
-                {
-                    url: 1,
-                    _id: 0,
-                }
-            );
-
-            if (registro_cabezera) {
-                url_cabezera = registro_cabezera.url;
-            }
-
-            resultado_renderizar.url_cabezera = url_cabezera;
-
-            //----------------------------------------------------
-
-            var estado_buscar = "construido";
-        }
-
-        if (tipo_busqueda == "convocatoria") {
-            resultado_renderizar.es_convocatoria = true;
-            resultado_renderizar.terrenos_convocatoria = true; // para mostrar el menu desplegable de ordenacion
-            resultado_renderizar.encabezado_texto = "Convocatoria";
-            //resultado_renderizar.estilo_cabezera = "cabezera_estilo_convocatoria";
-
-            //----------------------------------------------------
-            // para la url de la cabezera
-            var url_cabezera = ""; // vacio por defecto
-            const registro_cabezera = await indiceImagenesSistema.findOne(
-                { tipo_imagen: "cabecera_convocatoria" },
-                {
-                    url: 1,
-                    _id: 0,
-                }
-            );
-
-            if (registro_cabezera) {
-                url_cabezera = registro_cabezera.url;
-            }
-
-            resultado_renderizar.url_cabezera = url_cabezera;
-
-            //----------------------------------------------------
-        }
-
-        if (tipo_busqueda == "convocatoria") {
-            // para terrenos que esten en convocatoria publica abierta, su estado correspondiente es el de "reserva"
-            // para renderizar los cards apropiados
-            resultado_renderizar.cards_proyectos = false;
-            resultado_renderizar.cards_terrenos = true;
-
-            // con los filtros que se les impuso en ".find", ya estan cumpliendo con la condicion de busqueda por ciudad
-
-            if (ciudad_busqueda == "Todos") {
-                var array_terrenos = await indiceTerreno
-                    .find(
-                        { estado_terreno: "reserva" },
-                        {
-                            codigo_terreno: 1,
-                            provincia: 1,
-                            direccion: 1,
-                            ubi_otros_1: 1,
-                            ubi_otros_2: 1,
-                            ubi_otros_3: 1,
-                            _id: 0,
-                        }
-                    )
-                    .sort({ fecha_inicio_reserva: -1 }); // ordenado del mas reciente al mas antiguo;
-            } else {
-                var array_terrenos = await indiceTerreno
-                    .find(
-                        { estado_terreno: "reserva", ciudad: ciudad_busqueda },
-                        {
-                            codigo_terreno: 1,
-                            provincia: 1,
-                            direccion: 1,
-                            ubi_otros_1: 1,
-                            ubi_otros_2: 1,
-                            ubi_otros_3: 1,
-                            _id: 0,
-                        }
-                    )
-                    .sort({ fecha_inicio_reserva: -1 }); // ordenado del mas reciente al mas antiguo;
-            }
-
-            if (array_terrenos.length > 0) {
-                // qui no buscamos en la base de datos de proyectos, porque lo que se desea son TERRENOS
-
-                if (palabras_clave != "") {
-                    for (let j = 0; j < array_terrenos.length; j++) {
-                        var buscar_aqui = {
-                            //tipo_busqueda,
-                            palabras_clave,
-                            string_donde_buscar:
-                                array_terrenos[j].codigo_terreno +
-                                " " +
-                                array_terrenos[j].provincia +
-                                " " +
-                                array_terrenos[j].direccion +
-                                " " +
-                                array_terrenos[j].ubi_otros_1 +
-                                " " +
-                                array_terrenos[j].ubi_otros_2 +
-                                " " +
-                                array_terrenos[j].ubi_otros_3,
-                        };
-
-                        var resultado_busqueda = buscador_palabras_proyecto(buscar_aqui); // true o false
-
-                        if (resultado_busqueda) {
-                            // si es un proyecto que cumple con las condiciones de busqueda
-                            posi = posi + 1;
-                            codigos_resultados[posi] = array_terrenos[j].codigo_terreno;
-                        }
+        if (ciudad_busqueda == "Todos") {
+            var array_terrenos = await indiceTerreno
+                .find(
+                    { estado_terreno: "fracciones" },
+                    {
+                        codigo_terreno: 1,
+                        provincia: 1,
+                        direccion: 1,
+                        ubi_otros_1: 1,
+                        ubi_otros_2: 1,
+                        ubi_otros_3: 1,
+                        _id: 0,
                     }
-                } else {
-                    // si no existen palabras clave que buscar, se tomara como cumplido todos los terrenos
-
-                    for (let j = 0; j < array_terrenos.length; j++) {
-                        posi = posi + 1;
-                        codigos_resultados[posi] = array_terrenos[j].codigo_terreno;
-                    }
-                }
-
-                // llenado con los cards de terrenos que cumplen con las condiciones de busqueda
-                if (codigos_resultados.length > 0) {
-                    for (let i = 0; i < codigos_resultados.length; i++) {
-                        var paquete_terreno = {
-                            codigo_terreno: codigos_resultados[i],
-                            laapirest: "/", // por partir desde el lado del CLIENTE
-                        };
-                        proyectos_renderizar[i] = await terreno_card_adm_cli(paquete_terreno);
-                        proyectos_renderizar[i].card_externo = true; // para que muestre info de card EXTERNOS
-                    }
-                    resultado_renderizar.existen_resultados = true;
-                }
-            }
-
-            //--------------- Verificacion ----------------
-            //console.log("los resultados de la busqueda de convocatoria es");
-            //console.log(resultado_renderizar);
-            //---------------------------------------------
-            resultado_renderizar.proyectos_renderizar = proyectos_renderizar;
-            res.render("cli_resultado_busqueda", resultado_renderizar);
+                )
+                .sort({ fecha_inicio_convocatoria: -1 }); // ordenado del mas reciente al mas antiguo;
         } else {
-            // PROYECTOS EN ESTADO DE: reserva, pago, aprobacion, construccion, construido
-            // para renderizar los cards apropiados
-            resultado_renderizar.cards_proyectos = true;
-            resultado_renderizar.cards_terrenos = false;
-
-            // con los filtros que se les impuso en ".find", ya estan cumpliendo con la condicion de busqueda por ciudad
-
-            if (ciudad_busqueda == "Todos") {
-                var array_terrenos = await indiceTerreno
-                    .find(
-                        { estado_terreno: estado_buscar },
-                        {
-                            codigo_terreno: 1,
-                            provincia: 1,
-                            direccion: 1,
-                            ubi_otros_1: 1,
-                            ubi_otros_2: 1,
-                            ubi_otros_3: 1,
-                            _id: 0,
-                        }
-                    )
-                    .sort({ fecha_inicio_reserva: 1 }); // ordenado del mas antiguo al mas reciente;
-            } else {
-                var array_terrenos = await indiceTerreno
-                    .find(
-                        { estado_terreno: estado_buscar, ciudad: ciudad_busqueda },
-                        {
-                            codigo_terreno: 1,
-                            provincia: 1,
-                            direccion: 1,
-                            ubi_otros_1: 1,
-                            ubi_otros_2: 1,
-                            ubi_otros_3: 1,
-                            _id: 0,
-                        }
-                    )
-                    .sort({ fecha_inicio_reserva: 1 }); // ordenado del mas antiguo al mas reciente;
-            }
-
-            if (array_terrenos.length > 0) {
-                for (let i = 0; i < array_terrenos.length; i++) {
-                    let codigo_te_i = array_terrenos[i].codigo_terreno;
-
-                    // "find" porque pueden existir varios proyectos que esten en estado de reservacion
-                    var array_proyectos = await indiceProyecto.find(
-                        { codigo_terreno: codigo_te_i, visible: true },
-                        {
-                            codigo_proyecto: 1,
-                            nombre_proyecto: 1,
-                            proyecto_descripcion: 1,
-                            otros_1: 1,
-                            otros_2: 1,
-                            otros_3: 1,
-                            acabados: 1,
-                            _id: 0,
-                        }
-                    );
-
-                    if (array_proyectos.length > 0) {
-                        if (palabras_clave != "") {
-                            for (let j = 0; j < array_proyectos.length; j++) {
-                                var buscar_aqui = {
-                                    //tipo_busqueda,
-                                    palabras_clave,
-                                    string_donde_buscar:
-                                        array_terrenos[i].codigo_terreno +
-                                        " " +
-                                        array_terrenos[i].provincia +
-                                        " " +
-                                        array_terrenos[i].direccion +
-                                        " " +
-                                        array_terrenos[i].ubi_otros_1 +
-                                        " " +
-                                        array_terrenos[i].ubi_otros_2 +
-                                        " " +
-                                        array_terrenos[i].ubi_otros_3 +
-                                        " " +
-                                        array_proyectos[j].codigo_proyecto +
-                                        " " +
-                                        array_proyectos[j].nombre_proyecto +
-                                        " " +
-                                        array_proyectos[j].proyecto_descripcion +
-                                        " " +
-                                        array_proyectos[j].otros_1 +
-                                        " " +
-                                        array_proyectos[j].otros_2 +
-                                        " " +
-                                        array_proyectos[j].otros_3 +
-                                        " " +
-                                        array_proyectos[j].acabados,
-                                };
-
-                                var resultado_busqueda = buscador_palabras_proyecto(buscar_aqui); // true o false
-
-                                if (resultado_busqueda) {
-                                    // si es un proyecto que cumple con las condiciones de busqueda
-                                    posi = posi + 1;
-                                    codigos_resultados[posi] = array_proyectos[j].codigo_proyecto;
-                                }
-                            }
-                        } else {
-                            // si no existen palabras clave que buscar, se tomara como cumplido todos los proyectos
-                            for (let j = 0; j < array_proyectos.length; j++) {
-                                posi = posi + 1;
-                                codigos_resultados[posi] = array_proyectos[j].codigo_proyecto;
-                            }
-                        }
-
-                        // llenado con los cards de proyectos que cumplen con las condiciones de busqueda
-                        if (codigos_resultados.length > 0) {
-                            for (let i = 0; i < codigos_resultados.length; i++) {
-                                var paquete_proyecto = {
-                                    codigo_proyecto: codigos_resultados[i],
-                                    laapirest: "/", // por partir desde el lado del CLIENTE
-                                };
-                                proyectos_renderizar[i] = await proyecto_card_adm_cli(
-                                    paquete_proyecto
-                                );
-                                proyectos_renderizar[i].card_externo = true; // para que muestre info de card EXTERNOS
-                            }
-                            resultado_renderizar.existen_resultados = true;
-                        }
+            var array_terrenos = await indiceTerreno
+                .find(
+                    { estado_terreno: "fracciones", ciudad: ciudad_busqueda },
+                    {
+                        codigo_terreno: 1,
+                        provincia: 1,
+                        direccion: 1,
+                        ubi_otros_1: 1,
+                        ubi_otros_2: 1,
+                        ubi_otros_3: 1,
+                        _id: 0,
                     }
-                }
+                )
+                .sort({ fecha_inicio_convocatoria: -1 }); // ordenado del mas reciente al mas antiguo;
+        }
+
+        if (array_terrenos.length > 0) {
+            for (let j = 0; j < array_terrenos.length; j++) {
+                posi = posi + 1;
+                codigos_resultados[posi] = array_terrenos[j].codigo_terreno;
             }
 
-            //--------------- Verificacion ----------------
-            //console.log("los resultados de la busqueda de proyectos es");
-            //console.log(resultado_renderizar);
-            //---------------------------------------------
-
-            resultado_renderizar.proyectos_renderizar = proyectos_renderizar;
-            res.render("cli_resultado_busqueda", resultado_renderizar);
+            // llenado con los cards de terrenos que cumplen con las condiciones de busqueda
+            if (codigos_resultados.length > 0) {
+                for (let i = 0; i < codigos_resultados.length; i++) {
+                    var paquete_terreno = {
+                        codigo_terreno: codigos_resultados[i],
+                        laapirest: "/", // por partir desde el lado del CLIENTE
+                    };
+                    terrenos_renderizar[i] = await terreno_card_adm_cli(paquete_terreno);
+                    terrenos_renderizar[i].card_externo = true; // para que muestre info de card EXTERNOS
+                }
+                resultado_renderizar.existen_resultados = true;
+            }
         }
+
+        //--------------- Verificacion ----------------
+        //console.log("los resultados de la busqueda de convocatoria es");
+        //console.log(resultado_renderizar);
+        //---------------------------------------------
+        resultado_renderizar.terrenos_renderizar = terrenos_renderizar;
+        res.render("cli_resultado_busqueda", resultado_renderizar);
     } catch (error) {
         console.log(error);
     }
 };
-
-// ----------------------------------------------------------
-
-function buscador_palabras_proyecto(buscar_aqui) {
-    //var tipo_busqueda = buscar_aqui.tipo_busqueda;
-    var palabras_clave = buscar_aqui.palabras_clave;
-    var string_donde_buscar = buscar_aqui.string_donde_buscar;
-
-    var palabras_encontradas = 0; // asumimos por defecto
-
-    var string_buscar = string_donde_buscar.toLowerCase(); // TODO A minuscula
-
-    var array_palabras_clave = palabras_clave.split(" ");
-
-    for (let i = 0; i < array_palabras_clave.length; i++) {
-        if (string_buscar.indexOf(array_palabras_clave[i]) != -1) {
-            palabras_encontradas = palabras_encontradas + 1;
-        }
-    }
-
-    if (palabras_encontradas == array_palabras_clave.length) {
-        var resultado_busqueda = true;
-    } else {
-        var resultado_busqueda = false;
-    }
-
-    return resultado_busqueda; // true o false
-}
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1156,37 +760,16 @@ controladorClienteInicio.buscarRequerimientos = async (req, res) => {
             inversor_autenticado,
             tipo_resultado_inmuebles: false, // para no mostrar el formato de resultados de inmuebles
             tipo_resultado_requerimientos: true, // para si mostrar el formato de resultados de requerimientos
-            tipo_resultado_proyectos: false, // para no mostrar el formato de resultados de proyectos
+            tipo_resultado_fracciones_terreno: false, // para no mostrar el formato de resultados de proyectos
         };
         resultado_renderizar.ordenador_externo = true; // porque sera ordenado (en este caso por la fecha)
         resultado_renderizar.encabezado_titulo = "Resultado requerimientos";
 
         resultado_renderizar.es_requerimiento = true;
         resultado_renderizar.encabezado_texto = "Vigentes";
-        //resultado_renderizar.estilo_cabezera = "cabezera_estilo_requerimientos";
+        resultado_renderizar.estilo_cabezera = "cabezera_estilo_requerimientos";
 
         //----------------------------------------------------
-        // para la url de la cabezera
-        var url_cabezera = ""; // vacio por defecto
-        const registro_cabezera = await indiceImagenesSistema.findOne(
-            { tipo_imagen: "cabecera_resultados_requerimientos" },
-            {
-                url: 1,
-                _id: 0,
-            }
-        );
-
-        if (registro_cabezera) {
-            url_cabezera = registro_cabezera.url;
-        }
-
-        resultado_renderizar.url_cabezera = url_cabezera;
-
-        //----------------------------------------------------
-
-        // informacion para pie de página
-        var pie_pagina = await pie_pagina_cli();
-        resultado_renderizar.pie_pagina_cli = pie_pagina;
 
         // si es TRUE y solo si es true, entonces se mostrara su ci
         if (req.inversor_autenticado) {
@@ -1393,8 +976,6 @@ controladorClienteInicio.cliProyectosVariosTipos = async (req, res) => {
         // es_ninguno: true  // para las opciones de navegacion de la ventana en estado comprimido
         // cards_inicio.es_ninguno = true; // YA ESTA INCLUIDO EN LA FUNCION "cards_inicio_cli_adm"
 
-        var pie_pagina = await pie_pagina_cli();
-        cards_inicio.pie_pagina_cli = pie_pagina;
         cards_inicio.navegador_cliente = true;
         cards_inicio.ordenador_externo = true; // porque SI existen cards que ordenar
 

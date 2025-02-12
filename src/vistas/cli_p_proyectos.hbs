@@ -44,15 +44,11 @@
         <div class="ref_tipo_py_inm"></div>
         {{!-- debajo de esta ref, es que se renderizaran los CARD EXTERNOS (lado ADMINISTRADOR) de: te, py, inm --}}
 
-        {{#each adm_cli_reserva}}
-        {{> adm_cli_card_proyecto}}
+        {{#each adm_cli_convocatoria}}
+        {{> adm_cli_card_terreno}}
         {{/each}}
 
-        {{#each adm_cli_pago}}
-        {{> adm_cli_card_proyecto}}
-        {{/each}}
-
-        {{#each adm_cli_aprobacion}}
+        {{#each adm_cli_reservacion}}
         {{> adm_cli_card_proyecto}}
         {{/each}}
 
@@ -62,10 +58,6 @@
 
         {{#each adm_cli_construido}}
         {{> adm_cli_card_proyecto}}
-        {{/each}}
-
-        {{#each adm_cli_convocatoria}}
-        {{> adm_cli_card_terreno}}
         {{/each}}
 
     </div>

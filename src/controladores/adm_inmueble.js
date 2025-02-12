@@ -8,30 +8,30 @@ const {
     indiceInversiones,
     indiceGuardados,
     indiceImagenesProyecto,
-    indiceImagenesSistema,
     indiceTerreno,
+    indiceFraccionInmueble,
 } = require("../modelos/indicemodelo");
 
 const {
     verificadorTerrenoBloqueado,
     guardarAccionAdministrador,
     verificadorLlavesMaestras,
+    fraccion_card_adm_cli,
 } = require("../ayudas/funcionesayuda_1");
 
-const {
-    cabezeras_adm_cli,
-    datos_pagos_propietario,
-    pie_pagina_adm,
-} = require("../ayudas/funcionesayuda_2");
+const { cabezeras_adm_cli, datos_pagos_propietario } = require("../ayudas/funcionesayuda_2");
 
 //const pache = require("path");
 
 //const fs = require("fs-extra");
 
 const { numero_punto_coma } = require("../ayudas/funcionesayuda_3");
+const { super_info_inm } = require("../ayudas/funcionesayuda_5");
 //const { Number } = require("mongoose");
 
 const { getStorage, ref, deleteObject } = require("firebase/storage");
+
+const moment = require("moment");
 
 const controladorAdmInmueble = {};
 
@@ -123,12 +123,14 @@ controladorAdmInmueble.renderizarVentanaInmueble = async (req, res) => {
         var inmuebleExiste = await indiceInmueble.findOne(
             { codigo_inmueble: codigo_inmueble },
             {
-                // guardado, disponible, reservado, pendiente_pago, pagado_pago, pendiente_aprobacion, pagos (construccion), remate, completado (construido)
+                // guardado, disponible, reservado, construccion, remate, construido
                 estado_inmueble: 1,
 
+                // false: cuando se trata de un inmueble normal, adquiridos por PROPIETARIOS ABSOLUTOS
+                // true: cuando se trata de un inmueble que esta fraccionado, que estara formado por  COPROPIETARIOS
+                fraccionado: 1,
+
                 // estos valores seran utililes solo para la pestaña de "Propietario". Para no hacer la consulta nuevamente a la base de datos del inmueble
-                valor_reserva: 1,
-                valor_aprobacion: 1,
                 precio_construccion: 1,
                 precio_competencia: 1,
 
@@ -140,24 +142,7 @@ controladorAdmInmueble.renderizarVentanaInmueble = async (req, res) => {
             // VERIFICAMOS QUE EL INMUEBLE EXISTA EN LA BASE DE DATOS
             var info_inmueble = {};
             info_inmueble.cab_inm_adm = true;
-            //info_inmueble.estilo_cabezera = "cabezera_estilo_inmueble";
-
-            //----------------------------------------------------
-            // para la url de la cabezera
-            var url_cabezera = ""; // vacio por defecto
-            const registro_cabezera = await indiceImagenesSistema.findOne(
-                { tipo_imagen: "cabecera_inmueble" },
-                {
-                    url: 1,
-                    _id: 0,
-                }
-            );
-
-            if (registro_cabezera) {
-                url_cabezera = registro_cabezera.url;
-            }
-
-            info_inmueble.url_cabezera = url_cabezera;
+            info_inmueble.estilo_cabezera = "cabezera_estilo_inmueble";
 
             //----------------------------------------------------
 
@@ -166,16 +151,20 @@ controladorAdmInmueble.renderizarVentanaInmueble = async (req, res) => {
             var aux_cabezera = {
                 codigo_objetivo: codigo_inmueble,
                 tipo: "inmueble",
-                lado: "administrador",
             };
 
             var cabezera_adm = await cabezeras_adm_cli(aux_cabezera);
             info_inmueble.cabezera_adm = cabezera_adm;
 
-            var pie_pagina = await pie_pagina_adm();
-            info_inmueble.pie_pagina_adm = pie_pagina;
-
             info_inmueble.es_inmueble = true; // para menu navegacion comprimido
+
+            if (inmuebleExiste.fraccionado) {
+                // para indicar que se trata de un inmueble que pertenece a varios COPROPIETARIOS
+                info_inmueble.inmueble_fraccionado = true;
+            } else {
+                // para indicar que se trata de un inmueble que pertenece a un solo PROPIETARIO ABSOLUTO
+                info_inmueble.inmueble_entero = true;
+            }
 
             if (tipo_ventana_inmueble == "descripcion") {
                 var contenido_inmueble = await inmueble_descripcion(codigo_inmueble);
@@ -184,6 +173,26 @@ controladorAdmInmueble.renderizarVentanaInmueble = async (req, res) => {
 
                 // ------- Para verificación -------
                 //console.log("DESCRIPCION INMUEBLE");
+                //console.log(info_inmueble);
+
+                res.render("adm_inmueble", info_inmueble);
+            }
+
+            // la pestaña de "fracciones" es visible solo para inmuebles del tipo FRACCIONADO
+            if (tipo_ventana_inmueble == "fracciones") {
+                var paquete_datos = {
+                    codigo_inmueble,
+                    codigo_usuario: "ninguno",
+                };
+
+                // para mostrar seleccinada la pestaña donde nos encontramos
+                info_inmueble.fracciones_inmueble = true;
+
+                var info_inmueble = await inmueble_fracciones(paquete_datos);
+                info_inmueble.informacion = info_inmueble;
+
+                // ------- Para verificación -------
+                //console.log("los datos de fracciones del inmueble");
                 //console.log(info_inmueble);
 
                 res.render("adm_inmueble", info_inmueble);
@@ -202,6 +211,7 @@ controladorAdmInmueble.renderizarVentanaInmueble = async (req, res) => {
             }
 
             if (tipo_ventana_inmueble == "documentos") {
+                // para documentos propios del inmueble, no estan incluidos los documentos privados del dueño o copropietarios
                 var contenido_inmueble = await inmueble_documentos(codigo_inmueble);
                 info_inmueble.documentos_inmueble = true;
                 info_inmueble.contenido_inmueble = contenido_inmueble;
@@ -211,20 +221,10 @@ controladorAdmInmueble.renderizarVentanaInmueble = async (req, res) => {
                 res.render("adm_inmueble", info_inmueble);
             }
 
+            // para PROPIETARIO de inmuebles enteros
             if (tipo_ventana_inmueble == "propietario") {
-                var reserva_inm = inmuebleExiste.valor_reserva;
-                var aprobacion_inm = inmuebleExiste.valor_aprobacion;
-                var precio_justo_inm = inmuebleExiste.precio_construccion;
-                var competencia_inm = inmuebleExiste.precio_competencia;
-                var plusvalia_inm = competencia_inm - precio_justo_inm;
-
-                info_inmueble.reserva_render = numero_punto_coma(reserva_inm);
-                info_inmueble.aprobacion_render = numero_punto_coma(aprobacion_inm);
-                info_inmueble.precio_render = numero_punto_coma(precio_justo_inm.toFixed(0));
-                info_inmueble.plusvalia_render = numero_punto_coma(plusvalia_inm.toFixed(0));
-
                 var contenido_inmueble = await inmueble_propietario(codigo_inmueble);
-                info_inmueble.propietario_inmueble = true;
+                info_inmueble.propietario_inmueble = true; // para resaltar la pestaña navegacion
                 info_inmueble.contenido_propietario = contenido_inmueble;
 
                 // ------- Para verificación -------
@@ -237,9 +237,21 @@ controladorAdmInmueble.renderizarVentanaInmueble = async (req, res) => {
                 res.render("adm_inmueble", info_inmueble);
             }
 
-            if (tipo_ventana_inmueble == "pagos") {
-                var contenido_inmueble = await inmueble_pagos(codigo_inmueble);
-                info_inmueble.pagos_inmueble = true;
+            // para COPROPIETARIOS de inmuebles FRACCIONADOS
+            if (tipo_ventana_inmueble == "copropietario") {
+                var contenido_inmueble = await inmueble_copropietario(codigo_inmueble);
+                info_inmueble.copropietario_inmueble = true; // para resaltar la pestaña navegacion
+                info_inmueble.contenido = contenido_inmueble;
+
+                // ------- Para verificación -------
+                //console.log("los datos de PAGOS inmueble");
+                //console.log(info_inmueble);
+                res.render("adm_inmueble", info_inmueble);
+            }
+
+            if (tipo_ventana_inmueble == "lista") {
+                var contenido_inmueble = await inmueble_lista(codigo_inmueble);
+                info_inmueble.lista_inmueble = true;
                 info_inmueble.contenido_propietario = contenido_inmueble;
                 // ------- Para verificación -------
                 //console.log("los datos de PAGOS inmueble");
@@ -259,7 +271,6 @@ controladorAdmInmueble.renderizarVentanaInmueble = async (req, res) => {
 
             if (tipo_ventana_inmueble == "eliminar") {
                 info_inmueble.eliminar_inmueble = true;
-                info_inmueble.contenido_inmueble = contenido_inmueble;
                 res.render("adm_inmueble", info_inmueble);
             }
         } else {
@@ -283,11 +294,11 @@ async function inmueble_descripcion(codigo_inmueble) {
                 codigo_inmueble: 1,
                 estado_inmueble: 1,
                 fecha_creacion: 1,
-                valor_reserva: 1,
-                valor_aprobacion: 1,
                 financiado: 1,
                 pagos_mensuales: 1,
                 tipo_inmueble: 1,
+                fraccionado: 1,
+                fecha_fin_fraccionado: 1,
                 torre: 1,
                 piso: 1,
                 puerta_inmueble: 1,
@@ -297,8 +308,6 @@ async function inmueble_descripcion(codigo_inmueble) {
                 garaje_inmueble: 1,
                 precio_competencia: 1,
                 precio_construccion: 1,
-                recompensa: 1,
-                plusvalia_sus: 1,
                 inmueble_descripcion: 1,
                 titulo_descripcion_1: 1,
                 varios_descripcion_1: 1,
@@ -322,8 +331,6 @@ async function inmueble_descripcion(codigo_inmueble) {
                 garantia_2: 1,
                 titulo_garantia_3: 1,
                 garantia_3: 1,
-                inmueble_remate: 1,
-                acumulador_penalizaciones: 1,
                 _id: 0,
             }
         );
@@ -335,10 +342,98 @@ async function inmueble_descripcion(codigo_inmueble) {
             // reconversion del "string" a "objeto"
             var aux_objeto = JSON.parse(aux_string);
 
+            if (aux_objeto.fecha_fin_fraccionado) {
+                let arrayFecha = aux_objeto.fecha_fin_fraccionado.split("T");
+                // ahora con split lo separamos, quedandonos con el formato que intereza "año-mes-dia"
+                aux_objeto.fecha_fin_fraccionado = arrayFecha[0]; // nos devolvera "2010-10-10" y eso si se puede pintar en un input tipo "date"
+            } else {
+                aux_objeto.fecha_fin_fraccionado = "";
+            }
+
+            //------------------------------------------
+            // para los inputs de departamentos tradicionales comparativos
+            let direccion_comparativa = registro_inmueble.direccion_comparativa;
+            let m2_comparativa = registro_inmueble.m2_comparativa;
+            let precio_comparativa = registro_inmueble.precio_comparativa;
+
+            if (
+                direccion_comparativa.length > 0 &&
+                m2_comparativa.length > 0 &&
+                precio_comparativa.length > 0
+            ) {
+                // oblibatoriamente son 5 inmuebles TRADICIONALES, por tanto se procede al armado de estos datos:
+                aux_objeto.tra_direccion_1 = direccion_comparativa[0];
+                aux_objeto.tra_superficie_1 = Number(m2_comparativa[0]);
+                aux_objeto.tra_precio_1 = Number(precio_comparativa[0]);
+
+                aux_objeto.tra_direccion_2 = direccion_comparativa[1];
+                aux_objeto.tra_superficie_2 = Number(m2_comparativa[1]);
+                aux_objeto.tra_precio_2 = Number(precio_comparativa[1]);
+
+                aux_objeto.tra_direccion_3 = direccion_comparativa[2];
+                aux_objeto.tra_superficie_3 = Number(m2_comparativa[2]);
+                aux_objeto.tra_precio_3 = Number(precio_comparativa[2]);
+
+                aux_objeto.tra_direccion_4 = direccion_comparativa[3];
+                aux_objeto.tra_superficie_4 = Number(m2_comparativa[3]);
+                aux_objeto.tra_precio_4 = Number(precio_comparativa[3]);
+
+                aux_objeto.tra_direccion_5 = direccion_comparativa[4];
+                aux_objeto.tra_superficie_5 = Number(m2_comparativa[4]);
+                aux_objeto.tra_precio_5 = Number(precio_comparativa[4]);
+
+            }
+            //------------------------------------------
+
             return aux_objeto;
         } else {
             return false;
         }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+//------------------------------------------------------------------
+
+async function inmueble_fracciones(paquete_datos) {
+    try {
+        var codigo_inmueble = paquete_datos.codigo_inmueble;
+        var ci_propietario = paquete_datos.codigo_usuario;
+
+        // todas las fracciones que guardan relacion con el inmueble
+        var fracciones = await indiceFraccionInmueble
+            .find(
+                { codigo_inmueble: codigo_inmueble },
+                {
+                    codigo_fraccion: 1,
+                    _id: 0,
+                }
+            )
+            .sort({ orden: 1 }); // ordenado del menor al mayor
+
+        if (fracciones.length > 0) {
+            var array_fracciones = []; // vacio de inicio
+
+            for (let i = 0; i < fracciones.length; i++) {
+                var codigo_fraccion_i = fracciones[i].codigo_fraccion;
+                var paquete_fraccion = {
+                    codigo_fraccion: codigo_fraccion_i,
+                    ci_propietario, // ya esta como "ninguno"
+                    tipo_navegacion: "administrador", // porque estamos dentro de un controlador administrador
+                };
+                var card_fraccion_i = await fraccion_card_adm_cli(paquete_fraccion);
+                array_fracciones[i] = card_fraccion_i;
+            }
+        } else {
+            var array_fracciones = []; // vacio
+        }
+
+        var contenido_fracciones = {
+            array_fracciones,
+        };
+
+        return contenido_fracciones;
     } catch (error) {
         console.log(error);
     }
@@ -510,37 +605,169 @@ async function inmueble_documentos(codigo_inmueble) {
 
 async function inmueble_propietario(codigo_inmueble) {
     try {
-        var registro_inversion = await indiceInversiones.findOne(
-            {
-                codigo_inmueble: codigo_inmueble,
-                estado_propietario: "activo", // solo puede existir un activo
-            },
-            {
-                ci_propietario: 1,
-                _id: 0,
-            }
-        );
+        var contenedor_propietario = await datos_pagos_propietario(codigo_inmueble);
 
-        // si existe un solo propietario activo
-        if (registro_inversion) {
-            var paquete_propietario = {
-                ci_propietario: registro_inversion.ci_propietario,
-                codigo_inmueble: codigo_inmueble,
-            };
-        } else {
-            var paquete_propietario = {
-                ci_propietario: "", // porque el inmueble no tiene a ningun propietario como ACTIVO
-                codigo_inmueble: codigo_inmueble,
-            };
+        return contenedor_propietario;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+// ------------------------------------------------------------------
+
+async function inmueble_copropietario(codigo_inmueble) {
+    try {
+        // valores por defecto
+        var fracciones_disponibles = [];
+        var existen_disponibles = false;
+        var precio_justo = 0;
+
+        var ti_f_val = 0;
+        var ti_f_val_render = "0";
+        var ti_f_d_n = 0;
+        var ti_f_d_n_render = "0";
+        var ti_f_d_val = 0;
+        var ti_f_d_val_render = "0";
+        var ti_f_p_render = "0"; // %
+
+        //-------------------------------------------------------
+        var fracciones_inmueble = await indiceFraccionInmueble
+            .find(
+                { codigo_inmueble: codigo_inmueble, tipo: "copropietario" },
+                {
+                    fraccion_bs: 1,
+                    disponible: 1, // true o false
+                    _id: 0,
+                }
+            )
+            .sort({ orden: 1 }); // ordenado del menor al mayor
+
+        if (fracciones_inmueble.length > 0) {
+            let k = -1;
+            for (let i = 0; i < fracciones_inmueble.length; i++) {
+                let fraccion_bs = fracciones_inmueble[i].fraccion_bs;
+                let disponible = fracciones_inmueble[i].disponible;
+
+                if (disponible === true) {
+                    ti_f_d_n = ti_f_d_n + 1;
+                    ti_f_d_val = ti_f_d_val + fraccion_bs;
+                    k = k + 1;
+                    fracciones_disponibles[k] = {
+                        fraccion_bs: fraccion_bs,
+                    };
+                } else {
+                    ti_f_val = ti_f_val + fraccion_bs;
+                }
+            }
+
+            ti_f_val_render = numero_punto_coma(ti_f_val);
+
+            if (ti_f_d_n > 0) {
+                ti_f_d_n_render = numero_punto_coma(ti_f_d_n);
+                ti_f_d_val_render = numero_punto_coma(ti_f_d_val);
+
+                existen_disponibles = true;
+
+                //--------------------------------------------------
+                // para precio justo de inmueble
+
+                let registro_inmueble = await indiceInmueble.findOne(
+                    { codigo_inmueble: codigo_inmueble },
+                    {
+                        codigo_proyecto: 1,
+                        codigo_terreno: 1,
+                        precio_construccion: 1,
+                        precio_competencia: 1,
+                        superficie_inmueble_m2: 1,
+                        fraccionado: 1,
+                        _id: 0,
+                    }
+                );
+
+                if (registro_inmueble) {
+                    let registro_terreno = await indiceTerreno.findOne(
+                        {
+                            codigo_terreno: registro_inmueble.codigo_terreno,
+                        },
+                        {
+                            estado_terreno: 1,
+                            precio_bs: 1,
+                            descuento_bs: 1,
+                            rend_fraccion_mensual: 1,
+                            superficie: 1,
+                            fecha_inicio_convocatoria: 1,
+                            fecha_inicio_reservacion: 1,
+                            fecha_fin_reservacion: 1,
+                            fecha_fin_construccion: 1,
+                            _id: 0,
+                        }
+                    );
+
+                    let registro_proyecto = await indiceProyecto.findOne(
+                        {
+                            codigo_proyecto: registro_inmueble.codigo_proyecto,
+                        },
+                        {
+                            construccion_mensual: 1,
+                            _id: 0,
+                        }
+                    );
+
+                    if (registro_terreno && registro_proyecto) {
+                        //--------------------------------------------------------------
+                        var datos_inm = {
+                            // datos del inmueble
+                            codigo_inmueble,
+                            precio_construccion: registro_inmueble.precio_construccion,
+                            precio_competencia: registro_inmueble.precio_competencia,
+                            superficie_inmueble: registro_inmueble.superficie_inmueble_m2,
+                            fraccionado: registro_inmueble.fraccionado,
+                            // datos del proyecto
+                            construccion_mensual: registro_proyecto.construccion_mensual,
+                            // datos del terreno
+                            estado_terreno: registro_terreno.estado_terreno,
+                            precio_terreno: registro_terreno.precio_bs,
+                            descuento_terreno: registro_terreno.descuento_bs,
+                            rend_fraccion_mensual: registro_terreno.rend_fraccion_mensual,
+                            superficie_terreno: registro_terreno.superficie,
+                            fecha_inicio_convocatoria: registro_terreno.fecha_inicio_convocatoria,
+                            fecha_inicio_reservacion: registro_terreno.fecha_inicio_reservacion,
+                            fecha_fin_reservacion: registro_terreno.fecha_fin_reservacion,
+                            fecha_fin_construccion: registro_terreno.fecha_fin_construccion,
+                        };
+                        var resultado = await super_info_inm(datos_inm);
+
+                        // precio justo, derecho suelo, plusvalia
+                        precio_justo = resultado.precio_justo;
+
+                        let p_financiamiento_render = resultado.p_financiamiento_render;
+
+                        //--------------------------------------------------------------
+                        ti_f_p_render = p_financiamiento_render;
+
+                        //--------------------------------------------------
+                    }
+                }
+            }
         }
-        var aux_respuesta = {}; // ***** REVISAR SI ES CORRECTO DECLARARLO VACIO PARA LUEGO LLENARLO CON AWAIT.
-        aux_respuesta = await datos_pagos_propietario(paquete_propietario);
-        if (registro_inversion) {
-            aux_respuesta.existe_propietario = true;
-        } else {
-            aux_respuesta.existe_propietario = false;
-        }
-        return aux_respuesta;
+        //-------------------------------------------------------
+
+        var resultado = {
+            fracciones_disponibles,
+            existen_disponibles, // para permitir o negar la venta de fracciones
+            precio_justo,
+            //-----------------
+
+            ti_f_val,
+            ti_f_val_render,
+            ti_f_d_n,
+            ti_f_d_n_render,
+            ti_f_d_val,
+            ti_f_d_val_render,
+            ti_f_p_render,
+        };
+
+        return resultado;
     } catch (error) {
         console.log(error);
     }
@@ -548,33 +775,38 @@ async function inmueble_propietario(codigo_inmueble) {
 
 //------------------------------------------------------------------
 
-async function inmueble_pagos(codigo_inmueble) {
-    // se mostrara todos los propietarios que tuvo el inmueble
+async function inmueble_lista(codigo_inmueble) {
+    // se mostrara listado de todos los copropietarios que tienen el inmueble.
 
     try {
         var contenedor_propietario = {};
 
-        var propietarios_inmueble = await indiceInversiones.find(
-            {
-                codigo_inmueble: codigo_inmueble,
-            },
-            {
-                codigo_inmueble: 1,
-                ci_propietario: 1,
-                estado_propietario: 1,
-                _id: 0,
-            }
-        );
+        var arrayCopropietarios = await indiceFraccionInmueble
+            .find(
+                {
+                    codigo_inmueble: codigo_inmueble,
+                    disponible: false,
+                    tipo: "copropietario",
+                },
+                {
+                    codigo_fraccion: 1,
+                    ci_propietario: 1,
+                    fraccion_bs: 1,
+                    fecha_copropietario: 1,
+                    _id: 0,
+                }
+            )
+            .sort({ fecha_copropietario: 1 }); // "1" ordenados de la fecha mas antiguo a las mas reciente
 
-        if (propietarios_inmueble.length > 0) {
+        if (arrayCopropietarios.length > 0) {
             // conversion del documento MONGO ([array]) a "string"
-            var aux_string = JSON.stringify(propietarios_inmueble);
+            var aux_string = JSON.stringify(arrayCopropietarios);
             // reconversion del "string" a "objeto" EN ESTE CASO RESPETANDO QUE SERA UN ARRAY
-            var propietarios_inmueble = JSON.parse(aux_string);
+            var copropietarios_inmueble = JSON.parse(aux_string);
 
             // ahora los nombres de los propietarios
-            for (let i = 0; i < propietarios_inmueble.length; i++) {
-                var ci_propietario_i = propietarios_inmueble[i].ci_propietario;
+            for (let i = 0; i < arrayCopropietarios.length; i++) {
+                var ci_propietario_i = arrayCopropietarios[i].ci_propietario;
                 var propietario_inmueble = await indice_propietario.findOne(
                     {
                         ci_propietario: ci_propietario_i,
@@ -588,17 +820,27 @@ async function inmueble_pagos(codigo_inmueble) {
 
                 if (propietario_inmueble) {
                     // agregando los nombres de los propietarios del inmueble
-                    propietarios_inmueble[i].nombres_propietario =
+                    copropietarios_inmueble[i].nombres_propietario =
                         propietario_inmueble.nombres_propietario;
-                    propietarios_inmueble[i].apellidos_propietario =
+                    copropietarios_inmueble[i].apellidos_propietario =
                         propietario_inmueble.apellidos_propietario;
                 }
+                //-----------------------------------------------
+                // para la fecha en formato resumido
+                // conversion de formato de fecha a ej/ domingo 28 Junio de 2023
+                // PARA LA VENTANA DE INMUEBLE EN SU PESTAÑA PROPIETARIO
+                moment.locale("es");
+                copropietarios_inmueble[i].fecha_copropietario = moment
+                    .utc(arrayCopropietarios[i].fecha_copropietario)
+                    .format("LL"); // muestra solo fecha español
+                //-----------------------------------------------
+                copropietarios_inmueble[i].orden = i + 1;
             }
         } else {
-            var propietarios_inmueble = false; // para el each del handlebars
+            var copropietarios_inmueble = false; // para el each del handlebars
         }
 
-        contenedor_propietario.propietarios_inmueble = propietarios_inmueble;
+        contenedor_propietario.copropietarios_inmueble = copropietarios_inmueble;
         return contenedor_propietario;
     } catch (error) {
         console.log(error);
@@ -613,8 +855,6 @@ async function inmueble_estados(codigo_inmueble) {
             { codigo_inmueble: codigo_inmueble },
             {
                 estado_inmueble: 1,
-                inversion_estado: 1,
-                periodo_estado: 1,
                 _id: 0,
             }
         );
@@ -634,19 +874,13 @@ async function inmueble_estados(codigo_inmueble) {
             if (aux_objeto.estado_inmueble == "reservado") {
                 var texto_estado = "Reservado";
             }
-            if (aux_objeto.estado_inmueble == "pendiente_pago") {
-                var texto_estado = "Pendiente";
-            }
-            if (aux_objeto.estado_inmueble == "pagado_pago") {
-                var texto_estado = "Pagado";
-            }
-            if (aux_objeto.estado_inmueble == "pagos") {
+            if (aux_objeto.estado_inmueble == "construccion") {
                 var texto_estado = "Construcción";
             }
             if (aux_objeto.estado_inmueble == "remate") {
                 var texto_estado = "Remate";
             }
-            if (aux_objeto.estado_inmueble == "completado") {
+            if (aux_objeto.estado_inmueble == "construido") {
                 var texto_estado = "Construido";
             }
 
@@ -680,10 +914,18 @@ controladorAdmInmueble.guardarDatosInmueble = async (req, res) => {
             var acceso = await verificadorTerrenoBloqueado(inmuebleEncontrado.codigo_terreno);
             if (acceso == "permitido") {
                 /**--------------------------------------------- */
-                // INFORMACION BASICA html
+                // CLASE DE INMUEBLE
 
-                inmuebleEncontrado.valor_reserva = Number(req.body.valor_reserva);
-                inmuebleEncontrado.valor_aprobacion = Number(req.body.valor_aprobacion);
+                let clase_inmueble = req.body.clase_inmueble;
+                if (clase_inmueble == "fraccionado") {
+                    inmuebleEncontrado.fraccionado = true;
+                    inmuebleEncontrado.fecha_fin_fraccionado = req.body.fecha_fin_fraccionado;
+                } else {
+                    inmuebleEncontrado.fraccionado = false;
+                }
+
+                /**--------------------------------------------- */
+                // INFORMACION BASICA html
 
                 inmuebleEncontrado.titulo_garantia_1 = req.body.titulo_garantia_1;
                 inmuebleEncontrado.garantia_1 = req.body.garantia_1;
@@ -699,8 +941,6 @@ controladorAdmInmueble.guardarDatosInmueble = async (req, res) => {
                 inmuebleEncontrado.puerta_inmueble = req.body.puerta_inmueble;
 
                 inmuebleEncontrado.precio_construccion = Number(req.body.precio_construccion);
-                inmuebleEncontrado.recompensa = Number(req.body.recompensa);
-                //inmuebleEncontrado.plusvalia_sus = Number(req.body.plusvalia_sus);
                 //inmuebleEncontrado.precio_competencia = req.body.precio_competencia;
 
                 /**--------------------------------------------- */
@@ -748,11 +988,11 @@ controladorAdmInmueble.guardarDatosInmueble = async (req, res) => {
                 ];
 
                 var auxPrecioComparativa = [
-                    Number(req.body.precio_sus_1),
-                    Number(req.body.precio_sus_2),
-                    Number(req.body.precio_sus_3),
-                    Number(req.body.precio_sus_4),
-                    Number(req.body.precio_sus_5),
+                    Number(req.body.precio_bs_1),
+                    Number(req.body.precio_bs_2),
+                    Number(req.body.precio_bs_3),
+                    Number(req.body.precio_bs_4),
+                    Number(req.body.precio_bs_5),
                 ];
 
                 inmuebleEncontrado.direccion_comparativa = auxDireccionComparativa;
@@ -772,8 +1012,8 @@ controladorAdmInmueble.guardarDatosInmueble = async (req, res) => {
                     sus_m2 = precio / superficie;
                     sum_precios = sum_precios + sus_m2 * superficie_inmueble;
                 }
-                inmuebleEncontrado.precio_competencia = Number(
-                    (sum_precios / auxPrecioComparativa.length).toFixed(0)
+                inmuebleEncontrado.precio_competencia = Math.round(
+                    sum_precios / auxPrecioComparativa.length
                 ); // es el promedio de los precios de la competencia
                 // -------------------------------------------------------
                 // guardado de CIUDAD a la que pertenece el inmueble
@@ -789,7 +1029,7 @@ controladorAdmInmueble.guardarDatosInmueble = async (req, res) => {
                     }
                 );
 
-                if(aux_terreno){
+                if (aux_terreno) {
                     inmuebleEncontrado.ciudad = aux_terreno.ciudad;
                 }
                 // -------------------------------------------------------
@@ -829,151 +1069,11 @@ controladorAdmInmueble.guardarDatosInmueble = async (req, res) => {
 
 /************************************************************************************** */
 /************************************************************************************** */
-// INSPECCIONAR CI DEL PROPIETARIO POTENCIAL. ESTE COMANDO SOLO ESTA DISPONIBLE CUANDO EL INMUEBLE NO CUENTA CON PROPIETARIO ACTIVO
-// VALIDO PARA: llenado de datos y "pagos" en cuenta de "inmueble", "datos" y "pagos" en cuenta de "propietario"
-controladorAdmInmueble.llenar_datos_pagos_propietario = async (req, res) => {
-    // la ruta que entra a este controlador es:
-    // POST   '/laapirest/inmueble/:codigo_inmueble/accion/llenar_datos_pagos_propietario'
+// SI BIEN DICE "ELIMINAR", ESTE CONTROLADOR SOLO ELIMINARA TODA LA DOCUMENTACION PRIVADA QUE TIENE EL PROPIETARIO CON EL INMUEBLE Y CAMBIARA SU ESTADO DEL REGISTRO DE INVERSIONES DE "ACTIVO" A "PASIVO", ESTA INFORMACION SE MANTENDRA, PORQUE SE NECESITA CONTAR CON LOS PAGOS QUE HIZO EL PROPIETARIO EN EL INMUEBLE, HASTA QUE SEA COMPLETAMENTE REEMPLAZADO POR UN NUEVO PROPIETARIO ACTIVO
 
-    var paquete_propietario = {
-        ci_propietario: req.body.ci_propietario,
-        codigo_inmueble: req.body.codigo_inmueble,
-    };
-
-    var aux_respuesta = await datos_pagos_propietario(paquete_propietario);
-
-    res.json({
-        respuesta: aux_respuesta,
-    });
-};
-
-/************************************************************************************** */
-/************************************************************************************** */
-// PARA ELIMINAR A UN PROPIETARIO DE UN INMUEBLE (no es eliminacion completa del propietario, eso esta en controladores de "PROPIETARIO")
-
-controladorAdmInmueble.eliminar_propietario_inmueble = async (req, res) => {
-    // la ruta que entra a este controlador es: delete
-    // "/laapirest/inmueble/:codigo_inmueble/accion/eliminar_propietario_inmueble"
-
-    try {
-        // ------- Para verificación -------
-        //console.log("los datos del paquete de datos es:");
-        //console.log(req.body);
-
-        const ci_propietario = req.body.ci_propietario;
-        const codigo_inmueble = req.body.codigo_inmueble;
-
-        // -----------------------------------------------------------
-        // eliminamos del registro de "indiceInversiones" buscandolo en base a "codigo_inmueble" y "ci_propietario", como este par es único, es que se utiliza "findOne"
-
-        const registroInversion = await indiceInversiones.findOne({
-            codigo_inmueble: codigo_inmueble,
-            ci_propietario: ci_propietario,
-        });
-
-        if (registroInversion) {
-            var acceso = await verificadorTerrenoBloqueado(registroInversion.codigo_terreno);
-
-            if (acceso == "permitido") {
-                const storage = getStorage();
-
-                //--------------------------------------------------------
-                // ELIMINACION DE LOS DOCUMENTOS PRIVADOS DEL INMUEBLE QUE TIENE CON SU PROPIETARIO
-                // ASI SE AHORRA ESPACIO EN EL SERVIDOR
-
-                var registroDocumentosPrivados = await indiceDocumentos.find({
-                    codigo_inmueble: codigo_inmueble,
-                    clase_documento: "Propietario",
-                    ci_propietario: ci_propietario,
-                });
-
-                if (registroDocumentosPrivados) {
-                    // eliminamos los ARCHIVOS DOCUMENTOS PDF uno por uno (sean publicos o privados)
-                    for (let i = 0; i < registroDocumentosPrivados.length; i++) {
-                        /*
-                        let documentoNombreExtension =
-                            registroDocumentosPrivados[i].codigo_documento + ".pdf";
-                        // eliminamos el ARCHIVO DOCUMENTO DE LA CARPETA DONDE ESTA GUARDADA
-                        await fs.unlink(
-                            pache.resolve("./src/publico/subido/" + documentoNombreExtension)
-                        ); // "+" es para concatenar
-                        */
-
-                        //--------------------------------------------------
-
-                        //const storage = getStorage();
-
-                        var nombre_y_ext = registroDocumentosPrivados[i].codigo_documento + ".pdf";
-
-                        // para encontrar en la carpeta "subido" en firebase con el nombre y la extension de la imagen incluida
-                        var direccionActualImagen = "subido/" + nombre_y_ext;
-
-                        // Crear una referencia al archivo que se eliminará
-                        var desertRef = ref(storage, direccionActualImagen);
-
-                        // Eliminar el archivo y esperar la promesa
-                        await deleteObject(desertRef);
-
-                        // Archivo eliminado con éxito
-                        //console.log("Archivo eliminado DE FIREBASE con éxito");
-
-                        //--------------------------------------------------
-                    }
-                    // luego de eliminar todos los ARCHIVOS DOCUMENTO, procedemos a ELIMINARLO DE LA BASE DE DATOS
-                    await indiceDocumentos.deleteMany({
-                        codigo_inmueble: codigo_inmueble,
-                        clase_documento: "Propietario",
-                        ci_propietario: ci_propietario,
-                    }); // "deleteMany" para que elimine TODOS los que coinciden con las condiciones
-                }
-
-                //-------------------------------------------------------
-                // eliminamos todos los datos (informacion que esta guardada en la base de datos) del propietario en este inmueble
-                //await registroInversion.remove(); // no usamos para no tener problemas con problemas de caducidad de remove
-
-                await indiceInversiones.deleteOne({
-                    codigo_inmueble: codigo_inmueble,
-                    ci_propietario: ci_propietario,
-                });
-
-                //------------------------------------------------------------------
-                // guardamos en el historial de acciones
-                var ci_administrador = req.user.ci_administrador; // extraido de la SESION guardada del administrador
-                var accion_administrador =
-                    "Elimina propietario: " + ci_propietario + " de inmueble: " + codigo_inmueble;
-                var aux_accion_adm = {
-                    ci_administrador,
-                    accion_administrador,
-                };
-                await guardarAccionAdministrador(aux_accion_adm);
-                //-------------------------------------------------------------------
-
-                res.json({
-                    exito: "si",
-                });
-            } else {
-                // si el acceso es denegado
-                res.json({
-                    exito: "denegado",
-                });
-            }
-        } else {
-            res.json({
-                exito: "no",
-            });
-        }
-    } catch (error) {
-        console.log(error);
-    }
-};
-
-/************************************************************************************** */
-/************************************************************************************** */
-// PARA AGREGAR A UN NUEVO PROPIETARIO DE UN INMUEBLE
-
-controladorAdmInmueble.nuevo_propietario_inmueble = async (req, res) => {
+controladorAdmInmueble.eliminarPropietarioInmueble = async (req, res) => {
     // la ruta que entra a este controlador es: post
-    // "/laapirest/inmueble/:codigo_inmueble/accion/nuevo_propietario_inmueble"
+    // "/laapirest/inmueble/:codigo_inmueble/accion/eliminar_propietario_inmueble"
 
     try {
         // ------- Para verificación -------
@@ -1063,7 +1163,7 @@ controladorAdmInmueble.nuevo_propietario_inmueble = async (req, res) => {
                     ci_propietario +
                     " de inmueble: " +
                     codigo_inmueble +
-                    " cambia su estado de activo a pasivo";
+                    " fue eliminado";
                 var aux_accion_adm = {
                     ci_administrador,
                     accion_administrador,
@@ -1114,16 +1214,6 @@ controladorAdmInmueble.guardarEstadoInmueble = async (req, res) => {
                     { $set: { estado_inmueble: req.body.nuevo_estado } }
                 ); // guardamos el registro con el dato modificado
 
-                await indiceInmueble.updateOne(
-                    { codigo_inmueble: codigo_inmueble },
-                    { $set: { inversion_estado: Number(req.body.inversion) } }
-                ); // guardamos el registro con el dato modificado
-
-                await indiceInmueble.updateOne(
-                    { codigo_inmueble: codigo_inmueble },
-                    { $set: { periodo_estado: Number(req.body.periodo) } }
-                ); // guardamos el registro con el dato modificado
-
                 if (req.body.nuevo_estado == "guardado") {
                     await indiceInmueble.updateOne(
                         { codigo_inmueble: codigo_inmueble },
@@ -1162,9 +1252,239 @@ controladorAdmInmueble.guardarEstadoInmueble = async (req, res) => {
     }
 };
 
+/************************************************************************************** */
+/************************************************************************************** */
+// PARA CREAR FRACCIONES DEL INMUEBLE
+
+controladorAdmInmueble.crearFraccionesInmueble = async (req, res) => {
+    // la ruta que entra a este controlador es:
+    // post   "/laapirest/inmueble/:codigo_inmueble/accion/crear_fracciones_inmueble"
+
+    try {
+        // ------- Para verificación -------
+        console.log("los datos que se leen para CREAR FRACCIONES INMUEBLE");
+        console.log(req.body);
+
+        var codigo_inmueble = req.body.codigo_inmueble;
+        var valor_fraccion = Number(req.body.valor_fraccion);
+        var cantidad_fraccion = Number(req.body.cantidad_fraccion);
+
+        let registro_inmueble = await indiceInmueble.findOne(
+            { codigo_inmueble: codigo_inmueble },
+            {
+                codigo_terreno: 1,
+                codigo_proyecto: 1,
+                fraccionado: 1,
+                precio_construccion: 1,
+                precio_competencia: 1,
+                superficie_inmueble_m2: 1,
+                _id: 0,
+            }
+        );
+
+        if (registro_inmueble) {
+            var acceso = await verificadorTerrenoBloqueado(registro_inmueble.codigo_terreno);
+            if (acceso == "permitido") {
+                if (registro_inmueble.fraccionado) {
+                    // si es true
+                    // si es un inmueble de la clase FRACCIONADO, entonces si admite la creacion de fracciones de inmueble
+
+                    //--------------------------------------------------
+                    // determinacion de la plusvalia en funcion a la participacion de la fraccion y el tiempo de plusvalia
+
+                    var fraccion_bs_render = numero_punto_coma(Math.floor(valor_fraccion));
+
+                    var aux_plusvalia = 0; // por defecto
+                    var aux_dias_plusvalia = 0; // por defecto
+
+                    let registro_terreno = await indiceTerreno.findOne(
+                        { codigo_terreno: registro_inmueble.codigo_terreno },
+                        {
+                            fecha_inicio_construccion: 1,
+                            fecha_fin_construccion: 1,
+
+                            estado_terreno: 1,
+                            precio_bs: 1,
+                            descuento_bs: 1,
+                            rend_fraccion_mensual: 1,
+                            superficie: 1,
+                            fecha_inicio_convocatoria: 1,
+                            fecha_inicio_reservacion: 1,
+                            fecha_fin_reservacion: 1,
+
+                            _id: 0,
+                        }
+                    );
+
+                    //---------------------------------------------------------
+
+                    let registro_proyecto = await indiceProyecto.findOne(
+                        {
+                            codigo_proyecto: codigo_proyecto,
+                        },
+                        {
+                            construccion_mensual: 1,
+                            _id: 0,
+                        }
+                    );
+
+                    if (registro_terreno && registro_proyecto) {
+                        let datos_inm = {
+                            // datos del inmueble
+                            codigo_inmueble,
+                            precio_construccion: registro_inmueble.precio_construccion,
+                            precio_competencia: registro_inmueble.precio_competencia,
+                            superficie_inmueble: registro_inmueble.superficie_inmueble_m2,
+                            fraccionado: registro_inmueble.fraccionado,
+                            // datos del proyecto
+                            construccion_mensual: registro_proyecto.construccion_mensual,
+                            // datos del terreno
+                            estado_terreno: registro_terreno.estado_terreno,
+                            precio_terreno: registro_terreno.precio_bs,
+                            descuento_terreno: registro_terreno.descuento_bs,
+                            rend_fraccion_mensual: registro_terreno.rend_fraccion_mensual,
+                            superficie_terreno: registro_terreno.superficie,
+                            fecha_inicio_convocatoria: registro_terreno.fecha_inicio_convocatoria,
+                            fecha_inicio_reservacion: registro_terreno.fecha_inicio_reservacion,
+                            fecha_fin_reservacion: registro_terreno.fecha_fin_reservacion,
+                            fecha_fin_construccion: registro_terreno.fecha_fin_construccion,
+                        };
+                        var resultado = await super_info_inm(datos_inm);
+
+                        // precio justo, derecho suelo, plusvalia
+                        var precio_justo = resultado.precio_justo;
+                        var plusvalia = resultado.plusvalia;
+
+                        //---------------------------------------------------------
+
+                        // con ese dato, determinaremos el %de participacion de la presente fraccion, para determinar la plusvalia que le corresponde a la presente fraccion
+                        var participacion = valor_fraccion / precio_justo;
+
+                        // redondeando al entero inmediato inferior
+                        aux_plusvalia = Math.floor(participacion * plusvalia);
+
+                        if (registro_terreno) {
+                            let fecha_inicio_construccion =
+                                registro_terreno.fecha_inicio_construccion;
+                            let fecha_fin_construccion = registro_terreno.fecha_fin_construccion;
+                            let milisegundos = fecha_fin_construccion - fecha_inicio_construccion;
+                            let dias_plusvalia = milisegundos / (1000 * 60 * 60 * 24);
+                            aux_dias_plusvalia = Math.floor(dias_plusvalia);
+                        }
+
+                        var aux_plusvalia_render = numero_punto_coma(aux_plusvalia);
+                        var dias_plusvalia = numero_punto_coma(aux_dias_plusvalia);
+
+                        //--------------------------------------------------
+
+                        // revisamos si el inmueble ya presenta con fracciones de inmueble anteriores
+                        let fracciones = await indiceFraccionInmueble.find(
+                            { codigo_inmueble: codigo_inmueble },
+                            { codigo_fraccion: 1, orden: 1 }
+                        );
+
+                        var array_codigos = []; // vacio por defecto
+                        var array_orden = []; // vacio por defecto
+
+                        var arrayFraccionesCreadas = []; // vacio por defecto
+
+                        if (fracciones) {
+                            for (let j = 0; j < fracciones.length; j++) {
+                                array_codigos[j] = fracciones[j].codigo_fraccion;
+                                array_orden[j] = fracciones[j].orden;
+                            }
+                        }
+
+                        for (let i = 0; i < cantidad_fraccion; i++) {
+                            var paqueteria = {
+                                codigo_inmueble,
+                                array_codigos,
+                                array_orden,
+                            };
+
+                            var resultado_funcion = funcion_codigo_fraccion(paqueteria);
+
+                            var codigo_fraccion = resultado_funcion.codigo_fraccion;
+                            var orden = resultado_funcion.orden;
+
+                            const fraccionInmueble = new indiceFraccionInmueble({
+                                //-------------------------------
+                                codigo_fraccion: codigo_fraccion,
+                                codigo_terreno: registro_inmueble.codigo_terreno,
+                                codigo_proyecto: registro_inmueble.codigo_proyecto,
+                                codigo_inmueble: codigo_inmueble,
+                                disponible: true,
+                                orden: orden,
+                                tipo: "copropietario",
+                                fraccion_bs: valor_fraccion,
+                                //-------------------------------
+                            });
+
+                            await fraccionInmueble.save();
+
+                            //--------------------------------------------------------
+
+                            let objeto = {
+                                codigo_fraccion,
+                                fraccion_bs: valor_fraccion,
+                                fraccion_bs_render,
+                                plusvalia: aux_plusvalia,
+                                plusvalia_render: aux_plusvalia_render,
+                                dias_plusvalia,
+                            };
+                            // El método unshift agrega uno o más elementos al principio del array. Esto para que la ordenacion renderizada en la ventana del navegador recorriendo el for se vea ordenadas secuencialemte las fracciones creadas
+                            arrayFraccionesCreadas.unshift(objeto);
+                            // usamos un array extra "arrayFraccionesCreadas" donde estaran los codigos de las fracciones de inmueble recientemente creadas, ya que "array_codigos" puede tener dentro de si codigos de fracciones antiguas creadas con anterioridad
+                            //--------------------------------------------------------
+                            // agregamos el nuevo codigo de fraccion y el nuevo orden en el array, para la creacion de nueva fraccion de inmueble
+                            // El método push agrega uno o más elementos al final del array.
+
+                            array_codigos.push(codigo_fraccion);
+                            array_orden.push(orden);
+                        } // fin for
+
+                        //-------------------------------------------------------------------
+                        // guardamos en el historial de acciones
+                        var ci_administrador = req.user.ci_administrador; // extraido de la SESION guardada del administrador
+                        var accion_administrador =
+                            "Crea fracciones para el inmueble " + codigo_inmueble;
+                        var aux_accion_adm = {
+                            ci_administrador,
+                            accion_administrador,
+                        };
+                        await guardarAccionAdministrador(aux_accion_adm);
+                        //-------------------------------------------------------------------
+
+                        res.json({
+                            exito: "si",
+                            arrayFraccionesCreadas, // para renderizar las fracciones recientemente creadas
+                        });
+                    }
+                } else {
+                    // si no es un inmueble de la clase FRACCIONADO
+                    res.json({
+                        exito: "no_fracciones",
+                    });
+                }
+            } else {
+                // si el acceso es denegado
+                res.json({
+                    exito: "denegado",
+                });
+            }
+        } else {
+            res.json({
+                exito: "no",
+            });
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// SACAR DE LA PROMEDA ESTE ELIMINADOR Y HACERLO FUNCIONAR APARTE
+// SACAR DE LA PROMESA ESTE ELIMINADOR Y HACERLO FUNCIONAR APARTE
 
 controladorAdmInmueble.eliminarInmueble = async (req, res) => {
     // RUTA  "DELETE"    "/laapirest/inmueble/:codigo_inmueble/accion/eliminar_inmueble"
@@ -1411,6 +1731,84 @@ async function eliminadorGuarInvInmueble(codigo_inmueble) {
         console.log(error);
     }
 }
+
+//---------------------------------------------------------------------
+// PARA crear el codigo unico de cada fraccion de inmueble
+function funcion_codigo_fraccion(paqueteria) {
+    var codigo_inmueble = paqueteria.codigo_inmueble;
+    var array_codigos = paqueteria.array_codigos;
+    var array_orden = paqueteria.array_orden;
+
+    if (array_orden.length > 0) {
+        var continuar = true;
+        var aux_orden = 1;
+        while (continuar) {
+            // Condición para que el bucle continúe
+
+            //----------------------------------------
+            // El método includes devuelve true si el elemento está presente en el array.
+            if (array_orden.includes(aux_orden)) {
+                //console.log("El elemento existe en el array.");
+                aux_orden = aux_orden + 1;
+            } else {
+                //console.log("El elemento no existe en el array.");
+
+                // el elemento "aux_orden" es unico dentro del array
+
+                // construimos el codigo de la fraccion:
+
+                // Convertir el número a string
+                var numeroComoString = aux_orden.toString();
+
+                // Contar los caracteres
+                var numeroDeCaracteres = numeroComoString.length;
+
+                if (numeroDeCaracteres >= 3) {
+                    var string_orden = numeroComoString;
+                    var aux_codigo_fraccion = codigo_inmueble + string_orden;
+                } else {
+                    if ((numeroDeCaracteres = 1)) {
+                        var string_orden = "00" + numeroComoString;
+                        var aux_codigo_fraccion = codigo_inmueble + string_orden;
+                    }
+                    if ((numeroDeCaracteres = 2)) {
+                        var string_orden = "0" + numeroComoString;
+                        var aux_codigo_fraccion = codigo_inmueble + string_orden;
+                    }
+                }
+
+                // por seguridad, revision de si el codigo de la fraccion es unico en el array de codigos
+                // El método includes devuelve true si el elemento está presente en el array.
+                if (array_codigos.includes(aux_codigo_fraccion)) {
+                    //console.log("El elemento existe en el array.");
+                    aux_orden = aux_orden + 1; // para que continue nuevamente con el while, ahora analizando con un nuevo aux_orden
+                } else {
+                    // el elemento "aux_codigo_fraccion" es unico dentro del array
+
+                    var orden = aux_orden; // tipo numerico
+                    var codigo_fraccion = aux_codigo_fraccion; // tipo string
+                    continuar = false; // para salir del bucle while
+                }
+            }
+        } // fin while
+
+        // aqui ya contaremos con el "orden" y "codigo_fraccion" unicos
+    } else {
+        //significa que no existen codigos de inmueble, y por tanto sera creado la primera de todas
+        var codigo_fraccion = codigo_inmueble + "001";
+        var orden = 1;
+    }
+
+    var resultado = {
+        codigo_fraccion,
+        orden,
+    };
+
+    //resultado.estado = datos_terreno.estado_terreno;
+    return resultado;
+}
+
+//---------------------------------------------------------------------
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

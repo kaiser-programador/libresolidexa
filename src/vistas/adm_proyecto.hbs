@@ -31,6 +31,19 @@
         </li>
         {{/if}}
 
+        {{#if cuotas_proyecto}}
+        <li class="nav-item">
+            <a href="/laapirest/proyecto/{{codigo_proyecto}}/cuotas" class="nav-link active"
+                id="cuotas_py-tab" role="tab" aria-controls="cuotas_py"
+                aria-selected="true">Cuotas</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/proyecto/{{codigo_proyecto}}/cuotas" class="nav-link" id="cuotas_py-tab"
+                role="tab" aria-controls="cuotas_py" aria-selected="false">Cuotas</a>
+        </li>
+        {{/if}}
+
         {{#if imagenes_proyecto}}
         <li class="nav-item">
             <a href="/laapirest/proyecto/{{codigo_proyecto}}/imagenes" class="nav-link active" id="imagenes_py-tab"
@@ -162,6 +175,11 @@
 {{#if descripcion_proyecto}}
 <div id="id_tipo_ventana" data-tipo_ventana="ventana_adm_py_descripcion"></div>
 {{> adm_py_descripcion}}
+{{/if}}
+
+{{#if cuotas_proyecto}}
+<div id="id_tipo_ventana" data-tipo_ventana="normal"></div>
+{{> adm_py_cuotas}}
 {{/if}}
 
 {{#if imagenes_proyecto}}

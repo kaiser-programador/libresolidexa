@@ -1,0 +1,169 @@
+{{! Las fracciones creadas y que formaran parte del inmueble del tipo COPROPIETARIO }}
+{{!-- VALIDO TAMBIEN si se necesita crear una fraccion con un valor unico diferente al resto de las demas fracciones --}}
+<div class="contenido container-fluid">
+
+    <div class="row">
+        <div class="col-sm-12 col-lg-4">
+            <div class="card my-3">
+                <h5 class="card-header">CREAR FRACCIONES</h5>
+
+                <div class="card-body text-primary">
+
+                    {{! --------- }}
+                    <div class="form-group row">
+                        <label
+                            for="label_valor_fraccion"
+                            class="col-sm-12 col-lg-4 col-form-label"
+                        >Valor
+                        </label>
+                        <div class="col-sm-12 col-lg-8 input-group">
+                            <input
+                                name="valor_fraccion"
+                                type="number"
+                                title="Valor unitario de la fracción"
+                                placeholder="(Número entero)"
+                                step="1"
+                                class="form-control"
+                                id="label_valor_fraccion"
+                                min="1"
+                                required
+                            />
+                            <div class="input-group-append">
+                                <span class="input-group-text bg-warning">Bs</span>
+                            </div>
+                        </div>
+                    </div>
+                    {{! --------- }}
+                    <div class="form-group row">
+                        <label
+                            for="label_cantidad_fraccion"
+                            class="col-sm-12 col-lg-4 col-form-label"
+                        >Cantidad</label>
+                        <div class="col-sm-12 col-lg-8 input-group">
+                            <input
+                                name="cantidad_fraccion"
+                                type="number"
+                                step="1"
+                                placeholder="(Número entero)"
+                                title="Cantidad de fracciones a crearse"
+                                class="form-control"
+                                id="label_cantidad_fraccion"
+                                min="1"
+                                required
+                            />
+                        </div>
+                    </div>
+                    {{! --------- }}
+
+                    <input
+                        type="text"
+                        name="codigo_inmueble"
+                        class="input_codigo_proyecto"
+                        value="{{codigo_inmueble}}"
+                        hidden
+                    />
+
+                    <input
+                        type="submit"
+                        class="ref_subir_img btn btn-primary offset-4"
+                        value="Crear fracciones"
+                    />
+
+                    <div class="text-center mt-2">
+                        <button
+                            class="btn btn-primary"
+                            id="crear_fracciones_inmueble"
+                        >Crear</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        {{!-- informacion respecto a las fracciones creadas --}}
+
+        <div class="col-sm-12 col-lg-4">
+            <div class="card my-3">
+                <h5 class="card-header">INFORMACIÓN</h5>
+
+                <div class="card-body text-primary">
+                    <h6>
+                        Fracciones
+                    </h6>
+                    <div class="row">
+                        <div class="col-6">
+                            Valor total
+                        </div>
+                        <div class="col-6">
+                            <span>{{valor_total_fracciones}}</span>
+                            <span>Bs</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            Cantidad total
+                        </div>
+                        <div class="col-6">
+                            <span>{{cantidad_total_fracciones}}</span>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <p>
+                        El valor total de las fracciones creadas debe coincidir exactamente con el precio de construcción del inmueble
+                    </p>
+
+                    <div class="row">
+                        <div class="col-6">
+                            Precio construcción
+                        </div>
+                        <div class="col-6">
+                            <span>{{construccion_inmueble}}</span>
+                            <span>Bs</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        {{! para eliminacion de todas las fracciones existentes }}
+        <div class="col-sm-12 col-lg-4">
+            <div class="card my-3">
+                <h5 class="card-header">ELIMINAR FRACCIONES</h5>
+
+                <div class="card-body text-primary">
+                    <p>
+                        Se precederá a eliminar todas las fracciones existentes del inmueble
+                    </p>
+
+                    <div class="form-group ref_subir_doc text-center">
+                        <button class="btn btn-danger">Eliminar</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<hr />
+
+<div class="contenido container-fluid contenedor_fracciones_inmueble">
+    <div class="row">
+
+        <div class="contenedor_titulo_fracciones col-12">
+            <h5 class="cuadro_estandart p-2 rounded text-center">
+                FRACCIONES DEL INMUEBLE
+            </h5>
+        </div>
+
+        {{#each array_fracciones}}
+        {{> adm_cli_card_fraccion}}
+        {{/each}}
+        
+    </div>
+</div>

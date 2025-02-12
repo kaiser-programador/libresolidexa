@@ -1,0 +1,54 @@
+{{!-- para pestaña descripcion de la fraccion. valido para lado ADMINISTRADOR Y CLIENTE --}}
+
+{{!-- ------------------------------------------------------- --}}
+{{!-- DATOS PARA SEGUNDERO DE PLUSVALIA --}}
+{{!-- plus_r viene en unidades de: bs/seg --}}
+<div id="contenedor_seg_plus" hidden>
+    {{#each informacion.array_segundero}}
+        <div class="cuerpo_plus">
+            <span class="plus_r" data-plus_r="{{plus_r}}"></span>
+            <span class="plus_fechaInicio" data-plus_fechaInicio="{{plus_fechaInicio}}"></span>
+            <span class="plus_fechaFin" data-plus_fechaFin="{{plus_fechaFin}}"></span>
+        </div>
+    {{/each}}
+</div>
+
+{{!-- ------------------------------------------------------- --}}
+
+<div class="contenido container">
+    
+    {{> segu_propietario_fraccion}}
+
+    <div class="row my-4 cuadro_estandart">
+        <div class="col-12">
+            {{! table }}
+            <h5 class="my-3 text-center"><b>Inmuebles</b></h5>
+
+            {{!-- ---------------------------------------- --}}
+            {{#if informacion.existe_inversionista}}
+                {{#each informacion.arrayInmuebles}}
+                    {{codigo_inmueble}}
+                    {{ganancia_bs}}
+                    {{ganancia_bs_render}}
+                    {{fecha_adquisicion}}
+                    {{fecha_inicio}}
+                    {{fecha_fin}}
+                    {{fecha_pago}}
+                {{/each}}
+            {{/if}}
+            {{#if informacion.existe_copropietario}}
+                {{#each informacion.arrayInmuebles}}
+                    {{codigo_inmueble}}
+                    {{plusvalia_bs}}
+                    {{plusvalia_bs_render}}
+                    {{fecha_adquisicion}}
+                    {{fecha_inicio}}
+                    {{fecha_fin}}
+                {{/each}}
+            {{/if}}
+
+            {{!-- ---------------------------------------- --}}
+
+        </div>
+    </div>
+</div>

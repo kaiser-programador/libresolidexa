@@ -235,8 +235,8 @@
         left: 80%;
     }
     .container_engranajes_a .contenedor-3 {
-        top: 210%;
-        left: 168%;
+        top: 214%;
+        left: 175%;
     }
 }
 
@@ -627,62 +627,3 @@
 }
 
 /* ---------------------------------------------- */
-/* PARA GRAFICOS DE CALCULADORA INVERSIONISTA */
-
-/* desde 575px para adelante lg */
-/* @media screen and (min-width: 575px) {
-
-    .gra_velocimetro, .texto_velocimetro {
-        display: block;
-    }
-
-    .gra_barras, .texto_barras {
-        display: block;
-    }
-
-    .contenedor_desplazamiento {
-        display: none;
-    }
-
-} */
-
-/* si es menor que 575px */
-/* @media screen and (max-width: 575px) {
-
-} */
-
-/* ---------------------------------------------- */
-
-/* .contenedor_somos_impar .textos_somos{
-    padding-right: 2rem;
-    text-align: left;
-}
-.contenedor_somos_par .textos_somos{
-    padding-left: 2rem;
-    text-align: left;
-}
-
-
-.contenedor_somos_impar .titulo_somos {
-    text-align: left;
-}
-.contenedor_somos_impar .parrafo_somos {
-    text-align: left;
-}
-
-
-.contenedor_somos_par .titulo_somos {
-    text-align: right;
-}
-.contenedor_somos_par .parrafo_somos {
-    text-align: right;
-} */
-
-/* .titulo_somos{
-    font-size: 2rem;
-}
-
-.parrafo_somos{
-    font-size: 1.2rem;
-    margin-top: 2rem;
-} */

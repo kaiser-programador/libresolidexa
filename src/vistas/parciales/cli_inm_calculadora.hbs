@@ -1,1486 +1,2166 @@
 {{! para la CALCUALDORA DEL INMUEBLE FRENTE A OTROS Y MEDICION DE SU RENTABILIDAD }}
 
 <div id="contenedor_calculadora" hidden>
-    <span class="maximo" data-maximo="{{informacion.maximo}}"></span>
-    <span class="minimo" data-minimo="{{informacion.minimo}}"></span>
-    <span class="promedio" data-promedio="{{informacion.promedio}}"></span>
-    <span class="solidexa_sus" data-solidexa_sus="{{informacion.solidexa_sus}}"></span>
-    <span class="solidexa_m2" data-solidexa_m2="{{informacion.solidexa_m2}}"></span>
-    <span class="solidexa_sus_m2" data-solidexa_sus_m2="{{informacion.solidexa_sus_m2}}"></span>
-    <span class="moneda_sus" data-moneda_sus="{{informacion.moneda_sus}}"></span>
+    <span class="solidexa_inm_bs" data-solidexa_inm_bs="{{informacion.solidexa_inm_bs}}"></span>
+    <span class="plusvalia_inm_bs" data-plusvalia_inm_bs="{{informacion.plusvalia_inm_bs}}"></span>
+    <span class="solidexa_inm_m2" data-solidexa_inm_m2="{{informacion.solidexa_inm_m2}}"></span>
+    <span
+        class="solidexa_inm_bsm2"
+        data-solidexa_inm_bsm2="{{informacion.solidexa_inm_bsm2}}"
+    ></span>
+    {{!-- inversion_bs es la suma de dinero actual, que el inversionista debe pagar para adquiriri el inmueble solidexa --}}
+    <span class="inversion_bs" data-inversion_bs="{{informacion.inversion_bs}}"></span>
+    <span class="minimo_bsm2" data-minimo_bsm2="{{informacion.minimo_bsm2}}"></span>
+    <span class="promedio_bsm2" data-promedio_bsm2="{{informacion.promedio_bsm2}}"></span>
+    <span class="maximo_bsm2" data-maximo_bsm2="{{informacion.maximo_bsm2}}"></span>
+    <span class="suelo_bs" data-suelo_bs="{{informacion.suelo_bs}}"></span>
+
+    <span class="tc_ine" data-tc_ine="{{informacion.tc_ine}}"></span>
+    <span class="tc_paralelo" data-tc_paralelo="{{informacion.tc_paralelo}}"></span>
+    <span class="inflacion_ine" data-inflacion_ine="{{informacion.inflacion_ine}}"></span>
+
+    <div id="id_construccion">
+        {{#each informacion.cronograma_pagos}}
+            <span class="construccion_mes" data-fecha="{{fecha}}" data-precio="{{pago_bs}}"></span>
+        {{/each}}
+    </div>
+
+    {{! ---- revisar si son necesarios: ---- }}
+    <span
+        class="meses_construccion"
+        data-meses_construccion="{{informacion.meses_construccion}}"
+    ></span>
+
 </div>
 
 {{! para guardado del ancho actual de la ventana }}
 <span class="ancho_ventana" data-ancho_ventana=""></span>
 
-<div class="row mt-5 cuadro_estandart py-3">
-    <div class="col-12 mb-2">
-        <div class="text-center">
-            <h3 class="texto-resaltado">
-                <span>Calculadora</span>
-                <span class="clase_calculadora"></span>
-                <i
-                    class="popover_calculadora_p icono_popover fas fa-info-circle ml-1"
-                    data-toggle="popover"
-                    data-html="true"
-                    data-content="<span>Descubre por qué el <b>{{cabezera_cli.tipo_inmueble}} {{cabezera_cli.codigo}}</b> es la mejor opción para ser propietario frente a otros inmuebles tradicionales disponibles en el mercado.</span>"
-                ></i>
+<div class="row mt-5 cuadro_estandart_puro py-3">
 
-                <i
-                    class="popover_calculadora_i icono_popover fas fa-info-circle ml-1"
-                    data-toggle="popover"
-                    data-html="true"
-                    data-content="Descubre por qué el <b>{{cabezera_cli.tipo_inmueble}} {{cabezera_cli.codigo}}</b> es la mejor opción de inversión frente a otras alternativas disponibles."
-                ></i>
-            </h3>
-        </div>
-    </div>
-    <div class="col-6">
+    <div class="col-12">
         <div class="d-flex justify-content-center">
             <div>
-                <div class="text-center">
-                    <i class="fas fa-house-user contenedor-cabezera-icono"></i>
-                </div>
-                <div class="mt-2">
-                    <label>
-                        <input
-                            type="radio"
-                            name="tipo_calculadora"
-                            class="calculadora_propietario"
-                            value="propietario"
-                        />
-                        Propietario
-                    </label>
+                <div class="btn boton-linea-secundario bg-unidad" id="calInmPropietario">
+                    <div>
+                        <i class="fas fa-binoculars"></i>
+                    </div>
+                    <div>
+                        <span>Propietario</span>
+                    </div>
                 </div>
             </div>
 
-        </div>
-    </div>
-    <div class="col-6">
-        <div class="d-flex justify-content-center">
-            <div>
-                <div class="text-center">
-                    <i class="fas fa-coins contenedor-cabezera-icono"></i>
+            <div class="ml-2">
+                <div class="btn boton-linea-secundario" id="calInmComparar">
+                    <div>
+                        <i class="fas fa-binoculars"></i>
+                    </div>
+                    <div>
+                        <span>Comparar</span>
+                    </div>
                 </div>
-                <div class="mt-2">
-                    <label>
-                        <input
-                            type="radio"
-                            name="tipo_calculadora"
-                            class="calculadora_inversionista"
-                            value="inversionista"
-                        />
-                        Inversionista
-                    </label>
+            </div>
+
+            <div class="ml-2">
+                <div class="btn boton-linea-secundario" id="calInmInversionista">
+                    <div>
+                        <i class="fas fa-binoculars"></i>
+                    </div>
+                    <div>
+                        <span>Inversionista</span>
+                    </div>
                 </div>
             </div>
 
         </div>
     </div>
 
-    <div class="col-12" id="contenedor_propietario">
+    <div class="col-12">
+        <div id="m-calInmPropietario" class="encuadre text-center mt-3">
+            Al adquirir el inmueble SOLIDEXA al precio justo obtienes beneficios
+        </div>
+
+        <div id="m-calInmComparar" class="encuadre text-center mt-3" style="display: none;">
+            Compare el inmueble SOLIDEXA con otros inmuebles.
+        </div>
+
+        <div id="m-calInmInversionista" class="encuadre text-center mt-3" style="display: none;">
+            Si estás pensando en invertir tu dinero, compara diversas oportunidades de inversión y
+            descubre por qué el inmueble SOLIDEXA destaca como la mejor opción.
+        </div>
+    </div>
+
+    <div class="col-12">
+        <hr class="linea_calculadora" />
+    </div>
+
+    <div class="col-12" id="c-calInmPropietario">
         <div class="row">
             <div class="col-12">
-
-                <hr class="linea_calculadora" />
-
-                <div>
-                    <h4 class="text-center texto-resaltado">
-                        Plusvalía
-                    </h4>
-                    <div class="alert alert-primary mt-3">
-                        Observa cómo <b>SOLIDEXA</b> te recompensa con una mejor plusvalía en comparación
-                        con otros inmuebles tradicionales del mercado.<br />
-                        Esta plusvalía es ganancia que beneficiara al futuro propietario de este
-                        inmueble en lugar de beneficiar a intermediarios, desarrolladores
-                        inmobiliarios o constructoras tradicionales.
-                    </div>
-                </div>
                 <div class="row">
 
-                    <div class="col-12 col-sm-6">
+                    {{! d-none: Oculta el elemento en todos los tamaños de pantalla. }}
+                    {{! d-lg-block: Muestra el elemento únicamente en pantallas grandes a partir de lg }}
+                    <div class="col-lg-2 d-none d-lg-block"></div>
+
+                    <div class="col-12 col-sm-6 col-lg-4">
 
                         <div class="text-center mb-3">
-                            <h5 class="texto-link">
-                                <b>Inmueble tradicional</b>
-                                <i
-                                    class="icono_popover fas fa-info-circle ml-1"
-                                    data-toggle="popover"
-                                    data-html="true"
-                                    data-content="Ingresa los datos del precio y la superficie del inmueble tradicional que encontraste en el mercado y que deseas comparar con el inmueble SOLIDEXA."
-                                ></i>
-                            </h5>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="label_precio_tradicional" class="col-4 col-form-label"><b
-                                >Precio</b></label>
-                            <div class="col-8 input-group">
-                                <input
-                                    name="precio_tradicional"
-                                    type="number"
-                                    step="0.01"
-                                    class="form-control"
-                                    id="label_precio_tradicional"
-                                    title="Precio del inmueble tradicional"
-                                    min="1"
-                                    required
-                                />
-                                <div class="input-group-append">
-                                    <span class="input-group-text bg-warning">$us</span>
-                                </div>
+                            <div class="titulo_3">
+                                Economía nacional
                             </div>
                         </div>
 
-                        <div class="form-group row">
-                            <label
-                                for="label_superficie_tradicional"
-                                class="col-4 col-form-label"
-                            ><b>Superficie</b></label>
-                            <div class="col-8 input-group">
+                        <div class="form-check mt-3">
+                            <label>
                                 <input
-                                    name="superficie_tradicional_m2"
-                                    type="number"
-                                    step="0.01"
-                                    class="form-control"
-                                    id="label_superficie_tradicional"
-                                    required
+                                    type="checkbox"
+                                    class="form-check-input"
+                                    id="ajustar_economia"
                                 />
-                                <div class="input-group-append">
-                                    <span class="input-group-text bg-warning">M2</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="label_comision" class="col-4 col-form-label"><b>Comisión</b>
-                                <i
-                                    class="icono_popover fas fa-info-circle ml-1"
-                                    data-toggle="popover"
-                                    data-html="true"
-                                    data-content="Al comprar el inmueble tradicional, es probable que debas pagar una comisión al agente inmobiliario u otro intermediario. En caso de que así sea, por favor especifica el porcentaje de comisión de ese intermediario."
-                                ></i>
+                                <div class="titulo_4">Ajustar</div>
                             </label>
-                            <div class="col-8">
-                                <label class="mt-2 mr-5">
-                                    <input
-                                        type="radio"
-                                        name="comision"
-                                        value="no"
-                                        class="comisionP"
-                                        required
-                                    />
-                                    No
-                                </label>
-                                <label class="mt-2">
-                                    <input
-                                        type="radio"
-                                        name="comision"
-                                        value="si"
-                                        class="comisionP"
-                                        required
-                                    />
-                                    Si
-                                </label>
-                            </div>
+                            <i
+                                class="icono_popover fas fa-info-circle ml-1"
+                                data-toggle="popover"
+                                data-html="true"
+                                data-content="Seleccione esta opción si desea ajustar los valores de Tipo de cambio paralelo y/o Inflación acorde a la realidad que se vive en el país, caso contrario se trabajara con los valores por defecto."
+                            ></i>
                         </div>
 
-                        <span class="comision_si_no" data-comision=""></span>
-
                         <div class="form-group row">
-                            <label for="label_input_comision" class="col-4 col-form-label"><b
-                                ></b></label>
+                            <label for="tc_paralelo_x" class="col-4 col-form-label"><div
+                                    class="titulo_4"
+                                >T.C. paralelo
+                                    <i
+                                        class="icono_popover fas fa-info-circle ml-1"
+                                        data-toggle="popover"
+                                        data-html="true"
+                                        data-content="Especifica el tipo de cambio del mercado paralelo o el tipo de cambio al cual esta siendo ofertado el inmueble tradicional."
+                                    ></i></div>
+                            </label>
+
                             <div class="col-8 input-group">
                                 <input
-                                    name="input_comision"
                                     type="number"
-                                    step="0.01"
-                                    class="form-control"
-                                    id="label_input_comision"
-                                    min="0"
-                                    max="100"
-                                    value="0"
-                                    required
+                                    step="1"
+                                    class="input_respuesta form-control"
+                                    id="tc_paralelo"
+                                    min="6"
+                                    value="{{informacion.tc_paralelo}}"
+                                    title="Tipo de cambio paralelo"
+                                    readonly
                                 />
-                                <div class="input-group-append">
-                                    <span class="input-group-text bg-warning">%</span>
+                                <div class="input-group-append d-block">
+                                    <span class="input-group-text bg-unidad">Bs/$us</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="ref-calcular_plusvalia text-center">
-                            <div class="calcular_plusvalia btn btn-primary">Calcular</div>
+                        <div class="form-group row">
+                            <label for="inflacion" class="col-4 col-form-label"><div
+                                    class="titulo_4"
+                                >Inflación</div></label>
+                            <div class="col-8 input-group">
+                                <input
+                                    type="number"
+                                    step="1"
+                                    class="input_respuesta form-control"
+                                    id="inflacion"
+                                    min="3"
+                                    value="{{informacion.inflacion_ine}}"
+                                    readonly
+                                />
+                                <div class="input-group-append d-block">
+                                    <span class="input-group-text bg-unidad">%</span>
+                                </div>
+                            </div>
                         </div>
-                        {{! abajo de este boton apareceren mensajes de "complete todos los campos, o el precio que introduce no corresponden a la zona donde se encuentra el inmueble solidexa" }}
+
                     </div>
 
-                    <div class="col-12 col-sm-6 mt-5 mt-sm-0">
+                    <div class="col-12 col-sm-6 col-lg-4">
+
                         <div class="text-center mb-3">
-                            <h5 class="texto-link">
-                                <b>Precios $us/m<sup>2</sup></b>
+                            <div class="titulo_3">
+                                Inmueble SOLIDEXA
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="precio_justo" class="col-4 col-form-label"><div
+                                    class="titulo_4"
+                                >Inversión propietario</div></label>
+                            <div class="col-8 input-group">
+                                {{! type text para mostrar punto mil, coma decimal }}
+                                <input
+                                    type="text"
+                                    class="form-control input_respuesta elvalorinput"
+                                    id="inversionPropietario"
+                                    value="{{informacion.inversion_bs_render}}"
+                                    data-bs="{{informacion.inversion_bs}}"
+                                    readonly
+                                />
+                                <div class="input-group-append d-block">
+                                    <span class="input-group-text bg-unidad lamoneda">Bs</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row ml-2">
+                            <label for="derecho_suelox" class="col-4 col-form-label"><div
+                                    class="titulo_4"
+                                >Derecho suelo<i
+                                        class="icono_popover fas fa-info-circle ml-1"
+                                        data-toggle="popover"
+                                        data-html="true"
+                                        data-content="Valor que corresponde como Derecho de Suelo del inmueble."
+                                    ></i></div></label>
+                            <div class="col-8 input-group">
+                                {{! type text para mostrar punto mil, coma decimal }}
+                                <input
+                                    type="text"
+                                    class="form-control input_respuesta elvalorinput"
+                                    id="derecho_suelo"
+                                    value="{{informacion.suelo_bs_render}}"
+                                    data-bs="{{informacion.suelo_bs}}"
+                                    readonly
+                                />
+                                <div class="input-group-append d-block">
+                                    <span class="input-group-text bg-unidad lamoneda">Bs</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row ml-2">
+                            <label for="construccionx" class="col-4 col-form-label"><div
+                                    class="titulo_4"
+                                >Construcción<i
+                                        class="icono_popover fas fa-info-circle ml-1"
+                                        data-toggle="popover"
+                                        data-html="true"
+                                        data-content="Valor actual que se destina a la construcción del inmueble."
+                                    ></i></div></label>
+                            <div class="col-8 input-group">
+                                {{! type text para mostrar punto mil, coma decimal }}
+                                <input
+                                    type="text"
+                                    class="form-control input_respuesta elvalorinput"
+                                    id="construccion"
+                                    value="{{informacion.construccion_inv_render}}"
+                                    data-bs="{{informacion.construccion_inv}}"
+                                    readonly
+                                />
+                                <div class="input-group-append d-block">
+                                    <span class="input-group-text bg-unidad lamoneda">Bs</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-3">
+                            <div class="titulo_3">
+                                Precio
+                                <span class="lamoneda">Bs</span>/m<sup>2</sup>
                                 <i
                                     class="icono_popover fas fa-info-circle ml-1"
                                     data-toggle="popover"
                                     data-html="true"
                                     data-content="Se muestra el rango de precios límites mínimo y máximo correspondientes a la zona donde se encuentra ubicado el inmueble SOLIDEXA"
                                 ></i>
-                            </h5>
-                            <h6 class="texto-link">
-                                <span>{{informacion.direccion}},</span>
-                                <span>{{informacion.provincia}},</span>
-                                <span>{{informacion.ciudad}}</span>
-                            </h6>
-                        </div>
+                            </div>
 
-                        <div class="pb-4">
-                            <div class="d-flex justify-content-between texto-normal mb-2">
-                                <div class="text-left">
-                                    <div><b>Min.</b></div>
-                                    <div class="texto-normal">
-                                        <span>{{informacion.minimo_render}}</span>
-                                    </div>
+                            <div class="text-center">
+                                <div class="titulo_4 m-0">
+                                    {{informacion.ubicacion}}
                                 </div>
-
-                                <div class="text-right">
-                                    <div><b>Max.</b></div>
-                                    <div class="texto-normal">
-                                        <span>{{informacion.maximo_render}}</span>
-                                    </div>
+                                <div class="mb-2">
+                                    {{informacion.direccion}}
                                 </div>
+                            </div>
 
-                            </div>
-                            <div class="mt-2 progress" style="height: 0.8rem;">
-                                <div
-                                    id="ref_precio_tradicional"
-                                    class="progress-bar"
-                                    role="progressbar"
-                                    style="width: 0%;"
-                                ></div>
-                            </div>
-                            <div class="mt-3 text-center">
-                                <span><b>Precio:</b></span>
-                                <span class="tradicional_sus_m2"></span>
+                            <div class="pb-4">
+                                <div class="row">
+                                    <div class="col-4 text-center">
+                                        <div class="color-gris">Min.</div>
+                                        <div class="texto-normal">
+                                            <div
+                                                class="titulo_4"
+                                                data-bs="{{informacion.minimo_bsm2}}"
+                                            >{{informacion.minimo_bsm2_render}}</div>
+                                            <div class="titulo_4">456</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-4 text-center">
+                                        <div class="color-gris">Promedio</div>
+                                        <div class="texto-normal">
+                                            <div
+                                                class="titulo_4"
+                                                data-bs="{{informacion.promedio_bsm2}}"
+                                            >{{informacion.promedio_bsm2_render}}</div>
+                                            <div class="titulo_4">526,15</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-4 text-center">
+                                        <div class="color-gris">Max.</div>
+                                        <div class="texto-normal">
+                                            <div
+                                                class="titulo_4"
+                                                data-bs="{{informacion.maximo_bsm2}}"
+                                            >{{informacion.maximo_bsm2_render}}</div>
+                                            <div class="titulo_4">1.254</div>
+                                        </div>
+                                    </div>
+
+                                </div>
                             </div>
                         </div>
+                    </div>
 
+                    <div class="col-lg-2 d-none d-lg-block"></div>
+
+                    <div class="col-12">
+                        <div class="ref-cal_inm_propietario text-center">
+                            <div class="btn boton-primario" id="cal_inm_propietario">Calcular</div>
+                        </div>
+                        {{! abajo de este boton apareceren mensajes de "complete todos los campos, o el precio que introduce no corresponden a la zona donde se encuentra el inmueble solidexa" }}
                     </div>
 
                 </div>
 
-                <div class="row mt-5">
+                <div class="row mt-5 contenedor_1">
 
-                    <div class="col-12 contenedor_moneda_1">
-                        <div class="mb-3 d-flex justify-content-center">
-                            <div>
-                                <button
-                                    data-moneda="sus"
-                                    class="moneda_1_calculadora moneda_1_calculadora_seleccionado texto-normal btn border"
-                                >$us</button>
-                                <button
-                                    data-moneda="bs"
-                                    class="moneda_1_calculadora texto-normal btn border"
-                                >Bs</button>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <div class="m1_sus">
-                        <div class="m1_solidexa_sus" valor_sus=""></div>
-                        <div class="m1_tradicional_sus" valor_sus=""></div>
-                        <div class="m1_plus_solidexa_sus" valor_sus=""></div>
-                        <div class="m1_plus_tradicional_sus" valor_sus=""></div>
-                        <div class="m1_comision_sus" valor_sus=""></div>
-                        <div class="m1_oportunidad_sus" valor_sus=""></div>
-                    </div>
-
-                    <div class="col-12 col-lg-6 contenedor_1">
+                    <div class="col-12 col-lg-6">
 
                         <div class="text-center mb-2">
-                            <h5 class="texto-link">
-                                <b>SOLIDEXA vs Tradicional</b>
-                            </h5>
+                            <div class="titulo_2">
+                                Beneficio inversión $us
+                            </div>
                         </div>
-                        <div id="contenedor_plus_sol_tra">
-                            <canvas id="grafico_plus_sol_tra"></canvas>
+                        <div id="contenedor_1_g_1">
+                            <canvas id="grafico_21_1"></canvas>
                             {{! <canvas id="grafico_plus_sol_tra" width="200" height="200"></canvas> }}
                             {{! <canvas id="grafico_plus_soli_trad" width="400" height="400"></canvas> }}
                         </div>
 
                         <div class="row mt-3">
-                            <div class="col-6 text-center">
-                                <div>
-                                    <i
-                                        class="fas fa-arrow-up texto-link"
-                                        style="font-size: 2rem;"
-                                    ></i>
+                            <div class="col-6 text-center texto-normal">
+                                <div class="icono_1">
+                                    <i class="fas fa-arrow-up"></i>
                                 </div>
                                 <div class="my-2">
-                                    <span class="h3 texto-link"><b class="c1"></b></span>
-                                    <span class="h5 texto-link m1">$us</span>
+                                    <span class="titulo_3 21_1_1"></span>
+                                    {{! siempre estara en moneda DOLARES }}
+                                    <span class="titulo_4 m1">$us</span>
                                 </div>
+                                <div class="color-gris">SOLIDEXA</div>
                             </div>
-                            <div class="col-6 text-center">
-                                <div>
-                                    <i
-                                        class="fas fa-arrow-down"
-                                        style="font-size: 2rem; color: red;"
-                                    ></i>
+                            <div class="col-6 text-center color-tradicional">
+                                <div class="icono_1">
+                                    <i class="fas fa-arrow-down"></i>
                                 </div>
                                 <div class="my-2">
-                                    <span class="h3" style="color: red;"><b class="c2"></b></span>
-                                    <span class="h5 m1" style="color: red;">$us</span>
+                                    <span class="titulo_3 21_1_2"></span>
+                                    {{! siempre estara en moneda DOLARES }}
+                                    <span class="titulo_4 m1">$us</span>
                                 </div>
+                                <div class="color-gris">Tradicional</div>
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-6 text-center">
                                 <p>
-                                    Es plusvalia que obtienes por adquirir el inmueble
-                                    <b>SOLIDEXA</b>.
+                                    es el valor que adquieren tus
+                                    <span class="inversion_bs"></span>
+                                    <span>Bs</span>
+                                    convertidos a dolares gracias al sero propietario del inmueble
+                                    SOLIDEXA.
                                 </p>
                             </div>
                             <div class="col-6 text-center">
                                 <p>
-                                    Es la plusvalía que pierdes por adquirir el inmueble
-                                    <b>tradicional</b>.
+                                    es el valor que adquieren tus
+                                    <span class="inversion_bs"></span>
+                                    <span>Bs</span>
+                                    convertidos a dolares en el mercado paralelo.
                                 </p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-12 col-lg-6 mt-5 mt-lg-0 contenedor_1">
+                    <div class="col-12 col-lg-6 mt-5 mt-lg-0">
                         <div class="text-center mb-2">
-                            <h5 class="texto-link">
-                                <b>Tiempo de espera</b>
-                            </h5>
+                            <div class="titulo_2 texto-normal">
+                                Beneficio compra m<sup>2</sup>
+                            </div>
                         </div>
-                        <div id="contenedor_tiempo_espera">
-                            <canvas id="grafico_tiempo_espera"></canvas>
+                        <div id="contenedor_1_g_2">
+                            <canvas id="grafico_21_2"></canvas>
                         </div>
 
                         <div class="row mt-3">
-                            <div class="col-lg-2"></div>
-                            <div class="col-12 col-lg-8 text-center">
-                                <div>
-                                    <i
-                                        class="fas fa-clock"
-                                        style="font-size: 2rem; color: red;"
-                                    ></i>
+                            <div class="col-6 text-center texto-normal">
+                                <div class="icono_1">
+                                    <i class="fas fa-arrow-up"></i>
                                 </div>
                                 <div class="my-2">
-                                    <span class="h3" style="color: red;"><b class="c3"></b></span>
-                                    <span class="h5" style="color: red;">Años</span>
+                                    <span class="titulo_3 21_2_1"></span>
+                                    <span class="titulo_4 m1">
+                                        m<sup>2</sup>
+                                    </span>
                                 </div>
+                                <div class="color-gris">SOLIDEXA</div>
                             </div>
-                            <div class="col-lg-2"></div>
+                            <div class="col-6 text-center color-tradicional">
+                                <div class="icono_1">
+                                    <i class="fas fa-arrow-down"></i>
+                                </div>
+                                <div class="my-2">
+                                    <span class="titulo_3 21_2_2"></span>
+                                    <span class="titulo_4 m1">
+                                        m<sup>2</sup>
+                                    </span>
+                                </div>
+                                <div class="color-gris">Tradicional</div>
+                            </div>
                         </div>
 
                         <div class="row">
-                            <div class="col-lg-2"></div>
-                            <div class="col-12 col-lg-8 text-center">
+                            <div class="col-6 text-center">
                                 <p>
-                                    Es el tiempo que le tomaría al inmueble
-                                    <b>tradicional</b>
-                                    igualar la plusvalía de SOLIDEXA.
+                                    Cantidad adicional de superficie que obtienes en el inmueble
+                                    SOLIDEXA.
                                 </p>
                             </div>
-                            <div class="col-lg-2"></div>
+                            <div class="col-6 text-center">
+                                <p>
+                                    Cantidad de superficie que pierdes con el inmueble tradicional.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{! ---------- }}
+                <div class="row mt-5 contenedor_1">
+
+                    <div class="col-12">
+
+                        <div class="text-center mb-2">
+                            <div class="titulo_2">
+                                Inflación
+                            </div>
+                            <div class="titulo_3">
+                                Protegido Vs Desprotegido
+                            </div>
+                        </div>
+                        <div id="contenedor_1_g_3">
+                            <canvas id="grafico_x21_1"></canvas>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-6 text-center texto-normal">
+                                <div class="icono_1">
+                                    <i class="fas fa-arrow-up"></i>
+                                </div>
+                                <div class="my-2">
+                                    <span class="titulo_3 x21_1_1"></span>
+                                    <span class="titulo_4 m1 lamoneda">Bs</span>
+                                </div>
+                                <div class="color-gris">Protegido</div>
+                            </div>
+                            <div class="col-6 text-center color-tradicional">
+                                <div class="icono_1">
+                                    <i class="fas fa-arrow-down"></i>
+                                </div>
+                                <div class="my-2">
+                                    <span class="titulo_3 x21_1_2"></span>
+                                    <span class="titulo_4 m1 lamoneda">Bs</span>
+                                </div>
+                                <div class="color-gris">Desprotegido</div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6 text-center">
+                                <p>
+                                    Valor que alcalza tus
+                                    <span class="clase_inversion"></span>
+                                    <span class="lamoneda">Bs</span>
+                                    al cabo de los
+                                    <span>{{informacion.meses_maximo}}</span>
+                                    meses por encontrarse protegidos con la adquisición del inmueble
+                                    SOLIDEXA.
+                                </p>
+                            </div>
+                            <div class="col-6 text-center">
+                                <p>
+                                    Perdida del poder de compra que tus
+                                    <span class="clase_inversion"></span>
+                                    <span class="lamoneda">Bs</span>
+                                    alcanzan al cabo de los
+                                    <span>{{informacion.meses_maximo}}</span>
+                                    meses por no estar protegido frente a la inflación.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{! ------ }}
+                <div class="row mt-5 contenedor_1">
+
+                    <div class="col-12 col-lg-6">
+
+                        <div class="text-center mb-2">
+                            <div class="titulo_2">
+                                Ganancia plusvalía
+                            </div>
+                        </div>
+                        <div id="contenedor_1_g_4">
+                            <canvas id="grafico_12_1"></canvas>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-12 text-center texto-normal">
+                                <div class="icono_1">
+                                    <i class="fas fa-arrow-up"></i>
+                                </div>
+                                <div class="my-2">
+                                    <span class="titulo_3 12_1_1"></span>
+                                    <span class="titulo_4 m1 lamoneda">Bs</span>
+                                </div>
+                                <div class="color-gris">SOLIDEXA</div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <p>
+                                    Ganancia obtenida por plusvalía al cabo de los
+                                    <span>{{informacion.meses_construccion}}</span>
+                                    meses de construcción.
+                                </p>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="col-12 mt-5 total_comision">
-                        <div class="row mt-2">
-                            <div class="col-12">
-                                <div class="text-center mb-2">
-                                    <h5 class="texto-link">
-                                        <b>Comisión desperdiciada</b>
-                                    </h5>
-                                </div>
+                    <div class="col-12 col-lg-6 mt-5 mt-lg-0">
+
+                        <div class="text-center mb-2">
+                            <div class="titulo_2">
+                                Devaluación
                             </div>
-
-                            <div class="col-12 col-lg-6">
-                                <div class="contenedor_comision">
-                                    <div id="contendor_graf_comision">
-                                        <canvas id="grafico_comision"></canvas>
-                                    </div>
-                                </div>
+                            <div class="titulo_3">
+                                Protegido Vs Desprotegido
                             </div>
+                        </div>
+                        <div id="contenedor_1_g_5">
+                            <canvas id="grafico_21_3"></canvas>
+                        </div>
 
-                            <div class="col-12 col-lg-6">
-                                <div class="contenedor_val_comision">
-                                    <div class="row">
-                                        <div class="col-6 text-center">
-                                            <div>
-                                                <i
-                                                    class="fas fa-thumbs-down"
-                                                    style="font-size: 2rem; color: red;"
-                                                ></i>
-                                            </div>
-                                            <div class="my-2" style="color: red;">
-                                                <span class="h3"><b class="val_comision"></b></span>
-                                                <span class="h5 m1">$us</span>
-                                            </div>
-                                            <div style="color: red;">
-                                                <span class="h5"><b>Comisión</b></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-6 text-center">
-                                            <div>
-                                                <i
-                                                    class="fas fa-trash-alt"
-                                                    style="font-size: 2rem; color: red;"
-                                                ></i>
-                                            </div>
-                                            <div class="my-2" style="color: red;">
-                                                <span class="h3"><b
-                                                        class="val_oportunidad"
-                                                    ></b></span>
-                                                <span class="h5 m1">$us</span>
-                                            </div>
-                                            <div style="color: red;">
-                                                <span class="h5"><b>Oportunidad</b></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-12 mt-2">
-                                            <div class="texto_comision alert alert-primary">
-                                            </div>
-                                        </div>
-                                    </div>
-
+                        <div class="row mt-3">
+                            <div class="col-6 text-center texto-normal">
+                                <div class="icono_1">
+                                    <i class="fas fa-arrow-up"></i>
                                 </div>
+                                <div class="my-2">
+                                    <span class="titulo_3 21_3_1"></span>
+                                    {{! siempre estara en moneda DOLARES }}
+                                    <span class="titulo_4 m1">$us</span>
+                                </div>
+                                <div class="color-gris">Protegido</div>
+                            </div>
+                            <div class="col-6 text-center color-tradicional">
+                                <div class="icono_1">
+                                    <i class="fas fa-arrow-down"></i>
+                                </div>
+                                <div class="my-2">
+                                    <span class="titulo_3 21_3_2"></span>
+                                    {{! siempre estara en moneda DOLARES }}
+                                    <span class="titulo_4 m1">$us</span>
+                                </div>
+                                <div class="color-gris">Desprotegido</div>
+                            </div>
+                        </div>
 
+                        <div class="row">
+                            <div class="col-6 text-center">
+                                <p>
+                                    es el valor que adquieren tus
+                                    <span class="inversion_bs"></span>
+                                    <span>Bs</span>
+                                    al cabo de los
+                                    <span>{{informacion.meses_construccion}}</span>
+                                    meses de construcción convertidos a dolares gracias al ser
+                                    invertios en la adquisición del inmueble SOLIDEXA.
+                                </p>
+                            </div>
+                            <div class="col-6 text-center">
+                                <p>
+                                    es el valor que adquieren tus
+                                    <span class="inversion_bs"></span>
+                                    <span>Bs</span>
+                                    al cabo de los
+                                    <span>{{informacion.meses_construccion}}</span>
+                                    meses de construcción convertidos a dolares en el mercado
+                                    paralelo.
+                                </p>
                             </div>
                         </div>
                     </div>
 
                 </div>
+                {{! ---------- }}
             </div>
         </div>
-
+    </div>
+    {{! ========================================= }}
+    <div class="col-12" id="c-calInmComparar" style="display: none;">
         <div class="row">
             <div class="col-12">
-
-                <hr class="linea_calculadora mt-5" />
-
-                <div>
-                    <h4 class="text-center texto-resaltado">
-                        Financiamiento Bancario
-                    </h4>
-
-                    <div class="alert alert-primary mt-3">
-                        Si estás planeando financiar la compra de este inmueble mediante un préstamo
-                        bancario, aprovecha su <b>PRECIO JUSTO</b> para obtener pagos mensuales más bajos y
-                        reducir los intereses en comparación con un inmueble tradicional.
-                    </div>
-                </div>
                 <div class="row">
 
-                    <div class="col-12 col-sm-6">
+                    {{! d-none: Oculta el elemento en todos los tamaños de pantalla. }}
+                    {{! d-lg-block: Muestra el elemento únicamente en pantallas grandes a partir de lg }}
+                    <div class="col-lg-2 d-none d-lg-block"></div>
 
-                        <div class="form-group row">
-                            {{! for="label_aporte_pp" colocamos un nombre distinto a su respectivo input, esto para que al hacer click en su popover no se genere automaticamente un clik en el input con el que estaria ligado si tuviera el mismo nombre. }}
-                            <label for="label_aporte_pp" class="col-4 col-form-label">
-                                <b>Aporte</b>
+                    <div class="col-12 col-sm-6 col-lg-4">
+
+                        <div class="text-center mb-3">
+                            <div class="titulo_3">
+                                Inmueble tradicional
                                 <i
                                     class="icono_popover fas fa-info-circle ml-1"
                                     data-toggle="popover"
                                     data-html="true"
-                                    data-content="El porcentaje de dinero que estás dispuesto a invertir de tu propio bolsillo para cubrir una parte del pago del inmueble SOLIDEXA."
+                                    data-content="Ingrese el precio por M2 del inmueble que desea comparar con SOLIDEXA. El precio debe estar dentro de los límites de precios correspondientes a la zona especificada."
                                 ></i>
-                            </label>
+                            </div>
+
+                            <div class="text-center">
+                                <div class="titulo_4 m-0">
+                                    {{informacion.ubicacion}}
+                                </div>
+                                <div class="mb-2">
+                                    {{informacion.direccion}}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="precio_inm_otro" class="col-4 col-form-label"><div
+                                    class="titulo_4"
+                                >Precio</div></label>
                             <div class="col-8 input-group">
                                 <input
-                                    name="aporte_p"
                                     type="number"
-                                    step="0.01"
+                                    step="1"
                                     class="form-control"
-                                    id="label_aporte_p"
+                                    id="precio_inm_otro"
+                                    min="0"
+                                />
+                                <div class="input-group-append d-block">
+                                    <span class="input-group-text bg-unidad lamoneda">Bs</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="superficie_inm_otro" class="col-4 col-form-label"><div
+                                    class="titulo_4"
+                                >Superficie</div></label>
+                            <div class="col-8 input-group">
+                                <input
+                                    type="number"
+                                    step="1"
+                                    class="form-control"
+                                    id="superficie_inm_otro"
+                                    min="0"
+                                />
+                                <div class="input-group-append d-block">
+                                    <span class="input-group-text bg-unidad">M2</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="my-3 mx-1">
+                            <div class="d-flex justify-content-between">
+                                <div class="text-left">
+                                    <div class="color-gris">Min.</div>
+                                    <div class="texto-normal">
+                                        <div
+                                            class="titulo_4"
+                                            data-bs="{{informacion.minimo_bsm2}}"
+                                        >{{informacion.minimo_bsm2_render}}</div>
+                                        <div class="titulo_4">456</div>
+                                    </div>
+                                </div>
+
+                                <div class="text-center">
+                                    <div class="color-gris">Promedio</div>
+                                    <div class="texto-normal">
+                                        <div
+                                            class="titulo_4"
+                                            data-bs="{{informacion.promedio_bsm2}}"
+                                        >{{informacion.promedio_bsm2_render}}</div>
+                                        <div class="titulo_4">526,15</div>
+                                    </div>
+                                </div>
+
+                                <div class="text-right">
+                                    <div class="color-gris">Max.</div>
+                                    <div class="texto-normal">
+                                        <div
+                                            class="titulo_4"
+                                            data-bs="{{informacion.maximo_bsm2}}"
+                                        >{{informacion.maximo_bsm2_render}}</div>
+                                        <div class="titulo_4">1.254</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="my-2 progress" style="height: 0.8rem;">
+                                <div
+                                    id="p_tradicional_precio_m2"
+                                    class="progress-bar"
+                                    role="progressbar"
+                                    style="width: 0%;"
+                                ></div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-3"></div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input
+                                                type="number"
+                                                step="1"
+                                                class="form-control text-center"
+                                                id="i_tradicional_precio_m2"
+                                                value="0"
+                                                readonly
+                                            />
+                                            <div class="input-group-append d-block">
+                                                <span class="input-group-text bg-unidad"><span
+                                                        class="lamoneda"
+                                                    >Bs</span>/M2</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-3"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-check mt-3">
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    class="form-check-input"
+                                    id="ajustar_comision"
+                                />
+                                <div class="titulo_4">Intermediario</div>
+                            </label>
+                            <i
+                                class="icono_popover fas fa-info-circle ml-1"
+                                data-toggle="popover"
+                                data-html="true"
+                                data-content="Al comprar un inmueble tradicional, es probable que debas pagar una comisión al agente inmobiliario u otro intermediario. En caso de que así sea, por favor selecciona la casilla para indicar el porcentaje de comisión de ese intermediario."
+                            ></i>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="inflacion" class="col-4 col-form-label"><div
+                                    class="titulo_4"
+                                >Comisión</div></label>
+                            <div class="col-8 input-group">
+                                <input
+                                    type="number"
+                                    step="1"
+                                    class="input_respuesta form-control"
+                                    id="input_comision"
+                                    min="0"
+                                    value="0"
+                                    readonly
+                                />
+                                <div class="input-group-append d-block">
+                                    <span class="input-group-text bg-unidad">%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-lg-4">
+
+                        <div class="form-check mt-3">
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    class="form-check-input"
+                                    id="ajustar_financiamiento_a"
+                                />
+                                <div class="titulo_4">Financiamiento bancario</div>
+                            </label>
+                        </div>
+
+                        <div>
+                            Selecciona esta opción si piensas financiar la compra de este inmueble
+                            mediante un préstamo bancario, aprovecha su PRECIO JUSTO para obtener
+                            pagos mensuales más bajos y reducir los intereses en comparación con un
+                            inmueble tradicional.
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <div class="titulo_4">
+                                    Aporte<i
+                                        class="icono_popover fas fa-info-circle ml-1"
+                                        data-toggle="popover"
+                                        data-html="true"
+                                        data-content="La suma de dinero que estás dispuesto a invertir de tu propio bolsillo para cubrir una parte del pago del inmueble SOLIDEXA."
+                                    ></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="my-3 mx-1">
+
+                            <div class="d-flex justify-content-between">
+                                <div class="text-left">
+                                    <div class="color-gris">Min.</div>
+                                    <div class="texto-normal">
+                                        <div class="titulo_4">{{informacion.suelo_bs}}</div>
+                                    </div>
+                                </div>
+
+                                <div class="text-right">
+                                    <div class="color-gris">Max.</div>
+                                    <div class="texto-normal">
+                                        <div
+                                            class="titulo_4"
+                                        >{{informacion.solidexa_inm_bs}}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <input
+                                type="range"
+                                id="range_aporte_a"
+                                min="{{informacion.suelo_bs}}"
+                                max="{{informacion.solidexa_inm_bs}}"
+                                step="1"
+                                value="{{informacion.suelo_bs}}"
+                                class="custom-range w-100 elvalorrange"
+                                data-bs="{{informacion.suelo_bs}}"
+                                data-bs_min="{{informacion.suelo_bs}}"
+                                data-bs_max="{{informacion.solidexa_inm_bs}}"
+                                disabled
+                            />
+
+                            <div class="row">
+                                <div class="col-3"></div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input
+                                                type="number"
+                                                step="1"
+                                                class="form-control text-center input_respuesta"
+                                                id="aporte_a"
+                                                value="{{informacion.suelo_bs}}"
+                                                readonly
+                                            />
+                                            <div class="input-group-append d-block">
+                                                <span class="input-group-text bg-unidad lamoneda">Bs</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-3"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="plazo_ax" class="col-4 col-form-label"><div
+                                    class="titulo_4"
+                                >Plazo<i
+                                        class="icono_popover fas fa-info-circle ml-1"
+                                        data-toggle="popover"
+                                        data-html="true"
+                                        data-content="Tiempo de duración del prestamo bancario. Elige el mayor tiempo posible, idealmente superior a los 5 años."
+                                    ></i></div></label>
+                            <div class="col-8 input-group">
+                                <input
+                                    type="number"
+                                    step="1"
+                                    class="input_respuesta form-control"
+                                    id="plazo_a"
+                                    title="Plazo del préstamo"
                                     min="0"
                                     max="100"
-                                    required
+                                    value="0"
+                                    readonly
                                 />
-                                <div class="input-group-append">
-                                    <span class="input-group-text bg-warning">%</span>
+                                <div class="input-group-append d-block">
+                                    <span class="input-group-text bg-unidad">Años</span>
                                 </div>
                             </div>
                         </div>
-
                         <div class="form-group row">
-                            <label for="label_plazo_year_pp" class="col-4 col-form-label"><b
-                                >Plazo</b>
-                                <i
-                                    class="icono_popover fas fa-info-circle ml-1"
-                                    data-toggle="popover"
-                                    data-html="true"
-                                    data-content="Tiempo de duración del prestamo bancario. Elige el mayor tiempo posible, idealmente superior a los 5 años."
-                                ></i>
-                            </label>
+                            <label for="interes_ax" class="col-4 col-form-label"><div
+                                    class="titulo_4"
+                                >Interés<i
+                                        class="icono_popover fas fa-info-circle ml-1"
+                                        data-toggle="popover"
+                                        data-html="true"
+                                        data-content="Tasa de interés compuesta anual que el banco exige por el préstamo. Te recomendamos buscar la tasa de interés más baja, preferiblemente por debajo del 15%."
+                                    ></i></div></label>
                             <div class="col-8 input-group">
                                 <input
-                                    name="plazo_year_p"
                                     type="number"
-                                    step="0.01"
-                                    class="form-control"
-                                    id="label_plazo_year_p"
-                                    title="Plazo del préstamo"
-                                    min="0.01"
-                                    required
-                                />
-                                <div class="input-group-append">
-                                    <span class="input-group-text bg-warning">Años</span>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="col-12 col-sm-6">
-
-                        <div class="form-group row">
-                            <label for="label_interes_anual_pp" class="col-4 col-form-label"><b
-                                >Interés</b>
-                                <i
-                                    class="icono_popover fas fa-info-circle ml-1"
-                                    data-toggle="popover"
-                                    data-html="true"
-                                    data-content="Tasa de interés compuesta anual que el banco exige por el préstamo. Te recomendamos buscar la tasa de interés más baja, preferiblemente por debajo del 15%."
-                                ></i>
-                            </label>
-                            <div class="col-8 input-group">
-                                <input
-                                    name="interes_anual_p"
-                                    type="number"
-                                    step="0.01"
-                                    class="form-control"
-                                    id="label_interes_anual_p"
+                                    step="1"
+                                    class="input_respuesta form-control"
+                                    id="interes_a"
                                     title="Interés Anual"
-                                    min="0.01"
+                                    min="0"
                                     max="100"
-                                    required
+                                    value="0"
+                                    readonly
                                 />
-                                <div class="input-group-append">
-                                    <span class="input-group-text bg-warning">%</span>
+                                <div class="input-group-append d-block">
+                                    <span class="input-group-text bg-unidad">%</span>
                                 </div>
                             </div>
                         </div>
-
                     </div>
 
-                    <div class="col-lg-3"></div>
-                    <div class="col-12 col-lg-6">
-                        <div class="ref-calcular_prestamo_p text-center">
-                            <div class="calcular_prestamo_p btn btn-primary">Calcular</div>
+                    {{! d-none: Oculta el elemento en todos los tamaños de pantalla. }}
+                    {{! d-lg-block: Muestra el elemento únicamente en pantallas grandes a partir de lg }}
+                    <div class="col-lg-2 d-none d-lg-block"></div>
+
+                    <div class="col-12">
+                        <div class="ref-cal_inm_comparacion text-center">
+                            <div class="btn boton-primario" id="cal_inm_comparacion">Calcular</div>
                         </div>
                         {{! abajo de este boton apareceren mensajes de "complete todos los campos, o el precio que introduce no corresponden a la zona donde se encuentra el inmueble solidexa" }}
                     </div>
-                    <div class="col-lg-3"></div>
 
+                </div>
+                {{! -------------------------- }}
+                <div class="row mt-5 contenedor_2">
+
+                    <div class="col-12 col-lg-6">
+
+                        <div class="text-center mb-2">
+                            <div class="titulo_2">
+                                Ganancia plusvalía
+                            </div>
+                            <div class="titulo_3">
+                                SOLIDEXA vs Tradicional
+                            </div>
+                        </div>
+                        <div id="contenedor_2_g_1">
+                            <canvas id="grafico_22_1"></canvas>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-6 text-center texto-normal">
+                                <div class="icono_1">
+                                    <i class="fas fa-arrow-up"></i>
+                                </div>
+                                <div class="my-2">
+                                    <span class="titulo_3 22_1_1"></span>
+                                    <span class="titulo_4 m1 lamoneda">Bs</span>
+                                    <span class="titulo_4">/m<sup>2</sup></span>
+                                </div>
+                                <div class="color-gris">SOLIDEXA</div>
+                            </div>
+                            <div class="col-6 text-center color-tradicional">
+                                <div class="icono_1">
+                                    <i class="fas fa-arrow-down"></i>
+                                </div>
+                                <div class="my-2">
+                                    <span class="titulo_3 22_1_2"></span>
+                                    <span class="titulo_4 m1 lamoneda">Bs</span>
+                                    <span class="titulo_4">/m<sup>2</sup></span>
+                                </div>
+                                <div class="color-gris">Tradicional</div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6 text-center">
+                                <p>
+                                    Es la plusvalía que presenta el inmueble SOLIDEXA.
+                                </p>
+                            </div>
+                            <div class="col-6 text-center">
+                                <p>
+                                    Es la plusvalía que presenta el inmueble tradicional.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-6 mt-5 mt-lg-0">
+                        <div class="text-center mb-2">
+                            <div class="titulo_2">
+                                Tiempo de espera
+                            </div>
+                        </div>
+                        <div id="contenedor_2_g_2">
+                            <canvas id="grafico_21_4"></canvas>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-lg-2"></div>
+                            <div class="col-12 col-lg-8 text-center color-tradicional">
+                                <div class="icono_1">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="my-2">
+                                    <span class="titulo_3 21_4_1"></span>
+                                    <span class="titulo_4 m1">Años</span>
+                                </div>
+                                <div class="color-gris">Tradicional</div>
+                            </div>
+                            <div class="col-lg-2"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-2"></div>
+                            <div class="col-12 col-lg-8 text-center">
+                                <p>
+                                    Es el tiempo que le tomaría al inmueble tradicional igualar la
+                                    plusvalía de SOLIDEXA.
+                                </p>
+                            </div>
+                            <div class="col-lg-2"></div>
+                        </div>
+                    </div>
+                </div>
+                {{! -------------------------- }}
+                <div class="row mt-5 contenedor_3">
+                    <div class="col-12">
+                        <div class="text-center mb-2">
+                            <div class="titulo_2">
+                                Comisión desperdiciada
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-6">
+                        <div class="contenedor_comision">
+                            <div id="contenedor_3_g_1">
+                                <canvas id="grafico_12_2"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-6 mt-5 mt-lg-0">
+                        <div class="contenedor_val_comision">
+                            <div class="row">
+                                <div class="col-6 text-center color-tradicional">
+                                    <div class="icono_1">
+                                        <i class="fas fa-thumbs-down"></i>
+                                    </div>
+                                    <div class="my-2">
+                                        <span class="titulo_3 12_2_1"></span>
+                                        <span class="titulo_4 m1 lamoneda">Bs</span>
+                                    </div>
+                                    <div class="color-gris">Comisión</div>
+                                </div>
+                                <div class="col-6 text-center color-tradicional">
+                                    <div class="icono_1">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </div>
+                                    <div class="my-2">
+                                        <span class="titulo_3 12_2_2"></span>
+                                        <span class="titulo_4 m1 lamoneda">Bs</span>
+                                    </div>
+                                    <div class="color-gris">Oportunidad</div>
+                                </div>
+                                <div class="col-12 mt-2">
+                                    <div class="texto_comision">
+                                        Cuando pagas una comisión de
+                                        <b><span class="r_comision"></span></b>
+                                        al comprar el inmueble tradicional, pierdes la oportunidad
+                                        de obtener una ganancia de
+                                        <b><span class="r_oportunidad"></span></b>. Habrías
+                                        asegurado esa ganancia al utilizar ese dinero para adquirir
+                                        el inmueble SOLIDEXA en lugar de gastarlo en el tradicional.
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+                {{! -------------------------- }}
+                <div class="row mt-5 contenedor_4">
+
+                    <div class="col-12 col-lg-6">
+
+                        <div class="text-center mb-2">
+                            <div class="titulo_2">
+                                Financiamiento
+                            </div>
+                            <div class="titulo_3">
+                                SOLIDEXA vs Tradicional
+                            </div>
+                        </div>
+                        <div id="contenedor_4_g_1">
+                            <canvas id="grafico_22_2"></canvas>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-6 text-center texto-normal">
+                                <div class="icono_1">
+                                    <i class="fas fa-arrow-up"></i>
+                                </div>
+                                <div class="my-2">
+                                    <span class="titulo_3 22_2_1"></span>
+                                    <span class="titulo_4 m1 lamoneda">Bs</span>
+                                    <span class="titulo_4 area" style="display: none;">/m<sup>2</sup></span>
+                                </div>
+                                <div class="color-gris">SOLIDEXA</div>
+                            </div>
+                            <div class="col-6 text-center color-tradicional">
+                                <div class="icono_1">
+                                    <i class="fas fa-arrow-down"></i>
+                                </div>
+                                <div class="my-2">
+                                    <span class="titulo_3 22_2_2"></span>
+                                    <span class="titulo_4 m1 lamoneda">Bs</span>
+                                    <span class="titulo_4 area" style="display: none;">/m<sup>2</sup></span>
+                                </div>
+                                <div class="color-gris">Tradicional</div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6 text-center">
+                                <p>
+                                    El total de intereses que pagas con el inmuebe SOLIDEXA es
+                                    menor.
+                                </p>
+                            </div>
+                            <div class="col-6 text-center">
+                                <p>
+                                    El total de intereses que pagas con el inmuebe tradicional es
+                                    más alta.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-6 mt-5 mt-lg-0">
+                        <div class="text-center mb-2">
+                            <div class="titulo_2">
+                                Cuotas mensuales
+                            </div>
+                            <div class="titulo_3">
+                                por
+                                <span class="n_meses"></span>
+                            </div>
+                        </div>
+                        <div id="contenedor_4_g_2">
+                            <canvas id="grafico_21_5"></canvas>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-6 text-center texto-normal">
+                                <div class="icono_1">
+                                    <i class="fas fa-arrow-up"></i>
+                                </div>
+                                <div class="my-2">
+                                    <span class="titulo_3 21_5_1"></span>
+                                    <span class="titulo_4 m1 lamoneda">Bs</span>
+                                    <span class="titulo_4 area" style="display: none;">/m<sup>2</sup></span>
+                                </div>
+                                <div class="color-gris">SOLIDEXA</div>
+                            </div>
+                            <div class="col-6 text-center color-tradicional">
+                                <div class="icono_1">
+                                    <i class="fas fa-arrow-down"></i>
+                                </div>
+                                <div class="my-2">
+                                    <span class="titulo_3 21_5_2"></span>
+                                    <span class="titulo_4 m1 lamoneda">Bs</span>
+                                    <span class="titulo_4 area" style="display: none;">/m<sup>2</sup></span>
+                                </div>
+                                <div class="color-gris">Tradicional</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-center">
+                                <p>
+                                    El inmueble SOLIDEXA te beneficia con una cuota mensual más
+                                    baja.
+                                </p>
+                            </div>
+                            <div class="col-6 text-center">
+                                <p>
+                                    El inmueble tradicional te desfavorece con una cuota mensual más
+                                    alta.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{! -------------------------- }}
+            </div>
+        </div>
+
+    </div>
+
+    {{! ========================================= }}
+    <div class="col-12" id="c-calInmInversionista" style="display: none;">
+        <div class="row">
+            <div class="col-12">
+                <div class="row">
+
+                    <div class="col-12 col-sm-6 col-lg-4">
+
+                        <div class="text-center mb-3">
+                            <div class="titulo_3">
+                                Inmueble SOLIDEXA
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            {{#if informacion.remate}}
+                                <label for="selector_periodox" class="col-4 col-form-label">
+                                    <div class="titulo_4">Periodo<i
+                                            class="icono_popover fas fa-info-circle ml-1"
+                                            data-toggle="popover"
+                                            data-html="true"
+                                            data-content="Tiempo en el que tiene previsto obtener ingresos a partir del momento en que realize la inversión."
+                                        ></i>
+                                    </div>
+                                </label>
+                            {{else}}
+                                <label for="selector_periodox" class="col-4 col-form-label">
+                                    <div class="titulo_4">Periodo<i
+                                            class="icono_popover fas fa-info-circle ml-1"
+                                            data-toggle="popover"
+                                            data-html="true"
+                                            data-content="Tiempo en el que tiene previsto obtener ingresos a partir del momento en que el inmueble SOLIDEXA ingrese en la etapa de CONSTRUCCIÓN."
+                                        ></i>
+                                    </div>
+                                </label>
+                            {{/if}}
+
+                            <div class="col-8 input-group">
+                                <select
+                                    name="selectorPeriodo"
+                                    id="selector_periodo"
+                                    class="form-control"
+                                >
+                                    <option disabled selected>-Elige-</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                    <option value="13">13</option>
+                                    <option value="14">14</option>
+                                </select>
+                                <div class="input-group-append d-block">
+                                    <span class="input-group-text bg-unidad">Meses</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="inversion_inmx" class="col-4 col-form-label"><div
+                                    class="titulo_4"
+                                >Inversión<i
+                                        class="icono_popover fas fa-info-circle ml-1"
+                                        data-toggle="popover"
+                                        data-html="true"
+                                        data-content="Inversión requerida para invertir en el inmueble actualmente"
+                                    ></i></div></label>
+                            <div class="col-8 input-group">
+                                {{! type text para mostrar punto mil, coma decimal }}
+                                <input
+                                    type="text"
+                                    class="form-control input_respuesta elvalorinput"
+                                    id="inversion_inm"
+                                    value="{{informacion.inversion_bs_render}}"
+                                    data-bs="{{informacion.inversion_bs}}"
+                                    readonly
+                                />
+                                <div class="input-group-append d-block">
+                                    <span class="input-group-text bg-unidad lamoneda">Bs</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row ml-2">
+                            <label for="derecho_suelo_2x" class="col-4 col-form-label"><div
+                                    class="titulo_4"
+                                >Derecho suelo<i
+                                        class="icono_popover fas fa-info-circle ml-1"
+                                        data-toggle="popover"
+                                        data-html="true"
+                                        data-content="Valor que corresponde como Derecho de Suelo del inmueble."
+                                    ></i></div></label>
+                            <div class="col-8 input-group">
+                                {{! type text para mostrar punto mil, coma decimal }}
+                                <input
+                                    type="text"
+                                    class="form-control input_respuesta elvalorinput"
+                                    id="derecho_suelo_2"
+                                    value="{{informacion.suelo_bs_render}}"
+                                    data-bs="{{informacion.suelo_bs}}"
+                                    readonly
+                                />
+                                <div class="input-group-append d-block">
+                                    <span class="input-group-text bg-unidad lamoneda">Bs</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row ml-2">
+                            <label for="construccion_invx" class="col-4 col-form-label"><div
+                                    class="titulo_4"
+                                >Construcción<i
+                                        class="icono_popover fas fa-info-circle ml-1"
+                                        data-toggle="popover"
+                                        data-html="true"
+                                        data-content="Valor actual que se destina a la construcción del inmueble."
+                                    ></i></div></label>
+                            <div class="col-8 input-group">
+                                {{! type text para mostrar punto mil, coma decimal }}
+                                <input
+                                    type="text"
+                                    class="form-control input_respuesta elvalorinput"
+                                    id="construccion_inv"
+                                    value="{{informacion.construccion_inv_render}}"
+                                    data-bs="{{informacion.construccion_inv}}"
+                                    readonly
+                                />
+                                <div class="input-group-append d-block">
+                                    <span class="input-group-text bg-unidad lamoneda">Bs</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-lg-4">
+
+                        <div class="text-center mb-3">
+                            <div class="titulo_3">
+                                Ahorro bancario
+                            </div>
+                        </div>
+
+                        <div class="form-check mt-3">
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    class="form-check-input"
+                                    id="ajustar_ahorro"
+                                />
+                                <div class="titulo_4">Ajustar</div>
+                            </label>
+                            <i
+                                class="icono_popover fas fa-info-circle ml-1"
+                                data-toggle="popover"
+                                data-html="true"
+                                data-content="Seleccione esta opción si desea ajustar el valor de la tasa de rendimiento anual que un banco nacional estaria dispuesto a pagarle por su dinero. Esta opción tambien se aplica para Bonos del estado."
+                            ></i>
+                        </div>
+
+                        <div class="my-3 mx-1">
+
+                            <div class="d-flex justify-content-between">
+                                <div class="text-left">
+                                    <div class="color-gris">Min.</div>
+                                    <div class="texto-normal">
+                                        <div class="titulo_4 limite_min" data-minimo="3">3%</div>
+                                    </div>
+                                </div>
+
+                                <div class="text-right">
+                                    <div class="color-gris">Max.</div>
+                                    <div class="texto-normal">
+                                        <div
+                                            class="titulo_4 limite_max"
+                                            data-maximo="{{informacion.tasa_banco_max}}"
+                                        >{{informacion.tasa_banco_max}}%</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <input
+                                type="range"
+                                id="range_ahorro"
+                                min="3"
+                                max="{{informacion.tasa_banco_max}}"
+                                step="1"
+                                value="{{informacion.tasa_banco}}"
+                                data-normal="{{informacion.tasa_banco}}"
+                                class="custom-range w-100"
+                                disabled
+                            />
+
+                            <div class="row">
+                                <div class="col-3"></div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input
+                                                type="number"
+                                                step="1"
+                                                class="form-control text-center input_respuesta"
+                                                id="input_ahorro"
+                                                value="{{informacion.tasa_banco}}"
+                                                min="3"
+                                                max="{{informacion.tasa_banco_max}}"
+                                                readonly
+                                            />
+                                            <div class="input-group-append d-block">
+                                                <span class="input-group-text bg-unidad">%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-3"></div>
+                            </div>
+                        </div>
+
+                        <div class="text-center mb-3">
+                            <div class="titulo_3">
+                                Inmueble tradicional
+                                <i
+                                    class="icono_popover fas fa-info-circle ml-1"
+                                    data-toggle="popover"
+                                    data-html="true"
+                                    data-content="Ingrese el precio por M2 del inmueble que desea comparar con SOLIDEXA. El precio debe estar dentro de los límites de precios correspondientes a la zona especificada."
+                                ></i>
+                            </div>
+
+                            <div class="text-center">
+                                <div class="titulo_4 m-0">
+                                    {{informacion.ubicacion}}
+                                </div>
+                                <div class="mb-2">
+                                    {{informacion.direccion}}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="precio_inm_otro_2" class="col-4 col-form-label"><div
+                                    class="titulo_4"
+                                >Precio</div></label>
+                            <div class="col-8 input-group">
+                                <input
+                                    type="number"
+                                    step="1"
+                                    class="form-control"
+                                    id="precio_inm_otro_2"
+                                    min="0"
+                                />
+                                <div class="input-group-append d-block">
+                                    <span class="input-group-text bg-unidad lamoneda">Bs</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="superficie_inm_otro_2" class="col-4 col-form-label"><div
+                                    class="titulo_4"
+                                >Superficie</div></label>
+                            <div class="col-8 input-group">
+                                <input
+                                    type="number"
+                                    step="1"
+                                    class="form-control"
+                                    id="superficie_inm_otro_2"
+                                    min="0"
+                                />
+                                <div class="input-group-append d-block">
+                                    <span class="input-group-text bg-unidad">M2</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="my-3 mx-1">
+                            <div class="d-flex justify-content-between">
+                                <div class="text-left">
+                                    <div class="color-gris">Min.</div>
+                                    <div class="texto-normal">
+                                        <div
+                                            class="titulo_4"
+                                            data-bs="{{informacion.minimo_bsm2}}"
+                                        >{{informacion.minimo_bsm2_render}}</div>
+                                        <div class="titulo_4">456</div>
+                                    </div>
+                                </div>
+
+                                <div class="text-center">
+                                    <div class="color-gris">Promedio</div>
+                                    <div class="texto-normal">
+                                        <div
+                                            class="titulo_4"
+                                            data-bs="{{informacion.promedio_bsm2}}"
+                                        >{{informacion.promedio_bsm2_render}}</div>
+                                        <div class="titulo_4">526,15</div>
+                                    </div>
+                                </div>
+
+                                <div class="text-right">
+                                    <div class="color-gris">Max.</div>
+                                    <div class="texto-normal">
+                                        <div
+                                            class="titulo_4"
+                                            data-bs="{{informacion.maximo_bsm2}}"
+                                        >{{informacion.maximo_bsm2_render}}</div>
+                                        <div class="titulo_4">1.254</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="my-2 progress" style="height: 0.8rem;">
+                                <div
+                                    id="p_tradicional_precio_m2_2"
+                                    class="progress-bar"
+                                    role="progressbar"
+                                    style="width: 0%;"
+                                ></div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-3"></div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input
+                                                type="number"
+                                                step="1"
+                                                class="form-control text-center"
+                                                id="i_tradicional_precio_m2_2"
+                                                value="0"
+                                                readonly
+                                            />
+                                            <div class="input-group-append d-block">
+                                                <span class="input-group-text bg-unidad"><span
+                                                        class="lamoneda"
+                                                    >Bs</span>/M2</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-3"></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-lg-4">
+
+                        <div class="text-center mb-3">
+                            <div class="titulo_3">
+                                Apalancamiento
+                            </div>
+                        </div>
+
+                        <div class="form-check mt-3">
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    class="form-check-input"
+                                    id="ajustar_financiamiento_b"
+                                />
+                                <div class="titulo_4">Financiamiento bancario</div>
+                            </label>
+                            <i
+                                class="icono_popover fas fa-info-circle ml-1"
+                                data-toggle="popover"
+                                data-html="true"
+                                data-content="Seleccione esta opción si piensa invertir en el inmueble SOLIDEXA aplicando Apalancamiento Financiero."
+                            ></i>
+                        </div>
+
+                        <div>
+                            La recomendación es que cuente con el financiamiento bancario desde el momento en que el inmueble SOLIDEXA ingrese en la etapa de CONSTRUCCIÓN y su aporte propio sea por lo menos igual al valor del Derecho de Suelo del presente inmueble.
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <div class="titulo_4">
+                                    Aporte<i
+                                        class="icono_popover fas fa-info-circle ml-1"
+                                        data-toggle="popover"
+                                        data-html="true"
+                                        data-content="La suma de dinero que estás dispuesto a invertir de tu propio bolsillo para cubrir una parte del pago del inmueble SOLIDEXA."
+                                    ></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="my-3 mx-1">
+
+                            <div class="d-flex justify-content-between">
+                                <div class="text-left">
+                                    <div class="color-gris">Min.</div>
+                                    <div class="texto-normal">
+                                        <div class="titulo_4">{{informacion.suelo_bs}}</div>
+                                    </div>
+                                </div>
+
+                                <div class="text-right">
+                                    <div class="color-gris">Max.</div>
+                                    <div class="texto-normal">
+                                        <div
+                                            class="titulo_4"
+                                        >{{informacion.solidexa_inm_bs}}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <input
+                                type="range"
+                                id="range_aporte_b"
+                                min="{{informacion.suelo_bs}}"
+                                max="{{informacion.solidexa_inm_bs}}"
+                                step="1"
+                                value="{{informacion.suelo_bs}}"
+                                class="custom-range w-100 elvalorrange"
+                                data-bs="{{informacion.suelo_bs}}"
+                                data-bs_min="{{informacion.suelo_bs}}"
+                                data-bs_max="{{informacion.solidexa_inm_bs}}"
+                                disabled
+                            />
+
+                            <div class="row">
+                                <div class="col-3"></div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input
+                                                type="number"
+                                                step="1"
+                                                class="form-control text-center input_respuesta"
+                                                id="aporte_b"
+                                                value="{{informacion.suelo_bs}}"
+                                                readonly
+                                            />
+                                            <div class="input-group-append d-block">
+                                                <span class="input-group-text bg-unidad lamoneda">Bs</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-3"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="plazo_bx" class="col-4 col-form-label"><div
+                                    class="titulo_4"
+                                >Plazo<i
+                                        class="icono_popover fas fa-info-circle ml-1"
+                                        data-toggle="popover"
+                                        data-html="true"
+                                        data-content="Tiempo de duración del financiamiento. Elige el mayor tiempo posible, idealmente superior a los {{informacion.meses_min}} meses."
+                                    ></i></div></label>
+                            <div class="col-8 input-group">
+                                <input
+                                    type="number"
+                                    step="1"
+                                    class="input_respuesta form-control"
+                                    id="plazo_b"
+                                    title="Plazo del préstamo"
+                                    min="0"
+                                    max="100"
+                                    value="0"
+                                    readonly
+                                />
+                                <div class="input-group-append d-block">
+                                    <span class="input-group-text bg-unidad">Años</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="interes_bx" class="col-4 col-form-label"><div
+                                    class="titulo_4"
+                                >Interés<i
+                                        class="icono_popover fas fa-info-circle ml-1"
+                                        data-toggle="popover"
+                                        data-html="true"
+                                        data-content="Tasa de interés compuesta anual que el banco exige por el préstamo. Te recomendamos buscar la tasa de interés más baja, preferiblemente por debajo del 15%."
+                                    ></i></div></label>
+                            <div class="col-8 input-group">
+                                <input
+                                    type="number"
+                                    step="1"
+                                    class="input_respuesta form-control"
+                                    id="interes_b"
+                                    title="Interés Anual"
+                                    min="0"
+                                    max="100"
+                                    value="0"
+                                    readonly
+                                />
+                                <div class="input-group-append d-block">
+                                    <span class="input-group-text bg-unidad">%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="ref-cal_inm_inversion text-center">
+                            <div class="btn boton-primario" id="cal_inm_inversion">Calcular</div>
+                        </div>
+                        {{! abajo de este boton apareceren mensajes de "complete todos los campos, o el precio que introduce no corresponden a la zona donde se encuentra el inmueble solidexa" }}
+                    </div>
+
+                </div>
+                {{! -------------------------- }}
+                <div class="row">
+                    <div class="col-12">
+                        <div
+                            class="texto_inversiones alert alert-primary mt-3"
+                            style="display: none;"
+                        >
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row contenedor_desplazamiento" style="display: none;">
+                    <div class="col-12">
+                        <div class="contenedor_flechas">
+                            <div class="flechas_desplazamiento btn btn-primary">
+                                <i class="fas fa-arrow-left flecha_siguiente"></i>
+                            </div>
+                            <div class="flechas_desplazamiento btn btn-primary">
+                                <i class="fas fa-arrow-right flecha_siguiente"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{! indica que grafico se encuentra visualizando ahora }}
+                <span class="aux_desplazamiento" data-desplazamiento="barras"></span>
+                {{! -------------------------- }}
+                <div class="row mt-5">
+
+                    <div class="col-12 col-xl-6 contenedor_5">
+                        <div class="text-center mb-2">
+                            <div class="texto-normal titulo_2">
+                                Ahorro Bancario
+                                <i
+                                    class="p_ahorro icono_popover fas fa-info-circle ml-1"
+                                    data-toggle="popover"
+                                    data-html="true"
+                                    data-content=""
+                                ></i>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+
+                            <div class="col-12 col-sm-6 gra_barras">
+                                <div id="contenedor_grafico_i_1">
+                                    <canvas id="grafico_12_3"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-sm-6 gra_velocimetro">
+                                <div class="contenedor_velocimetro">
+                                    <div>
+                                        <div class="velocimetro">
+                                            <div class="circulo"></div>
+                                            <div class="corona"></div>
+
+                                            <div class="svg_circulo">
+                                                <svg width="200" height="200">
+                                                    <circle r="78" cx="50%" cy="50%" />
+                                                </svg>
+                                            </div>
+                                            <div class="cuadrado"></div>
+                                            <div class="linea1 linea_comun"></div>
+                                            <div class="i1">
+                                                <span>0</span>
+                                            </div>
+                                            <div class="i2">
+                                                <span>10</span>
+                                            </div>
+                                            <div class="i3">
+                                                <span>20</span>
+                                            </div>
+                                            <div class="i4">
+                                                <span>30</span>
+                                            </div>
+                                            <div class="i5">
+                                                <span>40</span>
+                                            </div>
+                                            <div class="i6">
+                                                <span>50</span>
+                                            </div>
+                                            <div class="i7">
+                                                <span>60</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-12 col-sm-6 text-center texto_barras">
+                                <div class="row">
+
+                                    <div class="col-6">
+                                        <div class="color-tradicional">
+                                            <div>
+                                                <span class="titulo_3 12_3_1"></span>
+                                                <span class="titulo_4 m3 lamoneda">Bs</span>
+                                            </div>
+                                            <div class="color-gris">Inversión</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <div class="texto-link">
+                                            <div>
+                                                <span class="titulo_3 12_3_2"></span>
+                                                <span class="titulo_4 m3 lamoneda">Bs</span>
+                                            </div>
+                                            <div class="color-gris">Ganancia</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-sm-6 text-center texto_velocimetro">
+                                <div class="texto-link">
+                                    <div>
+                                        <span class="titulo_3 12_3_3">0</span>
+                                        <span class="titulo_4">%</span>
+                                    </div>
+                                    <div class="color-gris">Rendimiento</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-xl-6 mt-5 mt-lg-0 contenedor_6">
+                        <div class="text-center mb-2">
+                            <div class="titulo_2 texto-normal">
+                                Inmueble Tradicional
+                                <i
+                                    class="p_tradicional icono_popover fas fa-info-circle ml-1"
+                                    data-toggle="popover"
+                                    data-html="true"
+                                    data-content="Emprendes un negocio propio."
+                                ></i>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+
+                            <div class="col-12 col-sm-6 gra_barras">
+                                <div id="contenedor_grafico_i_2">
+                                    <canvas id="grafico_12_4"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-sm-6 gra_velocimetro">
+                                <div class="contenedor_velocimetro">
+                                    <div>
+                                        <div class="velocimetro">
+                                            <div class="circulo"></div>
+                                            <div class="corona"></div>
+
+                                            <div class="svg_circulo">
+                                                <svg width="200" height="200">
+                                                    <circle r="78" cx="50%" cy="50%" />
+                                                </svg>
+                                            </div>
+                                            <div class="cuadrado"></div>
+                                            <div class="linea2 linea_comun"></div>
+                                            <div class="i1">
+                                                <span>0</span>
+                                            </div>
+                                            <div class="i2">
+                                                <span>10</span>
+                                            </div>
+                                            <div class="i3">
+                                                <span>20</span>
+                                            </div>
+                                            <div class="i4">
+                                                <span>30</span>
+                                            </div>
+                                            <div class="i5">
+                                                <span>40</span>
+                                            </div>
+                                            <div class="i6">
+                                                <span>50</span>
+                                            </div>
+                                            <div class="i7">
+                                                <span>60</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-12 col-sm-6 text-center texto_barras">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="color-tradicional">
+                                            <div>
+                                                <span class="titulo_3 12_4_1"></span>
+                                                <span class="titulo_4 m3 lamoneda">Bs</span>
+                                            </div>
+                                            <div class="color-gris">Inversión</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <div class="texto-link">
+                                            <div>
+                                                <span class="titulo_3 12_4_2"></span>
+                                                <span class="titulo_4 m3 lamoneda">Bs</span>
+                                            </div>
+                                            <div class="color-gris">Ganancia</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-sm-6 text-center texto_velocimetro">
+                                <div>
+                                    <div>
+                                        <span class="titulo_3 12_4_3">0</span>
+                                        <span class="titulo_4">%</span>
+                                    </div>
+                                    <div class="color-gris">Rendimiento</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="row mt-5">
+                    <div class="col-12 col-xl-6 contenedor_7">
+                        <div class="text-center mb-2">
+                            <div class="titulo_2 texto-normal">
+                                SOLIDEXA
+                                <i
+                                    class="p_solidexa icono_popover fas fa-info-circle ml-1"
+                                    data-toggle="popover"
+                                    data-html="true"
+                                    data-content="Invirtiendo en SOLIDEXA en el inmueble."
+                                ></i>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
 
-                    <div class="col-12 contenedor_moneda_2">
-                        <div class="mb-3 d-flex justify-content-center">
-                            <div>
-                                <button
-                                    data-moneda="sus"
-                                    class="moneda_2_calculadora moneda_2_calculadora_seleccionado texto-normal btn border"
-                                >$us</button>
-                                <button
-                                    data-moneda="bs"
-                                    class="moneda_2_calculadora texto-normal btn border"
-                                >Bs</button>
+                            <div class="col-12 col-sm-6 gra_barras">
+                                <div id="contenedor_grafico_i_3">
+                                    <canvas id="grafico_12_5"></canvas>
+                                </div>
                             </div>
 
-                        </div>
-                    </div>
+                            <div class="col-12 col-sm-6 gra_velocimetro">
+                                <div class="contenedor_velocimetro">
+                                    <div>
+                                        <div class="velocimetro">
+                                            <div class="circulo"></div>
+                                            <div class="corona"></div>
 
-                    <div class="m2_sus">
-                        <div class="m2_credito_solidexa_sus" valor_sus=""></div>
-                        <div class="m2_credito_tradicional_sus" valor_sus=""></div>
-                        <div class="m2_int_acu_solidexa_sus" valor_sus=""></div>
-                        <div class="m2_int_acu_tradicional_sus" valor_sus=""></div>
-                        <div class="m2_mensual_solidexa_sus" valor_sus=""></div>
-                        <div class="m2_mensual_tradicional_sus" valor_sus=""></div>
-
-                    </div>
-
-                    <div class="col-12 col-lg-6 contenedor_2">
-                        <div class="text-center mb-2">
-                            <h5 class="texto-link">
-                                <b>SOLIDEXA vs Tradicional</b>
-                            </h5>
-                        </div>
-                        <div id="contenedor_banco_sol_tra">
-                            <canvas id="grafico_prestamo_p"></canvas>
+                                            <div class="svg_circulo">
+                                                <svg width="200" height="200">
+                                                    <circle r="78" cx="50%" cy="50%" />
+                                                </svg>
+                                            </div>
+                                            <div class="cuadrado"></div>
+                                            <div class="linea3 linea_comun"></div>
+                                            <div class="i1">
+                                                <span>0</span>
+                                            </div>
+                                            <div class="i2">
+                                                <span>10</span>
+                                            </div>
+                                            <div class="i3">
+                                                <span>20</span>
+                                            </div>
+                                            <div class="i4">
+                                                <span>30</span>
+                                            </div>
+                                            <div class="i5">
+                                                <span>40</span>
+                                            </div>
+                                            <div class="i6">
+                                                <span>50</span>
+                                            </div>
+                                            <div class="i7">
+                                                <span>60</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="row mt-3">
-                            <div class="col-6 text-center">
-                                <div>
-                                    <i
-                                        class="fas fa-thumbs-up texto-link"
-                                        style="font-size: 2rem;"
-                                    ></i>
-                                </div>
-                                <div class="my-2">
-                                    <span class="h3 texto-link"><b class="c4"></b></span>
-                                    {{! <span class="h5 texto-link"><b class="c5"></b></span> }}
-                                    <span class="h5 texto-link c5"></span>
+                            <div class="col-12 col-sm-6 text-center texto_barras">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="color-tradicional">
+                                            <div>
+                                                <span class="titulo_3 12_5_1"></span>
+                                                <span class="titulo_4 m3 lamoneda">Bs</span>
+                                            </div>
+                                            <div class="color-gris">Inversión</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <div class="texto-link">
+                                            <div>
+                                                <span class="titulo_3 12_5_2"></span>
+                                                <span class="titulo_4 m3 lamoneda">Bs</span>
+                                            </div>
+                                            <div class="color-gris">Ganancia</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-6 text-center">
+
+                            <div class="col-12 col-sm-6 text-center texto_velocimetro">
                                 <div>
-                                    <i
-                                        class="fas fa-thumbs-down"
-                                        style="font-size: 2rem; color: red;"
-                                    ></i>
-                                </div>
-                                <div class="my-2">
-                                    <span class="h3" style="color: red;"><b class="c6"></b></span>
-                                    {{! <span class="h5" style="color: red;"><b class="c7"></b></span> }}
-                                    <span class="h5 c7" style="color: red;"></span>
+                                    <div>
+                                        <span class="titulo_3 12_5_3">0</span>
+                                        <span class="titulo_4">%</span>
+                                    </div>
+                                    <div class="color-gris">Rendimiento</div>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="row">
-                            <div class="col-6 text-center">
-                                <p>
-                                    El total de intereses que pagas con el inmuebe
-                                    <b>SOLIDEXA</b>
-                                    es menor.
-                                </p>
-                            </div>
-                            <div class="col-6 text-center">
-                                <p>
-                                    El total de intereses que pagas con el inmuebe
-                                    <b>tradicional</b>
-                                    es más alta.
-                                </p>
-                            </div>
-                        </div>
-
                     </div>
 
-                    <div class="col-12 col-lg-6 mt-5 mt-lg-0 contenedor_2">
+                    <div class="col-12 col-xl-6 mt-5 mt-lg-0 contenedor_8">
                         <div class="text-center mb-2">
-                            <h5 class="texto-link">
-                                <b><span>Cuotas por </span><span class="n_meses"></span></b>
-                            </h5>
+                            <div class="titulo_2 texto-normal">
+                                SOLIDEXA Apalancado
+                                <i
+                                    class="p_solidexa_p icono_popover fas fa-info-circle ml-1"
+                                    data-toggle="popover"
+                                    data-html="true"
+                                    data-content="Apalancamiento con SOLIDEXA plus."
+                                ></i>
+                            </div>
                         </div>
-                        <div id="contenedor_int_acu">
-                            <canvas id="grafico_interes_acumulado"></canvas>
+                        <div class="row mt-2">
+
+                            <div class="col-12 col-sm-6 gra_barras">
+                                <div id="contenedor_grafico_i_4">
+                                    <canvas id="grafico_12_6"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-sm-6 gra_velocimetro">
+                                <div class="contenedor_velocimetro">
+                                    <div>
+                                        <div class="velocimetro">
+                                            <div class="circulo"></div>
+                                            <div class="corona"></div>
+                                            <div class="svg_circulo">
+                                                <svg width="200" height="200">
+                                                    <circle r="78" cx="50%" cy="50%" />
+                                                </svg>
+                                            </div>
+                                            <div class="cuadrado"></div>
+                                            <div class="linea4 linea_comun"></div>
+                                            <div class="i1">
+                                                <span>0</span>
+                                            </div>
+                                            <div class="i2">
+                                                <span>10</span>
+                                            </div>
+                                            <div class="i3">
+                                                <span>20</span>
+                                            </div>
+                                            <div class="i4">
+                                                <span>30</span>
+                                            </div>
+                                            <div class="i5">
+                                                <span>40</span>
+                                            </div>
+                                            <div class="i6">
+                                                <span>50</span>
+                                            </div>
+                                            <div class="i7">
+                                                <span>60</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="row mt-3">
-                            <div class="col-6 text-center">
-                                <div>
-                                    <i
-                                        class="fas fa-thumbs-up texto-link"
-                                        style="font-size: 2rem;"
-                                    ></i>
-                                </div>
-                                <div class="my-2">
-                                    <span class="h3 texto-link"><b class="c8"></b></span>
-                                    {{! <span class="h5 texto-link"><b class="c9"></b></span> }}
-                                    <span class="h5 texto-link c9"></span>
+                            <div class="col-12 col-sm-6 text-center texto_barras">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="color-tradicional">
+                                            <div>
+                                                <span class="titulo_3 12_6_1"></span>
+                                                <span class="titulo_4 m3 lamoneda">Bs</span>
+                                            </div>
+                                            <div class="color-gris">Inversión</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <div class="texto-link">
+                                            <div>
+                                                <span class="titulo_3 12_6_2"></span>
+                                                <span class="titulo_4 m3 lamoneda">Bs</span>
+                                            </div>
+                                            <div class="color-gris">Ganancia</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-6 text-center">
+
+                            <div class="col-12 col-sm-6 text-center texto_velocimetro">
                                 <div>
-                                    <i
-                                        class="fas fa-thumbs-down"
-                                        style="font-size: 2rem; color: red;"
-                                    ></i>
-                                </div>
-                                <div class="my-2">
-                                    <span class="h3" style="color: red;"><b class="c10"></b></span>
-                                    {{! <span class="h5" style="color: red;"><b class="c11"></b></span> }}
-                                    <span class="h5 c11" style="color: red;"></span>
+                                    <div>
+                                        <span class="titulo_3 12_6_3">0</span>
+                                        <span class="titulo_4">%</span>
+                                    </div>
+                                    <div class="color-gris">Rendimiento</div>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="row">
-                            <div class="col-6 text-center">
-                                <p>
-                                    El inmueble
-                                    <b>SOLIDEXA</b>
-                                    te beneficia con una cuota mensual más baja.
-                                </p>
-                            </div>
-                            <div class="col-6 text-center">
-                                <p>
-                                    El inmueble
-                                    <b>tradicional</b>
-                                    te desfavorece con una cuota mensual más alta.
-                                </p>
-                            </div>
-                        </div>
-
                     </div>
 
                 </div>
+                {{! -------------------------- }}
             </div>
         </div>
 
     </div>
 
-    {{! ================================================================== }}
-    {{! ================================================================== }}
-    {{! CALCULADORA INVERSIONISTA }}
-
-    <div class="col-12" id="contenedor_inversionista">
-        <div>
-            <h4 class="text-center texto-resaltado">
-                Inversionista
-            </h4>
-            <div class="alert alert-primary mt-3">
-                Si estás pensando en invertir tu dinero, compara diversas oportunidades de inversión
-                y descubre por qué el inmueble <b>SOLIDEXA</b> destaca como la mejor opción.
-            </div>
-        </div>
-
-        <div class="row">
-
-            <div class="col-12 col-sm-6">
-
-                <div class="text-center mb-3">
-                    <h5 class="texto-link">
-                        <b>Emprendimiento</b>
-                        <i
-                            class="icono_popover fas fa-info-circle ml-1"
-                            data-toggle="popover"
-                            data-html="true"
-                            data-content="Estás pensando en iniciar tu propio negocio para generar ingresos mensuales."
-                        ></i>
-                    </h5>
-                </div>
-
-                <div class="form-group row">
-                    <label for="label_inversion_p" class="col-4 col-form-label"><b>Inversión</b>
-                        <i
-                            class="icono_popover fas fa-info-circle ml-1"
-                            data-toggle="popover"
-                            data-html="true"
-                            data-content="La suma de dinero que esperas invertir en tu idea de negocio."
-                        ></i>
-                    </label>
-                    <div class="col-8 input-group">
-                        <input
-                            name="inversion"
-                            type="number"
-                            step="0.01"
-                            class="form-control"
-                            id="label_inversion"
-                            title="Inversión"
-                            min="1"
-                            required
-                        />
-                        <div class="input-group-append">
-                            <span class="input-group-text bg-warning">$us</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label for="label_ganancia_p" class="col-4 col-form-label"><b>Ganancia</b>
-                        <i
-                            class="icono_popover fas fa-info-circle ml-1"
-                            data-toggle="popover"
-                            data-html="true"
-                            data-content="Ganancia neta mensual que esperas obtener luego de pagar gastos y obligaciones."
-                        ></i>
-                    </label>
-                    <div class="col-8 input-group">
-                        <input
-                            name="ganancia"
-                            type="number"
-                            step="0.01"
-                            class="form-control"
-                            id="label_ganancia"
-                            required
-                        />
-                        <div class="input-group-append">
-                            <span class="input-group-text bg-warning">$us/Mes</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label for="label_reinversion_i" class="col-4 col-form-label"><b>Reinversión</b>
-                        <i
-                            class="icono_popover fas fa-info-circle ml-1"
-                            data-toggle="popover"
-                            data-html="true"
-                            data-content="Deseas reinvertir tu ganancia neta mensual a una tasa anual compuesta del 10% para aumentar tus ganancias."
-                        ></i>
-                    </label>
-                    <div class="col-8">
-                        <label class="mt-2 mr-5">
-                            <input
-                                type="radio"
-                                name="radio_reinversion"
-                                value="no"
-                                class="clase_reinversion"
-                            />
-                            No
-                        </label>
-                        <label class="mt-2">
-                            <input
-                                type="radio"
-                                name="radio_reinversion"
-                                value="si"
-                                class="clase_reinversion"
-                            />
-                            Si
-                        </label>
-                    </div>
-                </div>
-
-                <input type="text" name="label_reinversion" id="id_reinversion" hidden />
-
-            </div>
-
-            <div class="col-12 col-sm-6">
-
-                <div class="text-center mb-3">
-                    <h5 class="texto-link">
-                        <b>SOLIDEXA</b>
-                    </h5>
-                </div>
-
-                <div class="row">
-                    <div class="col-6 text-center">
-                        <div class="my-2">
-                            <span class="h3 texto-link"><b
-                                >{{informacion.inversion_estado}}</b></span>
-                            <span class="h5 texto-link">$us</span>
-                        </div>
-                        <div>
-                            <b>Inversión</b>
-                            <i
-                                class="icono_popover fas fa-info-circle ml-1"
-                                data-toggle="popover"
-                                data-html="true"
-                                data-content="Invierte ahora esta cantidad de dinero en el inmueble. ¡Aprovecha al máximo esta oportunidad!"
-                            ></i>
-                        </div>
-                    </div>
-                    <div class="col-6 text-center">
-                        <div class="my-2">
-                            <span class="h3 texto-link"><b>{{informacion.periodo_estado}}</b></span>
-                            <span class="h5 texto-link">Meses</span>
-                        </div>
-                        <div>
-                            <b>Periodo</b>
-                            <i
-                                class="icono_popover fas fa-info-circle ml-1"
-                                data-toggle="popover"
-                                data-html="true"
-                                data-content="Es el plazo que se otorga al inversionista para que pueda obtener ganancias con su inversión. Al finalizar este periodo, SOLIDEXA iniciará con los procedimientos para devolver la totalidad de la inversión al inversionista."
-                            ></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="text-center mt-4 mb-3">
-                    <h5 class="texto-link">
-                        <b>SOLIDEXA Plus</b>
-                        <i
-                            class="icono_popover fas fa-info-circle ml-1"
-                            data-toggle="popover"
-                            data-html="true"
-                            data-content="Maximiza tus ganancias con el inmueble SOLIDEXA mediante la aplicación de <b>apalancamiento financiero</b>."
-                        ></i>
-                    </h5>
-                </div>
-
-                <div class="form-group row">
-                    <label for="label_inv_sol_p" class="col-4 col-form-label">
-                        <b>Aporte</b>
-                        <i
-                            class="icono_popover fas fa-info-circle ml-1"
-                            data-toggle="popover"
-                            data-html="true"
-                            data-content="El porcentaje de dinero que estás dispuesto a invertir de tu propio bolsillo para cubrir una parte de la inversión en el inmueble SOLIDEXA."
-                        ></i>
-                    </label>
-                    <div class="col-8 input-group">
-                        <input
-                            name="inv_sol"
-                            type="number"
-                            step="0.01"
-                            class="form-control"
-                            id="label_inv_sol"
-                            min="0"
-                            max="100"
-                            required
-                        />
-                        <div class="input-group-append">
-                            <span class="input-group-text bg-warning">%</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label for="label_financiamiento_p" class="col-4 col-form-label"><b>Interés</b>
-                        <i
-                            class="icono_popover fas fa-info-circle ml-1"
-                            data-toggle="popover"
-                            data-html="true"
-                            data-content="Tasa de interés compuesto anual que pagarás a la fuente de financiamiento externo. Te recomendamos buscar la tasa de interés más baja, preferiblemente por debajo del 15%."
-                        ></i>
-                    </label>
-                    <div class="col-8 input-group">
-                        <input
-                            name="financiamiento"
-                            type="number"
-                            step="0.01"
-                            class="form-control"
-                            id="label_financiamiento"
-                            min="0"
-                            max="100"
-                            required
-                        />
-                        <div class="input-group-append">
-                            <span class="input-group-text bg-warning">%</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label for="label_plazo_plus_p" class="col-4 col-form-label"><b>Plazo</b>
-                        <i
-                            class="icono_popover fas fa-info-circle ml-1"
-                            data-toggle="popover"
-                            data-html="true"
-                            data-content="Tiempo de duración del financiamiento. Elige el mayor tiempo posible, idealmente superior a los {{informacion.meses_min}} meses."
-                        ></i>
-                    </label>
-                    <div class="col-8 input-group">
-                        <input
-                            name="plazo_plus"
-                            type="number"
-                            step="0.01"
-                            class="form-control"
-                            id="label_plazo_plus"
-                            min="0.01"
-                            required
-                        />
-                        <div class="input-group-append">
-                            <span class="input-group-text bg-warning">Años</span>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="col-lg-3"></div>
-            <div class="col-12 col-lg-6">
-                <div class="ref-calcular_inversion text-center">
-                    <div class="calcular_inversion btn btn-primary">Calcular</div>
-                </div>
-                {{! abajo de este boton apareceren mensajes de "complete todos los campos, o el precio que introduce no corresponden a la zona donde se encuentra el inmueble solidexa" }}
-            </div>
-            <div class="col-lg-3"></div>
-
-        </div>
-
-        <div class="row">
-            <div class="col-12">
-                <div class="texto_inversiones alert alert-primary mt-3" style="display: none;">
-
-                </div>
-            </div>
-        </div>
-
-        <div class="row contenedor_desplazamiento" style="display: none;">
-            <div class="col-12">
-                <div class="contenedor_flechas">
-                    <div class="flechas_desplazamiento btn btn-primary">
-                        <i class="fas fa-arrow-left flecha_siguiente"></i>
-                    </div>
-                    <div class="flechas_desplazamiento btn btn-primary">
-                        <i class="fas fa-arrow-right flecha_siguiente"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {{! indica que grafico se encuentra visualizando ahora }}
-        <span class="aux_desplazamiento" data-desplazamiento="barras"></span>
-
-        <div class="opciones_inversion">
-
-            <div class="row">
-
-                <div class="col-12 contenedor_moneda_3">
-                    <div class="mb-3 d-flex justify-content-center">
-                        <div>
-                            <button
-                                data-moneda="sus"
-                                class="moneda_3_calculadora moneda_3_calculadora_seleccionado texto-normal btn border"
-                            >$us</button>
-                            <button
-                                data-moneda="bs"
-                                class="moneda_3_calculadora texto-normal btn border"
-                            >Bs</button>
-                        </div>
-
-                    </div>
-                </div>
-
-                <div class="m3_sus">
-                    <div class="inversion_a_sus" valor_sus=""></div>
-                    <div class="inversion_b_sus" valor_sus=""></div>
-                    <div class="inversion_c_sus" valor_sus=""></div>
-                    <div class="inversion_d_sus" valor_sus=""></div>
-
-                    <div class="ganancia_a_sus" valor_sus=""></div>
-                    <div class="ganancia_b_sus" valor_sus=""></div>
-                    <div class="ganancia_c_sus" valor_sus=""></div>
-                    <div class="ganancia_d_sus" valor_sus=""></div>
-
-                    <div class="el_plazo" valor=""></div>
-                    <div class="i_ahorro" valor=""></div>
-                </div>
-
-                <div class="col-12 col-xl-6">
-                    <div class="text-center mb-2">
-                        <h5 class="texto-link">
-                            <b>Ahorro Bancario</b>
-                            <i
-                                class="p_ahorro icono_popover fas fa-info-circle ml-1"
-                                data-toggle="popover"
-                                data-html="true"
-                                data-content=""
-                            ></i>
-                        </h5>
-                    </div>
-                    <div class="row mt-2">
-
-                        <div class="col-12 col-sm-6 gra_barras">
-                            <div id="contenedor_grafico_i_1">
-                                <canvas id="grafico_i_1"></canvas>
-                            </div>
-                        </div>
-
-                        <div class="col-12 col-sm-6 gra_velocimetro">
-                            <div class="contenedor_velocimetro">
-                                <div>
-                                    <div class="velocimetro">
-                                        <div class="circulo"></div>
-                                        <div class="corona"></div>
-                                        {{! <div class="cuadrado1"></div> }}
-                                        <div class="svg_circulo">
-                                            <svg width="200" height="200">
-                                                <circle r="78" cx="50%" cy="50%" />
-                                            </svg>
-                                        </div>
-                                        <div class="cuadrado"></div>
-                                        <div class="linea1 linea_comun"></div>
-                                        <div class="i1">
-                                            <span>0</span>
-                                        </div>
-                                        <div class="i2">
-                                            <span>25</span>
-                                        </div>
-                                        <div class="i3">
-                                            <span>50</span>
-                                        </div>
-                                        <div class="i4">
-                                            <span>75</span>
-                                        </div>
-                                        <div class="i5">
-                                            <span>100</span>
-                                        </div>
-                                        <div class="i6">
-                                            <span>125</span>
-                                        </div>
-                                        <div class="i7">
-                                            <span>150</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row mt-3">
-                        <div class="col-12 col-sm-6 text-center texto_barras">
-                            <div class="row">
-                                <div class="col-6 col-sm-12">
-                                    <div class="texto-link">
-                                        <div>
-                                            <span class="h3"><b class="gana_1"></b></span>
-                                            <span class="h5 m3">$us</span>
-                                        </div>
-                                        <div>
-                                            <span class="h5"><b>Ganancia</b></span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-6 col-sm-12">
-                                    <div class="mt-sm-3" style="color: red;">
-                                        <div>
-                                            <span class="h5"><b class="inve_1"></b></span>
-                                            <span class="h5 m3">$us</span>
-                                        </div>
-                                        <div>
-                                            <span class="h5"><b>Inversión</b></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-12 col-sm-6 text-center texto_velocimetro">
-                            <div class="texto-link">
-                                <div>
-                                    <span class="h3"><b class="rendi_1">0</b></span>
-                                    <span class="h5">%</span>
-                                </div>
-                                <div>
-                                    <span class="h5"><b>Rendimiento</b></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-xl-6 mt-5 mt-lg-0">
-                    <div class="text-center mb-2">
-                        <h5 class="texto-link">
-                            <b>Emprendimiento</b>
-                            <i
-                                class="p_emprendimiento icono_popover fas fa-info-circle ml-1"
-                                data-toggle="popover"
-                                data-html="true"
-                                data-content="Emprendes un negocio propio."
-                            ></i>
-                        </h5>
-                    </div>
-                    <div class="row mt-2">
-
-                        <div class="col-12 col-sm-6 gra_barras">
-                            <div id="contenedor_grafico_i_2">
-                                <canvas id="grafico_i_2"></canvas>
-                            </div>
-                        </div>
-
-                        <div class="col-12 col-sm-6 gra_velocimetro">
-                            <div class="contenedor_velocimetro">
-                                <div>
-                                    <div class="velocimetro">
-                                        <div class="circulo"></div>
-                                        <div class="corona"></div>
-                                        {{! <div class="cuadrado1"></div> }}
-                                        <div class="svg_circulo">
-                                            <svg width="200" height="200">
-                                                <circle r="78" cx="50%" cy="50%" />
-                                            </svg>
-                                        </div>
-                                        <div class="cuadrado"></div>
-                                        <div class="linea2 linea_comun"></div>
-                                        <div class="i1">
-                                            <span>0</span>
-                                        </div>
-                                        <div class="i2">
-                                            <span>25</span>
-                                        </div>
-                                        <div class="i3">
-                                            <span>50</span>
-                                        </div>
-                                        <div class="i4">
-                                            <span>75</span>
-                                        </div>
-                                        <div class="i5">
-                                            <span>100</span>
-                                        </div>
-                                        <div class="i6">
-                                            <span>125</span>
-                                        </div>
-                                        <div class="i7">
-                                            <span>150</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row mt-3">
-                        <div class="col-12 col-sm-6 text-center texto_barras">
-                            <div class="row">
-                                <div class="col-6 col-sm-12">
-                                    <div class="texto-link">
-                                        <div>
-                                            <span class="h3"><b class="gana_2"></b></span>
-                                            <span class="h5 m3">$us</span>
-                                        </div>
-                                        <div>
-                                            <span class="h5"><b>Ganancia</b></span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-6 col-sm-12">
-                                    <div class="mt-sm-3" style="color: red;">
-                                        <div>
-                                            <span class="h5"><b class="inve_2"></b></span>
-                                            <span class="h5 m3">$us</span>
-                                        </div>
-                                        <div>
-                                            <span class="h5"><b>Inversión</b></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-12 col-sm-6 text-center texto_velocimetro">
-                            <div class="texto-link">
-                                <div>
-                                    <span class="h3"><b class="rendi_2">0</b></span>
-                                    <span class="h5">%</span>
-                                </div>
-                                <div>
-                                    <span class="h5"><b>Rendimiento</b></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row mt-5">
-                <div class="col-12 col-xl-6">
-                    <div class="text-center mb-2">
-                        <h5 class="texto-link">
-                            <b>SOLIDEXA</b>
-                            <i
-                                class="p_solidexa icono_popover fas fa-info-circle ml-1"
-                                data-toggle="popover"
-                                data-html="true"
-                                data-content="Invirtiendo en SOLIDEXA en el inmueble."
-                            ></i>
-                        </h5>
-                    </div>
-                    <div class="row mt-2">
-
-                        <div class="col-12 col-sm-6 gra_barras">
-                            <div id="contenedor_grafico_i_3">
-                                <canvas id="grafico_i_3"></canvas>
-                            </div>
-                        </div>
-
-                        <div class="col-12 col-sm-6 gra_velocimetro">
-                            <div class="contenedor_velocimetro">
-                                <div>
-                                    <div class="velocimetro">
-                                        <div class="circulo"></div>
-                                        <div class="corona"></div>
-                                        {{! <div class="cuadrado1"></div> }}
-                                        <div class="svg_circulo">
-                                            <svg width="200" height="200">
-                                                <circle r="78" cx="50%" cy="50%" />
-                                            </svg>
-                                        </div>
-                                        <div class="cuadrado"></div>
-                                        <div class="linea3 linea_comun"></div>
-                                        <div class="i1">
-                                            <span>0</span>
-                                        </div>
-                                        <div class="i2">
-                                            <span>25</span>
-                                        </div>
-                                        <div class="i3">
-                                            <span>50</span>
-                                        </div>
-                                        <div class="i4">
-                                            <span>75</span>
-                                        </div>
-                                        <div class="i5">
-                                            <span>100</span>
-                                        </div>
-                                        <div class="i6">
-                                            <span>125</span>
-                                        </div>
-                                        <div class="i7">
-                                            <span>150</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row mt-3">
-                        <div class="col-12 col-sm-6 text-center texto_barras">
-                            <div class="row">
-                                <div class="col-6 col-sm-12">
-                                    <div class="texto-link">
-                                        <div>
-                                            <span class="h3"><b class="gana_3"></b></span>
-                                            <span class="h5 m3">$us</span>
-                                        </div>
-                                        <div>
-                                            <span class="h5"><b>Ganancia</b></span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-6 col-sm-12">
-                                    <div class="mt-sm-3" style="color: red;">
-                                        <div>
-                                            <span class="h5"><b class="inve_3"></b></span>
-                                            <span class="h5 m3">$us</span>
-                                        </div>
-                                        <div>
-                                            <span class="h5"><b>Inversión</b></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-12 col-sm-6 text-center texto_velocimetro">
-                            <div class="texto-link">
-                                <div>
-                                    <span class="h3"><b class="rendi_3">0</b></span>
-                                    <span class="h5">%</span>
-                                </div>
-                                <div>
-                                    <span class="h5"><b>Rendimiento</b></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-xl-6 mt-5 mt-lg-0">
-                    <div class="text-center mb-2">
-                        <h5 class="texto-link">
-                            <b>SOLIDEXA Plus</b>
-                            <i
-                                class="p_solidexa_p icono_popover fas fa-info-circle ml-1"
-                                data-toggle="popover"
-                                data-html="true"
-                                data-content="Apalancamiento con SOLIDEXA plus."
-                            ></i>
-                        </h5>
-                    </div>
-                    <div class="row mt-2">
-
-                        <div class="col-12 col-sm-6 gra_barras">
-                            <div id="contenedor_grafico_i_4">
-                                <canvas id="grafico_i_4"></canvas>
-                            </div>
-                        </div>
-
-                        <div class="col-12 col-sm-6 gra_velocimetro">
-                            <div class="contenedor_velocimetro">
-                                <div>
-                                    <div class="velocimetro">
-                                        <div class="circulo"></div>
-                                        <div class="corona"></div>
-                                        {{! <div class="cuadrado1"></div> }}
-                                        <div class="svg_circulo">
-                                            <svg width="200" height="200">
-                                                <circle r="78" cx="50%" cy="50%" />
-                                            </svg>
-                                        </div>
-                                        <div class="cuadrado"></div>
-                                        <div class="linea4 linea_comun"></div>
-                                        <div class="i1">
-                                            <span>0</span>
-                                        </div>
-                                        <div class="i2">
-                                            <span>25</span>
-                                        </div>
-                                        <div class="i3">
-                                            <span>50</span>
-                                        </div>
-                                        <div class="i4">
-                                            <span>75</span>
-                                        </div>
-                                        <div class="i5">
-                                            <span>100</span>
-                                        </div>
-                                        <div class="i6">
-                                            <span>125</span>
-                                        </div>
-                                        <div class="i7">
-                                            <span>150</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row mt-3">
-                        <div class="col-12 col-sm-6 text-center texto_barras">
-                            <div class="row">
-                                <div class="col-6 col-sm-12">
-                                    <div class="texto-link">
-                                        <div>
-                                            <span class="h3"><b class="gana_4"></b></span>
-                                            <span class="h5 m3">$us</span>
-                                        </div>
-                                        <div>
-                                            <span class="h5"><b>Ganancia</b></span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-6 col-sm-12">
-                                    <div class="mt-sm-3" style="color: red;">
-                                        <div>
-                                            <span class="h5"><b class="inve_4"></b></span>
-                                            <span class="h5 m3">$us</span>
-                                        </div>
-                                        <div>
-                                            <span class="h5"><b>Inversión</b></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-12 col-sm-6 text-center texto_velocimetro">
-                            <div class="texto-link">
-                                <div>
-                                    <span class="h3"><b class="rendi_4">0</b></span>
-                                    <span class="h5">%</span>
-                                </div>
-                                <div>
-                                    <span class="h5"><b>Rendimiento</b></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-            <div class="row mt-3">
-                <div class="col-12">
-                    <div class="conclusion_inversion text-left alert alert-primary mt-3">
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-</div>
-
-<div class="text-right mt-4" title="Numero de visualizaciones">
-    <span><i class="fas fa-glasses icono_visualizaciones"></i></span>
-    <span class="numero_visualizaciones"><b>{{nv_ventana}}</b></span>
 </div>

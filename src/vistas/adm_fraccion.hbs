@@ -1,0 +1,73 @@
+{{!-- PARA VENTANA DE FRACCION (SEA DEL TIPO TERRENO O INMUEBLE) --}}
+{{!-- recuerde que terminos como "> opciones_nav" no deben ponerse al principio linea codigo "1", porque de hacerlo genera un ERROR --}}
+
+{{!-- ------------------------- --}}
+{{!-- datos elementales --}}
+<div id="id_tipo_ventana" data-tipo_ventana="normal"></div>
+<div id="id_objetivo_tipo" data-objetivo_tipo="fraccion"></div>
+<div id="id_objetivo_codigo" data-objetivo_codigo="{{codigo_fraccion}}"></div>
+{{!-- ------------------------- --}}
+
+{{> opciones_nav}}
+
+{{> adm_cabezeras_internas}}
+
+<div class="pestanas_navegacion">
+    <ul class="nav nav-tabs" id="tab_fraccion" role="tablist">
+
+        {{#if descripcion_fraccion}}
+        <li class="nav-item">
+            <a href="/laapirest/fraccion/{{codigo_fraccion}}/descripcion" class="nav-link active"
+                id="descripcion_fraccion-tab" role="tab" aria-controls="descripcion_fraccion"
+                aria-selected="true">Descripción</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/fraccion/{{codigo_fraccion}}/descripcion" class="nav-link" id="descripcion_fraccion-tab"
+                role="tab" aria-controls="descripcion_fraccion" aria-selected="false">Descripción</a>
+        </li>
+        {{/if}}
+
+        {{#if existe_copropietario}}
+        {{#if copropietario_fraccion}}
+        <li class="nav-item">
+            <a href="/laapirest/fraccion/{{codigo_fraccion}}/copropietario" class="nav-link active"
+                id="copropietario_fraccion-tab" role="tab" aria-controls="copropietario_fraccion"
+                aria-selected="true">Copropietario</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/fraccion/{{codigo_fraccion}}/copropietario" class="nav-link" id="copropietario_fraccion-tab"
+                role="tab" aria-controls="copropietario_fraccion" aria-selected="false">Copropietario</a>
+        </li>
+        {{/if}}
+        {{/if}}
+
+        {{#if eliminar_fraccion}}
+        <li class="nav-item">
+            <a href="/laapirest/fraccion/{{codigo_fraccion}}/eliminar" class="nav-link active" id="eliminar_fraccion-tab"
+                role="tab" aria-controls="eliminar_fraccion" aria-selected="true">Eliminar</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/fraccion/{{codigo_fraccion}}/eliminar" class="nav-link" id="eliminar_fraccion-tab" role="tab"
+                aria-controls="eliminar_fraccion" aria-selected="false">Eliminar</a>
+        </li>
+        {{/if}}
+        
+    </ul>
+</div>
+
+{{#if descripcion_fraccion}}
+{{> adm_cli_fraccion_descripcion}}
+{{/if}}
+
+{{#if copropietario_fraccion}}
+{{> adm_cli_fraccion_copropietario}}
+{{/if}}
+
+{{#if eliminar_fraccion}}
+{{> adm_fraccion_eliminar}}
+{{/if}}
+
+{{> pie_pagina}}

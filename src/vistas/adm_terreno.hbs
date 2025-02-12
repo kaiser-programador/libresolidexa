@@ -30,6 +30,19 @@
         </li>
         {{/if}}
 
+        {{#if fracciones_terreno}}
+        <li class="nav-item">
+            <a href="/laapirest/terreno/{{codigo_terreno}}/fracciones" class="nav-link active"
+                id="fracciones_te-tab" role="tab" aria-controls="fracciones_te"
+                aria-selected="true">Fracciones</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/terreno/{{codigo_terreno}}/fracciones" class="nav-link" id="fracciones_te-tab"
+                role="tab" aria-controls="fracciones_te" aria-selected="false">Fracciones</a>
+        </li>
+        {{/if}}
+
         {{#if imagenes_terreno}}
         <li class="nav-item">
             <a href="/laapirest/terreno/{{codigo_terreno}}/imagenes" class="nav-link active" id="imagenes_te-tab"
@@ -67,6 +80,18 @@
         </li>
         {{/if}}
 
+        {{#if copropietario_terreno}}
+        <li class="nav-item">
+            <a href="/laapirest/terreno/{{codigo_terreno}}/copropietario" class="nav-link active" id="copropietario_te-tab"
+                role="tab" aria-controls="copropietario_te" aria-selected="true">Copropietario</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/terreno/{{codigo_terreno}}/copropietario" class="nav-link" id="copropietario_te-tab" role="tab"
+                aria-controls="copropietario_te" aria-selected="false">Copropietario</a>
+        </li>
+        {{/if}}
+
         {{#if estados_terreno}}
         <li class="nav-item">
             <a href="/laapirest/terreno/{{codigo_terreno}}/estados" class="nav-link active" id="estados_te-tab"
@@ -86,6 +111,10 @@
 {{> adm_te_descripcion}}
 {{/if}}
 
+{{#if fracciones_terreno}}
+{{> adm_te_fracciones}}
+{{/if}}
+
 {{#if imagenes_terreno}}
 {{> adm_te_imagenes}}
 {{/if}}
@@ -96,6 +125,10 @@
 
 {{#if proyectos_terreno}}
 {{> adm_te_proyectos}}
+{{/if}}
+
+{{#if copropietario_terreno}}
+{{> adm_te_copropietario}}
 {{/if}}
 
 {{#if estados_terreno}}

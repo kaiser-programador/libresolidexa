@@ -133,19 +133,6 @@
                     role="tab" aria-controls="preguntas_frecuentes" aria-selected="false">Preguntas frecuentes</a>
             </li>
             {{/if}}
-            
-            {{#if imagenes_administrador}}
-            <li class="nav-item">
-                <a href="/laapirest/administrador/imagenes" class="nav-link active"
-                    id="imagenes_empresa-tab" role="tab" aria-controls="imagenes_empresa"
-                    aria-selected="true">Imágenes</a>
-            </li>
-            {{else}}
-            <li class="nav-item">
-                <a href="/laapirest/administrador/imagenes" class="nav-link" id="imagenes_empresa-tab"
-                    role="tab" aria-controls="imagenes_empresa" aria-selected="false">Imágenes</a>
-            </li>
-            {{/if}}
 
             {{#if numeros_administrador}}
             <li class="nav-item">
@@ -246,10 +233,6 @@
 
 {{#if preguntas_administrador}}
 {{> adm_adm_preguntas}}
-{{/if}}
-
-{{#if imagenes_administrador}}
-{{> adm_adm_imagenes}}
 {{/if}}
 
 {{#if numeros_administrador}}

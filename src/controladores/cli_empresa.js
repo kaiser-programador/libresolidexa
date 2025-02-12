@@ -4,10 +4,7 @@ const {
     indiceEmpresa,
     indiceImagenesEmpresa_sf,
     indiceDocumentos,
-    indiceImagenesSistema,
 } = require("../modelos/indicemodelo");
-
-const { pie_pagina_cli } = require("../ayudas/funcionesayuda_2");
 
 const controladorCliEmpresa = {};
 
@@ -19,49 +16,18 @@ controladorCliEmpresa.comoFunciona = async (req, res) => {
     try {
         var info_funciona = {};
 
-        var funciona_encabezado = await indiceEmpresa.findOne(
-            {},
-            {
-                encabezado_funciona: 1,
-                texto_funciona: 1,
-                _id: 0,
-            }
-        );
-        // ------- Para verificación -------
-        //console.log("los datos de funciona encabezado es");
-        //console.log(funciona_encabezado);
-        if (funciona_encabezado) {
-            info_funciona.encabezado_titulo = funciona_encabezado.encabezado_funciona;
-            info_funciona.encabezado_texto = funciona_encabezado.texto_funciona;
-        }
+        info_funciona.encabezado_titulo = "Lo hacemos fácil para vos";
+        info_funciona.encabezado_texto =
+            "Ahora con SOLIDEXA, tendras al tu alcanze inmuebles a precio justo del mercado.";
 
         info_funciona.navegador_cliente = true;
-        //info_funciona.estilo_cabezera = "cabezera_estilo_empresa";
-
-        //----------------------------------------------------
-        // para la url de la cabezera
-        var url_cabezera = ""; // vacio por defecto
-        const registro_cabezera = await indiceImagenesSistema.findOne(
-            { tipo_imagen: "cabecera_empresa" },
-            {
-                url: 1,
-                _id: 0,
-            }
-        );
-
-        if (registro_cabezera) {
-            url_cabezera = registro_cabezera.url;
-        }
-
-        info_funciona.url_cabezera = url_cabezera;
+        info_funciona.estilo_cabezera = "cabezera_estilo_empresa";
 
         //----------------------------------------------------
 
         // es_ninguno: true  // para las opciones de navegacion de la ventana en estado comprimido
         info_funciona.es_ninguno = true;
 
-        var pie_pagina = await pie_pagina_cli();
-        info_funciona.pie_pagina_cli = pie_pagina;
         info_funciona.ordenador_externo = false; // porque no existen cards que ordenar
 
         info_funciona.inversor_autenticado = req.inversor_autenticado; // true o false
@@ -90,128 +56,117 @@ controladorCliEmpresa.comoFunciona = async (req, res) => {
         var lista_funciona = [];
 
         if (como_funciona.length > 0) {
-            var registro_empresa = await indiceEmpresa.findOne(
-                {},
-                {
-                    encabezado_funciona: 1,
-                    texto_funciona: 1,
-                    _id: 0,
-                }
-            );
+            for (let i = 0; i < como_funciona.length; i++) {
+                lista_funciona[i] = {
+                    codigo_imagen: como_funciona[i].codigo_imagen,
+                    extension_imagen: como_funciona[i].extension_imagen,
+                    texto_imagen: como_funciona[i].texto_imagen,
+                    orden_imagen: como_funciona[i].orden_imagen,
+                    titulo_imagen: como_funciona[i].titulo_imagen,
+                    url_video: como_funciona[i].url_video,
+                    video_funciona: como_funciona[i].video_funciona, // true o false
+                    url: como_funciona[i].url,
+                    lista_documentos: [], // POR DEFECTO de inicio vacio para luego ser llenado
+                };
 
-            if (registro_empresa) {
-                for (let i = 0; i < como_funciona.length; i++) {
-                    lista_funciona[i] = {
-                        codigo_imagen: como_funciona[i].codigo_imagen,
-                        extension_imagen: como_funciona[i].extension_imagen,
-                        texto_imagen: como_funciona[i].texto_imagen,
-                        orden_imagen: como_funciona[i].orden_imagen,
-                        titulo_imagen: como_funciona[i].titulo_imagen,
-                        url_video: como_funciona[i].url_video,
-                        video_funciona: como_funciona[i].video_funciona, // true o false
-                        url: como_funciona[i].url,
-                        lista_documentos: [], // POR DEFECTO de inicio vacio para luego ser llenado
-                    };
+                // codigo_terreno: esta el codigo de imagen de "como funciona"
+                // en el orden: 1. manual, 2. modelo, 3. beneficio, 4. video
 
-                    // codigo_terreno: esta el codigo de imagen de "como funciona"
-                    // en el orden: 1. manual, 2. modelo, 3. beneficio, 4. video
-
-                    var documentos_i_manual = await indiceDocumentos.find(
-                        {
-                            codigo_terreno: como_funciona[i].codigo_imagen,
-                            clase_documento: "manual",
-                        },
-                        {
-                            nombre_documento: 1, // pdf || word || excel
-                            codigo_documento: 1,
-                            clase_documento: 1, // manual || beneficio || modelo
-                            url: 1,
-                            _id: 0,
-                        }
-                    );
-
-                    var documentos_i_modelo = await indiceDocumentos.find(
-                        {
-                            codigo_terreno: como_funciona[i].codigo_imagen,
-                            clase_documento: "modelo",
-                        },
-                        {
-                            nombre_documento: 1, // pdf || word || excel
-                            codigo_documento: 1,
-                            clase_documento: 1, // manual || beneficio || modelo
-                            url: 1,
-                            _id: 0,
-                        }
-                    );
-
-                    var documentos_i_beneficio = await indiceDocumentos.find(
-                        {
-                            codigo_terreno: como_funciona[i].codigo_imagen,
-                            clase_documento: "beneficio",
-                        },
-                        {
-                            nombre_documento: 1, // pdf || word || excel
-                            codigo_documento: 1,
-                            clase_documento: 1, // manual || beneficio || modelo
-                            url: 1,
-                            _id: 0,
-                        }
-                    );
-
-                    // unimos los array (si estan vacios no seran considerados por "concat")
-                    var documentos_i = documentos_i_manual.concat(
-                        documentos_i_beneficio,
-                        documentos_i_modelo
-                    );
-
-                    if (documentos_i.length > 0) {
-                        var aux_documentos = [];
-                        for (let j = 0; j < documentos_i.length; j++) {
-                            // ----------------------------------------------------
-                            if (documentos_i[j].nombre_documento == "pdf") {
-                                var extension = "pdf";
-                            }
-                            if (documentos_i[j].nombre_documento == "word") {
-                                var extension = "docx";
-                            }
-                            if (documentos_i[j].nombre_documento == "excel") {
-                                var extension = "xlsx";
-                            }
-                            // ----------------------------------------------------
-                            if (documentos_i[j].clase_documento == "manual") {
-                                var tipo_documento = "Manual";
-                                var color = "primary";
-                            }
-                            if (documentos_i[j].clase_documento == "beneficio") {
-                                var tipo_documento = "Beneficios";
-                                var color = "info";
-                            }
-                            if (documentos_i[j].clase_documento == "modelo") {
-                                var tipo_documento = "Modelo";
-                                var color = "success";
-                            }
-                            // ----------------------------------------------------
-                            aux_documentos[j] = {
-                                codigo_documento: documentos_i[j].codigo_documento,
-                                tipo_documento, // Manual || Beneficios || Modelo
-                                color, // primary || info || success
-                                extension, // pdf || docx || xlsx
-                                //tipo_archivo, // pdf || word || excel (para bootstrap)
-                                tipo_archivo: documentos_i[j].nombre_documento, // pdf || word || excel (para bootstrap)
-                                url: documentos_i[j].url,
-                            };
-                        }
-
-                        lista_funciona[i].lista_documentos = aux_documentos;
+                var documentos_i_manual = await indiceDocumentos.find(
+                    {
+                        codigo_terreno: como_funciona[i].codigo_imagen,
+                        clase_documento: "manual",
+                    },
+                    {
+                        nombre_documento: 1, // pdf || word || excel
+                        codigo_documento: 1,
+                        clase_documento: 1, // manual || beneficio || modelo
+                        url: 1,
+                        _id: 0,
                     }
-                }
-                info_funciona.lista_funciona = lista_funciona;
-                // ------- Para verificación -------
-                //console.log("los datos de COMO FUNCIONA");
-                //console.log(info_funciona);
+                );
 
-                res.render("cli_funciona", info_funciona);
+                var documentos_i_modelo = await indiceDocumentos.find(
+                    {
+                        codigo_terreno: como_funciona[i].codigo_imagen,
+                        clase_documento: "modelo",
+                    },
+                    {
+                        nombre_documento: 1, // pdf || word || excel
+                        codigo_documento: 1,
+                        clase_documento: 1, // manual || beneficio || modelo
+                        url: 1,
+                        _id: 0,
+                    }
+                );
+
+                var documentos_i_beneficio = await indiceDocumentos.find(
+                    {
+                        codigo_terreno: como_funciona[i].codigo_imagen,
+                        clase_documento: "beneficio",
+                    },
+                    {
+                        nombre_documento: 1, // pdf || word || excel
+                        codigo_documento: 1,
+                        clase_documento: 1, // manual || beneficio || modelo
+                        url: 1,
+                        _id: 0,
+                    }
+                );
+
+                // unimos los array (si estan vacios no seran considerados por "concat")
+                var documentos_i = documentos_i_manual.concat(
+                    documentos_i_beneficio,
+                    documentos_i_modelo
+                );
+
+                if (documentos_i.length > 0) {
+                    var aux_documentos = [];
+                    for (let j = 0; j < documentos_i.length; j++) {
+                        // ----------------------------------------------------
+                        if (documentos_i[j].nombre_documento == "pdf") {
+                            var extension = "pdf";
+                        }
+                        if (documentos_i[j].nombre_documento == "word") {
+                            var extension = "docx";
+                        }
+                        if (documentos_i[j].nombre_documento == "excel") {
+                            var extension = "xlsx";
+                        }
+                        // ----------------------------------------------------
+                        if (documentos_i[j].clase_documento == "manual") {
+                            var tipo_documento = "Manual";
+                            var color = "primary";
+                        }
+                        if (documentos_i[j].clase_documento == "beneficio") {
+                            var tipo_documento = "Beneficios";
+                            var color = "info";
+                        }
+                        if (documentos_i[j].clase_documento == "modelo") {
+                            var tipo_documento = "Modelo";
+                            var color = "success";
+                        }
+                        // ----------------------------------------------------
+                        aux_documentos[j] = {
+                            codigo_documento: documentos_i[j].codigo_documento,
+                            tipo_documento, // Manual || Beneficios || Modelo
+                            color, // primary || info || success
+                            extension, // pdf || docx || xlsx
+                            //tipo_archivo, // pdf || word || excel (para bootstrap)
+                            tipo_archivo: documentos_i[j].nombre_documento, // pdf || word || excel (para bootstrap)
+                            url: documentos_i[j].url,
+                        };
+                    }
+
+                    lista_funciona[i].lista_documentos = aux_documentos;
+                }
             }
+            info_funciona.lista_funciona = lista_funciona;
+            // ------- Para verificación -------
+            //console.log("los datos de COMO FUNCIONA");
+            //console.log(info_funciona);
+
+            res.render("cli_funciona", info_funciona);
         } else {
             // ------- Para verificación -------
             //console.log("los datos de COMO FUNCIONA");
@@ -232,45 +187,15 @@ controladorCliEmpresa.quienesSomos = async (req, res) => {
     try {
         var info_somos = {};
 
-        var somos_encabezado = await indiceEmpresa.findOne(
-            {},
-            {
-                encabezado_somos: 1,
-                texto_somos: 1,
-                _id: 0,
-            }
-        );
-
-        if (somos_encabezado) {
-            info_somos.encabezado_titulo = somos_encabezado.encabezado_somos;
-            info_somos.encabezado_texto = somos_encabezado.texto_somos;
-        }
+        info_somos.encabezado_titulo = "Quienes somos?";
+        info_somos.encabezado_texto = "Democratizando el mercado inmobiliario";
 
         // es_ninguno: true  // para las opciones de navegacion de la ventana en estado comprimido
         info_somos.es_ninguno = true;
 
-        var pie_pagina = await pie_pagina_cli();
-        info_somos.pie_pagina_cli = pie_pagina;
         info_somos.navegador_cliente = true;
         info_somos.ordenador_externo = false; // porque no existen cards que ordenar
-        //info_somos.estilo_cabezera = "cabezera_estilo_empresa";
-
-        //----------------------------------------------------
-        // para la url de la cabezera
-        var url_cabezera = ""; // vacio por defecto
-        const registro_cabezera = await indiceImagenesSistema.findOne(
-            { tipo_imagen: "cabecera_empresa" },
-            {
-                url: 1,
-                _id: 0,
-            }
-        );
-
-        if (registro_cabezera) {
-            url_cabezera = registro_cabezera.url;
-        }
-
-        info_somos.url_cabezera = url_cabezera;
+        info_somos.estilo_cabezera = "cabezera_estilo_empresa";
 
         //----------------------------------------------------
 
@@ -354,24 +279,7 @@ controladorCliEmpresa.preguntasFrecuentes = async (req, res) => {
         var info_preguntas = {};
 
         info_preguntas.navegador_cliente = true;
-        //info_preguntas.estilo_cabezera = "cabezera_estilo_empresa";
-
-        //----------------------------------------------------
-        // para la url de la cabezera
-        var url_cabezera = ""; // vacio por defecto
-        const registro_cabezera = await indiceImagenesSistema.findOne(
-            { tipo_imagen: "cabecera_empresa" },
-            {
-                url: 1,
-                _id: 0,
-            }
-        );
-
-        if (registro_cabezera) {
-            url_cabezera = registro_cabezera.url;
-        }
-
-        info_preguntas.url_cabezera = url_cabezera;
+        info_preguntas.estilo_cabezera = "cabezera_estilo_empresa";
 
         //----------------------------------------------------
 
@@ -382,24 +290,20 @@ controladorCliEmpresa.preguntasFrecuentes = async (req, res) => {
         }
 
         // es_ninguno: true  // para las opciones de navegacion de la ventana en estado comprimido
-        info_preguntas.es_ninguno = true;        
+        info_preguntas.es_ninguno = true;
 
-        var pie_pagina = await pie_pagina_cli();
-        info_preguntas.pie_pagina_cli = pie_pagina;
         info_preguntas.ordenador_externo = false; // porque no existen cards que ordenar
 
         var registro_empresa = await indiceEmpresa.findOne(
             {},
             {
-                encabezado_preguntas: 1,
-                texto_preguntas: 1,
                 preguntas_frecuentes: 1,
                 _id: 0,
             }
         );
         if (registro_empresa) {
-            info_preguntas.encabezado_titulo = registro_empresa.encabezado_preguntas;
-            info_preguntas.encabezado_texto = registro_empresa.texto_preguntas;
+            info_preguntas.encabezado_titulo = "Aclara tus dudas";
+            info_preguntas.encabezado_texto = "Simple, sencillo y eficiente";
         }
 
         if (registro_empresa) {
@@ -428,6 +332,36 @@ controladorCliEmpresa.preguntasFrecuentes = async (req, res) => {
             // de todas maneras renderiza la ventana (para que asi no se quede colgado cargando), pero renderizara una ventana con campos vacios, porque "info_funciona" esta vacio
             res.render("cli_preguntas", info_preguntas);
         }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// PARA RENDERIZAR LA VENTANA DE PREGUNTAS FRECUENTES
+// RUTA   "post"   '/empresa/operacion/tipo_cambio'
+controladorCliEmpresa.tipo_cambio = async (req, res) => {
+    try {
+        // ------- Para verificación -------
+
+        var tipoCambio = 7; // por defecto
+
+        var registro_empresa = await indiceEmpresa.findOne(
+            {},
+            {
+                tc_ine: 1,
+                _id: 0,
+            }
+        );
+        if (registro_empresa.tc_ine) {
+            tipoCambio = registro_empresa.tc_ine; // tipo de cambio oficial del pais
+        }
+
+        //res.json(tipoCambio); // NO ES CORRECTO
+
+        // Devuelve un JSON válido. DESDE EL LADO DEL SERVIDOR SIEMPRE SE DEBEN DEVOLVER A AJAX UN JSON VALIDO
+        res.json({ tipoCambio }); // ES CORRECTO ENCERRARLO EN {}
     } catch (error) {
         console.log(error);
     }

@@ -1,0 +1,104 @@
+{{! fracciones del terreno }}
+
+<div class="contenido container-fluid my-3">
+
+
+    <div class="row">
+        <div class="col-12 col-sm-9 col-md-7 col-lg-4 col-xl-4">
+
+            {{#if crear_fracciones}}
+            {{!-- estara visible, cuando el terreno no cuente con fracciones --}}
+
+            <div class="card my-4">
+                <div class="card-header">
+                    <h5>CREAR FRACCIONES</h5>
+                </div>
+
+                <div class="card-body">
+
+                    <div class="form-group">
+                        <label for="id_fraccion_bs">Precio Fracción</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text texto-resaltado">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                            </div>
+
+                            <input
+                                type="number"
+                                name="name_fraccion_bs"
+                                id="id_fraccion_bs"
+                                class="form-control"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_cantidad_fracciones">Cantidad</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text texto-resaltado">
+                                    <i class="fas fa-lock"></i>
+                                </div>
+                            </div>
+
+                            <input
+                                type="number"
+                                name="cantidad_fracciones"
+                                id="id_cantidad_fracciones"
+                                class="form-control"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer text-center">
+                    <button
+                        class="btn btn-primary"
+                        id="crear_fracciones"
+                    >Crear</button>
+                </div>
+            </div>
+            {{/if}}
+
+            {{#if eliminar_fracciones}}
+            {{!-- estara visible, cuando el terreno SI cuente con fracciones --}}
+            <div class="card my-4">
+                <div class="card-header">
+                    <h5>ELIMINAR FRACCIONES</h5>
+                </div>
+
+                <div class="card-body">
+                    <p>
+                        Todas las fracciones serán eliminadas
+                    </p>
+                </div>
+
+                <div class="card-footer text-center">
+                    <button
+                        class="btn btn-primary"
+                        id="eliminar_fracciones"
+                    >Eliminar</button>
+                </div>
+            </div>
+            {{/if}}
+
+        </div>
+    </div>
+</div>
+
+{{! boton para crear nuevo inmueble }}
+
+<div class="contenido container-fluid">
+    <div class="row">
+        <div class="ref_titulo_imagen col-12">
+            <h5 class="cuadro_estandart p-2 text-center">
+                FRACCIONES TERRENO
+            </h5>
+        </div>
+        {{#each terreno_fracciones}}
+        {{> adm_cli_card_fraccion}}
+        {{/each}}
+    </div>
+</div>

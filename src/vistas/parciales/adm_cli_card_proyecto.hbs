@@ -102,22 +102,37 @@
                     <div class="h6">Financiado</div>
                     <div class="h6">
                         <b>
-                            <span class="v_financiado" valor="{{financiado_num}}">{{financiado}}</span>
-                            <span>$us</span>
+                            <span
+                                class="v_financiado elvalor"
+                                valor="{{financiado_num}}"
+                                data-bs="{{financiado_num}}"
+                            >{{financiado}}</span>
+                            <span class="lamoneda">Bs</span>
                         </b>
                     </div>
                 </div>
                 <div class="text-right">
                     <div class="h6">Meta</div>
                     <div class="h6">
-                        <span class="v_meta" valor="{{meta_num}}"><b>{{meta}} $us</b></span>
+                        <b>
+                            <span
+                                class="v_meta elvalor"
+                                valor="{{meta_num}}"
+                                data-bs="{{meta_num}}"
+                            >{{meta}}</span>
+                            <span class="lamoneda">Bs</span>
+                        </b>
                     </div>
                 </div>
             </div>
 
             <div style="position: relative;">
                 <div class="progress" style="height: 1.5rem;">
-                    <div class="progress-bar" role="progressbar" style="width: {{porcentaje}}%;"></div>
+                    <div
+                        class="progress-bar"
+                        role="progressbar"
+                        style="width: {{porcentaje}}%;"
+                    ></div>
                 </div>
                 <div class="css-val-porcentaje-celda">
                     <span>{{porcentaje_render}}</span>
@@ -176,8 +191,12 @@
                     <div>
                         <div class="h6">
                             <b>
-                                <span class="v_ahorro" valor="{{ahorro_num}}">{{ahorro}}</span>
-                                <span>$us</span>
+                                <span
+                                    class="v_ahorro elvalor"
+                                    valor="{{ahorro_num}}"
+                                    data-bs="{{ahorro_num}}"
+                                >{{ahorro}}</span>
+                                <span class="lamoneda">Bs</span>
                             </b>
                         </div>
                     </div>
@@ -188,10 +207,6 @@
 
             <span class="v_vencimiento" valor="{{vencimiento}}" hidden></span>
         </div>
-
-        {{!-- <div class="card-footer mx-3 mb-2" title="Código del proyecto">
-            {{codigo_proyecto}}
-        </div> --}}
 
         <div class="card-footer mx-3 mb-2" title="Código del proyecto">
             <a href="{{laapirest}}proyecto/{{codigo_proyecto}}/descripcion">

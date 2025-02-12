@@ -1,0 +1,63 @@
+{{!-- la ventana de la FRACCION  desde el lado del cliente PUBLICO --}}
+
+{{!-- ------------------------- --}}
+{{!-- datos elementales --}}
+<div id="id_tipo_ventana" data-tipo_ventana="normal"></div>
+
+{{!-- data-objetivo_tipo = fraccion, terreno, inmueble, proyecto, propietario --}}
+<div id="id_objetivo_tipo" data-objetivo_tipo="fraccion"></div>
+<div id="id_objetivo_codigo" data-objetivo_codigo="{{codigo_fraccion}}"></div>
+{{!-- ------------------------- --}}
+
+{{!-- "> opciones_nav"  NO DEBE ESTAR APEGADO A LA LINEA CODIGO "1", DE ESTARLO, DARIA UN ERROR --}}
+{{> cli_opciones_nav}}
+
+{{> cli_cabezeras_internas}}
+
+<div class="pestanas_navegacion">
+    <ul class="nav nav-tabs" id="tab_fraccion" role="tablist">
+
+        {{#if descripcion_fraccion}}
+        <li class="nav-item">
+            <a href="/fraccion/{{codigo_fraccion}}/descripcion" class="nav-link active" id="descripcion_fraccion-tab"
+                role="tab" aria-controls="descripcion_fraccion" aria-selected="true">Descripción</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/fraccion/{{codigo_fraccion}}/descripcion" class="nav-link" id="descripcion_fraccion-tab" role="tab"
+                aria-controls="descripcion_fraccion" aria-selected="false">Descripción</a>
+        </li>
+        {{/if}}
+
+        {{#if global_fraccion.existe_copropietario}}
+        {{#if copropietario_fraccion}}
+        <li class="nav-item">
+            <a href="/fraccion/{{codigo_fraccion}}/copropietario" class="nav-link active" id="copropietario_fraccion-tab"
+                role="tab" aria-controls="copropietario_fraccion" aria-selected="true">Copropietario</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/fraccion/{{codigo_fraccion}}/copropietario" class="nav-link" id="copropietario_fraccion-tab" role="tab"
+                aria-controls="copropietario_fraccion" aria-selected="false">Copropietario</a>
+        </li>
+        {{/if}}
+        {{/if}}   
+
+    </ul>
+</div>
+
+{{#if descripcion_fraccion}}
+<span id="tipo_pestana_fraccion" data-id="descripcion_fraccion"></span>
+<div class="container">
+    {{> adm_cli_fraccion_descripcion}}
+</div>
+{{/if}}
+
+{{#if copropietario_fraccion}}
+<span id="tipo_pestana_fraccion" data-id="copropietario_fraccion"></span>
+<div class="container">
+    {{> adm_cli_fraccion_copropietario}}
+</div>
+{{/if}}
+
+{{> cli_pie_pagina}}

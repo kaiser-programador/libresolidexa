@@ -43,7 +43,7 @@
     left: 0;
     width: 100%;
     height: 6px;
-    background: linear-gradient(to right, transparent, var(--color_texto_link));
+    background: linear-gradient(to right, transparent, var(--color_texto_resalte));
     /* background: linear-gradient(to right, transparent, rgb(50, 217, 247)); */
     animation: animate1 4s linear infinite;
 }
@@ -63,7 +63,7 @@
     right: 0;
     width: 6px;
     height: 100%;
-    background: linear-gradient(to bottom, transparent, var(--color_texto_link));
+    background: linear-gradient(to bottom, transparent, var(--color_texto_resalte));
     /* background: linear-gradient(to bottom, transparent, rgb(50, 217, 247)); */
     animation: animate2 4s linear infinite;
     animation-delay: 2s;
@@ -84,7 +84,7 @@
     left: 0;
     width: 100%;
     height: 6px;
-    background: linear-gradient(to left, transparent, var(--color_texto_link));
+    background: linear-gradient(to left, transparent, var(--color_texto_resalte));
     /* background: linear-gradient(to left, transparent, rgb(50, 217, 247)); */
     animation: animate3 4s linear infinite;
     animation-delay: 4s;
@@ -105,7 +105,7 @@
     left: 0;
     width: 6px;
     height: 100%;
-    background: linear-gradient(to top, transparent, var(--color_texto_link));
+    background: linear-gradient(to top, transparent, var(--color_texto_resalte));
     /* background: linear-gradient(to top, transparent, rgb(50, 217, 247)); */
     animation: animate4 4s linear infinite;
     animation-delay: 6s;
@@ -152,27 +152,27 @@ Notese que esta hoja de css, a pesar de encontrarse separado del css principal d
 }
 
 .contenedor-icono-info-1:nth-child(1) .contenedor-icono-info-2 {
-    border: 0.15rem solid var(--color_texto_link);
+    border: 0.15rem solid var(--color_texto_resalte);
     /* background: var(--color_fondo_secundario); */
 }
 .contenedor-icono-info-1:nth-child(2) .contenedor-icono-info-2 {
-    border: 0.15rem solid var(--color_texto_link);
+    border: 0.15rem solid var(--color_texto_resalte);
     /* background: var(--color_fondo_secundario); */
 }
 .contenedor-icono-info-1:nth-child(3) .contenedor-icono-info-2 {
-    border: 0.15rem solid var(--color_texto_link);
+    border: 0.15rem solid var(--color_texto_resalte);
     /* background: var(--color_fondo_secundario); */
 }
 .contenedor-icono-info-1:nth-child(4) .contenedor-icono-info-2 {
-    border: 0.15rem solid var(--color_texto_link);
+    border: 0.15rem solid var(--color_texto_resalte);
     /* background: var(--color_fondo_secundario); */
 }
 .contenedor-icono-info-1:nth-child(5) .contenedor-icono-info-2 {
-    border: 0.15rem solid var(--color_texto_link);
+    border: 0.15rem solid var(--color_texto_resalte);
     /* background: var(--color_fondo_secundario); */
 }
 .contenedor-icono-info-1:nth-child(6) .contenedor-icono-info-2 {
-    border: 0.15rem solid var(--color_texto_link);
+    border: 0.15rem solid var(--color_texto_resalte);
     /* background: var(--color_fondo_secundario); */
 }
 
@@ -446,10 +446,11 @@ Notese que esta hoja de css, a pesar de encontrarse separado del css principal d
     text-align: center;
     height: 4rem;
     width: 4rem;
-    background: var(--color_texto_link);
-    color: var(--color_fondo_principal);
+    /* background: var(--color_texto_normal); */
+    background: linear-gradient(to bottom right, rgb(231 125 47), var(--color_texto_resalte));
+    color: var(--color_texto_normal);
     font-size: 1.9rem;
-    font-weight: bold;
+    /* font-weight: bold; */
     padding: 0.5rem;
     /* top: 0%;
     left: 0%; */
@@ -465,7 +466,7 @@ Notese que esta hoja de css, a pesar de encontrarse separado del css principal d
     background: var(--color_texto_link);
     color: var(--color_fondo_principal);
     font-size: 1.9rem;
-    font-weight: bold;
+    /* font-weight: bold; */
 
     /* top: 0%;
     left: 0%; */
@@ -475,10 +476,10 @@ Notese que esta hoja de css, a pesar de encontrarse separado del css principal d
 
 @keyframes animacion_resplandor {
     0% {
-        box-shadow: 0 0 0 0 var(--color_texto_link), 0 0 0 0 var(--color_texto_link);
+        box-shadow: 0 0 0 0 var(--color_texto_resalte), 0 0 0 0 var(--color_texto_resalte);
     }
     30% {
-        box-shadow: 0 0 0 40px rgba(224, 248, 3, 0), 0 0 0 0 var(--color_texto_link);
+        box-shadow: 0 0 0 40px rgba(224, 248, 3, 0), 0 0 0 0 var(--color_texto_resalte);
     }
     65% {
         box-shadow: 0 0 0 40px rgba(224, 248, 3, 0), 0 0 0 30px rgba(224, 248, 3, 0);
@@ -529,10 +530,10 @@ Notese que esta hoja de css, a pesar de encontrarse separado del css principal d
 
 @keyframes animacion_resplandor_somos {
     0% {
-        box-shadow: 0 0 0 0 var(--color_texto_link), 0 0 0 0 var(--color_texto_link);
+        box-shadow: 0 0 0 0 var(--color_texto_resalte), 0 0 0 0 var(--color_texto_resalte);
     }
     33% {
-        box-shadow: 0 0 0 40px rgba(224, 248, 3, 0), 0 0 0 0 var(--color_texto_link);
+        box-shadow: 0 0 0 40px rgba(224, 248, 3, 0), 0 0 0 0 var(--color_texto_resalte);
     }
     66% {
         box-shadow: 0 0 0 40px rgba(224, 248, 3, 0), 0 0 0 30px rgba(224, 248, 3, 0);

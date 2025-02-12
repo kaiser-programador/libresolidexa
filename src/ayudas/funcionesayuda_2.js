@@ -7,12 +7,13 @@ const {
     indiceInmueble,
     indice_propietario,
     indiceAdministrador,
-    indiceEmpresa,
+    indiceDocumentos,
+    indiceFraccionInmueble,
+    indiceFraccionTerreno,
 } = require("../modelos/indicemodelo");
 
-const { numero_punto_coma, funcion_tiempo_estado } = require("./funcionesayuda_3");
-
-const { inmueble_info_cd, proyecto_info_cd } = require("./funcionesayuda_4");
+const { numero_punto_coma } = require("./funcionesayuda_3");
+const { super_info_inm } = require("./funcionesayuda_5");
 
 const moment = require("moment");
 
@@ -26,7 +27,7 @@ funcionesAyuda_2.cabezeras_adm_cli = async function (aux_cabezera) {
     try {
         var codigo_objetivo = aux_cabezera.codigo_objetivo;
         var tipo = aux_cabezera.tipo;
-        var lado = aux_cabezera.lado;
+
         var datos_cabezera = {};
         if (tipo == "terreno") {
             var datos_objetivo = await indiceTerreno.findOne(
@@ -34,15 +35,6 @@ funcionesAyuda_2.cabezeras_adm_cli = async function (aux_cabezera) {
                 {
                     estado_terreno: 1,
                     fecha_creacion: 1,
-
-                    fecha_inicio_reserva: 1,
-                    fecha_fin_reserva: 1,
-                    fecha_inicio_aprobacion: 1,
-                    fecha_fin_aprobacion: 1,
-                    fecha_inicio_pago: 1,
-                    fecha_fin_pago: 1,
-                    fecha_inicio_construccion: 1,
-                    fecha_fin_construccion: 1,
 
                     ciudad: 1,
                     provincia: 1,
@@ -59,50 +51,11 @@ funcionesAyuda_2.cabezeras_adm_cli = async function (aux_cabezera) {
                 datos_cabezera.provincia = datos_objetivo.provincia;
                 datos_cabezera.direccion = datos_objetivo.direccion;
                 datos_cabezera.codigo = codigo_objetivo;
-                if (lado == "administrador") {
-                    var datos_tiempo = {};
-                    datos_tiempo.estado = datos_objetivo.estado_terreno; // ok para caso "terreno"
-                    if (datos_objetivo.estado_terreno == "guardado") {
-                        datos_tiempo.fecha = datos_objetivo.fecha_creacion;
-                        datos_tiempo.fecha_inicio = 0;
-                        datos_tiempo.fecha_fin = 0;
-                    }
-                    if (datos_objetivo.estado_terreno == "reserva") {
-                        datos_tiempo.fecha = datos_objetivo.fecha_fin_reserva;
-                        datos_tiempo.fecha_inicio = datos_objetivo.fecha_inicio_reserva;
-                        datos_tiempo.fecha_fin = datos_objetivo.fecha_fin_reserva;
-                    }
-                    if (datos_objetivo.estado_terreno == "aprobacion") {
-                        datos_tiempo.fecha = datos_objetivo.fecha_fin_aprobacion;
-                        datos_tiempo.fecha_inicio = datos_objetivo.fecha_inicio_aprobacion;
-                        datos_tiempo.fecha_fin = datos_objetivo.fecha_fin_aprobacion;
-                    }
-                    if (datos_objetivo.estado_terreno == "pago") {
-                        datos_tiempo.fecha = datos_objetivo.fecha_fin_pago;
-                        datos_tiempo.fecha_inicio = datos_objetivo.fecha_inicio_pago;
-                        datos_tiempo.fecha_fin = datos_objetivo.fecha_fin_pago;
-                    }
-                    if (datos_objetivo.estado_terreno == "construccion") {
-                        datos_tiempo.fecha = datos_objetivo.fecha_fin_construccion;
-                        datos_tiempo.fecha_inicio = datos_objetivo.fecha_inicio_construccion;
-                        datos_tiempo.fecha_fin = datos_objetivo.fecha_fin_construccion;
-                    }
-                    if (datos_objetivo.estado_terreno == "construido") {
-                        datos_tiempo.fecha = datos_objetivo.fecha_fin_construccion;
-                        datos_tiempo.fecha_inicio = 0;
-                        datos_tiempo.fecha_fin = 0;
-                    }
 
-                    datos_cabezera.estado = datos_objetivo.estado_terreno;
-                    var resultado_tiempo = funcion_tiempo_estado(datos_tiempo);
-                    datos_cabezera.factor_tiempo_tiempo = resultado_tiempo.factor_tiempo_tiempo;
-                }
-                if (lado == "cliente") {
-                    datos_cabezera.facebook = datos_objetivo.link_facebook;
-                    datos_cabezera.instagram = datos_objetivo.link_instagram;
-                    datos_cabezera.tiktok = datos_objetivo.link_tiktok;
-                    datos_cabezera.youtube = datos_objetivo.link_youtube;
-                }
+                datos_cabezera.facebook = datos_objetivo.link_facebook;
+                datos_cabezera.instagram = datos_objetivo.link_instagram;
+                datos_cabezera.tiktok = datos_objetivo.link_tiktok;
+                datos_cabezera.youtube = datos_objetivo.link_youtube;
                 return datos_cabezera;
             }
         }
@@ -123,92 +76,16 @@ funcionesAyuda_2.cabezeras_adm_cli = async function (aux_cabezera) {
                 }
             );
             if (datos_objetivo) {
-                var aux_terreno = await indiceTerreno.findOne(
-                    { codigo_terreno: datos_objetivo.codigo_terreno },
-                    {
-                        estado_terreno: 1,
-                        fecha_inicio_reserva: 1,
-                        fecha_fin_reserva: 1,
-                        fecha_inicio_aprobacion: 1,
-                        fecha_fin_aprobacion: 1,
-                        fecha_inicio_pago: 1,
-                        fecha_fin_pago: 1,
-                        fecha_inicio_construccion: 1,
-                        fecha_fin_construccion: 1,
-                        _id: 0,
-                    }
-                );
+                datos_cabezera.nombre_proyecto = datos_objetivo.nombre_proyecto;
+                datos_cabezera.codigo_terreno = datos_objetivo.codigo_terreno;
+                datos_cabezera.codigo = codigo_objetivo;
 
-                if (aux_terreno) {
-                    datos_cabezera.nombre_proyecto = datos_objetivo.nombre_proyecto;
-                    datos_cabezera.codigo_terreno = datos_objetivo.codigo_terreno;
-                    datos_cabezera.codigo = codigo_objetivo;
-                    if (lado == "administrador") {
-                        var datos_tiempo = {};
-                        datos_cabezera.estado = datos_objetivo.estado_proyecto;
+                datos_cabezera.facebook = datos_objetivo.link_facebook_proyecto;
+                datos_cabezera.instagram = datos_objetivo.link_instagram_proyecto;
+                datos_cabezera.tiktok = datos_objetivo.link_tiktok_proyecto;
+                datos_cabezera.youtube = datos_objetivo.link_youtube_proyecto;
 
-                        if (datos_objetivo.estado_proyecto == "guardado") {
-                            datos_tiempo.estado = datos_objetivo.estado_proyecto;
-                            datos_tiempo.fecha = datos_objetivo.fecha_creacion;
-                            datos_tiempo.fecha_inicio = 0;
-                            datos_tiempo.fecha_fin = 0;
-                        }
-                        if (datos_objetivo.estado_proyecto == "completado") {
-                            datos_tiempo.estado = aux_terreno.estado_terreno;
-                            if (aux_terreno.estado_terreno == "reserva") {
-                                datos_tiempo.fecha = aux_terreno.fecha_fin_reserva;
-                                datos_tiempo.fecha_inicio = aux_terreno.fecha_inicio_reserva;
-                                datos_tiempo.fecha_fin = aux_terreno.fecha_fin_reserva;
-                            }
-                            if (aux_terreno.estado_terreno == "aprobacion") {
-                                datos_tiempo.fecha = aux_terreno.fecha_fin_aprobacion;
-                                datos_tiempo.fecha_inicio = aux_terreno.fecha_inicio_aprobacion;
-                                datos_tiempo.fecha_fin = aux_terreno.fecha_fin_aprobacion;
-                            }
-                            if (aux_terreno.estado_terreno == "pago") {
-                                datos_tiempo.fecha = aux_terreno.fecha_fin_pago;
-                                datos_tiempo.fecha_inicio = aux_terreno.fecha_inicio_pago;
-                                datos_tiempo.fecha_fin = aux_terreno.fecha_fin_pago;
-                            }
-                            if (aux_terreno.estado_terreno == "construccion") {
-                                datos_tiempo.fecha = aux_terreno.fecha_fin_construccion;
-                                datos_tiempo.fecha_inicio = aux_terreno.fecha_inicio_construccion;
-                                datos_tiempo.fecha_fin = aux_terreno.fecha_fin_construccion;
-                            }
-                            if (aux_terreno.estado_terreno == "construido") {
-                                datos_tiempo.fecha = aux_terreno.fecha_fin_construccion;
-                                datos_tiempo.fecha_inicio = 0;
-                                datos_tiempo.fecha_fin = 0;
-                            }
-                        }
-                        var resultado_tiempo = funcion_tiempo_estado(datos_tiempo);
-                        datos_cabezera.factor_tiempo_tiempo = resultado_tiempo.factor_tiempo_tiempo;
-                    }
-                    if (lado == "cliente") {
-                        datos_cabezera.facebook = datos_objetivo.link_facebook_proyecto;
-                        datos_cabezera.instagram = datos_objetivo.link_instagram_proyecto;
-                        datos_cabezera.tiktok = datos_objetivo.link_tiktok_proyecto;
-                        datos_cabezera.youtube = datos_objetivo.link_youtube_proyecto;
-
-                        // corregimos que estado estara como "true"
-                        if (aux_terreno.estado_terreno == "reserva") {
-                            datos_cabezera.ver_propuestas = true; // para ver el TERRENO
-                        }
-                        if (aux_terreno.estado_terreno == "aprobacion") {
-                            datos_cabezera.ver_propuestas = false;
-                        }
-                        if (aux_terreno.estado_terreno == "pago") {
-                            datos_cabezera.ver_propuestas = false;
-                        }
-                        if (aux_terreno.estado_terreno == "construccion") {
-                            datos_cabezera.ver_propuestas = false;
-                        }
-                        if (aux_terreno.estado_terreno == "construido") {
-                            datos_cabezera.ver_propuestas = false;
-                        }
-                    }
-                    return datos_cabezera;
-                }
+                return datos_cabezera;
             }
         }
 
@@ -236,118 +113,100 @@ funcionesAyuda_2.cabezeras_adm_cli = async function (aux_cabezera) {
                     }
                 );
 
-                var aux_terreno = await indiceTerreno.findOne(
-                    { codigo_terreno: datos_objetivo.codigo_terreno },
-                    {
-                        estado_terreno: 1,
-                        fecha_fin_reserva: 1,
-                        fecha_fin_aprobacion: 1,
-                        fecha_fin_pago: 1,
-                        fecha_fin_construccion: 1,
-                        _id: 0,
-                    }
-                );
-
-                if (aux_proyecto && aux_terreno) {
+                if (aux_proyecto) {
                     datos_cabezera.tipo_inmueble = datos_objetivo.tipo_inmueble;
                     datos_cabezera.codigo = codigo_objetivo;
                     datos_cabezera.codigo_proyecto = datos_objetivo.codigo_proyecto;
                     datos_cabezera.codigo_terreno = datos_objetivo.codigo_terreno;
-                    if (lado == "administrador") {
-                        var datos_tiempo = {};
 
-                        if (datos_objetivo.estado_inmueble == "guardado") {
-                            datos_cabezera.estado = "Guardado";
-                        }
-                        if (datos_objetivo.estado_inmueble == "disponible") {
-                            datos_cabezera.estado = "Disponible";
-                        }
-                        if (datos_objetivo.estado_inmueble == "reservado") {
-                            datos_cabezera.estado = "Reservado";
-                        }
-                        if (datos_objetivo.estado_inmueble == "pendiente_pago") {
-                            datos_cabezera.estado = "Pendiente";
-                        }
-                        if (datos_objetivo.estado_inmueble == "pagado_pago") {
-                            datos_cabezera.estado = "Pagado";
-                        }
-                        if (datos_objetivo.estado_inmueble == "pendiente_aprobacion") {
-                            datos_cabezera.estado = "Aprobación";
-                        }
-                        if (datos_objetivo.estado_inmueble == "pagos") {
-                            datos_cabezera.estado = "Construcción";
-                        }
-                        if (datos_objetivo.estado_inmueble == "remate") {
-                            datos_cabezera.estado = "Remate";
-                        }
-                        if (datos_objetivo.estado_inmueble == "completado") {
-                            datos_cabezera.estado = "Construido";
-                        }
+                    datos_cabezera.facebook = aux_proyecto.link_facebook_proyecto;
+                    datos_cabezera.instagram = aux_proyecto.link_instagram_proyecto;
+                    datos_cabezera.tiktok = aux_proyecto.link_tiktok_proyecto;
+                    datos_cabezera.youtube = datos_objetivo.link_youtube_inmueble;
 
-                        // ------------------------------------------------
-
-                        if (datos_objetivo.estado_inmueble == "guardado") {
-                            datos_tiempo.estado = datos_objetivo.estado_inmueble;
-                            datos_tiempo.fecha = datos_objetivo.fecha_creacion;
-                            datos_tiempo.fecha_inicio = 0;
-                            datos_tiempo.fecha_fin = 0;
-                        } else {
-                            datos_tiempo.estado = aux_terreno.estado_terreno;
-                            if (aux_terreno.estado_terreno == "reserva") {
-                                datos_tiempo.fecha = aux_terreno.fecha_fin_reserva;
-                                datos_tiempo.fecha_inicio = aux_terreno.fecha_inicio_reserva;
-                                datos_tiempo.fecha_fin = aux_terreno.fecha_fin_reserva;
-                            }
-                            if (aux_terreno.estado_terreno == "aprobacion") {
-                                datos_tiempo.fecha = aux_terreno.fecha_fin_aprobacion;
-                                datos_tiempo.fecha_inicio = aux_terreno.fecha_inicio_aprobacion;
-                                datos_tiempo.fecha_fin = aux_terreno.fecha_fin_aprobacion;
-                            }
-                            if (aux_terreno.estado_terreno == "pago") {
-                                datos_tiempo.fecha = aux_terreno.fecha_fin_pago;
-                                datos_tiempo.fecha_inicio = aux_terreno.fecha_inicio_pago;
-                                datos_tiempo.fecha_fin = aux_terreno.fecha_fin_pago;
-                            }
-                            if (aux_terreno.estado_terreno == "construccion") {
-                                datos_tiempo.fecha = aux_terreno.fecha_fin_construccion;
-                                datos_tiempo.fecha_inicio = aux_terreno.fecha_inicio_construccion;
-                                datos_tiempo.fecha_fin = aux_terreno.fecha_fin_construccion;
-                            }
-                            if (aux_terreno.estado_terreno == "construido") {
-                                datos_tiempo.fecha = aux_terreno.fecha_fin_construccion;
-                                datos_tiempo.fecha_inicio = 0;
-                                datos_tiempo.fecha_fin = 0;
-                            }
-                        }
-
-                        var resultado_tiempo = funcion_tiempo_estado(datos_tiempo);
-                        datos_cabezera.factor_tiempo_tiempo = resultado_tiempo.factor_tiempo_tiempo;
-                    }
-                    if (lado == "cliente") {
-                        datos_cabezera.facebook = aux_proyecto.link_facebook_proyecto;
-                        datos_cabezera.instagram = aux_proyecto.link_instagram_proyecto;
-                        datos_cabezera.tiktok = aux_proyecto.link_tiktok_proyecto;
-                        datos_cabezera.youtube = datos_objetivo.link_youtube_inmueble;
-
-                        // corregimos que estado estara como "true"
-                        if (aux_terreno.estado_terreno == "reserva") {
-                            datos_cabezera.ver_propuestas = true; // para ver el TERRENO
-                        }
-                        if (aux_terreno.estado_terreno == "aprobacion") {
-                            datos_cabezera.ver_propuestas = false;
-                        }
-                        if (aux_terreno.estado_terreno == "pago") {
-                            datos_cabezera.ver_propuestas = false;
-                        }
-                        if (aux_terreno.estado_terreno == "construccion") {
-                            datos_cabezera.ver_propuestas = false;
-                        }
-                        if (aux_terreno.estado_terreno == "construido") {
-                            datos_cabezera.ver_propuestas = false;
-                        }
-                    }
                     return datos_cabezera;
                 }
+            }
+        }
+
+        if (tipo == "fraccion") {
+            // 1º revision si se trata de una fraccion de tipo copropietario o inversionista
+
+            //2º visualizacion de las redes sociales, dependiendo si se trata de una fraccion que correspondera a inmueble o a terreno
+
+            var fraccionInmueble = await indiceFraccionInmueble.findOne(
+                { codigo_fraccion: codigo_objetivo, tipo: "copropietario" },
+                {
+                    codigo_inmueble: 1,
+                    codigo_proyecto: 1,
+                    _id: 0,
+                }
+            );
+
+            if (fraccionInmueble) {
+                var registroInmueble = await indiceInmueble.findOne(
+                    { codigo_inmueble: fraccionInmueble.codigo_inmueble },
+                    {
+                        link_youtube_inmueble: 1,
+                        _id: 0,
+                    }
+                );
+
+                var registroProyecto = await indiceProyecto.findOne(
+                    { codigo_proyecto: fraccionInmueble.codigo_proyecto },
+                    {
+                        link_facebook_proyecto: 1,
+                        link_instagram_proyecto: 1,
+                        link_tiktok_proyecto: 1,
+                        _id: 0,
+                    }
+                );
+
+                if (registroInmueble && registroProyecto) {
+                    datos_cabezera.codigo = codigo_objetivo;
+                    datos_cabezera.fraccion_inmueble = true;
+                    datos_cabezera.codigo_inmueble = fraccionInmueble.codigo_inmueble;
+
+                    datos_cabezera.facebook = registroProyecto.link_facebook_proyecto;
+                    datos_cabezera.instagram = registroProyecto.link_instagram_proyecto;
+                    datos_cabezera.tiktok = registroProyecto.link_tiktok_proyecto;
+                    datos_cabezera.youtube = registroInmueble.link_youtube_inmueble;
+
+                    return datos_cabezera;
+                }
+            } else {
+                var fraccionTerreno = await indiceFraccionTerreno.findOne(
+                    { codigo_fraccion: codigo_objetivo },
+                    {
+                        codigo_terreno: 1,
+                        _id: 0,
+                    }
+                );
+
+                if (fraccionTerreno) {
+                    var registroTerreno = await indiceTerreno.findOne(
+                        { codigo_terreno: fraccionTerreno.codigo_terreno },
+                        {
+                            link_youtube: 1,
+                            link_facebook: 1,
+                            link_instagram: 1,
+                            link_tiktok: 1,
+                            _id: 0,
+                        }
+                    );
+                }
+            }
+
+            if (registroTerreno) {
+                datos_cabezera.codigo = codigo_objetivo;
+                datos_cabezera.fraccion_terreno = true;
+                datos_cabezera.codigo_terreno = fraccionTerreno.codigo_terreno;
+
+                datos_cabezera.facebook = registroTerreno.link_facebook;
+                datos_cabezera.instagram = registroTerreno.link_instagram;
+                datos_cabezera.tiktok = registroTerreno.link_tiktok;
+                datos_cabezera.youtube = registroTerreno.link_youtube;
+                return datos_cabezera;
             }
         }
 
@@ -400,88 +259,423 @@ funcionesAyuda_2.cabezeras_adm_cli = async function (aux_cabezera) {
 
 /************************************************************************************ */
 /************************************************************************************ */
-// PIE DE PAGINA LADO ADMINISTRADOR
+// ARMADOR DE DATOS Y PAGOS DE PROPIETARIO (util para renderizar en las pestañas de "propietario" de inmueble; y de "datos" "pagos" de propietario)
 
-funcionesAyuda_2.pie_pagina_adm = async function () {
-    try {
-        // informacion para pie de página
-        var registro_datos_empresa = await indiceEmpresa.findOne(
-            {},
-            {
-                mision_vision: 1,
-                texto_footer: 1,
-                year_derecho: 1,
-            }
-        );
-
-        if (registro_datos_empresa) {
-            return {
-                mision_vision: registro_datos_empresa.mision_vision,
-                texto_footer: registro_datos_empresa.texto_footer,
-                year_derecho: registro_datos_empresa.year_derecho,
-            };
-        } else {
-            return {};
-        }
-    } catch (error) {
-        console.log(error);
-    }
-};
-
-/************************************************************************************ */
-/************************************************************************************ */
-// PIE DE PAGINA LADO CLIENTE
-
-funcionesAyuda_2.pie_pagina_cli = async function () {
-    try {
-        // informacion para pie de página
-        var registro_datos_empresa = await indiceEmpresa.findOne(
-            {},
-            {
-                whatsapp: 1,
-                telefono_fijo: 1,
-                facebook: 1,
-                instagram: 1,
-                tiktok: 1,
-                youtube: 1,
-                direccion: 1,
-                year_derecho: 1,
-                mision_vision: 1,
-            }
-        );
-
-        if (registro_datos_empresa) {
-            return {
-                whatsapp: registro_datos_empresa.whatsapp,
-                telefono_fijo: registro_datos_empresa.telefono_fijo,
-                facebook: registro_datos_empresa.facebook,
-                instagram: registro_datos_empresa.instagram,
-                tiktok: registro_datos_empresa.tiktok,
-                youtube: registro_datos_empresa.youtube,
-                direccion: registro_datos_empresa.direccion,
-                year_derecho: registro_datos_empresa.year_derecho,
-                mision_vision: registro_datos_empresa.mision_vision,
-            };
-        } else {
-            return {};
-        }
-    } catch (error) {
-        console.log(error);
-    }
-};
-
-/************************************************************************************ */
-/************************************************************************************ */
-// ARMADOR DE DATOS Y PAGOS DE PROPIETARIO (util para renderizar en las pestañas de "propietario y pagos" de inmueble; y de "datos" "pagos" de propietario)
-
-// paquete_propietario : {ci_propietario: ... , codigo_inmueble: ...}
-funcionesAyuda_2.datos_pagos_propietario = async function (paquete_propietario) {
-    const ci_propietario = paquete_propietario.ci_propietario;
-    const codigo_inmueble = paquete_propietario.codigo_inmueble;
-
+funcionesAyuda_2.datos_pagos_propietario = async function (codigo_inmueble) {
     moment.locale("es");
 
     var contenedor_propietario = {}; // vacio para luego ser llenado
+
+    //--------------------------------------------------------------------------
+
+    // valores por defecto
+    var esta_disponible = false;
+    var esta_remate = false;
+
+    var existe_propietario = false; // por defecto "false" para indicar que no se mostraran datos ni documentos del propietario del inmueble.
+
+    // ira sumando todos los pagos que en verdad  realizo el propietario (pasivo o activo)
+    var pagado_actual = 0;
+
+    // ira sumando todos el pago que tendra que hacer el nuevo propietario si deseara adquirir el inmueble.
+    var pago_nuevo_propietario = 0; // en moneda Bs
+
+    // ira sumando los pagos de construccion vencidos que debe pagar el actual propietario (activo o pasivo) del inmueble
+    var deuda_demora = 0;
+
+    var cronograma_pagos = [];
+
+    var documentos_privados = [];
+
+    // si es que existe propietario (sea activo o pasivo), sera el PRIMER pago (de reserva o remate) con el que el actual propietario adquirio el inmueble
+    var pagado_primer = 0;
+
+    let registroInmueble = await indiceInmueble.findOne(
+        { codigo_inmueble: codigo_inmueble },
+        {
+            precio_construccion: 1,
+            codigo_proyecto: 1,
+            codigo_terreno: 1,
+
+            precio_competencia: 1,
+            superficie_inmueble_m2: 1,
+            fraccionado: 1,
+
+            _id: 0,
+        }
+    );
+
+    if (registroInmueble) {
+        /*
+        Cada elemento del array "pagos_mensuales" tendra contenido el siguiente objeto:
+        {
+            fecha: ...., // date
+            pago_bs: #, // number maximo 2 decimales
+        }
+        */
+        let registroInversionista = await indiceInversiones.findOne(
+            {
+                codigo_inmueble: codigo_inmueble,
+            },
+            {
+                ci_propietario: 1,
+                estado_propietario: 1,
+
+                //-----------------
+                pago_primer_bs: 1,
+                fecha: 1,
+                pago_tipo: 1, // "reserva" o "remate"
+                //-----------------
+
+                pagos_mensuales: 1,
+                _id: 0,
+            }
+        );
+
+        if (registroInversionista) {
+            // significa que el inmueble si cuenta con pagos de un propietario, ya sea que se trate de un propietario "pasivo" o "activo".
+
+            if (registroInversionista.pago_tipo == "reserva") {
+                contenedor_propietario.adquisicion = "Reserva";
+            } else {
+                contenedor_propietario.adquisicion = "Remate";
+            }
+
+            pagado_primer = registroInversionista.pago_primer_bs;
+
+            contenedor_propietario.fecha_re_re = moment
+                .utc(registroInversionista.fecha)
+                .format("LL"); // muestra solo fecha español
+
+            pagado_actual = registroInversionista.pago_primer_bs;
+
+            pago_nuevo_propietario = registroInversionista.pago_primer_bs;
+
+            let arrayInmuebles = await indiceInmueble.find(
+                { codigo_proyecto: registroInmueble.codigo_proyecto },
+                {
+                    precio_construccion: 1,
+                    _id: 0,
+                }
+            );
+
+            if (arrayInmuebles.length > 0) {
+                var [{ precio_proyecto }] = await indiceInmueble.aggregate([
+                    {
+                        $match: {
+                            codigo_proyecto: registroInmueble.codigo_proyecto, // Filtra
+                        },
+                    },
+                    {
+                        $group: {
+                            _id: null,
+                            precio_proyecto: { $sum: "$precio_construccion" }, // Suma los precios
+                        },
+                    },
+                ]);
+
+                //console.log("La suma de precios es :", precio_proyecto);
+                var fraccion_inm = registroInmueble.precio_construccion / precio_proyecto;
+            } else {
+                var fraccion_inm = 0;
+            }
+
+            let registroProyecto = await indiceProyecto.findOne(
+                { codigo_proyecto: registroInmueble.codigo_proyecto },
+                {
+                    // [ {fecha: Date, pago_bs: Number}, {fecha: Date, pago_bs: Number} , ... , {fecha: Date, pago_bs: Number} ] LOS PAGOS en moneda Bs (bolivianos)
+                    construccion_mensual: 1,
+
+                    _id: 0,
+                }
+            );
+
+            if (registroProyecto) {
+                let array_construccion_py = registroProyecto.construccion_mensual;
+                if (array_construccion_py.length > 0) {
+                    let array_construccion_inm = [];
+                    for (let i = 0; i < array_construccion_py.length; i++) {
+                        let fecha = array_construccion_py[i].fecha;
+                        let pago_bs = array_construccion_py[i].pago_bs;
+                        array_construccion_inm[i] = {
+                            fecha: fecha, // esta en tipo string ej: "2010-10-10"
+                            // Math.round redondea al entero mas cercano devolviendolo en tipo numerico
+                            pago_bs: Math.round(pago_bs * fraccion_inm),
+                        };
+                    }
+
+                    // armado de los pago que hizo el propietario (sea activo o pasivo)
+                    let array_const_prop = registroInversionista.pagos_mensuales;
+                    if (array_const_prop.length > 0) {
+                        for (let i = 0; i < array_construccion_inm.length; i++) {
+                            if (array_const_prop[i]) {
+                                // ej "2010-10-10"
+                                let aux_fecha = array_const_prop[i].fecha;
+
+                                // Convertir string ej "2010-10-10" a tipo Date ej 2010-10-10T00:00:00.000Z
+                                let fechaDate = new Date(aux_fecha); // ej: 2010-10-10T00:00:00.000Z
+
+                                // si existe pago realizado por el propietario
+                                cronograma_pagos[i] = {
+                                    orden: i + 1,
+                                    fecha: fechaDate,
+                                    fecha_render: moment.utc(fechaDate).format("LL"), // muestra solo fecha español,
+                                    pago_bs: array_const_prop[i].pago_bs,
+                                    pago_bs_render: numero_punto_coma(array_const_prop[i].pago_bs),
+                                    leyenda_pago: "Pagado",
+                                    color_css: "verde",
+                                };
+
+                                pagado_actual = pagado_actual + array_const_prop[i].pago_bs;
+                                pago_nuevo_propietario =
+                                    pago_nuevo_propietario + array_const_prop[i].pago_bs;
+                            } else {
+                                // "new Date()" nos devuelve la fecha actual
+                                let fecha_actual = new Date();
+
+                                // ej "2010-10-10"
+                                let aux_fecha = array_construccion_inm[i].fecha;
+
+                                // Convertir string ej "2010-10-10" a tipo Date ej 2010-10-10T00:00:00.000Z
+                                let fechaDate = new Date(aux_fecha); // ej: 2010-10-10T00:00:00.000Z
+
+                                if (fecha_actual >= fechaDate) {
+                                    cronograma_pagos[i] = {
+                                        orden: i + 1,
+                                        fecha: fechaDate,
+                                        fecha_render: moment.utc(fechaDate).format("LL"), // muestra solo fecha español,
+                                        pago_bs: array_construccion_inm[i].pago_bs,
+                                        pago_bs_render: numero_punto_coma(
+                                            array_construccion_inm[i].pago_bs
+                                        ),
+                                        leyenda_pago: "Demora",
+                                        color_css: "rojo",
+                                    };
+
+                                    pago_nuevo_propietario =
+                                        pago_nuevo_propietario + array_construccion_inm[i].pago_bs;
+
+                                    esta_remate = true;
+
+                                    deuda_demora = deuda_demora + array_construccion_inm[i].pago_bs;
+                                } else {
+                                    // ej "2010-10-10"
+                                    let aux_fecha = array_construccion_inm[i].fecha;
+
+                                    // Convertir string ej "2010-10-10" a tipo Date ej 2010-10-10T00:00:00.000Z
+                                    let fechaDate = new Date(aux_fecha); // ej: 2010-10-10T00:00:00.000Z
+
+                                    cronograma_pagos[i] = {
+                                        orden: i + 1,
+                                        fecha: fechaDate,
+                                        fecha_render: moment.utc(fechaDate).format("LL"), // muestra solo fecha español,
+                                        pago_bs: array_construccion_inm[i].pago_bs,
+                                        pago_bs_render: numero_punto_coma(
+                                            array_construccion_inm[i].pago_bs
+                                        ),
+                                        leyenda_pago: "Pendiente",
+                                        color_css: "gris",
+                                    };
+                                }
+                            }
+                        } // fin for
+
+                        // el pagado_actual ya considera la sumatoria de todos los pagos que hizo el  propietario (activo o pasivo)
+                        // el pago_nuevo_propietario ya considera la sumatoria de todo el pago que debera pagar el nuevo propietario si deseara adquirir el inmueble.
+                    }
+                }
+            }
+
+            // si el propietario esta activo, entonces seran mostrados sus datos personales, documentos y pagos que haya efectuado
+
+            if (registroInversionista.estado_propietario == "activo") {
+                existe_propietario = true;
+            } else {
+                // se lo tomara como propietario "pasivo"
+                existe_propietario = false;
+            }
+        } else {
+            // significa que el inmueble no cuenta con ningun pago de ningun propietario
+            // por tanto se lo considerara como inmueble en estado de "disponible"
+
+            esta_disponible = true;
+
+            existe_propietario = false;
+
+            //-----------------------------------------------------
+            let registro_terreno = await indiceTerreno.findOne(
+                {
+                    codigo_terreno: registroInmueble.codigo_terreno,
+                },
+                {
+                    estado_terreno: 1,
+                    precio_bs: 1,
+                    descuento_bs: 1,
+                    rend_fraccion_mensual: 1,
+                    superficie: 1,
+                    fecha_inicio_convocatoria: 1,
+                    fecha_inicio_reservacion: 1,
+                    fecha_fin_reservacion: 1,
+                    fecha_fin_construccion: 1,
+                    _id: 0,
+                }
+            );
+
+            let registro_proyecto = await indiceProyecto.findOne(
+                {
+                    codigo_proyecto: registroInmueble.codigo_proyecto,
+                },
+                {
+                    construccion_mensual: 1,
+                    _id: 0,
+                }
+            );
+
+            if (registro_terreno && registro_proyecto) {
+                //--------------------------------------------------------------
+                var datos_inm = {
+                    // datos del inmueble
+                    codigo_inmueble,
+                    precio_construccion: registroInmueble.precio_construccion,
+                    precio_competencia: registroInmueble.precio_competencia,
+                    superficie_inmueble: registroInmueble.superficie_inmueble_m2,
+                    fraccionado: registroInmueble.fraccionado,
+                    // datos del proyecto
+                    construccion_mensual: registro_proyecto.construccion_mensual,
+                    // datos del terreno
+                    estado_terreno: registro_terreno.estado_terreno,
+                    precio_terreno: registro_terreno.precio_bs,
+                    descuento_terreno: registro_terreno.descuento_bs,
+                    rend_fraccion_mensual: registro_terreno.rend_fraccion_mensual,
+                    superficie_terreno: registro_terreno.superficie,
+                    fecha_inicio_convocatoria: registro_terreno.fecha_inicio_convocatoria,
+                    fecha_inicio_reservacion: registro_terreno.fecha_inicio_reservacion,
+                    fecha_fin_reservacion: registro_terreno.fecha_fin_reservacion,
+                    fecha_fin_construccion: registro_terreno.fecha_fin_construccion,
+                };
+                var resultado = await super_info_inm(datos_inm);
+
+                var derecho_suelo = resultado.derecho_suelo;
+
+                //--------------------------------------------------------------
+
+                pago_nuevo_propietario = derecho_suelo;
+            }
+            //-----------------------------------------------------
+        }
+
+        if (existe_propietario) {
+            //-----------------------------------------------------------
+            // para el armado de datos personales del propietario
+
+            let registro_propietario = await indice_propietario.findOne(
+                {
+                    ci_propietario: registroInversionista.ci_propietario,
+                },
+                {
+                    ci_propietario: 1,
+                    nombres_propietario: 1,
+                    apellidos_propietario: 1,
+                    departamento_propietario: 1,
+                    provincia_propietario: 1,
+                    domicilio_propietario: 1,
+                    ocupacion_propietario: 1,
+                    fecha_nacimiento_propietario: 1,
+                    telefonos_propietario: 1,
+                    _id: 0,
+                }
+            );
+
+            if (registro_propietario) {
+                // conversion del documento MONGO ({objeto}) a "string"
+                var aux_string = JSON.stringify(registro_propietario);
+                // reconversion del "string" a "objeto" EN ESTE CASO RESPETANDO QUE SERA UN ARRAY
+                var propietario_datos = JSON.parse(aux_string);
+
+                if (propietario_datos.fecha_nacimiento_propietario) {
+                    let arrayFecha = propietario_datos.fecha_nacimiento_propietario.split("T");
+                    // ahora con split lo separamos, quedandonos con el formato que intereza "año-mes-dia"
+                    propietario_datos.fecha_nacimiento_propietario = arrayFecha[0]; // nos devolvera "2010-10-10" (año-mes-dia) y eso si se puede pintar en un input tipo "date"
+
+                    // conversion de formato de fecha a ej/ domingo 28 Junio de 2023
+                    //moment.locale("es");
+                    propietario_datos.nacimiento_propietario_render = moment
+                        .utc(propietario_datos.fecha_nacimiento_propietario)
+                        .format("LL"); // muestra solo fecha español
+                } else {
+                    propietario_datos.fecha_nacimiento_propietario = "";
+                    propietario_datos.nacimiento_propietario_render = "";
+                }
+
+                contenedor_propietario.propietario_datos = propietario_datos;
+
+                //-----------------------------------------------------------
+                // para el armado de documentos del propietario
+
+                // DOCUMENTOS PRIVADOS DEL PROPIETARIO
+                var registro_documentos_priv = await indiceDocumentos.find({
+                    ci_propietario: registroInversionista.ci_propietario,
+                    codigo_inmueble: codigo_inmueble,
+                    clase_documento: "Propietario",
+                });
+
+                if (registro_documentos_priv.length > 0) {
+                    for (let p = 0; p < registro_documentos_priv.length; p++) {
+                        documentos_privados[p] = {
+                            codigo_inmueble: registro_documentos_priv[p].codigo_inmueble,
+                            nombre_documento: registro_documentos_priv[p].nombre_documento,
+                            codigo_documento: registro_documentos_priv[p].codigo_documento,
+                            url: registro_documentos_priv[p].url,
+                        };
+                    }
+                }
+
+                //-----------------------------------------------------------
+            } else {
+                contenedor_propietario.propietario_datos = {
+                    ci_propietario: "",
+                    nombres_propietario: "",
+                    apellidos_propietario: "",
+                    departamento_propietario: "",
+                    provincia_propietario: "",
+                    domicilio_propietario: "",
+                    ocupacion_propietario: "",
+                    fecha_nacimiento_propietario: "",
+                    telefonos_propietario: "",
+                };
+            }
+        } // fin existe_propietario
+    } // fin de registroInmueble
+
+    contenedor_propietario.esta_disponible = esta_disponible; // true o false
+    contenedor_propietario.esta_remate = esta_remate; // true o false
+    contenedor_propietario.cronograma_pagos = cronograma_pagos;
+    contenedor_propietario.documentos_privados = documentos_privados;
+    contenedor_propietario.existe_propietario = existe_propietario; // true o false
+
+    contenedor_propietario.pagado_actual = pagado_actual;
+    contenedor_propietario.pago_nuevo_propietario = pago_nuevo_propietario;
+    contenedor_propietario.deuda_demora = deuda_demora;
+
+    contenedor_propietario.pagado_primer = pagado_primer;
+    contenedor_propietario.pagado_primer_r = numero_punto_coma(pagado_primer);
+
+    contenedor_propietario.pagado_actual_render = numero_punto_coma(pagado_actual);
+    contenedor_propietario.pago_nuevo_propietario_render =
+        numero_punto_coma(pago_nuevo_propietario);
+    contenedor_propietario.deuda_demora_render = numero_punto_coma(deuda_demora);
+
+    //--------------------------------------------------------------------------
+
+    return contenedor_propietario;
+};
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// solo mostrara los datos actuales del propietario
+
+funcionesAyuda_2.datos_propietario = async function (ci_propietario) {
+    moment.locale("es");
 
     // datos del propietario
 
@@ -524,12 +718,15 @@ funcionesAyuda_2.datos_pagos_propietario = async function (paquete_propietario) 
             propietario_datos.nacimiento_propietario_render = "";
         }
 
-        contenedor_propietario.propietario_datos = propietario_datos;
+        // para indicar que se trata de un propietario cuyos datos ya se encuentran registrados en la base de datos.
+        propietario_datos.propietario_registrado = true;
     } else {
         // es un propietario completamente nuevo que aun no existe en la base de datos
 
-        contenedor_propietario.propietario_datos = {
+        propietario_datos = {
             ci_propietario: ci_propietario,
+            // para indicar que se trata de un propietario nuevo. Que no esta registrado en la base de datos
+            propietario_registrado: false,
             nombres_propietario: "",
             apellidos_propietario: "",
             departamento_propietario: "",
@@ -541,830 +738,210 @@ funcionesAyuda_2.datos_pagos_propietario = async function (paquete_propietario) 
         };
     }
 
-    // Se inspeccionara si el potencial propietario cuenta con pagos anteriores en el inmueble o si es completamtente nuevo
-    var inversionistaActivo = await indiceInversiones.findOne(
+    return propietario_datos;
+};
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// solo mostrara los datos DATOS PERSONALES, DOCUMENTOS PRIVADOS actuales del propietario.
+// VALIDO PARA COPROPIETARIO DE INMUEBLE Y TERRENO
+
+funcionesAyuda_2.datos_copropietario = async function (paquete_datos) {
+    var ci_propietario = paquete_datos.ci_propietario;
+    var codigo_objetivo = paquete_datos.codigo_objetivo; // codigo_inmueble || codigo_terreno || codigo_fraccion
+    var copropietario = paquete_datos.copropietario; // "inmueble" || "terreno" || "fraccion"
+
+    // valores por defecto
+    var tiene_datos = false;
+
+    moment.locale("es");
+
+    //--------------------------------------------------------------
+    // datos personales
+
+    var registro_propietario = await indice_propietario.findOne(
         {
             ci_propietario: ci_propietario,
-            codigo_inmueble: codigo_inmueble,
         },
         {
+            ci_propietario: 1,
+            nombres_propietario: 1,
+            apellidos_propietario: 1,
+            departamento_propietario: 1,
+            provincia_propietario: 1,
+            domicilio_propietario: 1,
+            ocupacion_propietario: 1,
+            fecha_nacimiento_propietario: 1,
+            telefonos_propietario: 1,
             _id: 0,
         }
     );
 
-    // Si el propietario cuenta con pagos en el inmueble
-    if (inversionistaActivo) {
-        // conversion del documento MONGO ({OBJETO}) a "string"
-        var aux_string = JSON.stringify(inversionistaActivo);
-        // reconversion del "string" a "objeto"
-        var propietario_pagos = JSON.parse(aux_string);
+    if (registro_propietario) {
+        tiene_datos = true;
 
-        //----------------------------------------------
-        // para color de estado de propietario.
-        // activo: color link, pasivo: color rojo
+        // conversion del documento MONGO ({objeto}) a "string"
+        var aux_string = JSON.stringify(registro_propietario);
+        // reconversion del "string" a "objeto" EN ESTE CASO RESPETANDO QUE SERA UN ARRAY
+        var propietario_datos = JSON.parse(aux_string);
 
-        if (propietario_pagos.estado_propietario=="activo") {
-            //agregamos la propiedad "es_activo" al objeto
-            propietario_pagos.es_activo = true;
-        }
-        if (propietario_pagos.estado_propietario=="pasivo") {
-            //agregamos la propiedad "es_activo" al objeto
-            propietario_pagos.es_activo = false;
-        }
-        //----------------------------------------------
-
-        if (propietario_pagos.tiene_reserva) {
-            // para mostrar el pago en formato español con punto mil y coma decimal PARA LA VENTANA DE INMUEBLE EN SU PESTAÑA PROPIETARIO
-            propietario_pagos.pagado_reserva_render = numero_punto_coma(
-                propietario_pagos.pagado_reserva
-            );
+        if (propietario_datos.fecha_nacimiento_propietario) {
+            let arrayFecha = propietario_datos.fecha_nacimiento_propietario.split("T");
+            // ahora con split lo separamos, quedandonos con el formato que intereza "año-mes-dia"
+            propietario_datos.fecha_nacimiento_propietario = arrayFecha[0]; // nos devolvera "2010-10-10" (año-mes-dia) y eso si se puede pintar en un input tipo "date"
 
             // conversion de formato de fecha a ej/ domingo 28 Junio de 2023
-            // PARA LA VENTANA DE INMUEBLE EN SU PESTAÑA PROPIETARIO
-            propietario_pagos.fecha_pagado_reserva_render = moment
-                .utc(propietario_pagos.fecha_pagado_reserva)
+            //moment.locale("es");
+            propietario_datos.nacimiento_propietario_render = moment
+                .utc(propietario_datos.fecha_nacimiento_propietario)
                 .format("LL"); // muestra solo fecha español
-
-            // llevamos el formato fecha de mongo a formato html, para mostrarlo en html
-            propietario_pagos.fecha_pagado_reserva = fecha_html(
-                propietario_pagos.fecha_pagado_reserva
-            );
+        } else {
+            propietario_datos.fecha_nacimiento_propietario = "";
+            propietario_datos.nacimiento_propietario_render = "";
         }
 
-        if (propietario_pagos.tiene_pago) {
-            // para mostrar el pago en formato español con punto mil y coma decimal PARA LA VENTANA DE INMUEBLE EN SU PESTAÑA PROPIETARIO
-            propietario_pagos.pagado_pago_render = numero_punto_coma(propietario_pagos.pagado_pago);
+        // para indicar que se trata de un propietario cuyos datos ya se encuentran registrados en la base de datos.
+        propietario_datos.propietario_registrado = true;
+    } else {
+        // es un propietario completamente nuevo que aun no existe en la base de datos
 
-            // conversion de formato de fecha a ej/ domingo 28 Junio de 2023
-            // PARA LA VENTANA DE INMUEBLE EN SU PESTAÑA PROPIETARIO
-            propietario_pagos.fecha_pagado_pago_render = moment
-                .utc(propietario_pagos.fecha_pagado_pago)
-                .format("LL"); // muestra solo fecha español
+        var propietario_datos = {
+            ci_propietario: ci_propietario,
+            // para indicar que se trata de un propietario nuevo. Que no esta registrado en la base de datos
+            propietario_registrado: false,
+            nombres_propietario: "",
+            apellidos_propietario: "",
+            departamento_propietario: "",
+            provincia_propietario: "",
+            domicilio_propietario: "",
+            ocupacion_propietario: "",
+            fecha_nacimiento_propietario: "",
+            telefonos_propietario: "",
+        };
+    }
 
-            // llevamos el formato fecha de mongo a formato html, para mostrarlo en html
-            propietario_pagos.fecha_pagado_pago = fecha_html(propietario_pagos.fecha_pagado_pago);
-        }
+    //--------------------------------------------------------------
+    // las documentos privados que tienen relacion con las fracciones que tiene el copropietario del terreno o inmueble o fraccion. Para ello se necesita el codigo del terreno o inmueble o fraccion respectivamente
 
-        if (propietario_pagos.tiene_mensuales) {
-            var aux_mensuales = 0;
-            for (let i = 0; i < propietario_pagos.pagos_mensuales.length; i++) {
-                /*
-                propietario_pagos.pagos_mensuales[i].fecha_pago = fecha_html(
-                    propietario_pagos.pagos_mensuales[i].fecha_pago
-                );
-                */
+    var documentos_privados = [];
 
-                // en el array de pagos mensuales, la fecha se encuentra guardada en el formato string: "2023-09-08"
-                /*
-                propietario_pagos.pagos_mensuales[i].fecha_pago =
-                    propietario_pagos.pagos_mensuales[i].fecha_pago;
-                // agregando la propiedad de numeracion para mostrarlo en el html
-                propietario_pagos.pagos_mensuales[i].numero = i + 1;
-                var aux_mensual_i = Number(propietario_pagos.pagos_mensuales[i].pago);
-                aux_mensuales = aux_mensuales + aux_mensual_i;
-                */
+    if (copropietario === "terreno") {
+        var registro_documentos_priv = await indiceDocumentos.find({
+            codigo_terreno: codigo_objetivo,
+            ci_propietario: ci_propietario,
+            clase_documento: "Propietario",
+        });
+    }
 
-                propietario_pagos.pagos_mensuales[i] = {
-                    numero: propietario_pagos.pagos_mensuales[i][0],
-                    fecha_pago: propietario_pagos.pagos_mensuales[i][1],
-                    pago: propietario_pagos.pagos_mensuales[i][2],
+    if (copropietario === "inmueble") {
+        var registro_documentos_priv = await indiceDocumentos.find({
+            codigo_inmueble: codigo_objetivo,
+            ci_propietario: ci_propietario,
+            clase_documento: "Propietario",
+        });
+    }
 
-                    fecha_pago_render: moment
-                        .utc(propietario_pagos.pagos_mensuales[i][1])
-                        .format("LL"), // muestra solo fecha español
-                    pago_render: numero_punto_coma(propietario_pagos.pagos_mensuales[i][2]),
-                };
-            }
-        }
+    if (copropietario === "fraccion") {
+        let codigo_fraccion = codigo_objetivo;
+        // en caso de documentos que guardan relacion con la fraccion, se buscaran en los registros privados tento de terreno, como de inmueble.
 
-        contenedor_propietario.propietario_pagos = propietario_pagos;
-
-        // calculo indemnizacion y penalizacion que seran aplicados cuando el propietario sea un incumplido
-        var inmueble_registro = await indiceInmueble.findOne(
+        var fraccionInmueble = await indiceFraccionInmueble.findOne(
             {
-                codigo_inmueble: codigo_inmueble,
+                codigo_fraccion: codigo_fraccion,
+                tipo: "copropietario",
+                disponible: false,
+                ci_propietario: ci_propietario,
             },
             {
-                codigo_proyecto: 1,
+                codigo_inmueble: 1,
+                codigo_terreno: 1,
             }
         );
 
-        if (inmueble_registro) {
-            var codigo_proyecto = inmueble_registro.codigo_proyecto;
-            var proyecto_registro = await indiceProyecto.findOne(
+        if (fraccionInmueble) {
+            let codigo_inmueble = fraccionInmueble.codigo_inmueble;
+            let codigo_terreno = fraccionInmueble.codigo_terreno;
+
+            let cc = -1;
+
+            //-------------------------------
+            let documentos_priv_inm = await indiceDocumentos.find({
+                codigo_inmueble: codigo_inmueble,
+                ci_propietario: ci_propietario,
+                clase_documento: "Propietario",
+            });
+
+            if (documentos_priv_inm.length > 0) {
+                for (let i = 0; i < documentos_priv_inm.length; i++) {
+                    cc = cc + 1;
+                    documentos_privados[cc] = {
+                        nombre_documento: documentos_priv_inm[cc].nombre_documento,
+                        codigo_documento: documentos_priv_inm[cc].codigo_documento,
+                        url: documentos_priv_inm[cc].url,
+                    };
+                }
+            }
+
+            //------------------------------
+
+            let documentos_priv_te = await indiceDocumentos.find({
+                codigo_terreno: codigo_terreno,
+                ci_propietario: ci_propietario,
+                clase_documento: "Propietario",
+            });
+
+            if (documentos_priv_te.length > 0) {
+                for (let i = 0; i < documentos_priv_te.length; i++) {
+                    cc = cc + 1;
+                    documentos_privados[cc] = {
+                        nombre_documento: documentos_priv_te[cc].nombre_documento,
+                        codigo_documento: documentos_priv_te[cc].codigo_documento,
+                        url: documentos_priv_te[cc].url,
+                    };
+                }
+            }
+
+        } else {
+            var fraccionTerreno = await indiceFraccionTerreno.findOne(
                 {
-                    codigo_proyecto: codigo_proyecto,
+                    codigo_fraccion: codigo_fraccion,
+                    disponible: false,
+                    ci_propietario: ci_propietario,
                 },
                 {
-                    penalizacion: 1,
+                    codigo_terreno: 1,
                 }
             );
 
-            if (proyecto_registro) {
-                var porc_penalizacion = Number(proyecto_registro.penalizacion) / 100;
-                var aux_reserva = Number(propietario_pagos.pagado_reserva);
-                var aux_pago = Number(propietario_pagos.pagado_pago);
-                var aux_total_pagado = aux_reserva + aux_pago + aux_mensuales;
-
-                contenedor_propietario.total_pagado = numero_punto_coma(
-                    Number(aux_total_pagado.toFixed(2))
-                );
-                contenedor_propietario.indemnizacion = numero_punto_coma(
-                    Number((aux_total_pagado - aux_total_pagado * porc_penalizacion).toFixed(2))
-                );
-                contenedor_propietario.penalizacion = numero_punto_coma(
-                    Number((aux_total_pagado * porc_penalizacion).toFixed(2))
-                );
+            if (fraccionTerreno) {
+                let codigo_terreno = fraccionTerreno.codigo_terreno;
+                var registro_documentos_priv = await indiceDocumentos.find({
+                    codigo_terreno: codigo_terreno,
+                    ci_propietario: ci_propietario,
+                    clase_documento: "Propietario",
+                });
             }
         }
-    } else {
-        contenedor_propietario.propietario_pagos = {
-            tiene_reserva: false,
-            pagado_reserva: "",
-            fecha_pagado_reserva: "",
-
-            tiene_pago: false,
-            pagado_pago: "",
-            fecha_pagado_pago: "",
-
-            tiene_mensuales: false,
-            pagos_mensuales: [], // array vacio
-        };
-
-        contenedor_propietario.total_pagado = 0;
-        contenedor_propietario.indemnizacion = 0;
-        contenedor_propietario.penalizacion = 0;
     }
 
-    return contenedor_propietario;
-};
-
-//---------------------------
-
-function fecha_html(fecha_mongo) {
-    if (fecha_mongo != "") {
-        let arrayFecha = fecha_mongo.split("T");
-        // ahora con split lo separamos, quedandonos con el formato que intereza "año-mes-dia"
-        fecha_mongo = arrayFecha[0]; // nos devolvera "2010-10-10" (año-mes-dia) y eso si se puede pintar en un input tipo "date"
-    } else {
-        fecha_mongo = "";
-    }
-    return fecha_mongo;
-}
-
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// para segundero, en ventana de resumen PROPIETARIO [que contabilizara todas las propiedades activas de ese propietario], en ventana de INMUEBLE (cliente) [que contabilizara solo para ese inmueble]
-// datos_segundero: {codigo_objetivo, ci_propietario,tipo_objetivo}
-funcionesAyuda_2.segundero_cajas = async function (datos_segundero) {
-    // ------- Para verificación -------
-    //console.log("entrando a la funcion de segundero_cajas");
-    //console.log(datos_segundero);
-
-    var codigo_objetivo = datos_segundero.codigo_objetivo; // de: propietario o inmueble o proyecto
-    var tipo_objetivo = datos_segundero.tipo_objetivo; // propietario o inmueble o proyecto
-    var ci_propietario = datos_segundero.ci_propietario; // (puede ser: ci o ninguno)
-
-    //----------------------------------------------------------------------------
-    // SEGUNDERO PLUSVALIA
-    var total = 0; // el valor total del inmueble (ahorro + construccion)
-    var ahorro = 0; // el ahorro
-    var precio = 0; // el valor real de precio de venta del inmueble (incluido todos los descuentos actuales con las que pueda contar)
-    var construccion = 0; // valor de contruccion SOLIDEXA del inmueble
-
-    var array_plusvalia = [];
-
-    //var array_plus_r = []; // $us/seg de plusvalia
-    //var array_plus_fechaInicio = [];
-    //var array_plus_fechaFin = [];
-
-    //----------------------------------------------------------------------------
-    // SEGUNDERO RECOMPENSA
-
-    var recompensa = 0; // Bs redondeado al entero inmediato inferior
-    var meses = 0; // meses espera de recompensa redondeado al entero inmediato inferior
-
-    var array_recompensa = [];
-
-    //var array_recom_r = []; // $us/seg de recompensa
-    //var array_recom_fechaInicio = []; // fecha Cuando el inm es reservado
-    //var array_recom_fechaFin = [];
-
-    //----------------------------------------------------------------------------
-
-    if (tipo_objetivo == "propietario") {
-        // solo seran considerados los inmuebles del propietario, donde este esta "activo"
-        var registro_inmueble = await indiceInversiones.find(
-            { ci_propietario: codigo_objetivo, estado_propietario: "activo" },
-            {
-                codigo_proyecto: 1,
-                codigo_inmueble: 1,
-                codigo_terreno: 1,
-                _id: 0,
-            }
-        );
-
-        if (registro_inmueble.length > 0) {
-            // los que generan $us/seg son los inmuebles en estado:
-            // disponible, reservado, pendiente, pagado, pagos (construccion)
-            // los que terminaron de generar $us/seg son los inmuebles en estado:
-            // completado (construido)
-
-            //-----------------------------------------------------------------
-
-            for (let i = 0; i < registro_inmueble.length; i++) {
-                let codigo_inmueble_i = registro_inmueble[i].codigo_inmueble;
-
-                var aux_paquete_datos = {
-                    codigo_inmueble: codigo_inmueble_i,
-                    ci_propietario,
-                };
-
-                var resultado_funcion = await aux_inmueble_segundero(aux_paquete_datos);
-
-                //-----------------------------------------------------------------
-                // PARA SEGUNDERO DE PLUSVALIA
-
-                total = total + resultado_funcion.total;
-                ahorro = ahorro + resultado_funcion.ahorro;
-                precio = precio + resultado_funcion.precio;
-                construccion = construccion + resultado_funcion.construccion;
-
-                array_plusvalia[i] = {
-                    plus_r: resultado_funcion.r_plus,
-                    plus_fechaInicio: resultado_funcion.fecha_inicio_reserva,
-                    plus_fechaFin: resultado_funcion.fecha_fin_construccion,
-                };
-
-                //-----------------------------------------------------------------
-                // PARA SEGUNDERO DE RECOMPENSA
-
-                recompensa = recompensa + resultado_funcion.recompensa_real;
-                meses = meses + resultado_funcion.meses_r;
-
-                array_recompensa[i] = {
-                    recom_r: resultado_funcion.r_recompensa, // Bs/seg real
-                    recom_fechaInicio: resultado_funcion.fecha_pagado_reserva_r,
-                    recom_fechaFin: resultado_funcion.fecha_inicio_construccion_r,
-                };
-
-                //-----------------------------------------------------------------
-            } // for
-        }
-
-        var resultado = {
-            //---------------------------------------
-            // SEGUNDERO PLUSVALIA
-            array_plusvalia,
-
-            total,
-            ahorro,
-            precio,
-            construccion,
-
-            //---------------------------------------
-            // SEGUNDERO RECOMPENSA
-            array_recompensa,
-
-            recompensa,
-            meses,
-            //---------------------------------------
-        };
-        return resultado;
-    }
-
-    if (tipo_objetivo == "inmueble") {
-        // aqui se ingresa solo por el lado del cliente, ya que es solo en esa ventana donde se ven los segunderos ( en lado de administrador NO )
-        var registro_inmueble = await indiceInmueble.findOne(
-            { codigo_inmueble: codigo_objetivo },
-            {
-                codigo_proyecto: 1,
-                codigo_terreno: 1,
-                _id: 0,
-            }
-        );
-
-        if (registro_inmueble) {
-            // los que generan $us/seg son los inmuebles en estado:
-            // disponible, reservado, pendiente, pagado, pagos
-            // los que terminaron de generar $us/seg son los inmuebles en estado:
-            // completado
-
-            var aux_paquete_datos = {
+    if (registro_documentos_priv.length > 0) {
+        for (let p = 0; p < registro_documentos_priv.length; p++) {
+            documentos_privados[p] = {
+                nombre_documento: registro_documentos_priv[p].nombre_documento,
+                codigo_documento: registro_documentos_priv[p].codigo_documento,
+                url: registro_documentos_priv[p].url,
                 codigo_inmueble: codigo_objetivo,
-                ci_propietario,
             };
-
-            var resultado_funcion = await aux_inmueble_segundero(aux_paquete_datos);
-
-            //-----------------------------------------------------------------
-            // PARA SEGUNDERO DE PLUSVALIA
-
-            total = resultado_funcion.total;
-            ahorro = resultado_funcion.ahorro;
-            precio = resultado_funcion.precio;
-            construccion = resultado_funcion.construccion;
-
-            array_plusvalia[0] = {
-                plus_r: resultado_funcion.r_plus,
-                plus_fechaInicio: resultado_funcion.fecha_inicio_reserva,
-                plus_fechaFin: resultado_funcion.fecha_fin_construccion,
-            };
-
-            //-----------------------------------------------------------------
-            // PARA SEGUNDERO DE RECOMPENSA
-
-            recompensa = recompensa + resultado_funcion.recompensa_real;
-            meses = meses + resultado_funcion.meses_r;
-
-            array_recompensa[0] = {
-                recom_r: resultado_funcion.r_recompensa, // Bs/seg real
-                recom_fechaInicio: resultado_funcion.fecha_pagado_reserva_r,
-                recom_fechaFin: resultado_funcion.fecha_inicio_construccion_r,
-            };
-
-            //-----------------------------------------------------------------
-            // PARA LAS 2 BARRAS DE PROGRESO (FINANCIAMIENTO Y PLAZO)
-
-            var paquete_datos = {
-                tipo_objetivo,
-                codigo_objetivo,
-                ci_propietario,
-            };
-            var progresos = await aux_barras_progreso(paquete_datos);
-
-            //-----------------------------------------------------------------
         }
-
-        var resultado = {
-            //---------------------------------------
-            // SEGUNDERO PLUSVALIA
-            array_plusvalia,
-
-            total,
-            ahorro,
-            precio,
-            construccion,
-
-            progresos,
-
-            //---------------------------------------
-            // SEGUNDERO RECOMPENSA
-            array_recompensa,
-
-            recompensa,
-            meses,
-            //---------------------------------------
-        };
-        return resultado;
     }
 
-    if (tipo_objetivo == "proyecto") {
-        // aqui se ingresa solo por el lado del cliente, ya que es solo en esa ventana donde se ven los segunderos ( en lado de administrador NO )
-        var registro_inmueble = await indiceInmueble.find(
-            { codigo_proyecto: codigo_objetivo },
-            {
-                codigo_inmueble: 1,
-                codigo_terreno: 1,
-                _id: 0,
-            }
-        );
+    propietario_datos.documentos_privados = documentos_privados;
+    propietario_datos.tiene_datos = tiene_datos;
 
-        if (registro_inmueble.length > 0) {
-            // los que generan $us/seg son los inmuebles en estado:
-            // disponible, reservado, pendiente, pagado, pagos
-            // los que terminaron de generar $us/seg son los inmuebles en estado:
-            // completado (construido)
+    //--------------------------------------------------------------
 
-            //-----------------------------------------------------------------
-
-            for (let i = 0; i < registro_inmueble.length; i++) {
-                let codigo_inmueble_i = registro_inmueble[i].codigo_inmueble;
-
-                // a pesar de que todos los inmuebles pertenecen al mismo proyecto y por ende al mismo terreno, obviamente todos tendran la misma fecha de inicio de reserva y fin de contruccion, pero para no crear otra funcion, se utilizara la funcion "aux_inmueble_segundero", tratandolos como si fueran inmuebles de diferentes proyectos, pero al final se obtendra el mismo resultado correcto.
-
-                var aux_paquete_datos = {
-                    codigo_inmueble: codigo_inmueble_i,
-                    ci_propietario,
-                };
-
-                var resultado_funcion = await aux_inmueble_segundero(aux_paquete_datos);
-
-                //-----------------------------------------------------------------
-                // PARA SEGUNDERO DE PLUSVALIA
-
-                total = total + resultado_funcion.total;
-                ahorro = ahorro + resultado_funcion.ahorro;
-                precio = precio + resultado_funcion.precio;
-                construccion = construccion + resultado_funcion.construccion;
-
-                array_plusvalia[i] = {
-                    plus_r: resultado_funcion.r_plus,
-                    plus_fechaInicio: resultado_funcion.fecha_inicio_reserva,
-                    plus_fechaFin: resultado_funcion.fecha_fin_construccion,
-                };
-
-                //-----------------------------------------------------------------
-                // PARA SEGUNDERO DE RECOMPENSA
-
-                recompensa = recompensa + resultado_funcion.recompensa_real;
-                meses = meses + resultado_funcion.meses_r;
-
-                array_recompensa[i] = {
-                    recom_r: resultado_funcion.r_recompensa, // Bs/seg real
-                    recom_fechaInicio: resultado_funcion.fecha_pagado_reserva_r,
-                    recom_fechaFin: resultado_funcion.fecha_inicio_construccion_r,
-                };
-
-                //-----------------------------------------------------------------
-            } // for
-
-            //-----------------------------------------------------------------
-            // PARA LAS 2 BARRAS DE PROGRESO (FINANCIAMIENTO Y PLAZO)
-
-            var paquete_datos = {
-                tipo_objetivo,
-                codigo_objetivo,
-                ci_propietario,
-            };
-            var progresos = await aux_barras_progreso(paquete_datos);
-
-            //-----------------------------------------------------------------
-        }
-
-        var resultado = {
-            //---------------------------------------
-            // SEGUNDERO PLUSVALIA
-            array_plusvalia,
-
-            total,
-            ahorro,
-            precio,
-            construccion,
-
-            progresos,
-
-            //---------------------------------------
-            // SEGUNDERO RECOMPENSA
-            array_recompensa,
-
-            recompensa,
-            meses,
-            //---------------------------------------
-        };
-        return resultado;
-    }
-
-    // SOLO PARA TERRENO EN ETAPA DE CONVOCATORIA, Y SOLO ES VISIBLE CUANDO SI INGRESA DEL LADO DEL CLIENTE (NO DEL GESTIONADOR)
-    if (tipo_objetivo == "terreno") {
-        // EN TERRENO NO EXISTE SEGUNDERO, SOLO EXISTE BARRAS DE PROGRESO
-
-        //-----------------------------------------------------------------
-        // PARA LAS 2 BARRAS DE PROGRESO (PLAZO y VACANTES)
-
-        var paquete_datos = {
-            tipo_objetivo,
-            codigo_objetivo,
-            ci_propietario,
-        };
-        var progresos = await aux_barras_progreso(paquete_datos);
-
-        //-----------------------------------------------------------------
-
-        var resultado = {
-            progresos,
-        };
-        return resultado;
-    }
+    return propietario_datos;
 };
-
-//-----------------------------------------------------------------------------
-
-async function aux_inmueble_segundero(aux_paquete_datos) {
-    try {
-        var codigo_inmueble = aux_paquete_datos.codigo_inmueble;
-        var ci_propietario = aux_paquete_datos.ci_propietario;
-
-        var inmueble_i = await indiceInmueble.findOne(
-            { codigo_inmueble: codigo_inmueble },
-            {
-                codigo_terreno: 1,
-                estado_inmueble: 1,
-                //ci_propietario: 1, // Util para RECOMPENSA POR TIEMPO DE ESPERA
-                recompensa: 1, // Util para RECOMPENSA POR TIEMPO DE ESPERA
-                _id: 0,
-            }
-        );
-
-        var aux_terreno = await indiceTerreno.findOne(
-            { codigo_terreno: inmueble_i.codigo_terreno },
-            {
-                fecha_inicio_reserva: 1,
-                fecha_fin_construccion: 1,
-
-                fecha_inicio_construccion: 1, // util para RECOMPESA
-                estado_terreno: 1, // util para RECOMPESA
-
-                _id: 0,
-            }
-        );
-
-        var paquete_inmueble = {
-            codigo_inmueble: codigo_inmueble,
-            codigo_usuario: ci_propietario, // (puede ser: ci o ninguno)
-            //laapirest: "/laapirest/", // por partir desde el lado del ADMINISTRADOR
-        };
-
-        // ------- Para verificación -------
-        //console.log("para ver que paquete de datos se esta enviando");
-        //console.log(paquete_inmueble);
-
-        var aux_inm = await inmueble_info_cd(paquete_inmueble);
-
-        var construccion = aux_inm.num_puro_construccion;
-        var precio = aux_inm.num_puro_precio_actual;
-        var ahorro = aux_inm.num_puro_ahorro;
-        var total = precio + ahorro;
-
-        var fecha_inicio_reserva = aux_terreno.fecha_inicio_reserva;
-        var fecha_fin_construccion = aux_terreno.fecha_fin_construccion;
-
-        let d_segundos = (fecha_fin_construccion - fecha_inicio_reserva + 1000) / 1000;
-
-        // ------- Para verificación -------
-        /*
-        console.log(
-            "los segundos entre inicio de reserva y la entrega construido del proyecto"
-        );
-        console.log(d_segundos);
-        */
-
-        var r_plus = aux_inm.num_puro_ahorro / d_segundos; // $us/seg
-
-        //------------------------------------------------------------------
-        // para RECOMPENSA
-
-        // si el inmueble NO tiene propietario, entonces en el segundero estaran los valores de CERO tanto en la parte entera como en los decimales.
-
-        // si el inmueble SI tiene propietario, entonces el valor de recompensa sera el correspondiente a los dias que falten para dar inicio a la construccion del py
-        // el valor total que ganara el propietario del inmueble sera menor (cuando reserve su inmueble varios diaas despues de haber sido lanzado a convocatoria) o igual (cuando reserve su inmueble el mismo dia que se lanze la convocatoria) al valor de RECOMPENSA fijado en el formulario del inmueble, nunca superara a dicho valor, aunque la fecha de "inicio de contruccion" se retrase meses (ampliando el periodo de APROBACION), es decir cuando los tramites para la obtencion de permisos este demorando mucho tiempo. Otra razon para que los propietario de los inmuebles ganen menos que el valor de la RECOMPENSA fijada originalmente es cuando se de inicio a la construccion del proyecto antes de la fecha de inicio de contruccion estimada
-
-        var r_recompensa = 0; // Bs/seg para SEGUNDERO DE RECOMPENSA
-        var recompensa_real = 0; // Bs
-
-        var continuar = false; // por defecto
-
-        var fecha_inicio_reserva_r = aux_terreno.fecha_inicio_reserva;
-        var fecha_inicio_construccion_r = aux_terreno.fecha_inicio_construccion;
-
-        var diferenciaEnMilisegundos = fecha_inicio_construccion_r - fecha_inicio_reserva_r;
-
-        // Convertir la diferencia de milisegundos a días
-        var diferenciaEnDias = diferenciaEnMilisegundos / (1000 * 60 * 60 * 24);
-
-        // Calcular el número de meses, redondeado al entero inmediato inferior
-        var meses_r = Math.floor(diferenciaEnDias / 30); // meses espera de recompensa
-
-        // para la visualizacion del segundero de recompensa, siempre se tomara la fecha de reserva de dicho inmueble, independiemtemente del inversionista que realizo el pago de reservacion.
-        // IMPORTANTE: no borrar las inversiones que se realizan en el inmueble, porque de borrarlos y se corre el riesgo de eliminar el registro donde se encontraba la fecha del pago de reserva del inmueble. De manera que en lugar de eliminarlos, poner el estado_propietario en "pasivo"
-        var registro = await indiceInversiones.findOne(
-            { codigo_inmueble: codigo_inmueble, tiene_reserva: true },
-            {
-                fecha_pagado_reserva: 1,
-                _id: 0,
-            }
-        );
-
-        if (registro) {
-            continuar = true;
-        }
-
-        if (continuar) {
-            var fecha_pagado_reserva_r = registro.fecha_pagado_reserva;
-
-            let d_segundos_teo =
-                (fecha_inicio_construccion_r - fecha_inicio_reserva_r + 1000) / 1000;
-            let d_segundos_real =
-                (fecha_inicio_construccion_r - fecha_pagado_reserva_r + 1000) / 1000;
-
-            let recompensa = inmueble_i.recompensa;
-
-            // aplicando regla de 3 simple, calculamos la ganancia por recompensa real correspondiente al tiempo real que el propietario permanecio desde que reservo su inmueble hasta el primer dia en que se inicie su construccion.
-            let aux_real = (recompensa / d_segundos_teo) * d_segundos_real;
-            recompensa_real = Math.floor(aux_real); // redondeado al entero inmediato inferior
-
-            r_recompensa = recompensa_real / d_segundos_real; // Bs/seg Esta es la velociad real a la que avanzara el segundero de RECOMPENSA
-        }
-
-        //------------------------------------------------------------------
-
-        var resultados = {
-            //-----------------------------------------------------
-            // SEGUNDERO PLUSVALIA
-            fecha_inicio_reserva,
-            fecha_fin_construccion,
-            r_plus,
-
-            construccion,
-            precio,
-            ahorro,
-            total,
-
-            //-----------------------------------------------------
-            // SEGUNDERO RECOMPENSA
-            r_recompensa, // Bs/seg real
-            recompensa_real, // Bs redondeado al entero inmediato inferior
-            fecha_pagado_reserva_r, // fecha en que inicia. Cuando el inm es reservado
-            fecha_inicio_construccion_r,
-            meses_r, // meses espera de recompensa redondeado al entero inmediato inferior
-            //-----------------------------------------------------
-        };
-
-        // ------- Para verificación -------
-        //console.log("el retorno de propietaio aux_inmueble_segundero");
-        //console.log(resultados);
-
-        return resultados;
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// PARA LAS BARRAS DE PROGRESO QUE SE VERAN EN LA VENTANA DESCRIPION DE: TE, PY, INM (TODOS LADO CLIENTE)
-async function aux_barras_progreso(paquete_datos) {
-    // corregir el codigo que viene debajo
-    try {
-        // ------- Para verificación -------
-        //console.log("EL PAQUETE DE DATOS QUE LE LLEGA A AUX_BARRAS_PROGRESO");
-        //console.log(paquete_datos);
-
-        var tipo_objetivo = paquete_datos.tipo_objetivo;
-        var codigo_objetivo = paquete_datos.codigo_objetivo;
-        var ci_propietario = paquete_datos.ci_propietario;
-
-        if (tipo_objetivo == "proyecto") {
-            var datos_proyecto = await indiceProyecto.findOne(
-                { codigo_proyecto: codigo_objetivo },
-                {
-                    codigo_terreno: 1,
-                    _id: 0,
-                }
-            );
-            var codigo_terreno = datos_proyecto.codigo_terreno;
-        }
-
-        if (tipo_objetivo == "inmueble") {
-            var datos_inmueble = await indiceInmueble.findOne(
-                { codigo_inmueble: codigo_objetivo },
-                {
-                    codigo_terreno: 1,
-                    _id: 0,
-                }
-            );
-            var codigo_terreno = datos_inmueble.codigo_terreno;
-        }
-
-        if (tipo_objetivo == "terreno") {
-            var codigo_terreno = codigo_objetivo;
-        }
-
-        if (codigo_terreno) {
-            var datos_terreno = await indiceTerreno.findOne(
-                { codigo_terreno: codigo_terreno },
-                {
-                    // guardado, reserva, pago, construccion, construido
-                    estado_terreno: 1,
-                    fecha_inicio_reserva: 1,
-                    fecha_fin_reserva: 1,
-                    fecha_inicio_aprobacion: 1,
-                    fecha_fin_aprobacion: 1,
-                    fecha_inicio_pago: 1,
-                    fecha_fin_pago: 1,
-                    fecha_inicio_construccion: 1,
-                    fecha_fin_construccion: 1,
-                    anteproyectos_maximo: 1, // es util solo para tipo = terreno
-                    anteproyectos_registrados: 1, // es util solo para tipo = terreno
-                    _id: 0,
-                }
-            );
-
-            //---------------------------------------------------------------
-            // PLAZO
-
-            if (datos_terreno) {
-                moment.locale("es");
-                if (datos_terreno.estado_terreno == "reserva") {
-                    var fecha_inicio = datos_terreno.fecha_inicio_reserva;
-                    var fecha_fin = datos_terreno.fecha_fin_reserva;
-                }
-                if (datos_terreno.estado_terreno == "aprobacion") {
-                    var fecha_inicio = datos_terreno.fecha_inicio_aprobacion;
-                    var fecha_fin = datos_terreno.fecha_fin_aprobacion;
-                }
-                if (datos_terreno.estado_terreno == "pago") {
-                    var fecha_inicio = datos_terreno.fecha_inicio_pago;
-                    var fecha_fin = datos_terreno.fecha_fin_pago;
-                }
-                if (
-                    datos_terreno.estado_terreno == "construccion" ||
-                    datos_terreno.estado_terreno == "construido"
-                ) {
-                    var fecha_inicio = datos_terreno.fecha_inicio_construccion;
-                    var fecha_fin = datos_terreno.fecha_fin_construccion;
-                }
-
-                if (
-                    datos_terreno.estado_terreno == "reserva" ||
-                    datos_terreno.estado_terreno == "aprobacion" ||
-                    datos_terreno.estado_terreno == "pago" ||
-                    datos_terreno.estado_terreno == "construccion"
-                ) {
-                    var fecha_actual = new Date();
-
-                    var porcentaje_plazo = (
-                        (1 - (fecha_fin - fecha_actual) / (fecha_fin - fecha_inicio)) *
-                        100
-                    ).toFixed(2);
-
-                    if (fecha_fin > fecha_actual) {
-                        var aux_plazo = moment(fecha_fin).endOf("minute").fromNow(); // ej/ [quedan] x dias
-                        var etiqueta_plazo = "Finaliza " + aux_plazo;
-                    } else {
-                        var etiqueta_plazo = "Vencido";
-                    }
-                } else {
-                    if (datos_terreno.estado_terreno == "construido") {
-                        var porcentaje_plazo = "100";
-                        var aux_plazo = moment(fecha_fin).startOf("minute").fromNow();
-                        var etiqueta_plazo = "Hace " + aux_plazo;
-                    } else {
-                        var porcentaje_plazo = "0";
-                        var etiqueta_plazo = "Indefinido";
-                    }
-                }
-            }
-
-            //---------------------------------------------------------------
-            // FINANCIAMIENTO (para inmueble o proyecto) o VACANTES (para terreno)
-            // var porcentaje_fina_vaca ES EL PORCENTAJE DE "FINANCIAMIENTO" O "VACANTES"
-
-            if (tipo_objetivo == "proyecto") {
-                var resultado_py = await proyecto_info_cd(codigo_objetivo);
-                var porcentaje_fina_vaca = resultado_py.porcentaje;
-                var aux_financiado = resultado_py.financiado; // YA VIENE COMO STRING CON PUNTO COMO MIL
-                var etiqueta_fina_vaca = aux_financiado + " $us";
-            }
-
-            //---------------------------------------------
-
-            if (tipo_objetivo == "inmueble") {
-                var paquete_datos = {
-                    codigo_inmueble: codigo_objetivo,
-                    codigo_usuario: ci_propietario,
-                };
-                var resultado_inm = await inmueble_info_cd(paquete_datos);
-
-                // ------- Para verificación -------
-                //console.log("INMUEBLE INFO CD");
-                //console.log(resultado_inm);
-
-                // resultado_inm.porcentaje ES EL PORCENTAJE DE "FINANCIAMIENTO DEL INM" NO ES EL VALOR DE "RESERVA O PAGO"
-                var porcentaje_fina_vaca = resultado_inm.porcentaje;
-
-                var aux_financiado = resultado_inm.financiado; // YA VIENE COMO STRING CON PUNTO COMO MIL
-                var etiqueta_fina_vaca = aux_financiado + " $us";
-            }
-            if (tipo_objetivo == "terreno") {
-                var porcentaje_fina_vaca = (
-                    (datos_terreno.anteproyectos_registrados / datos_terreno.anteproyectos_maximo) *
-                    100
-                ).toFixed(2);
-                var etiqueta_fina_vaca =
-                    datos_terreno.anteproyectos_registrados +
-                    " de " +
-                    datos_terreno.anteproyectos_maximo;
-            }
-
-            //---------------------------------------------------------------
-
-            var resultados = {
-                porcentaje_plazo,
-                porcentaje_plazo_render: numero_punto_coma(porcentaje_plazo),
-                etiqueta_plazo,
-                porcentaje_fina_vaca,
-                porcentaje_fina_vaca_render: numero_punto_coma(porcentaje_fina_vaca),
-                etiqueta_fina_vaca,
-            };
-
-            return resultados;
-        }
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-//-----------------------------------------------------------------------------
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

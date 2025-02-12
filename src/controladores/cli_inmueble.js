@@ -8,475 +8,39 @@ const {
     indiceInversiones,
     indiceTerreno,
     indiceEmpresa,
-    indiceImagenesSistema,
+    indiceFraccionInmueble,
 } = require("../modelos/indicemodelo");
+
+const { fraccion_card_adm_cli } = require("../ayudas/funcionesayuda_1");
 
 const {
     cabezeras_adm_cli,
-    pie_pagina_cli,
-    segundero_cajas,
     datos_pagos_propietario,
+    datos_copropietario,
 } = require("../ayudas/funcionesayuda_2");
 
-const { proyecto_info_cd } = require("../ayudas/funcionesayuda_4");
+const { te_inm_copropietario } = require("../ayudas/funcionesayuda_4");
+const { super_info_inm } = require("../ayudas/funcionesayuda_5");
 
 const {
     numero_punto_coma,
-    verificarTePyInm,
-    funcion_sus_m2_historicos,
-    tipo_cambio,
+    verificarTePyInmFracc,
+    inmueble_pronostico,
 } = require("../ayudas/funcionesayuda_3");
 
 const moment = require("moment");
 
 const controladorCliInmueble = {};
 
-/************************************************************************************ */
-/************************************************************************************ */
-// // PARA CALCULO DE TIEMPO EN QUE EL INM TRADICIONAL IGUALA LA PLUSVALIA DE SOLIDEXA
-// RUTA   "post"   /inmueble/operacion/calculo_tiempo
+//============================================================================
+//============================================================================
+// para enviar al usuario los precios $us/m2 del inmueble
+// Ruta: post "/inmueble/operacion/pronostico_precio_m2"
 
-controladorCliInmueble.calculoTiempo = async (req, res) => {
+controladorCliInmueble.pronostico_precio_m2 = async (req, res) => {
     try {
-        var codigo_inmueble = req.body.codigo_inmueble;
-        var meta = Number(req.body.meta);
-        var plus_promedio = Number(req.body.plus_promedio); // precio de venta actual al que el inmueble tradicional es vendido (es el promedio de los precios de venta tradicionales en la zona donde se encuentra el inm tradicional)
-
-        var year_espera = 5; // por defecto
-
-        var registro_inmueble = await indiceInmueble.findOne(
-            { codigo_inmueble: codigo_inmueble },
-            {
-                codigo_terreno: 1,
-                tipo_inmueble: 1,
-                _id: 0,
-            }
-        );
-
-        if (registro_inmueble) {
-            var fecha_actual = new Date();
-            // Extraemos el mes utilizando el método getMonth()
-            var mes_actual = fecha_actual.getMonth(); // devolvera un valor numerico entre 0 a 11
-            var year_actual = fecha_actual.getFullYear(); // devuelve en numerico el año actual
-
-            if (mes_actual <= 5) {
-                var semestre = "I";
-            } else {
-                var semestre = "II";
-            }
-
-            // formato: "2019 - II"
-            var periodo = year_actual + " - " + semestre;
-
-            var tipo_inmueble = registro_inmueble.tipo_inmueble; // departamento, oficina, comercial, casa
-
-            let datos_auxiliares = {
-                tipo_inmueble,
-            };
-            var array_hist_sus_m2 = funcion_sus_m2_historicos(datos_auxiliares);
-            var array_sus_m2 = array_hist_sus_m2.array_sus_m2;
-            var array_periodo = array_hist_sus_m2.array_periodo;
-
-            if (array_sus_m2.length > 0 && array_periodo.length > 0) {
-                for (let i = 0; i < array_periodo.length; i++) {
-                    let elemento = array_periodo[i];
-                    if (elemento == periodo) {
-                        var aux_sus_m2 = array_sus_m2[i];
-                        break; // para salir del bucle for
-                    }
-                }
-                let factor = plus_promedio - aux_sus_m2;
-                for (let j = 0; j < array_sus_m2.length; j++) {
-                    if (array_sus_m2[j] + factor >= meta) {
-                        let aux_periodo = array_periodo[j]; // formato: "2019 - II"
-                        let aux_array = aux_periodo.split(" ");
-                        let year_meta = Number(aux_array[0]);
-                        // entonces calculamos el numero de años de espera
-                        year_espera = year_meta - year_actual;
-                        break; // para salir del bucle for
-                    }
-                }
-            }
-        }
-        res.json({
-            exito: year_espera,
-        });
-    } catch (error) {
-        console.log(error);
-    }
-};
-
-/************************************************************************************ */
-/************************************************************************************ */
-// // PARA CALCULO DE TIEMPO EN QUE EL INM TRADICIONAL IGUALA LA PLUSVALIA DE SOLIDEXA
-// RUTA   "post"   /inmueble/operacion/calculo_banco_p
-
-controladorCliInmueble.calculo_banco_p = async (req, res) => {
-    try {
-        // aunque de jquery los numeros fueron enviados como valores numericos, aqui se reciben como string, asi que nuevamente deben ser convertidos a numericos
-        var precio_solidexa = Number(req.body.precio_solidexa); // $us
-        var precio_tradicional = Number(req.body.precio_tradicional); // $us
-        var aporte = Number(req.body.aporte); // %
-        var plazo = Number(req.body.plazo); // # años
-        var interes = Number(req.body.interes); // % anual
-
-        var plazo_meses = plazo * 12;
-        var prestamo_solidexa = precio_solidexa * (1 - aporte / 100); // $us o Bs
-        var prestamo_tradicional = precio_tradicional * (1 - aporte / 100); // $us o Bs
-
-        //----------------------------------------------------------
-        // calculo de interes mensual
-
-        var aux_i = interes / 100; // interes anual en decimal
-
-        // conversion de interes anual a mensual
-        //  ((1+intAnual)^(1/12))-1
-        // Math.pow(base, exponente)
-        var i_mensual = Math.pow(1 + aux_i, 1 / 12) - 1; // interes mensual en decimal
-
-        //----------------------------------------------------------
-        // calculo de cuota mensual
-
-        var aux_numerador = i_mensual * Math.pow(1 + i_mensual, plazo_meses);
-        var aux_denominador = Math.pow(1 + i_mensual, plazo_meses) - 1;
-
-        // $us/mes o Bs/mes
-        var mensualidad_solidexa = prestamo_solidexa * (aux_numerador / aux_denominador);
-        var mensualidad_tradicional = prestamo_tradicional * (aux_numerador / aux_denominador);
-
-        //----------------------------------------------------------
-        // calculo de intereses acumulados
-
-        let interesesTotales_s = 0;
-        let saldoRestante_s = prestamo_solidexa;
-
-        let interesesTotales_t = 0;
-        let saldoRestante_t = prestamo_tradicional;
-
-        for (let i = 0; i < plazo_meses; i++) {
-            //--------------------------------------------------
-            // Calcular los intereses para este período SOLIDEXA
-            var interesesEsteMes_s = saldoRestante_s * i_mensual;
-
-            // Actualizar el saldo restante
-            saldoRestante_s = saldoRestante_s - (mensualidad_solidexa - interesesEsteMes_s);
-
-            // total de intereses pagados hasta este periodo
-            interesesTotales_s = interesesTotales_s + interesesEsteMes_s;
-
-            //--------------------------------------------------
-            // Calcular los intereses para este período TRADICIONAL
-            var interesesEsteMes_t = saldoRestante_t * i_mensual;
-
-            // Actualizar el saldo restante
-            saldoRestante_t = saldoRestante_t - (mensualidad_tradicional - interesesEsteMes_t);
-
-            // Sumar los intereses de este período al total
-            interesesTotales_t = interesesTotales_t + interesesEsteMes_t;
-            //----------------------------------------------------------
-        }
-
-        // devolvemos resultados redondeados a enteros sin decimales y en tipo numericos
-        res.json({
-            credito_solidexa: Number(prestamo_solidexa.toFixed(0)),
-            credito_tradicional: Number(prestamo_tradicional.toFixed(0)),
-
-            int_acu_solidexa: Number(interesesTotales_s.toFixed(0)),
-            int_acu_tradicional: Number(interesesTotales_t.toFixed(0)),
-
-            mensual_solidexa: Number(mensualidad_solidexa.toFixed(0)),
-            mensual_tradicional: Number(mensualidad_tradicional.toFixed(0)),
-        });
-    } catch (error) {
-        console.log(error);
-    }
-};
-
-/************************************************************************************ */
-/************************************************************************************ */
-// // PARA CALCULO DE RENDIMIENTOS DEL INVERSIONISTA
-// RUTA   "post"   /inmueble/operacion/calculo_inversionista
-
-controladorCliInmueble.calculo_inversionista = async (req, res) => {
-    try {
-        var solucionado = false; // por defecto
-
-        // aunque de jquery los numeros fueron enviados como valores numericos, aqui se reciben como string, asi que nuevamente deben ser convertidos a numericos
-        var inversion_emp = Number(req.body.inversion_emp); // $us
-        var ganancia = Number(req.body.ganancia); // $us/Mes
-        var reinversion = req.body.reinversion; // si o no
-        var inversion_sol = Number(req.body.inversion_sol); // %
-        var i_financiamiento = Number(req.body.i_financiamiento); // % anual
-        var plazo_financiamiento = Number(req.body.plazo_financiamiento);
-        var codigo_inmueble = req.body.codigo_inmueble;
-
-        var registro_inmueble = await indiceInmueble.findOne(
-            { codigo_inmueble: codigo_inmueble },
-            {
-                codigo_terreno: 1,
-                inversion_estado: 1, // $us
-                periodo_estado: 1, // Meses
-                _id: 0,
-            }
-        );
-
-        if (registro_inmueble) {
-            var registro_terreno = await indiceTerreno.findOne(
-                { codigo_terreno: registro_inmueble.codigo_terreno },
-                {
-                    fecha_inicio_reserva: 1,
-                    fecha_fin_construccion: 1,
-                    _id: 0,
-                }
-            );
-
-            if (registro_terreno) {
-                //----------------------------------------------------------
-                // calculo del total plazo en meses DESDE INICIO CONVOCATORIA HASTA FIN CONTRUCCION
-
-                /*
-                var diferenciaEnMilisegundos =
-                    registro_terreno.fecha_fin_construccion - registro_terreno.fecha_inicio_reserva;
-
-                // Convertir la diferencia de milisegundos a días
-                var diferenciaEnDias = diferenciaEnMilisegundos / (1000 * 60 * 60 * 24);
-
-                // el número de meses, redondeado al entero inmediato inferior
-                var plazo = Math.floor(diferenciaEnDias / 30); // meses
-                */
-
-                var plazo = registro_inmueble.periodo_estado; // meses que tendra validez para la construccion, la inversion que el inmueble requiere
-
-                //------------------------------------------------------------
-                //------------------------------------------------------------
-                // rendimiento de ahorro bancario
-
-                var datos_segundero = {
-                    codigo_objetivo: codigo_inmueble,
-                    ci_propietario: "ninguno",
-                    tipo_objetivo: "inmueble",
-                };
-
-                var aux_segundero_cajas = await segundero_cajas(datos_segundero);
-
-                /*
-                var solidexa_sus = aux_segundero_cajas.precio; // precio actual del inmueble con los descuentos por penalizaciones que pudierra llegar a tener actualmente
-                */
-
-                var solidexa_sus = registro_inmueble.inversion_estado;
-
-                //----------------------------------------------------------
-                // calculo de interes mensual
-
-                // ACTUALIZAR ACORDE AL MERCADO
-                var i_banco = 6.8; // % ANUAL. corresponde a la mejor tasa de interes por tus ahorros que ofrece un banco
-
-                var aux_i = i_banco / 100; // interes anual en decimal
-
-                // conversion de interes anual a mensual
-                //  ((1+intAnual)^(1/12))-1
-                // Math.pow(base, exponente)
-                var i_banco_mes = Math.pow(1 + aux_i, 1 / 12) - 1; // interes mensual en decimal
-                //----------------------------------------------------------
-
-                var val_futuro = solidexa_sus * Math.pow(1 + i_banco_mes, plazo);
-
-                var ganancia_a = Number((val_futuro - solidexa_sus).toFixed(0));
-
-                var rendimiento_a = Number(
-                    (((val_futuro - solidexa_sus) / solidexa_sus) * 100).toFixed(2)
-                );
-
-                var inversion_a = solidexa_sus;
-
-                // para pocicionamiento del angulo de la flecha
-                var angulo_a = Number((1.8 * rendimiento_a - 180).toFixed(2));
-
-                //------------------------------------------------------------
-                //------------------------------------------------------------
-                // rendimiento de emprendimiento
-
-                if (reinversion == "si") {
-                    // ACTUALIZAR ACORDE AL MERCADO
-                    var i_reinversion = 10; // 10% anual (puede ser la MEJOR tasa de interes que ofrece un banco)
-
-                    //----------------------------------------------------------
-                    // calculo de interes mensual
-
-                    var aux_i_reinv = i_reinversion / 100; // interes anual en decimal
-
-                    // conversion de interes anual a mensual
-                    //  ((1+intAnual)^(1/12))-1
-                    // Math.pow(base, exponente)
-                    var i_reinv_mes = Math.pow(1 + aux_i_reinv, 1 / 12) - 1; // interes mensual en decimal
-
-                    //------------------------------------------------------------
-
-                    var sum_gan_reinv = 0; // sumatoria de las ganancias que se obtienen por reinvertir las ganancias mensuales
-                    var plazo_reinv = plazo;
-
-                    // for (let i = 0; i < plazo - 1; i++) {
-                    for (let i = 0; i < plazo; i++) {
-                        plazo_reinv = plazo_reinv - 1; // ej/ si fueran 10 meses, la primera reinversion no permarecera 10 meses, sino que 9 (por eso se resta 1 mes) porque primero debe transcurrir 1 mes para que el inversionista obtenga su primera ganancia mensual, que es la que se reinvertira
-
-                        let val_futuro_reinv = ganancia * Math.pow(1 + i_reinv_mes, plazo_reinv);
-
-                        //console.log(val_futuro_reinv);
-
-                        sum_gan_reinv = sum_gan_reinv + val_futuro_reinv;
-                    }
-
-                    var inversion_b = inversion_emp;
-                    var ganancia_b = Number(sum_gan_reinv.toFixed(0));
-                    var rendimiento_b = Number(((sum_gan_reinv / inversion_emp) * 100).toFixed(2));
-
-                    // para pocicionamiento del angulo de la flecha
-                    var angulo_b = Number((1.8 * rendimiento_b - 180).toFixed(2));
-                }
-
-                if (reinversion == "no") {
-                    var inversion_b = inversion_emp;
-                    var ganancia_b = Number((ganancia * plazo).toFixed(0));
-                    var rendimiento_b = Number(
-                        (((ganancia * plazo) / inversion_emp) * 100).toFixed(2)
-                    );
-
-                    // para pocicionamiento del angulo de la flecha
-                    var angulo_b = Number((1.8 * rendimiento_b - 180).toFixed(2));
-                }
-
-                //------------------------------------------------------------
-                //------------------------------------------------------------
-                // rendimiento de SOLIDEXA
-
-                var inversion_c = solidexa_sus;
-                var ganancia_c = Number(aux_segundero_cajas.ahorro.toFixed(0));
-                var rendimiento_c = Number(
-                    ((aux_segundero_cajas.ahorro / solidexa_sus) * 100).toFixed(2)
-                );
-
-                var aux_rendimiento_c = (aux_segundero_cajas.ahorro / solidexa_sus) * 100;
-
-                if (aux_rendimiento_c >= 150) {
-                    // si el rendimiento sobresaldra de la escala del velocimetro, entonces poner la aguja en el maximo 150%
-                    // para pocicionamiento del angulo de la flecha
-                    var angulo_c = Number((1.8 * 150 - 180).toFixed(2));
-                } else {
-                    // para pocicionamiento del angulo de la flecha
-                    var angulo_c = Number((1.8 * rendimiento_c - 180).toFixed(2));
-                }
-                //------------------------------------------------------------
-                //------------------------------------------------------------
-                // rendimiento de SOLIDEXA PLUS
-
-                // dinero que el inversionista pone de su propio bolsillo
-                var inversion_d = Number((solidexa_sus * (inversion_sol / 100)).toFixed(0)); // $us
-                // dinero que el inversionista pide prestado a un financiador externo
-                var val_financiamiento = solidexa_sus - inversion_d; // $us
-
-                var plazo_finan = plazo_financiamiento * 12; // meses
-                //----------------------------------------------------------
-                // calculo de interes mensual
-
-                var aux_i_finan = i_financiamiento / 100; // interes anual en decimal
-
-                // conversion de interes anual a mensual
-                //  ((1+intAnual)^(1/12))-1
-                // Math.pow(base, exponente)
-                var i_finan_mes = Math.pow(1 + aux_i_finan, 1 / 12) - 1; // interes mensual en decimal
-
-                //------------------------------------------------------------
-                // calculo del pago mensual por el financiamiento
-
-                var aux_numerador = i_finan_mes * Math.pow(1 + i_finan_mes, plazo_finan);
-                var aux_denominador = Math.pow(1 + i_finan_mes, plazo_finan) - 1;
-
-                // $us/mes
-                var mensualidad_finan = val_financiamiento * (aux_numerador / aux_denominador);
-
-                //------------------------------------------------------------
-
-                let interesesTotales = 0;
-                let saldoRestante = val_financiamiento;
-                let periodo = 0;
-
-                for (let i = 0; i < plazo_finan; i++) {
-                    periodo = periodo + 1;
-                    //--------------------------------------------------
-                    // Calcular los intereses para este período
-                    var interesesEsteMes = saldoRestante * i_finan_mes;
-
-                    // Actualizar el saldo restante
-                    saldoRestante = saldoRestante - (mensualidad_finan - interesesEsteMes);
-
-                    // total de intereses pagados hasta este periodo
-                    interesesTotales = interesesTotales + interesesEsteMes;
-                    //--------------------------------------------------
-
-                    // plazo: meses que tendra validez para la construccion, la inversion que el inmueble requiere
-                    if (periodo == plazo) {
-                        // recuerda que se lo vende al precio del mercado tradicional
-                        var venta_inm = solidexa_sus + aux_segundero_cajas.ahorro; // $us
-
-                        var aux_ganancia = venta_inm - saldoRestante - interesesTotales;
-
-                        var inversion_d = Number((inversion_d + interesesTotales).toFixed(0));
-
-                        var ganancia_d = Number(aux_ganancia.toFixed(0));
-
-                        var rendimiento_d = Number(
-                            ((aux_ganancia / (inversion_d + interesesTotales)) * 100).toFixed(2)
-                        );
-
-                        var aux_rendimiento_d =
-                            (aux_ganancia / (inversion_d + interesesTotales)) * 100;
-                        if (aux_rendimiento_d >= 150) {
-                            // si el rendimiento sobresaldra de la escala del velocimetro, entonces poner la aguja en el maximo 150%
-                            // para pocicionamiento del angulo de la flecha
-                            var angulo_d = Number((1.8 * 150 - 180).toFixed(2));
-                        } else {
-                            // para pocicionamiento del angulo de la flecha
-                            var angulo_d = Number((1.8 * rendimiento_d - 180).toFixed(2));
-                        }
-
-                        break; // para salir del bucle for
-                    }
-                }
-
-                //------------------------------------------------------------
-                //------------------------------------------------------------
-
-                var solucionado = true;
-            }
-        }
-
-        if (solucionado) {
-            res.json({
-                exito: "si",
-                inversion_a,
-                ganancia_a,
-                rendimiento_a,
-                inversion_b,
-                ganancia_b,
-                rendimiento_b,
-                inversion_c,
-                ganancia_c,
-                rendimiento_c,
-                inversion_d,
-                ganancia_d,
-                rendimiento_d,
-                angulo_a,
-                angulo_b,
-                angulo_c,
-                angulo_d,
-                i_ahorro: i_banco, // % mejor tasa interes para ahorro en banco
-                plazo, // # meses intero inferior desde que el py es puesto en convocatoria hasta su total contruccion.
-            });
-        } else {
-            res.json({
-                exito: "no",
-            });
-        }
+        var respuestaPronostico = inmueble_pronostico();
+        res.json(respuestaPronostico);
     } catch (error) {
         console.log(error);
     }
@@ -500,7 +64,7 @@ controladorCliInmueble.renderVentanaInmueble = async (req, res) => {
             codigo_objetivo: codigo_inmueble,
             tipo: "inmueble",
         };
-        var verificacion = await verificarTePyInm(paqueteria_datos);
+        var verificacion = await verificarTePyInmFracc(paqueteria_datos);
 
         if (verificacion == true) {
             // ------- Para verificación -------
@@ -512,28 +76,9 @@ controladorCliInmueble.renderVentanaInmueble = async (req, res) => {
 
             var info_inmueble_cli = {};
             info_inmueble_cli.cab_inm_cli = true;
-            //info_inmueble_cli.estilo_cabezera = "cabezera_estilo_inmueble";
+            info_inmueble_cli.estilo_cabezera = "cabezera_estilo_inmueble";
             info_inmueble_cli.navegador_cliente = true;
             info_inmueble_cli.codigo_inmueble = codigo_inmueble;
-
-            //----------------------------------------------------
-            // para la url de la cabezera
-            var url_cabezera = ""; // vacio por defecto
-            const registro_cabezera = await indiceImagenesSistema.findOne(
-                { tipo_imagen: "cabecera_inmueble" },
-                {
-                    url: 1,
-                    _id: 0,
-                }
-            );
-
-            if (registro_cabezera) {
-                url_cabezera = registro_cabezera.url;
-            }
-
-            info_inmueble_cli.url_cabezera = url_cabezera;
-
-            //----------------------------------------------------
 
             // ------- Para verificación -------
             //console.log("VEMOS SI EL CLIENTE ES VALIDADO");
@@ -549,14 +94,10 @@ controladorCliInmueble.renderVentanaInmueble = async (req, res) => {
             var aux_cabezera = {
                 codigo_objetivo: codigo_inmueble,
                 tipo: "inmueble",
-                lado: "cliente",
             };
 
             var cabezera_cli = await cabezeras_adm_cli(aux_cabezera);
             info_inmueble_cli.cabezera_cli = cabezera_cli;
-
-            var pie_pagina = await pie_pagina_cli();
-            info_inmueble_cli.pie_pagina_cli = pie_pagina;
 
             //-------------------------------------------------------------------------------
             // si el cliente esta navegado con su cuenta
@@ -578,22 +119,16 @@ controladorCliInmueble.renderVentanaInmueble = async (req, res) => {
                 //tipo_inmueble: registro_inmueble.tipo_inmueble,
                 ci_inversionista,
             };
-            info_inmueble_cli.global_inm = await complementos_globales_inm(paquete_datos);
+            var global_inm = await complementos_globales_inm(paquete_datos);
+            info_inmueble_cli.global_inm = global_inm;
             //-------------------------------------------------------------------------------
 
             info_inmueble_cli.es_inmueble = true; // para menu navegacion comprimido
 
             //----------------------------------------------------
-            // paquete para actualizar el numero de vistas segun el tipo de la ventana
-            var paquete_vista = {
-                codigo_inmueble,
-                ventana: tipo_vista_inmueble,
-            };
-            info_inmueble_cli.nv_ventana = await n_vista_ventana(paquete_vista);
-            //----------------------------------------------------
 
             if (tipo_vista_inmueble == "descripcion") {
-                // para mostrar seleccinada la pestaña de donde no encontramos
+                // para mostrar seleccinada la pestaña donde nos encontramos
                 info_inmueble_cli.descripcion_inm = true;
 
                 info_inmueble_cli.info_segundero = true;
@@ -605,7 +140,7 @@ controladorCliInmueble.renderVentanaInmueble = async (req, res) => {
 
                 var paquete_datos = {
                     codigo_inmueble,
-                    ci_propietario: ci_inversionista,
+                    //ci_propietario: ci_inversionista,
                 };
 
                 var info_inmueble = await inmueble_descripcion(paquete_datos);
@@ -618,8 +153,42 @@ controladorCliInmueble.renderVentanaInmueble = async (req, res) => {
                 res.render("cli_inmueble", info_inmueble_cli);
             }
 
+            //--------------------------------------
+            if (tipo_vista_inmueble == "fracciones") {
+                // si el cliente esta navegado con su cuenta
+                if (req.inversor_autenticado) {
+                    var codigo_usuario = req.user.ci_propietario;
+
+                    // ------- Para verificación -------
+                    //console.log("el codigo del propietario registrado con su cuenta es");
+                    //console.log(codigo_usuario);
+                } else {
+                    // en caso de que este navegando sin haber accedido a su cuenta personal
+
+                    var codigo_usuario = "ninguno";
+                }
+
+                var paquete_datos = {
+                    codigo_inmueble,
+                    codigo_usuario, // codigo || "ninguno"
+                };
+
+                // para mostrar seleccinada la pestaña donde nos encontramos
+                info_inmueble_cli.fracciones_inmueble = true;
+
+                var info_inmueble = await inmueble_fracciones(paquete_datos);
+                info_inmueble_cli.informacion = info_inmueble;
+
+                // ------- Para verificación -------
+                //console.log("los datos de fracciones del inmueble");
+                //console.log(info_inmueble_cli);
+
+                res.render("cli_inmueble", info_inmueble_cli);
+            }
+            //--------------------------------------
+
             if (tipo_vista_inmueble == "garantias") {
-                // para mostrar seleccinada la pestaña de donde no encontramos
+                // para mostrar seleccinada la pestaña donde nos encontramos
                 info_inmueble_cli.garantias_inm = true;
 
                 var info_inmueble = await inmueble_garantias(codigo_inmueble);
@@ -633,15 +202,10 @@ controladorCliInmueble.renderVentanaInmueble = async (req, res) => {
             }
 
             if (tipo_vista_inmueble == "beneficios") {
-                // para mostrar seleccinada la pestaña de donde no encontramos
+                // para mostrar seleccinada la pestaña donde nos encontramos
                 info_inmueble_cli.beneficios_inm = true;
 
-                var paquete_datos = {
-                    codigo_inmueble,
-                    ci_propietario: ci_inversionista,
-                };
-
-                var info_inmueble = await inmueble_beneficios(paquete_datos);
+                var info_inmueble = await inmueble_beneficios(codigo_inmueble);
                 info_inmueble_cli.informacion = info_inmueble;
 
                 // ------- Para verificación -------
@@ -652,7 +216,7 @@ controladorCliInmueble.renderVentanaInmueble = async (req, res) => {
             }
 
             if (tipo_vista_inmueble == "info_economico") {
-                // para mostrar seleccinada la pestaña de donde no encontramos
+                // para mostrar seleccinada la pestaña donde nos encontramos
                 info_inmueble_cli.informe_economico = true;
 
                 var info_inmueble = await inmueble_info_economico(codigo_inmueble);
@@ -666,7 +230,7 @@ controladorCliInmueble.renderVentanaInmueble = async (req, res) => {
             }
 
             if (tipo_vista_inmueble == "empleos") {
-                // para pestaña y ventana apropiada para proyecto
+                // para mostrar seleccinada la pestaña donde nos encontramos
                 info_inmueble_cli.empleos_inm = true;
 
                 var info_inmueble = await inmueble_empleos(codigo_inmueble);
@@ -684,21 +248,25 @@ controladorCliInmueble.renderVentanaInmueble = async (req, res) => {
             }
 
             if (tipo_vista_inmueble == "calculadora") {
-                // para mostrar seleccinada la pestaña de donde no encontramos
+                // para mostrar seleccinada la pestaña donde nos encontramos
                 info_inmueble_cli.calculadora_inm = true;
 
-                var info_inmueble = await inmueble_calculadora(codigo_inmueble);
-                info_inmueble_cli.informacion = info_inmueble;
+                // para mostrar al copropietario de las fracciones del inmueble o la opcion de comprar fracciones del inmueble
+                info_inmueble_cli.inm_fraccionado = global_inm.inm_fraccionado;
 
-                // ------- Para verificación -------
-                //console.log("los datos de info_economico del inmueble");
-                //console.log(info_inmueble_cli);
+                if (global_inm.inm_fraccionado) {
+                    var info_inmueble = await inmueble_calculadora_fr(codigo_inmueble);
+                    info_inmueble_cli.informacion = info_inmueble;
+                } else {
+                    var info_inmueble = await inmueble_calculadora(codigo_inmueble);
+                    info_inmueble_cli.informacion = info_inmueble;
+                }
 
                 res.render("cli_inmueble", info_inmueble_cli);
             }
 
             if (ci_inversionista != "ninguno" && tipo_vista_inmueble == "inversor") {
-                // para mostrar seleccinada la pestaña de donde no encontramos
+                // para mostrar seleccinada la pestaña donde nos encontramos
                 info_inmueble_cli.inversor_inmueble = true;
 
                 let paquete_datos = {
@@ -708,6 +276,39 @@ controladorCliInmueble.renderVentanaInmueble = async (req, res) => {
 
                 var info_inmueble = await inmueble_inversor(paquete_datos);
                 info_inmueble_cli.informacion = info_inmueble;
+
+                // ------- Para verificación -------
+                //console.log("los datos de PROPIETARIO del inmueble");
+                //console.log(info_inmueble_cli);
+
+                res.render("cli_inmueble", info_inmueble_cli);
+            }
+
+            if (ci_inversionista != "ninguno" && tipo_vista_inmueble == "copropietario") {
+                // para mostrar seleccinada la pestaña donde nos encontramos
+                info_inmueble_cli.copropietario_inmueble = true;
+
+                // para mostrar al copropietario de las fracciones del inmueble o la opcion de comprar fracciones del inmueble
+                info_inmueble_cli.adquirir_f_inm = global_inm.adquirir_f_inm;
+
+                if (global_inm.adquirir_f_inm) {
+                    // para que el copropietario del terreno pueda adquiriri fracciones del inmueble
+                    let paquete_datos = {
+                        ci_propietario: ci_inversionista,
+                        codigo_inmueble,
+                    };
+
+                    var info_inmueble = await inmueble_adquirir_f_inm(paquete_datos);
+                    info_inmueble_cli.contenido = info_inmueble;
+                } else {
+                    let paquete_datos = {
+                        ci_propietario: ci_inversionista,
+                        codigo_inmueble,
+                    };
+
+                    var info_inmueble = await inmueble_copropietario(paquete_datos);
+                    info_inmueble_cli.contenido = info_inmueble;
+                }
 
                 // ------- Para verificación -------
                 //console.log("los datos de PROPIETARIO del inmueble");
@@ -729,7 +330,7 @@ controladorCliInmueble.renderVentanaInmueble = async (req, res) => {
 async function inmueble_descripcion(paquete_datos) {
     try {
         var codigo_inmueble = paquete_datos.codigo_inmueble;
-        var ci_propietario = paquete_datos.ci_propietario;
+        //var ci_propietario = paquete_datos.ci_propietario;
 
         moment.locale("es");
 
@@ -740,8 +341,9 @@ async function inmueble_descripcion(paquete_datos) {
                 codigo_proyecto: 1,
                 tipo_inmueble: 1,
                 estado_inmueble: 1,
-                valor_reserva: 1,
+                precio_construccion: 1,
                 superficie_inmueble_m2: 1,
+                fraccionado: 1,
                 inmueble_descripcion: 1,
                 titulo_descripcion_1: 1,
                 varios_descripcion_1: 1,
@@ -773,6 +375,10 @@ async function inmueble_descripcion(paquete_datos) {
             const registro_terreno = await indiceTerreno.findOne(
                 { codigo_terreno: codigo_terreno },
                 {
+                    precio_bs: 1,
+                    descuento_bs: 1,
+                    rend_fraccion_mensual: 1,
+                    superficie: 1,
                     ciudad: 1,
                     provincia: 1,
                     direccion: 1,
@@ -784,6 +390,10 @@ async function inmueble_descripcion(paquete_datos) {
                     titulo_ubi_otros_3: 1,
                     ubi_otros_3: 1,
                     link_googlemap: 1,
+                    fecha_inicio_convocatoria: 1,
+                    fecha_inicio_reservacion: 1,
+                    fecha_fin_reservacion: 1,
+                    fecha_fin_construccion: 1,
                     _id: 0,
                 }
             );
@@ -795,10 +405,9 @@ async function inmueble_descripcion(paquete_datos) {
                     meses_construccion: 1,
                     mensaje_segundero_py_inm_a: 1,
                     mensaje_segundero_py_inm_b: 1,
-                    mensaje_segundero_py_inm_c: 1, // para RECOMPENSA
-                    mensaje_segundero_py_inm_d: 1, // para RECOMPENSA
                     nota_precio_justo: 1,
                     trafico: 1,
+                    construccion_mensual: 1,
                     _id: 0,
                 }
             );
@@ -815,27 +424,28 @@ async function inmueble_descripcion(paquete_datos) {
                     registro_inmueble.superficie_inmueble_m2
                 );
 
-                // conversion de valor reserva inmueble a punto mil
-                inm_descripcion.valor_reserva = numero_punto_coma(registro_inmueble.valor_reserva);
+                //--------------------------------------------------------
 
                 // por defecto ponemos a todos en "false"
                 inm_descripcion.resplandor_1 = false;
                 inm_descripcion.resplandor_2 = false;
                 inm_descripcion.resplandor_3 = false;
                 inm_descripcion.resplandor_4 = false;
+                inm_descripcion.resplandor_5 = false;
 
                 inm_descripcion.plazo = registro_proyecto.meses_construccion;
                 inm_descripcion.nota_precio_justo = registro_proyecto.nota_precio_justo;
                 inm_descripcion.trafico = registro_proyecto.trafico;
 
+                // guardado, convocatoria, anteproyecto, reservacion, construccion, construido OK
                 // corregimos que estado estara como "true"
-                if (registro_terreno.estado_terreno == "reserva") {
+                if (registro_terreno.estado_terreno == "convocatoria") {
                     inm_descripcion.resplandor_1 = true;
                 }
-                if (registro_terreno.estado_terreno == "pago") {
+                if (registro_terreno.estado_terreno == "anteproyecto") {
                     inm_descripcion.resplandor_2 = true;
                 }
-                if (registro_terreno.estado_terreno == "aprobacion") {
+                if (registro_terreno.estado_terreno == "reservacion") {
                     inm_descripcion.resplandor_3 = true;
                 }
                 if (registro_terreno.estado_terreno == "construccion") {
@@ -851,27 +461,10 @@ async function inmueble_descripcion(paquete_datos) {
                     var mensaje_segundero = registro_proyecto.mensaje_segundero_py_inm_a;
                 }
 
-                // Reserva, Pago y Aprobación
-                if (
-                    registro_terreno.estado_terreno == "reserva" ||
-                    registro_terreno.estado_terreno == "pago" ||
-                    registro_terreno.estado_terreno == "aprobacion"
-                ) {
-                    var texto_segundero_recom_iz = registro_proyecto.mensaje_segundero_py_inm_c;
-                }
-
-                // Construcción Y Construido
-                if (
-                    registro_terreno.estado_terreno == "construccion" ||
-                    registro_terreno.estado_terreno == "construido"
-                ) {
-                    var texto_segundero_recom_iz = registro_proyecto.mensaje_segundero_py_inm_d;
-                }
-
-                inm_descripcion.texto_segundero_recom_iz = texto_segundero_recom_iz;
-
                 //----------------------------------------------------------------
                 // para estado y color del inmueble
+
+                // guardado, disponible, reservado, construccion, remate, construido  OK
 
                 if (inm_descripcion.estado_inmueble == "guardado") {
                     inm_descripcion.leyenda_precio_inm = "Guardado";
@@ -885,19 +478,7 @@ async function inmueble_descripcion(paquete_datos) {
                     inm_descripcion.leyenda_precio_inm = "Reservado";
                     inm_descripcion.color_precio_inm = "en_gris";
                 }
-                if (inm_descripcion.estado_inmueble == "pendiente_pago") {
-                    inm_descripcion.leyenda_precio_inm = "Pendiente";
-                    inm_descripcion.color_precio_inm = "en_amarillo";
-                }
-                if (inm_descripcion.estado_inmueble == "pagado_pago") {
-                    inm_descripcion.leyenda_precio_inm = "Pagado";
-                    inm_descripcion.color_precio_inm = "en_gris";
-                }
-                if (inm_descripcion.estado_inmueble == "pendiente_aprobacion") {
-                    inm_descripcion.leyenda_precio_inm = "Aprobación";
-                    inm_descripcion.color_precio_inm = "en_amarillo";
-                }
-                if (inm_descripcion.estado_inmueble == "pagos") {
+                if (inm_descripcion.estado_inmueble == "construccion") {
                     inm_descripcion.leyenda_precio_inm = "Construcción";
                     inm_descripcion.color_precio_inm = "en_amarillo";
                 }
@@ -905,7 +486,7 @@ async function inmueble_descripcion(paquete_datos) {
                     inm_descripcion.leyenda_precio_inm = "Remate";
                     inm_descripcion.color_precio_inm = "en_azul";
                 }
-                if (inm_descripcion.estado_inmueble == "completado") {
+                if (inm_descripcion.estado_inmueble == "construido") {
                     inm_descripcion.leyenda_precio_inm = "Construido";
                     inm_descripcion.color_precio_inm = "en_gris";
                 }
@@ -1002,105 +583,110 @@ async function inmueble_descripcion(paquete_datos) {
                     }
                 }
                 //-------------------------------------------------------------------
-                var datos_segundero = {
-                    codigo_objetivo: codigo_inmueble,
-                    ci_propietario,
-                    tipo_objetivo: "inmueble",
+                var datos_inm = {
+                    // datos del inmueble
+                    codigo_inmueble,
+                    precio_construccion: registro_inmueble.precio_construccion,
+                    precio_competencia: registro_inmueble.precio_competencia,
+                    superficie_inmueble: registro_inmueble.superficie_inmueble_m2,
+                    fraccionado: registro_inmueble.fraccionado,
+                    // datos del proyecto
+                    construccion_mensual: registro_proyecto.construccion_mensual,
+                    // datos del terreno
+                    estado_terreno: registro_terreno.estado_terreno,
+                    precio_terreno: registro_terreno.precio_bs,
+                    descuento_terreno: registro_terreno.descuento_bs,
+                    rend_fraccion_mensual: registro_terreno.rend_fraccion_mensual,
+                    superficie_terreno: registro_terreno.superficie,
+                    fecha_inicio_convocatoria: registro_terreno.fecha_inicio_convocatoria,
+                    fecha_inicio_reservacion: registro_terreno.fecha_inicio_reservacion,
+                    fecha_fin_reservacion: registro_terreno.fecha_fin_reservacion,
+                    fecha_fin_construccion: registro_terreno.fecha_fin_construccion,
                 };
+                var resultado = await super_info_inm(datos_inm);
 
-                // OJO*** PORQUE "segundero_cajas" tambien utiliza "inmueble_card_adm_cli" y estan ambas en esta misma funcion
-                var aux_segundero_cajas = await segundero_cajas(datos_segundero);
+                // precio justo, derecho suelo, plusvalia
+                var derecho_suelo = resultado.derecho_suelo;
+                var derecho_suelo_render = resultado.derecho_suelo_render;
+                var precio_justo = resultado.precio_justo;
+                var precio_justo_render = resultado.precio_justo_render;
+                var plusvalia = resultado.plusvalia;
+                var plusvalia_render = resultado.plusvalia_render;
+                var descuento_suelo = resultado.descuento_suelo;
+                var descuento_suelo_render = resultado.descuento_suelo_render;
+                //------------------------------
+                // financiamiento, meta, porcentaje
+                var plazo_titulo = resultado.plazo_titulo;
+                var plazo_tiempo = resultado.plazo_tiempo;
+                var p_financiamiento = resultado.p_financiamiento;
+                var p_financiamiento_render = resultado.p_financiamiento_render;
+                var financiamiento = resultado.financiamiento;
+                var financiamiento_render = resultado.financiamiento_render;
+                var meta = resultado.meta;
+                var meta_render = resultado.meta_render;
+                //-----------------------
+                // reserva, fraccio , cuota
+                var refracu = resultado.refracu;
+                var titulo_refracu = resultado.titulo_refracu;
+                var valor_refracu = resultado.valor_refracu;
+                var valor_refracu_render = resultado.valor_refracu_render;
+                var menor_igual = resultado.menor_igual;
+                var ver_fraccion = resultado.ver_fraccion;
+                var ver_reserva = resultado.ver_reserva;
+                var ver_cuota = resultado.ver_cuota;
+                //-----------------------
+                // para segundero
+                var fecha_inicio = resultado.fecha_inicio;
+                var fecha_fin = resultado.fecha_fin;
+                var r_plus = resultado.r_plus; // bs/seg
 
-                // ------- Para verificación -------
-                //console.log("SON LOS VALORES DE SEGUNDERO CAJAS");
-                //console.log(aux_segundero_cajas);
+                //-------------------------------------------------------------------
 
-                var aux_cajas = {
-                    // despues de sumar todos valores de plusvalia, contruccion y valor total
-                    // convertimos a numeros con separadores de punto, coma
-                    valor_total: numero_punto_coma(aux_segundero_cajas.total),
-                    precio: numero_punto_coma(aux_segundero_cajas.precio),
-                    plusvalia: numero_punto_coma(aux_segundero_cajas.ahorro),
-                    //plusvalia_construida: aux_segundero_cajas.ahorro, // util solo para propietario, aqui ya viene con su valor por defecto con CERO
-                    //-------------------------------------------------
-                    // para RECOMPENSA
-                    recompensa: numero_punto_coma(aux_segundero_cajas.recompensa),
-                    meses: numero_punto_coma(aux_segundero_cajas.meses),
-                    //-------------------------------------------------
+                inm_descripcion.derecho_suelo = derecho_suelo;
+                inm_descripcion.derecho_suelo_render = derecho_suelo_render;
+                inm_descripcion.descuento_suelo = descuento_suelo;
+                inm_descripcion.descuento_suelo_render = descuento_suelo_render;
+                inm_descripcion.popover_precio =
+                    "Es la fracción del terreno que corresponde al inmueble en base a la superficie que ocupa.";
+                inm_descripcion.popover_descuento =
+                    "Es el descuento en la fracción del terreno que favorecer al propietario del inmueble.";
+                inm_descripcion.mensaje_terreno =
+                    "Un mayor descuento en el terreno se logra si el propietario del inmueble adquiere fracciones del terreno durante la etapa de Convocatoria.";
+
+                inm_descripcion.financiamiento = financiamiento;
+                inm_descripcion.financiamiento_render = financiamiento_render;
+                inm_descripcion.p_financiamiento = p_financiamiento;
+                inm_descripcion.p_financiamiento_render = p_financiamiento_render;
+                inm_descripcion.plazo_titulo = plazo_titulo;
+                inm_descripcion.plazo_tiempo = plazo_tiempo;
+
+                inm_descripcion.refracu = refracu;
+                inm_descripcion.titulo_refracu = titulo_refracu;
+                inm_descripcion.valor_refracu = valor_refracu;
+                inm_descripcion.valor_refracu_render = valor_refracu_render;
+                inm_descripcion.menor_igual = menor_igual;
+                inm_descripcion.ver_fraccion = ver_fraccion;
+                inm_descripcion.ver_reserva = ver_reserva;
+                inm_descripcion.ver_cuota = ver_cuota;
+
+                inm_descripcion.precio_justo = precio_justo;
+                inm_descripcion.precio_justo_render = precio_justo_render;
+                inm_descripcion.plusvalia = plusvalia;
+                inm_descripcion.plusvalia_render = plusvalia_render;
+                inm_descripcion.precio_tradicional = precio_justo + plusvalia;
+                inm_descripcion.precio_tradicional_render = numero_punto_coma(precio_tradicional);
+
+                var array_segundero = [];
+                array_segundero[0] = {
+                    plus_r: r_plus, // bs/seg
+                    plus_fechaInicio: fecha_inicio,
+                    plus_fechaFin: fecha_fin,
                 };
-
-                inm_descripcion.val_segundero_cajas = aux_segundero_cajas;
-                inm_descripcion.val_cajas = aux_cajas;
-                inm_descripcion.construccion = numero_punto_coma(
-                    aux_segundero_cajas.construccion.toFixed(0)
-                );
+                inm_descripcion.array_segundero = array_segundero;
 
                 //-------------------------------------------------------------------------------
-                // PARA LA SIGNIFICADO DE SEGUNDERO
 
-                var registro_empresa = await indiceEmpresa.findOne(
-                    {},
-                    {
-                        texto_segundero_inm: 1,
-                        texto_segundero_recom_inm_py: 1,
-                        _id: 0,
-                    }
-                );
-
-                if (registro_empresa.texto_segundero_inm != undefined) {
-                    if (
-                        registro_empresa.texto_segundero_inm.indexOf("/sus_precio/") != -1 &&
-                        registro_empresa.texto_segundero_inm.indexOf("/sus_total/") != -1 &&
-                        registro_empresa.texto_segundero_inm.indexOf("/sus_plusvalia/") != -1
-                    ) {
-                        var significado_aux_0 = registro_empresa.texto_segundero_inm;
-                        var significado_aux_1 = significado_aux_0.replace(
-                            "/sus_precio/",
-                            aux_cajas.precio
-                        );
-                        var significado_aux_2 = significado_aux_1.replace(
-                            "/sus_total/",
-                            aux_cajas.valor_total
-                        );
-                        var significado_aux = significado_aux_2.replace(
-                            "/sus_plusvalia/",
-                            aux_cajas.plusvalia
-                        );
-                    } else {
-                        var significado_aux = "Significado";
-                    }
-                } else {
-                    var significado_aux = "Significado";
-                }
-
-                inm_descripcion.significado_segundero = significado_aux;
                 inm_descripcion.mensaje_segundero = mensaje_segundero;
-                //-------------------------------------------------------------------------------
-                //---------------------------------------------------------------
-                // para mensaje debajo de segundero RECOMPENSA lado DERECHO
-
-                if (registro_empresa.texto_segundero_recom_inm_py != undefined) {
-                    if (
-                        registro_empresa.texto_segundero_recom_inm_py.indexOf("/n_meses/") != -1 &&
-                        registro_empresa.texto_segundero_recom_inm_py.indexOf("/bs_espera/") != -1
-                    ) {
-                        var significado_re_aux_0 = registro_empresa.texto_segundero_recom_inm_py;
-                        var significado_re_aux_1 = significado_re_aux_0.replace(
-                            "/n_meses/",
-                            aux_cajas.meses
-                        );
-                        var significado_re_de_aux = significado_re_aux_1.replace(
-                            "/bs_espera/",
-                            aux_cajas.recompensa
-                        );
-                    } else {
-                        var significado_re_de_aux = "Significado";
-                    }
-                } else {
-                    var significado_re_de_aux = "Significado";
-                }
-
-                inm_descripcion.texto_segundero_recom_de = significado_re_de_aux;
 
                 //---------------------------------------------------------------
                 inm_descripcion.titulo_up_a = titulo_up_a;
@@ -1136,6 +722,52 @@ async function inmueble_descripcion(paquete_datos) {
         } else {
             return false;
         }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+//------------------------------------------------------------------
+
+async function inmueble_fracciones(paquete_datos) {
+    try {
+        var codigo_inmueble = paquete_datos.codigo_inmueble;
+        var ci_propietario = paquete_datos.codigo_usuario;
+
+        // todas las fracciones que guardan relacion con el inmueble
+        var fracciones = await indiceFraccionInmueble
+            .find(
+                { codigo_inmueble: codigo_inmueble },
+                {
+                    codigo_fraccion: 1,
+                    _id: 0,
+                }
+            )
+            .sort({ orden: 1 }); // ordenado del menor al mayor
+
+        if (fracciones.length > 0) {
+            var array_fracciones = []; // vacio de inicio
+
+            for (let i = 0; i < fracciones.length; i++) {
+                var codigo_fraccion_i = fracciones[i].codigo_fraccion;
+                var paquete_fraccion = {
+                    codigo_fraccion: codigo_fraccion_i,
+                    ci_propietario,
+                    tipo_navegacion: "cliente", // porque estamos dentro de un controlador cliente
+                };
+                var card_fraccion_i = await fraccion_card_adm_cli(paquete_fraccion);
+
+                array_fracciones[i] = card_fraccion_i;
+            }
+        } else {
+            var array_fracciones = []; // vacio
+        }
+
+        var contenido_fracciones = {
+            array_fracciones,
+        };
+
+        return contenido_fracciones;
     } catch (error) {
         console.log(error);
     }
@@ -1201,25 +833,46 @@ async function inmueble_garantias(codigo_inmueble) {
 
 // ------------------------------------------------------------------
 
-async function inmueble_beneficios(paquete_datos) {
+async function inmueble_beneficios(codigo_inmueble) {
     try {
-        var codigo_inmueble = paquete_datos.codigo_inmueble;
-        var ci_propietario = paquete_datos.ci_propietario;
-
         var registro_inmueble = await indiceInmueble.findOne(
             { codigo_inmueble: codigo_inmueble },
             {
                 codigo_proyecto: 1,
+                codigo_terreno: 1,
                 superficie_inmueble_m2: 1,
                 direccion_comparativa: 1,
                 m2_comparativa: 1,
                 precio_comparativa: 1,
+                precio_construccion: 1,
+                precio_competencia: 1,
+                fraccionado: 1,
                 _id: 0,
             }
         );
 
         if (registro_inmueble) {
             var codigo_proyecto = registro_inmueble.codigo_proyecto;
+            var codigo_terreno = registro_inmueble.codigo_terreno;
+
+            var registro_terreno = await indiceTerreno.findOne(
+                {
+                    codigo_terreno: codigo_terreno,
+                },
+                {
+                    estado_terreno: 1,
+                    precio_bs: 1,
+                    descuento_bs: 1,
+                    rend_fraccion_mensual: 1,
+                    superficie: 1,
+                    fecha_inicio_convocatoria: 1,
+                    fecha_inicio_reservacion: 1,
+                    fecha_fin_reservacion: 1,
+                    fecha_fin_construccion: 1,
+                    _id: 0,
+                }
+            );
+
             var registro_proyecto = await indiceProyecto.findOne(
                 {
                     codigo_proyecto: codigo_proyecto,
@@ -1236,40 +889,64 @@ async function inmueble_beneficios(paquete_datos) {
                     texto_precio_inm: 1,
                     titulo_plusvalia_inm: 1,
                     texto_plusvalia_inm: 1,
+                    construccion_mensual: 1,
                     _id: 0,
                 }
             );
-            if (registro_proyecto) {
-                //------------------------------------------------------------------------------
-                // PLUSVALIA Y CONSTRUCCION den inmueble
-                var caja_datos = {
-                    codigo_objetivo: codigo_inmueble,
-                    ci_propietario,
-                    tipo_objetivo: "inmueble",
+
+            if (registro_terreno && registro_proyecto) {
+                //--------------------------------------------------------------
+                var datos_inm = {
+                    // datos del inmueble
+                    codigo_inmueble,
+                    precio_construccion: registro_inmueble.precio_construccion,
+                    precio_competencia: registro_inmueble.precio_competencia,
+                    superficie_inmueble: registro_inmueble.superficie_inmueble_m2,
+                    fraccionado: registro_inmueble.fraccionado,
+                    // datos del proyecto
+                    construccion_mensual: registro_proyecto.construccion_mensual,
+                    // datos del terreno
+                    estado_terreno: registro_terreno.estado_terreno,
+                    precio_terreno: registro_terreno.precio_bs,
+                    descuento_terreno: registro_terreno.descuento_bs,
+                    rend_fraccion_mensual: registro_terreno.rend_fraccion_mensual,
+                    superficie_terreno: registro_terreno.superficie,
+                    fecha_inicio_convocatoria: registro_terreno.fecha_inicio_convocatoria,
+                    fecha_inicio_reservacion: registro_terreno.fecha_inicio_reservacion,
+                    fecha_fin_reservacion: registro_terreno.fecha_fin_reservacion,
+                    fecha_fin_construccion: registro_terreno.fecha_fin_construccion,
                 };
-                // NOTE QUE USAMOS ESTA FUNCION Y NO LOS DATOS DE COSTRUCCION Y PLUSVALIA DEL INM, PORQUE TRABAJAMOS CON LOS DATOS ACTUALIZADOS DE PRECIO Y PLUSVALIA DEL INM
-                var resultado = await segundero_cajas(caja_datos);
-                var construccion_inm = resultado.construccion; // ES EL PRECIO ACTUAL DEL INMUEBLE CONSIDERANDO LOS DESCUENTOS POR REMATES SI ES QUE LOS TUVIESE
-                var plusvalia_inm = resultado.ahorro; // LA PLUSVALIA ACTUAL CONSIDERANDO LOS REMATES SI ES QUE TUVIESE
+                var resultado = await super_info_inm(datos_inm);
+
+                // precio justo, derecho suelo, plusvalia
+                var precio_justo = resultado.precio_justo;
+                var precio_justo_render = resultado.precio_justo_render;
+                var plusvalia = resultado.plusvalia;
+                var plusvalia_render = resultado.plusvalia_render;
+                //--------------------------------------------------------------
+
+                var construccion_inm = registro_inmueble.precio_construccion;
 
                 //-------------------------------------------------------------------------------
                 // COSTO CONTRUCCION (trabajamos con los valores referentes a la construccion y no con los precios de mercado)
                 var contructora_dolar_m2_1 = Number(registro_proyecto.contructora_dolar_m2_1);
                 var contructora_dolar_m2_2 = Number(registro_proyecto.contructora_dolar_m2_2);
                 var contructora_dolar_m2_3 = Number(registro_proyecto.contructora_dolar_m2_3);
-                var volterra_dolar_m2 = Number(registro_proyecto.volterra_dolar_m2);
+                var volterra_bs_m2 = Math.round(
+                    construccion_inm / registro_inmueble.superficie_inmueble_m2
+                );
 
                 var prom_constructoras =
                     (contructora_dolar_m2_1 + contructora_dolar_m2_2 + contructora_dolar_m2_3) / 3;
-                var prom_constructoras_r = numero_punto_coma(prom_constructoras.toFixed(0));
-                var solid_constru_r = numero_punto_coma(volterra_dolar_m2.toFixed(0));
+                var prom_constructoras_r = numero_punto_coma(Math.round(prom_constructoras));
+                var solid_constru_r = numero_punto_coma(volterra_bs_m2);
 
-                var area_construida = Number(registro_inmueble.superficie_inmueble_m2); // m2 del INMUEBLE
+                var area_construida = registro_inmueble.superficie_inmueble_m2; // m2 del INMUEBLE
 
                 var costo_constructora_1 = area_construida * contructora_dolar_m2_1;
                 var costo_constructora_2 = area_construida * contructora_dolar_m2_2;
                 var costo_constructora_3 = area_construida * contructora_dolar_m2_3;
-                //var costo_volterra = area_construida * volterra_dolar_m2;
+
                 var costo_volterra = construccion_inm;
 
                 var sobreprecio_1 = costo_constructora_1 - costo_volterra;
@@ -1279,54 +956,66 @@ async function inmueble_beneficios(paquete_datos) {
                 var constructoras = [
                     {
                         nombre: "SOLIDEXA",
-                        contructora_dolar_m2: Number(volterra_dolar_m2.toFixed(2)),
-                        costo_constructora: Number(costo_volterra.toFixed(0)),
+                        contructora_dolar_m2: Number(volterra_bs_m2.toFixed(2)),
+                        costo_constructora: Math.round(costo_volterra),
                         sobreprecio: 0,
                     },
                     {
                         nombre: "Constructora A",
                         contructora_dolar_m2: Number(contructora_dolar_m2_1.toFixed(2)),
-                        costo_constructora: Number(costo_constructora_1.toFixed(0)),
-                        sobreprecio: Number(sobreprecio_1.toFixed(0)),
+                        costo_constructora: Math.round(costo_constructora_1),
+                        sobreprecio: Math.round(sobreprecio_1),
                     },
                     {
                         nombre: "Constructora B",
                         contructora_dolar_m2: Number(contructora_dolar_m2_2.toFixed(2)),
-                        costo_constructora: Number(costo_constructora_2.toFixed(0)),
-                        sobreprecio: Number(sobreprecio_2.toFixed(0)),
+                        costo_constructora: Math.round(costo_constructora_2),
+                        sobreprecio: Math.round(sobreprecio_2),
                     },
                     {
                         nombre: "Constructora C",
                         contructora_dolar_m2: Number(contructora_dolar_m2_3.toFixed(2)),
-                        costo_constructora: Number(costo_constructora_3.toFixed(0)),
-                        sobreprecio: Number(sobreprecio_3.toFixed(0)),
+                        costo_constructora: Math.round(costo_constructora_3),
+                        sobreprecio: Math.round(sobreprecio_3),
                     },
                 ];
 
                 var constructoras_render = [
                     {
                         nombre: "SOLIDEXA",
-                        contructora_dolar_m2: numero_punto_coma(volterra_dolar_m2.toFixed(2)),
-                        costo_constructora: numero_punto_coma(costo_volterra.toFixed(0)),
-                        sobreprecio: "-",
+                        contructora_dolar_m2: Number(volterra_bs_m2.toFixed(2)),
+                        contructora_dolar_m2_r: numero_punto_coma(volterra_bs_m2.toFixed(2)),
+                        costo_constructora: Number(Math.round(costo_volterra)),
+                        costo_constructora_r: numero_punto_coma(Math.round(costo_volterra)),
+                        sobreprecio: 0,
+                        sobreprecio_r: "-",
                     },
                     {
                         nombre: "Constructora A",
-                        contructora_dolar_m2: numero_punto_coma(contructora_dolar_m2_1.toFixed(2)),
-                        costo_constructora: numero_punto_coma(costo_constructora_1.toFixed(0)),
-                        sobreprecio: numero_punto_coma(Math.abs(sobreprecio_1).toFixed(0)),
+                        contructora_dolar_m2: Number(contructora_dolar_m2_1.toFixed(2)),
+                        contructora_dolar_m2_r: numero_punto_coma(contructora_dolar_m2_1.toFixed(2)),
+                        costo_constructora: Number(Math.round(costo_constructora_1)),
+                        costo_constructora_r: numero_punto_coma(Math.round(costo_constructora_1)),
+                        sobreprecio: Number(Math.abs(sobreprecio_1).toFixed(0)),
+                        sobreprecio_r: numero_punto_coma(Math.abs(sobreprecio_1).toFixed(0)),
                     },
                     {
                         nombre: "Constructora B",
-                        contructora_dolar_m2: numero_punto_coma(contructora_dolar_m2_2.toFixed(2)),
-                        costo_constructora: numero_punto_coma(costo_constructora_2.toFixed(0)),
-                        sobreprecio: numero_punto_coma(Math.abs(sobreprecio_2).toFixed(0)),
+                        contructora_dolar_m2: Number(contructora_dolar_m2_2.toFixed(2)),
+                        contructora_dolar_m2_r: numero_punto_coma(contructora_dolar_m2_2.toFixed(2)),
+                        costo_constructora: Number(costo_constructora_2.toFixed(0)),
+                        costo_constructora_r: numero_punto_coma(costo_constructora_2.toFixed(0)),
+                        sobreprecio: Number(Math.abs(sobreprecio_2).toFixed(0)),
+                        sobreprecio_r: numero_punto_coma(Math.abs(sobreprecio_2).toFixed(0)),
                     },
                     {
                         nombre: "Constructora C",
-                        contructora_dolar_m2: numero_punto_coma(contructora_dolar_m2_3.toFixed(2)),
-                        costo_constructora: numero_punto_coma(costo_constructora_3.toFixed(0)),
-                        sobreprecio: numero_punto_coma(Math.abs(sobreprecio_3).toFixed(0)),
+                        contructora_dolar_m2: Number(contructora_dolar_m2_3.toFixed(2)),
+                        contructora_dolar_m2_r: numero_punto_coma(contructora_dolar_m2_3.toFixed(2)),
+                        costo_constructora: Number(costo_constructora_3.toFixed(0)),
+                        costo_constructora_r: numero_punto_coma(costo_constructora_3.toFixed(0)),
+                        sobreprecio: Number(Math.abs(sobreprecio_3).toFixed(0)),
+                        sobreprecio_r: numero_punto_coma(Math.abs(sobreprecio_3).toFixed(0)),
                     },
                 ];
 
@@ -1337,11 +1026,11 @@ async function inmueble_beneficios(paquete_datos) {
 
                 let n_p = registro_inmueble.direccion_comparativa.length;
                 if (n_p > 0) {
-                    var sum_precios = 0; // $us
-                    var sus_m2_solidexa = construccion_inm / area_construida;
-                    var sum_sus_m2 = 0; // $us/m2 sumatoria de todos los inm tradicionales
+                    var sum_precios = 0; // Bs
+                    var bs_m2_solidexa = precio_justo / area_construida;
+                    var sum_bs_m2 = 0; // Bs/m2 sumatoria de todos los inm tradicionales
                     for (let i = 0; i < n_p; i++) {
-                        var aux_sus_m2 = Number(
+                        var aux_bs_m2 = Number(
                             (
                                 Number(registro_inmueble.precio_comparativa[i]) /
                                 Number(registro_inmueble.m2_comparativa[i])
@@ -1349,22 +1038,19 @@ async function inmueble_beneficios(paquete_datos) {
                         );
 
                         var aux_precio_inm_volterra = Number(
-                            (aux_sus_m2 * area_construida).toFixed(2)
+                            (aux_bs_m2 * area_construida).toFixed(2)
                         );
                         sum_precios = sum_precios + aux_precio_inm_volterra;
+
                         precios_mercado[i] = {
                             direccion_comparativa: registro_inmueble.direccion_comparativa[i],
                             m2_comparativa: Number(registro_inmueble.m2_comparativa[i].toFixed(2)),
                             precio_comparativa: Number(
                                 registro_inmueble.precio_comparativa[i].toFixed(0)
                             ),
-                            sus_m2: Number(aux_sus_m2.toFixed(2)),
+                            sus_m2: Number(aux_bs_m2.toFixed(0)),
 
-                            sobreprecio_venta: Number((aux_sus_m2 - sus_m2_solidexa).toFixed(2)), // $us/m2
-
-                            //precio_inm_volterra: Number(aux_precio_inm_volterra.toFixed(0)), // precio del inmueble  calculado a los precios que venden sus similares
-
-                            //area_volterra: Number(area_construida.toFixed(2)), // para repetirlo en la tabla
+                            sobreprecio_venta: Number((aux_bs_m2 - bs_m2_solidexa).toFixed(0)), // Bs/m2
                         };
 
                         precios_mercado_render[i] = {
@@ -1373,25 +1059,24 @@ async function inmueble_beneficios(paquete_datos) {
                             m2_comparativa: numero_punto_coma(
                                 registro_inmueble.m2_comparativa[i].toFixed(2)
                             ),
-                            precio_comparativa: numero_punto_coma(
+                            precio_comparativa: Number(
                                 registro_inmueble.precio_comparativa[i].toFixed(0)
                             ),
-                            sus_m2: numero_punto_coma(aux_sus_m2.toFixed(2)),
-                            sobreprecio_venta: numero_punto_coma(
-                                (aux_sus_m2 - sus_m2_solidexa).toFixed(2)
+                            precio_comparativa_r: numero_punto_coma(
+                                registro_inmueble.precio_comparativa[i].toFixed(0)
                             ),
-
-                            /*
-                            precio_inm_volterra: numero_punto_coma(
-                                aux_precio_inm_volterra.toFixed(0)
-                            ), // precio del inmueble  calculado a los precios que venden sus similares
-                            */
-
-                            //area_volterra: numero_punto_coma(area_construida.toFixed(2)), // para repetirlo en la tabla
+                            sus_m2: Number(aux_bs_m2.toFixed(0)),
+                            sus_m2_r: numero_punto_coma(aux_bs_m2.toFixed(0)),
+                            sobreprecio_venta: Number(
+                                (aux_bs_m2 - bs_m2_solidexa).toFixed(0)
+                            ),
+                            sobreprecio_venta_r: numero_punto_coma(
+                                (aux_bs_m2 - bs_m2_solidexa).toFixed(0)
+                            ),
                         };
 
-                        sum_sus_m2 =
-                            sum_sus_m2 +
+                        sum_bs_m2 =
+                            sum_bs_m2 +
                             Number(registro_inmueble.precio_comparativa[i]) /
                                 Number(registro_inmueble.m2_comparativa[i]);
                     }
@@ -1400,10 +1085,9 @@ async function inmueble_beneficios(paquete_datos) {
                     let datos_solidexa = {
                         direccion_comparativa: "SOLIDEXA",
                         m2_comparativa: Number(area_construida.toFixed(2)),
-                        precio_comparativa: Number(construccion_inm.toFixed(0)),
-                        sus_m2: Number(sus_m2_solidexa.toFixed(2)),
+                        precio_comparativa: Number(precio_justo.toFixed(0)),
+                        sus_m2: Number(bs_m2_solidexa.toFixed(0)),
                         sobreprecio_venta: "-",
-                        //area_volterra: Number(area_construida.toFixed(2)), // para repetirlo en la tabla
                     };
 
                     // Agregar al inicio del array
@@ -1412,10 +1096,12 @@ async function inmueble_beneficios(paquete_datos) {
                     let datos_solidexa_render = {
                         direccion_comparativa: "SOLIDEXA",
                         m2_comparativa: numero_punto_coma(area_construida.toFixed(2)),
-                        precio_comparativa: numero_punto_coma(construccion_inm.toFixed(0)),
-                        sus_m2: numero_punto_coma(sus_m2_solidexa.toFixed(2)),
-                        sobreprecio_venta: "-",
-                        //area_volterra: numero_punto_coma(area_construida.toFixed(2)), // para repetirlo en la tabla
+                        precio_comparativa: Number(precio_justo.toFixed(0)),
+                        precio_comparativa_r: numero_punto_coma(precio_justo.toFixed(0)),
+                        sus_m2: Number(bs_m2_solidexa.toFixed(0)),
+                        sus_m2_r: numero_punto_coma(bs_m2_solidexa.toFixed(0)),
+                        sobreprecio_venta: 0,
+                        sobreprecio_venta_r: "-",
                     };
 
                     // Agregar al inicio del array
@@ -1425,48 +1111,37 @@ async function inmueble_beneficios(paquete_datos) {
                     var precio_promedio = (sum_precios / n_p).toFixed(0);
                     var precio_promedio_render = numero_punto_coma((sum_precios / n_p).toFixed(0));
 
-                    // ------- Para verificación -------
-                    //console.log("precio mercado");
-                    //console.log(precio_promedio);
-                    // ------- Para verificación -------
-                    //console.log("precio mercado render");
-                    //console.log(precio_promedio_render);
+                    var prom_bs_m2 = Number((sum_bs_m2 / n_p).toFixed(0));
+                    var prom_bs_m2_r = numero_punto_coma((sum_bs_m2 / n_p).toFixed(0));
 
-                    var prom_sus_m2 = sum_sus_m2 / n_p;
-                    var prom_sus_m2_r = numero_punto_coma(prom_sus_m2.toFixed(0));
-
-                    var solid_precio_r = numero_punto_coma(sus_m2_solidexa.toFixed(0));
+                    var solid_precio = Number((precio_justo / area_construida).toFixed(0));
+                    var solid_precio_r = numero_punto_coma(
+                        (precio_justo / area_construida).toFixed(0)
+                    );
                 }
 
                 var info_inmueble_beneficios = {
                     //--------------------------------
-                    prom_constructoras_r, // $us/m2 promedio de todas la constructoras fuera de solidexa
-                    prom_sus_m2_r, // // $us/m2 promedio de todos los inm tradicionales
-                    solid_constru_r, // $us/m2 construccion solidexa
-                    solid_precio_r, // $us/m2 precio solidexa
+                    prom_constructoras_r, // Bs/m2 promedio de todas la constructoras fuera de solidexa
+                    prom_constructoras: Math.round(prom_constructoras),
+                    prom_bs_m2, // // Bs/m2 promedio de todos los inm tradicionales
+                    prom_bs_m2_r, // // Bs/m2 promedio de todos los inm tradicionales
+                    solid_constru_r, // Bs/m2 precio de construccion solidexa
+                    solid_constru: Math.round(volterra_bs_m2),
+                    solid_precio_r, // Bs/m2 precio justo solidexa
+                    solid_precio, // Bs/m2 precio justo solidexa
                     //--------------------------------
                     // precios CONSTRUCTORAS - SOLIDEXA
                     constructoras,
                     constructoras_render,
                     // anteriormente era solo: area_construida,
                     area_construida: numero_punto_coma(area_construida.toFixed(2)),
-                    // anteriormente era solo: volterra_dolar_m2,
-                    volterra_dolar_m2: numero_punto_coma(volterra_dolar_m2.toFixed(2)),
-                    costo_volterra_render: numero_punto_coma(costo_volterra.toFixed(0)),
-                    // costo_volterra,
                     //--------------------------------
-                    // ok
-                    //capital_requerido,
-                    //capital_faltante,
-                    //partida_inversion,
-                    plusvalia_sus: plusvalia_inm,
-                    plusvalia_sus_render: numero_punto_coma(plusvalia_inm.toFixed(0)),
-                    pv_volterra: Number(construccion_inm.toFixed(0)), // PRECIO VENTA DEL INMUEBLE ACTUALIZADO CON LOS DESCUENTOS SI ES QUE LOS TUVIESE
-                    pv_volterra_render: numero_punto_coma(construccion_inm.toFixed(0)),
 
-                    //rendimiento_proyecto: registro_proyecto.rentabilidad, // para mostrar el %
-
-                    //inversion_minima: registro_proyecto.unitario_accion_sus, // para los saltos de rangueador
+                    plusvalia_sus: plusvalia,
+                    plusvalia_sus_render: plusvalia_render,
+                    pv_volterra: precio_justo,
+                    costo_volterra_render: precio_justo_render,
 
                     //--------------------------------
                     // para los precios de venta, comparativa de mercado
@@ -1476,9 +1151,6 @@ async function inmueble_beneficios(paquete_datos) {
                     precio_promedio,
 
                     precio_promedio_render, // para mostrar con punto mil
-                    //---------------------------------
-                    // par permitir o no simulaciones con el rangueador
-                    //permitir_simulacion, // booleano
 
                     //-----------------------------------------
                     // textos beneficio inmueble
@@ -1581,8 +1253,10 @@ async function inmueble_info_economico(codigo_inmueble) {
 
                         valores_tabla[t_posi] = {
                             presupuesto_items: registro_proyecto.presupuesto_proyecto[t][1],
-                            presupuesto_valores: numero_punto_coma(presupuesto_valores),
-                            sus_m2: numero_punto_coma(
+                            presupuesto_valores: Number(presupuesto_valores),
+                            presupuesto_valores_r: numero_punto_coma(presupuesto_valores),
+                            sus_m2: Number((presupuesto_valores / area_construida).toFixed(2)),
+                            sus_m2_r: numero_punto_coma(
                                 Number((presupuesto_valores / area_construida).toFixed(2))
                             ),
                             porcentaje_item,
@@ -1609,10 +1283,16 @@ async function inmueble_info_economico(codigo_inmueble) {
 
                 var info_inmueble_info_economico = {
                     tipo_inmueble: registro_inmueble.tipo_inmueble,
-                    sus_m2_total: numero_punto_coma(
+                    sus_m2_total: Number(
                         (Number(registro_inmueble.precio_construccion) / area_construida).toFixed(2)
                     ),
-                    total_presupuesto: numero_punto_coma(
+                    sus_m2_total_r: numero_punto_coma(
+                        (Number(registro_inmueble.precio_construccion) / area_construida).toFixed(2)
+                    ),
+                    total_presupuesto: Number(
+                        Number(registro_inmueble.precio_construccion).toFixed(0)
+                    ),
+                    total_presupuesto_r: numero_punto_coma(
                         Number(registro_inmueble.precio_construccion).toFixed(0)
                     ),
                     area_construida,
@@ -1652,24 +1332,17 @@ async function inmueble_empleos(codigo_inmueble) {
             },
             {
                 codigo_proyecto: 1,
+                codigo_terreno: 1,
                 tipo_inmueble: 1,
                 precio_construccion: 1,
+                precio_competencia: 1,
+                superficie_inmueble_m2: 1,
+                fraccionado: 1,
                 _id: 0,
             }
         );
 
-        var registro_empresa = await indiceEmpresa.findOne(
-            {},
-            {
-                nombre_empresa: 1,
-                significado_inm_propietarios: 1,
-                significado_inm_empresa: 1,
-                significado_inm_pais: 1,
-                _id: 0,
-            }
-        );
-
-        if (registro_inmueble && registro_empresa) {
+        if (registro_inmueble) {
             var codigo_proyecto = registro_inmueble.codigo_proyecto;
             var construccion_inmueble = registro_inmueble.precio_construccion;
 
@@ -1682,19 +1355,47 @@ async function inmueble_empleos(codigo_inmueble) {
                     descripcion_empleo: 1,
 
                     tabla_empleos_sociedad: 1,
+                    construccion_mensual: 1,
                     _id: 0,
                 }
             );
 
-            if (registro_proyecto) {
-                var aux_proyecto_info = await proyecto_info_cd(codigo_proyecto);
+            var registro_terreno = await indiceTerreno.findOne(
+                {
+                    codigo_terreno: registro_inmueble.codigo_terreno,
+                },
+                {
+                    estado_terreno: 1,
+                    precio_bs: 1,
+                    descuento_bs: 1,
+                    rend_fraccion_mensual: 1,
+                    superficie: 1,
+                    fecha_inicio_convocatoria: 1,
+                    fecha_inicio_reservacion: 1,
+                    fecha_fin_reservacion: 1,
+                    fecha_fin_construccion: 1,
+                    _id: 0,
+                }
+            );
+
+            if (registro_proyecto && registro_terreno) {
+                // [ {fecha: String, pago_bs: Number}, {fecha: String, pago_bs: Number} , ... , {fecha: String, pago_bs: Number} ]
+                let arrayConstuccionPy = registro_proyecto.construccion_mensual;
+                let sum_construccion_py = 0;
+                if (arrayConstuccionPy.length > 0) {
+                    for (let k = 0; k < arrayConstuccionPy.length; k++) {
+                        let elemento_pago = arrayConstuccionPy[k].pago_bs;
+                        sum_construccion_py = sum_construccion_py + elemento_pago;
+                    }
+                }
+                //----------------------------------------------------
                 // se trabajar con el valor de precio de CONTRUCCION, no asi con el valor actual de precio de los inmuebles, porque es con el valor de CONSTRUCCION con el que se paga a los trabajadores directos e indirectos, proveedores, etc
-                var construccion_proyecto = aux_proyecto_info.construccion;
-                var fraccion_inmueble = construccion_inmueble / construccion_proyecto;
+                var construccion_proyecto = sum_construccion_py;
+                var factorConstruccion = construccion_inmueble / construccion_proyecto;
 
                 // ------- Para verificación -------
                 //console.log("la fraccion del inmueble es:");
-                //console.log(fraccion_inmueble);
+                //console.log(factorConstruccion);
 
                 let n_filas = registro_proyecto.tabla_empleos_sociedad.length;
                 var sum_valores = 0;
@@ -1705,7 +1406,7 @@ async function inmueble_empleos(codigo_inmueble) {
                         sum_valores =
                             sum_valores +
                             Number(registro_proyecto.tabla_empleos_sociedad[t][4]) *
-                                fraccion_inmueble;
+                                factorConstruccion;
                         sum_valores_2 =
                             sum_valores_2 + Number(registro_proyecto.tabla_empleos_sociedad[t][4]);
 
@@ -1742,7 +1443,13 @@ async function inmueble_empleos(codigo_inmueble) {
                             empleo_beneficio: numero_punto_coma(
                                 (
                                     Number(registro_proyecto.tabla_empleos_sociedad[t][4]) *
-                                    fraccion_inmueble
+                                    factorConstruccion
+                                ).toFixed(0)
+                            ),
+                            empleo_beneficio_n: Number(
+                                (
+                                    Number(registro_proyecto.tabla_empleos_sociedad[t][4]) *
+                                    factorConstruccion
                                 ).toFixed(0)
                             ),
 
@@ -1771,7 +1478,7 @@ async function inmueble_empleos(codigo_inmueble) {
                             sus_directos =
                                 sus_directos +
                                 Number(registro_proyecto.tabla_empleos_sociedad[t][4]) *
-                                    fraccion_inmueble;
+                                    factorConstruccion;
                         }
                         if (registro_proyecto.tabla_empleos_sociedad[t][2] == "Indirecto") {
                             n_indirectos =
@@ -1780,73 +1487,55 @@ async function inmueble_empleos(codigo_inmueble) {
                             sus_indirectos =
                                 sus_indirectos +
                                 Number(registro_proyecto.tabla_empleos_sociedad[t][4]) *
-                                    fraccion_inmueble;
+                                    factorConstruccion;
                         }
                     }
                 }
 
-                //----------------------------------------------------------
-                // para los significados de los empleos
-
-                var datos_segundero = {
-                    codigo_objetivo: codigo_inmueble,
-                    ci_propietario: "ninguno",
-                    tipo_objetivo: "inmueble",
+                //-----------------------------------------------------------
+                var datos_inm = {
+                    // datos del inmueble
+                    codigo_inmueble,
+                    precio_construccion: registro_inmueble.precio_construccion,
+                    precio_competencia: registro_inmueble.precio_competencia,
+                    superficie_inmueble: registro_inmueble.superficie_inmueble_m2,
+                    fraccionado: registro_inmueble.fraccionado,
+                    // datos del proyecto
+                    construccion_mensual: registro_proyecto.construccion_mensual,
+                    // datos del terreno
+                    estado_terreno: registro_terreno.estado_terreno,
+                    precio_terreno: registro_terreno.precio_bs,
+                    descuento_terreno: registro_terreno.descuento_bs,
+                    rend_fraccion_mensual: registro_terreno.rend_fraccion_mensual,
+                    superficie_terreno: registro_terreno.superficie,
+                    fecha_inicio_convocatoria: registro_terreno.fecha_inicio_convocatoria,
+                    fecha_inicio_reservacion: registro_terreno.fecha_inicio_reservacion,
+                    fecha_fin_reservacion: registro_terreno.fecha_fin_reservacion,
+                    fecha_fin_construccion: registro_terreno.fecha_fin_construccion,
                 };
-                var aux_segundero_cajas = await segundero_cajas(datos_segundero);
-                //-------------
+                var resultado = await super_info_inm(datos_inm);
 
-                let significado_inm_propietarios_0 = registro_empresa.significado_inm_propietarios;
-                let significado_inm_empresa_0 = registro_empresa.significado_inm_empresa;
-                let significado_inm_pais_0 = registro_empresa.significado_inm_pais;
+                var plusvalia_render = resultado.plusvalia_render;
+                var plusvalia = resultado.plusvalia;
 
-                let nom_empre = registro_empresa.nombre_empresa;
+                //------------------------------------------------------------
+
                 let inm_nfp = 1; // representa al mismo propietario del inmueble
-                let inm_dfp = numero_punto_coma(aux_segundero_cajas.ahorro); // es la plusvalia total de inmueble
+                let inm_dfp = plusvalia_render; // es la plusvalia total de inmueble
+                let inm_dfp_n = plusvalia;
                 let py_inm_nfe = n_directos;
-                let inm_dfe = numero_punto_coma(sus_directos.toFixed(0));
+                let inm_dfe = numero_punto_coma(Math.round(sus_directos));
+                let inm_dfe_n = Number(Math.round(sus_directos));
                 let py_inm_nfb = n_indirectos;
-                let inm_dfb = numero_punto_coma(sus_indirectos.toFixed(0));
-
-                // "replace" reemplaza solo la primera coincidencia.
-
-                var significado_inm_propietarios_1 = significado_inm_propietarios_0.replace(
-                    "/inm_nfp/",
-                    inm_nfp
-                );
-                var significado_inm_propietarios = significado_inm_propietarios_1.replace(
-                    "/inm_dfp/",
-                    inm_dfp
-                );
-
-                var significado_inm_empresa_1 = significado_inm_empresa_0.replace(
-                    "/nom_empre/",
-                    nom_empre
-                );
-                var significado_inm_empresa_2 = significado_inm_empresa_1.replace(
-                    "/py_inm_nfe/",
-                    py_inm_nfe
-                );
-                var significado_inm_empresa = significado_inm_empresa_2.replace(
-                    "/inm_dfe/",
-                    inm_dfe
-                );
-
-                var significado_inm_pais_1 = significado_inm_pais_0.replace(
-                    "/nom_empre/",
-                    nom_empre
-                );
-                var significado_inm_pais_2 = significado_inm_pais_1.replace(
-                    "/py_inm_nfb/",
-                    py_inm_nfb
-                );
-                var significado_inm_pais = significado_inm_pais_2.replace("/inm_dfb/", inm_dfb);
+                let inm_dfb = numero_punto_coma(Math.round(sus_indirectos));
+                let inm_dfb_n = Number(Math.round(sus_indirectos));
 
                 // ---------------------------------------------------------------------
 
                 var info_proyecto_info_economico = {
                     tipo_inmueble: registro_inmueble.tipo_inmueble,
                     total_beneficio: numero_punto_coma(total_beneficio.toFixed(0)),
+                    total_beneficio_n: Number(total_beneficio.toFixed(0)),
                     total_beneficiarios,
                     nombre_proyecto: registro_proyecto.nombre_proyecto,
 
@@ -1857,13 +1546,13 @@ async function inmueble_empleos(codigo_inmueble) {
 
                     inm_nfp,
                     inm_dfp,
+                    inm_dfp_n,
                     py_inm_nfe,
                     inm_dfe,
+                    inm_dfe_n,
                     py_inm_nfb,
                     inm_dfb,
-                    significado_inm_propietarios,
-                    significado_inm_empresa,
-                    significado_inm_pais,
+                    inm_dfb_n,
                 };
 
                 return info_proyecto_info_economico;
@@ -1880,7 +1569,7 @@ async function inmueble_empleos(codigo_inmueble) {
 
 //------------------------------------------------------------------
 // si se entra en esta funcion quiere decir que existe "Calculadora" y que se accedio desde esa pestaña.
-// la pestaña de "calculadora" sera visible cuando el inmueble este en estado de: disponible, pendiente_pago, remate. ESTO YA ESTA PREVIAMENTE DETERMINADO EN LA FUNCION: complementos_globales_inm
+// la pestaña de "calculadora" sera visible cuando el inmueble este en estado de: disponible, remate. ESTO YA ESTA PREVIAMENTE DETERMINADO EN LA FUNCION: complementos_globales_inm
 async function inmueble_calculadora(codigo_inmueble) {
     try {
         var registro_inmueble = await indiceInmueble.findOne(
@@ -1888,78 +1577,129 @@ async function inmueble_calculadora(codigo_inmueble) {
             {
                 superficie_inmueble_m2: 1,
                 codigo_terreno: 1,
+                codigo_proyecto: 1,
                 precio_comparativa: 1,
                 m2_comparativa: 1,
-                inversion_estado: 1,
-                periodo_estado: 1,
+                estado_inmueble: 1,
+
+                precio_construccion: 1,
+                precio_competencia: 1,
+                fraccionado: 1,
+
                 _id: 0,
             }
         );
 
-        var solidexa_sus = 0;
-        var solidexa_sus_m2 = 0;
-        var solidexa_m2 = 0;
+        var registro_empresa = await indiceEmpresa.findOne(
+            {},
+            {
+                tc_ine: 1,
+                tc_paralelo: 1,
+                inflacion_ine: 1,
+                tasa_banco: 1,
+                _id: 0,
+            }
+        );
 
-        var maximo = 0; // por defecto
-        var minimo = 0; // por defecto
-        var promedio = 0; // por defecto
+        var registro_proyecto = await indiceProyecto.findOne(
+            { codigo_proyecto: registro_inmueble.codigo_proyecto },
+            {
+                construccion_mensual: 1, // [ {fecha: String, pago_bs: Number},...,]
+                _id: 0,
+            }
+        );
 
-        var maximo_render = "0"; // por defecto
-        var minimo_render = "0"; // por defecto
-        var promedio_render = "0"; // por defecto
+        var registro_terreno = await indiceTerreno.findOne(
+            { codigo_terreno: registro_inmueble.codigo_terreno },
+            {
+                ubicacion: 1,
+                direccion: 1,
+                fecha_fin_construccion: 1,
+
+                estado_terreno: 1,
+                precio_bs: 1,
+                descuento_bs: 1,
+                rend_fraccion_mensual: 1,
+                superficie: 1,
+                fecha_inicio_convocatoria: 1,
+                fecha_inicio_reservacion: 1,
+                fecha_fin_reservacion: 1,
+
+                _id: 0,
+            }
+        );
+
+        var solidexa_inm_bs = 0;
+        var solidexa_inm_bs_render = "0";
+        var solidexa_inm_bsm2 = 0;
+        var solidexa_inm_m2 = 0;
+
+        var maximo_bsm2 = 0; // por defecto
+        var minimo_bsm2 = 0; // por defecto
+        var promedio_bsm2 = 0; // por defecto
+
+        var maximo_bsm2_render = "0"; // por defecto
+        var minimo_bsm2_render = "0"; // por defecto
+        var promedio_bsm2_render = "0"; // por defecto
 
         var direccion = "Dirección";
-        var provincia = "Provincia";
-        var ciudad = "Ciudad";
+        var ubicacion = "Ubicación";
 
-        if (registro_inmueble) {
+        if (registro_inmueble && registro_proyecto && registro_terreno && registro_empresa) {
             //-------------------------------------------------------------------
-            var datos_segundero = {
-                codigo_objetivo: codigo_inmueble,
-                ci_propietario: "ninguno",
-                tipo_objetivo: "inmueble",
+            var datos_inm = {
+                // datos del inmueble
+                codigo_inmueble,
+                precio_construccion: registro_inmueble.precio_construccion,
+                precio_competencia: registro_inmueble.precio_competencia,
+                superficie_inmueble: registro_inmueble.superficie_inmueble_m2,
+                fraccionado: registro_inmueble.fraccionado,
+                // datos del proyecto
+                construccion_mensual: registro_proyecto.construccion_mensual,
+                // datos del terreno
+                estado_terreno: registro_terreno.estado_terreno,
+                precio_terreno: registro_terreno.precio_bs,
+                descuento_terreno: registro_terreno.descuento_bs,
+                rend_fraccion_mensual: registro_terreno.rend_fraccion_mensual,
+                superficie_terreno: registro_terreno.superficie,
+                fecha_inicio_convocatoria: registro_terreno.fecha_inicio_convocatoria,
+                fecha_inicio_reservacion: registro_terreno.fecha_inicio_reservacion,
+                fecha_fin_reservacion: registro_terreno.fecha_fin_reservacion,
+                fecha_fin_construccion: registro_terreno.fecha_fin_construccion,
             };
+            var resultado = await super_info_inm(datos_inm);
 
-            // OJO*** PORQUE "segundero_cajas" tambien utiliza "inmueble_card_adm_cli" y estan ambas en esta misma funcion
-            var aux_segundero_cajas = await segundero_cajas(datos_segundero);
-            solidexa_sus = aux_segundero_cajas.precio; // precio actual del inmueble con los descuentos por penalizaciones que pudierra llegar a tener actualmente
-            solidexa_sus_m2 = Number(
-                (solidexa_sus / registro_inmueble.superficie_inmueble_m2).toFixed(2)
+            var precio_justo = resultado.precio_justo;
+            var plusvalia_inm_bs = resultado.plusvalia;
+            var suelo_bs = resultado.derecho_suelo;
+            var suelo_bs_render = resultado.derecho_suelo_render;
+
+            //-------------------------------------------------------------------
+            solidexa_inm_bs = precio_justo; // precio actual del inmueble
+            solidexa_inm_bs_render = numero_punto_coma(solidexa_inm_bs);
+
+            solidexa_inm_bsm2 = Number(
+                (solidexa_inm_bs / registro_inmueble.superficie_inmueble_m2).toFixed(2)
             ); // en valor numerico con 2 decimales
 
-            solidexa_m2 = registro_inmueble.superficie_inmueble_m2; // de la BD ya viene como numerico y redondeado a 2 decimales
+            solidexa_inm_m2 = registro_inmueble.superficie_inmueble_m2; // de la BD ya viene como numerico y redondeado a 2 decimales
 
-            var registro_terreno = await indiceTerreno.findOne(
-                { codigo_terreno: registro_inmueble.codigo_terreno },
-                {
-                    ciudad: 1,
-                    provincia: 1,
-                    direccion: 1,
-                    fecha_inicio_reserva: 1,
-                    fecha_fin_construccion: 1,
-                    _id: 0,
-                }
-            );
+            direccion = registro_terreno.direccion;
+            ubicacion = registro_terreno.ubicacion;
 
-            if (registro_terreno) {
-                direccion = registro_terreno.direccion;
-                provincia = registro_terreno.provincia;
-                ciudad = registro_terreno.ciudad;
+            //----------------------------------------------------------
+            // calculo del total plazo en meses DESDE INICIO CONVOCATORIA HASTA FIN CONTRUCCION
 
-                //----------------------------------------------------------
-                // calculo del total plazo en meses DESDE INICIO CONVOCATORIA HASTA FIN CONTRUCCION
+            var diferenciaEnMilisegundos =
+                registro_terreno.fecha_fin_construccion - registro_terreno.fecha_inicio_reservacion;
 
-                var diferenciaEnMilisegundos =
-                    registro_terreno.fecha_fin_construccion - registro_terreno.fecha_inicio_reserva;
+            // Convertir la diferencia de milisegundos a días
+            var diferenciaEnDias = diferenciaEnMilisegundos / (1000 * 60 * 60 * 24);
 
-                // Convertir la diferencia de milisegundos a días
-                var diferenciaEnDias = diferenciaEnMilisegundos / (1000 * 60 * 60 * 24);
+            // el número de meses, redondeado al entero inmediato inferior
+            var plazo = Math.floor(diferenciaEnDias / 30); // meses
 
-                // el número de meses, redondeado al entero inmediato inferior
-                var plazo = Math.floor(diferenciaEnDias / 30); // meses
-
-                //------------------------------------------------------------
-            }
+            //------------------------------------------------------------
 
             let precios_otros = registro_inmueble.precio_comparativa;
             let m2_otros = registro_inmueble.m2_comparativa;
@@ -1976,41 +1716,77 @@ async function inmueble_calculadora(codigo_inmueble) {
 
                 // el valor MAXIMO del array sus_m2
                 var aux_maximo = Math.max(...sus_m2);
-                maximo = Number(aux_maximo.toFixed(2));
-                maximo_render = numero_punto_coma(aux_maximo.toFixed(2));
+                maximo_bsm2 = Number(aux_maximo.toFixed(2));
+                maximo_bsm2_render = numero_punto_coma(aux_maximo.toFixed(2));
                 // el valor minimo del array sus_m2
                 var aux_minimo = Math.min(...sus_m2);
-                minimo = Number(aux_minimo.toFixed(2));
-                minimo_render = numero_punto_coma(aux_minimo.toFixed(2));
+                minimo_bsm2 = Number(aux_minimo.toFixed(2));
+                minimo_bsm2_render = numero_punto_coma(aux_minimo.toFixed(2));
                 // el valor promedio del array sus_m2
                 var aux_promedio = sum_sus_m2 / contador;
-                promedio = Number(aux_promedio.toFixed(2));
-                promedio_render = numero_punto_coma(aux_promedio.toFixed(2));
+                promedio_bsm2 = Number(aux_promedio.toFixed(2));
+                promedio_bsm2_render = numero_punto_coma(aux_promedio.toFixed(2));
             }
 
-            var aux_moneda_sus = tipo_cambio();
-            var moneda_sus = aux_moneda_sus.tipo_cambio;
+            //--------------------------------------
+            var tasa_banco = registro_empresa.tasa_banco;
+            var tasa_banco_max = Math.round(tasa_banco + 3);
+            //---------------------------------------
+            // util para mostrar el mensaje popover correcto
+            if (registro_inmueble.estado_inmueble === "remate") {
+                var remate = true;
+            } else {
+                var remate = false;
+            }
+            //---------------------------------------
+            var respuesta_dpp = await datos_pagos_propietario(codigo_inmueble);
+            if (respuesta_dpp) {
+                var cronograma_pagos = respuesta_dpp.cronograma_pagos;
+                var inversion_bs = respuesta_dpp.pago_nuevo_propietario;
+                var inversion_bs_render = respuesta_dpp.pago_nuevo_propietario_render;
+
+                // para el valor de contruccion en CALCULADORA INMUEBLE - INVERSIONISTA
+                var construccion_inv = inversion_bs - suelo_bs;
+                var construccion_inv_render = numero_punto_coma(construccion_inv);
+            }
+            //---------------------------------------
 
             var datos_calculadora = {
+                remate, // true or false
+                cronograma_pagos,
+                inversion_bs,
+                inversion_bs_render,
+                construccion_inv,
+                construccion_inv_render,
+
                 direccion,
-                provincia,
-                ciudad,
+                ubicacion,
 
-                solidexa_sus,
-                solidexa_m2,
-                solidexa_sus_m2,
+                solidexa_inm_bs,
+                plusvalia_inm_bs,
+                solidexa_inm_m2,
+                solidexa_inm_bsm2,
+                solidexa_inm_bs_render,
 
-                maximo, // $us/m2 numerico redondeado a 2 decimales
-                minimo, // $us/m2 numerico redondeado a 2 decimales
-                promedio, // $us/m2 numerico redondeado a 2 decimales
+                suelo_bs,
+                suelo_bs_render,
+                //construccion_bs: registro_inmueble.precio_construccion,
+                //construccion_bs_render: numero_punto_coma(registro_inmueble.precio_construccion),
 
-                maximo_render,
-                minimo_render,
-                promedio_render,
+                maximo_bsm2, // bs/m2 numerico redondeado a 2 decimales
+                minimo_bsm2, // bs/m2 numerico redondeado a 2 decimales
+                promedio_bsm2, // bs/m2 numerico redondeado a 2 decimales
+
+                maximo_bsm2_render, // bs/m2
+                minimo_bsm2_render, // bs/m2
+                promedio_bsm2_render, // bs/m2
                 meses_min: plazo * 3, // #meses minimo para el tiempo de financiamiento del apalancamiento
-                inversion_estado: numero_punto_coma(registro_inmueble.inversion_estado),
-                periodo_estado: numero_punto_coma(registro_inmueble.periodo_estado),
-                moneda_sus,
+
+                tc_ine: registro_empresa.tc_ine,
+                tc_paralelo: registro_empresa.tc_paralelo,
+                inflacion: registro_empresa.inflacion_ine,
+                tasa_banco,
+                tasa_banco_max,
             };
 
             return datos_calculadora;
@@ -2023,16 +1799,226 @@ async function inmueble_calculadora(codigo_inmueble) {
 }
 
 // ------------------------------------------------------------------
+// CALCULADORA DE INMUEBLE FRACCIONADO
+
+async function inmueble_calculadora_fr(codigo_inmueble) {
+    try {
+        var registro_inmueble = await indiceInmueble.findOne(
+            { codigo_inmueble: codigo_inmueble },
+            {
+                superficie_inmueble_m2: 1,
+                codigo_terreno: 1,
+                codigo_proyecto: 1,
+                precio_comparativa: 1,
+                m2_comparativa: 1,
+
+                precio_construccion: 1,
+                precio_competencia: 1,
+                fraccionado: 1,
+
+                _id: 0,
+            }
+        );
+
+        var registro_empresa = await indiceEmpresa.findOne(
+            {},
+            {
+                tc_ine: 1,
+                tc_paralelo: 1,
+                inflacion_ine: 1,
+                _id: 0,
+            }
+        );
+
+        var registro_proyecto = await indiceProyecto.findOne(
+            { codigo_proyecto: registro_inmueble.codigo_proyecto },
+            {
+                construccion_mensual: 1, // [ {fecha: String, pago_bs: Number},...,]
+                _id: 0,
+            }
+        );
+
+        var registro_terreno = await indiceTerreno.findOne(
+            { codigo_terreno: registro_inmueble.codigo_terreno },
+            {
+                ubicacion: 1,
+                direccion: 1,
+                fecha_fin_construccion: 1,
+
+                estado_terreno: 1,
+                precio_bs: 1,
+                descuento_bs: 1,
+                rend_fraccion_mensual: 1,
+                superficie: 1,
+                fecha_inicio_convocatoria: 1,
+                fecha_inicio_reservacion: 1,
+                fecha_fin_reservacion: 1,
+
+                _id: 0,
+            }
+        );
+
+        var solidexa_inm_bs = 0;
+        var solidexa_inm_bs_render = "0";
+        var solidexa_inm_bsm2 = 0;
+        var solidexa_inm_m2 = 0;
+
+        var maximo_bsm2 = 0; // por defecto
+        var minimo_bsm2 = 0; // por defecto
+        var promedio_bsm2 = 0; // por defecto
+
+        var maximo_bsm2_render = "0"; // por defecto
+        var minimo_bsm2_render = "0"; // por defecto
+        var promedio_bsm2_render = "0"; // por defecto
+
+        var direccion = "Dirección";
+        var ubicacion = "Ubicación";
+
+        if (registro_inmueble && registro_proyecto && registro_terreno && registro_empresa) {
+            //-------------------------------------------------------------------
+            var datos_inm = {
+                // datos del inmueble
+                codigo_inmueble,
+                precio_construccion: registro_inmueble.precio_construccion,
+                precio_competencia: registro_inmueble.precio_competencia,
+                superficie_inmueble: registro_inmueble.superficie_inmueble_m2,
+                fraccionado: registro_inmueble.fraccionado,
+                // datos del proyecto
+                construccion_mensual: registro_proyecto.construccion_mensual,
+                // datos del terreno
+                estado_terreno: registro_terreno.estado_terreno,
+                precio_terreno: registro_terreno.precio_bs,
+                descuento_terreno: registro_terreno.descuento_bs,
+                rend_fraccion_mensual: registro_terreno.rend_fraccion_mensual,
+                superficie_terreno: registro_terreno.superficie,
+                fecha_inicio_convocatoria: registro_terreno.fecha_inicio_convocatoria,
+                fecha_inicio_reservacion: registro_terreno.fecha_inicio_reservacion,
+                fecha_fin_reservacion: registro_terreno.fecha_fin_reservacion,
+                fecha_fin_construccion: registro_terreno.fecha_fin_construccion,
+            };
+            var resultado = await super_info_inm(datos_inm);
+
+            var precio_justo = resultado.precio_justo;
+            var plusvalia_inm_bs = resultado.plusvalia;
+            var suelo_bs = resultado.derecho_suelo;
+            var suelo_bs_render = resultado.derecho_suelo_render;
+
+            //-------------------------------------------------------------------
+            solidexa_inm_bs = precio_justo; // precio actual del inmueble
+            solidexa_inm_bs_render = numero_punto_coma(solidexa_inm_bs);
+
+            solidexa_inm_bsm2 = Number(
+                (solidexa_inm_bs / registro_inmueble.superficie_inmueble_m2).toFixed(2)
+            ); // en valor numerico con 2 decimales
+
+            solidexa_inm_m2 = registro_inmueble.superficie_inmueble_m2; // de la BD ya viene como numerico y redondeado a 2 decimales
+
+            direccion = registro_terreno.direccion;
+            ubicacion = registro_terreno.ubicacion;
+
+            //------------------------------------------------------------
+
+            let precios_otros = registro_inmueble.precio_comparativa;
+            let m2_otros = registro_inmueble.m2_comparativa;
+            let sus_m2 = [];
+            let sum_sus_m2 = 0;
+            let contador = 0;
+
+            if (precios_otros.length > 0 && m2_otros.length > 0) {
+                for (let d = 0; d < precios_otros.length; d++) {
+                    sus_m2[d] = precios_otros[d] / m2_otros[d];
+                    sum_sus_m2 = sum_sus_m2 + precios_otros[d] / m2_otros[d];
+                    contador = contador + 1;
+                }
+
+                // el valor MAXIMO del array sus_m2
+                var aux_maximo = Math.max(...sus_m2);
+                maximo_bsm2 = Number(aux_maximo.toFixed(2));
+                maximo_bsm2_render = numero_punto_coma(aux_maximo.toFixed(2));
+                // el valor minimo del array sus_m2
+                var aux_minimo = Math.min(...sus_m2);
+                minimo_bsm2 = Number(aux_minimo.toFixed(2));
+                minimo_bsm2_render = numero_punto_coma(aux_minimo.toFixed(2));
+                // el valor promedio del array sus_m2
+                var aux_promedio = sum_sus_m2 / contador;
+                promedio_bsm2 = Number(aux_promedio.toFixed(2));
+                promedio_bsm2_render = numero_punto_coma(aux_promedio.toFixed(2));
+            }
+
+            //------------------------------------------------------------
+            var registro_fracciones = await indiceFraccionInmueble.findOne(
+                { codigo_inmueble: codigo_inmueble, disponible: true },
+                {
+                    fraccion_bs: 1,
+                    _id: 0,
+                }
+            );
+
+            var nf_maximo = 0; // Por defecto. numero maximo de fracciones de terreno disponibles
+            var fraccion_bs = 0; // por defecto. El valor de una fraccion DISPONIBLE de terreno
+            var fraccion_bs_render = "0";
+            if (registro_fracciones.length > 0) {
+                nf_maximo = registro_fracciones.length;
+                // bastara tomar el valor de una fraccion, porque todas las demas vigetes tienen el mismo valor
+                fraccion_bs = registro_fracciones[0].fraccion_bs;
+                fraccion_bs_render = numero_punto_coma(fraccion_bs);
+            }
+            //------------------------------------------------------------
+
+            var datos_calculadora = {
+                nf_maximo,
+                fraccion_bs,
+                fraccion_bs_render,
+
+                direccion,
+                ubicacion,
+
+                solidexa_inm_bs,
+                plusvalia_inm_bs,
+                solidexa_inm_m2,
+                solidexa_inm_bsm2,
+                solidexa_inm_bs_render,
+
+                suelo_bs,
+                suelo_bs_render,
+                construccion_bs: registro_inmueble.precio_construccion,
+                construccion_bs_render: numero_punto_coma(registro_inmueble.precio_construccion),
+
+                maximo_bsm2, // bs/m2 numerico redondeado a 2 decimales
+                minimo_bsm2, // bs/m2 numerico redondeado a 2 decimales
+                promedio_bsm2, // bs/m2 numerico redondeado a 2 decimales
+
+                maximo_bsm2_render, // bs/m2
+                minimo_bsm2_render, // bs/m2
+                promedio_bsm2_render, // bs/m2
+
+                tc_ine: registro_empresa.tc_ine,
+                tc_paralelo: registro_empresa.tc_paralelo,
+                inflacion: registro_empresa.inflacion_ine,
+            };
+
+            return datos_calculadora;
+        } else {
+            return false;
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+// ------------------------------------------------------------------
 
 async function inmueble_inversor(paquete_datos) {
+    // ESTO SERA EL MISMO QUE EL LADO DEL ADMINISTRADOR
+
     try {
+        /*
         var paquete_propietario = {
             ci_propietario: paquete_datos.ci_inversionista,
             codigo_inmueble: paquete_datos.codigo_inmueble,
         };
+        */
 
-        var aux_respuesta = {}; // ***** REVISAR SI ES CORRECTO DECLARARLO VACIO PARA LUEGO LLENARLO CON AWAIT.
-        aux_respuesta = await datos_pagos_propietario(paquete_propietario);
+        var aux_respuesta = await datos_pagos_propietario(paquete_datos.codigo_inmueble);
         aux_respuesta.existe_propietario = true; // porque esta pestaña "Propietario" dentro de la ventana de "Inmuble" (lado cliente) solo esta disponible cuando en verdad existe un propietario de este inmueble
 
         /*
@@ -2078,70 +2064,164 @@ async function inmueble_inversor(paquete_datos) {
     }
 }
 
-// -----------------------------------------------------------------------------------
+// ------------------------------------------------------------------
 
-async function n_vista_ventana(paquete_vista) {
+async function inmueble_adquirir_f_inm(paquete_datos) {
     try {
-        var codigo_inmueble = paquete_vista.codigo_inmueble;
-        var ventana = paquete_vista.ventana;
+        var ci_propietario = paquete_datos.ci_propietario;
+        var codigo_inmueble = paquete_datos.codigo_inmueble;
 
-        const registro_inmueble = await indiceInmueble.findOne(
-            { codigo_inmueble: codigo_inmueble },
-            {
-                v_descripcion: 1,
-                v_garantias: 1,
-                v_beneficios: 1,
-                v_info_economico: 1,
-                v_empleos: 1,
-                v_inversor: 1,
-                _id: 0,
+        let datos_funcion = {
+            ci_propietario,
+            codigo_objetivo: codigo_inmueble,
+            copropietario: "inmueble",
+        };
+        let respuesta = await te_inm_copropietario(datos_funcion);
+
+        let leyenda_tiempo = respuesta.leyenda_tiempo;
+        let precio_te_inm = respuesta.precio_te_inm;
+        let tiene_fracciones = respuesta.tiene_fracciones;
+        let array_fracciones = respuesta.array_fracciones;
+        let c_ft_d_n = respuesta.c_ft_d_n;
+        let c_ft_d_n_render = respuesta.c_ft_d_n_render;
+        let c_ft_d_val = respuesta.c_ft_d_val;
+        let c_ft_d_val_render = respuesta.c_ft_d_val_render;
+        let c_fti_a_n = respuesta.c_fti_a_n;
+        let c_fti_a_n_render = respuesta.c_fti_a_n_render;
+        let c_fti_a_val = respuesta.c_fti_a_val;
+        let c_fti_a_val_render = respuesta.c_fti_a_val_render;
+        let c_fti_a_p = respuesta.c_fti_a_p;
+        let c_fti_a_p_render = respuesta.c_fti_a_p_render;
+        let ti_f_p_render = respuesta.ti_f_p_render;
+        let ti_f_val = respuesta.ti_f_val;
+        let ti_f_val_render = respuesta.ti_f_val_render;
+        let ti_f_d_n = respuesta.ti_f_d_n;
+        let ti_f_d_n_render = respuesta.ti_f_d_n_render;
+        let ti_f_d_val = respuesta.ti_f_d_val;
+        let ti_f_d_val_render = respuesta.ti_f_d_val_render;
+
+        //--------------------------------------------------------
+
+        return {
+            leyenda_tiempo,
+            precio_te_inm,
+            tiene_fracciones,
+            array_fracciones,
+            c_ft_d_n,
+            c_ft_d_n_render,
+            c_ft_d_val,
+            c_ft_d_val_render,
+            c_fti_a_n,
+            c_fti_a_n_render,
+            c_fti_a_val,
+            c_fti_a_val_render,
+            c_fti_a_p,
+            c_fti_a_p_render,
+            ti_f_p_render,
+            ti_f_val,
+            ti_f_val_render,
+            ti_f_d_n,
+            ti_f_d_n_render,
+            ti_f_d_val,
+            ti_f_d_val_render,
+        };
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+// ------------------------------------------------------------------
+
+async function inmueble_copropietario(paquete_datos) {
+    // es casi similar al controlador: llenar_datos_copropietario_inm
+
+    try {
+        var ci_propietario = paquete_datos.ci_propietario;
+        var codigo_inmueble = paquete_datos.codigo_inmueble;
+
+        //--------------------------------------------------------
+        // para armado de datos personales, documentos privados del copropietario
+        var datos_funcion = {
+            ci_propietario,
+            codigo_objetivo: codigo_inmueble,
+            copropietario: "inmueble",
+        };
+
+        // {datos personales..., documentos_privados}
+        var obj_datos = await datos_copropietario(datos_funcion);
+
+        //--------------------------------------------------------
+        // para armado de relacionados con las fracciones del cual el copropietario es dueño
+
+        var obj_fracciones = await te_inm_copropietario(datos_funcion);
+
+        //--------------------------------------------------------
+        // union de los dos objetos. todos los elementos de ambos objetos seran unidos en un solo objeto llamado obj_union
+
+        var obj_union = { ...obj_datos, ...obj_fracciones };
+        //--------------------------------------------------------
+
+        /*
+        if (obj_datos.tiene_datos == false && obj_fracciones.tiene_fracciones == false) {
+            // significa que es un usuario completamente nuevo: no tiene datos ni es dueño de fracciones de este inmueble
+    
+            var caso = "nuevo_a";
+        } else {
+            if (obj_datos.tiene_datos == true && obj_fracciones.tiene_fracciones == false) {
+                // el usuario cuenta con datos registrados, pero NO cuenta con fracciones en el inmueble
+                var caso = "nuevo_b";
             }
-        );
-        if (registro_inmueble) {
-            if (ventana == "descripcion") {
-                var n_vista = registro_inmueble.v_descripcion + 1;
-                await indiceInmueble.updateOne(
-                    { codigo_inmueble: codigo_inmueble },
-                    { $set: { v_descripcion: n_vista } }
-                );
-            }
-            if (ventana == "garantias") {
-                var n_vista = registro_inmueble.v_garantias + 1;
-                await indiceInmueble.updateOne(
-                    { codigo_inmueble: codigo_inmueble },
-                    { $set: { v_garantias: n_vista } }
-                );
-            }
-            if (ventana == "beneficios") {
-                var n_vista = registro_inmueble.v_beneficios + 1;
-                await indiceInmueble.updateOne(
-                    { codigo_inmueble: codigo_inmueble },
-                    { $set: { v_beneficios: n_vista } }
-                );
-            }
-            if (ventana == "info_economico") {
-                var n_vista = registro_inmueble.v_info_economico + 1;
-                await indiceInmueble.updateOne(
-                    { codigo_inmueble: codigo_inmueble },
-                    { $set: { v_info_economico: n_vista } }
-                );
-            }
-            if (ventana == "empleos") {
-                var n_vista = registro_inmueble.v_empleos + 1;
-                await indiceInmueble.updateOne(
-                    { codigo_inmueble: codigo_inmueble },
-                    { $set: { v_empleos: n_vista } }
-                );
-            }
-            if (ventana == "inversor") {
-                var n_vista = registro_inmueble.v_inversor + 1;
-                await indiceInmueble.updateOne(
-                    { codigo_inmueble: codigo_inmueble },
-                    { $set: { v_inversor: n_vista } }
-                );
-            }
-            return n_vista;
         }
+    
+        obj_union.caso = caso;
+        */
+
+        //--------------------------------------------------------------
+
+        return obj_union;
+
+        /*
+        ESTA ES LA INFORMACION QUE SE DEVUELVE EN obj_union:
+        var obj_union = {
+            //------------------
+            ci_propietario,
+            propietario_registrado,
+            nombres_propietario,
+            apellidos_propietario,
+            departamento_propietario,
+            provincia_propietario,
+            domicilio_propietario,
+            ocupacion_propietario,
+            fecha_nacimiento_propietario,
+            telefonos_propietario,
+            documentos_privados,
+            tiene_datos,
+            //------------------
+            leyenda_tiempo,
+            precio_te_inm,
+            tiene_fracciones,
+            array_fracciones,
+            c_ft_d_n,
+            c_ft_d_n_render,
+            c_ft_d_val,
+            c_ft_d_val_render,
+            c_fti_a_n,
+            c_fti_a_n_render,
+            c_fti_a_val,
+            c_fti_a_val_render,
+            c_fti_a_p,
+            c_fti_a_p_render,
+            ti_f_p_render,
+            ti_f_val,
+            ti_f_val_render,
+            ti_f_d_n,
+            ti_f_d_n_render,
+            ti_f_d_val,
+            ti_f_d_val_render,
+            //---------------------
+            caso,
+        }
+        */
     } catch (error) {
         console.log(error);
     }
@@ -2154,30 +2234,37 @@ async function complementos_globales_inm(paquete_datos) {
     const codigo_inmueble = paquete_datos.codigo_inmueble;
 
     const ci_inversionista = paquete_datos.ci_inversionista;
-    //const tipo_inmueble = paquete_datos.tipo_inmueble; // para no tener que invocar nuevamente al indiceInmueble
+
+    // por defecto:
+    var existe_inversor_inmueble = false;
+    var existe_copropietario_inmueble = false;
+    var adquirir_f_inm = false; // sera "true" para que el copropietario del terreno pueda adquirir fracciones del inmueble usando sus fracciones de terreno
 
     var aux_inmueble = await indiceInmueble.findOne(
         { codigo_inmueble: codigo_inmueble },
         {
             codigo_proyecto: 1,
+            codigo_terreno: 1,
             estado_inmueble: 1,
+            fraccionado: 1, // true o false
+            fecha_fin_fraccionado: 1, // solo es de utilidad si fraccionado es true
         }
     );
 
     const codigo_proyecto = aux_inmueble.codigo_proyecto;
 
+    /*
     var basico_py = await indiceProyecto.findOne(
         { codigo_proyecto: codigo_proyecto },
         {
             nombre_proyecto: 1,
-            //link_video_recorrido: 1,
-            //link_facebook_proyecto: 1,
-            //link_tiktok_proyecto: 1,
             estado_proyecto: 1,
         }
     );
+    */
 
-    if (basico_py) {
+    //if (basico_py) {
+    if (aux_inmueble) {
         var registro_imagenes_py = await indiceImagenesProyecto.find(
             {
                 codigo_proyecto: codigo_proyecto,
@@ -2249,46 +2336,107 @@ async function complementos_globales_inm(paquete_datos) {
 
         // solo para mostrar las pestañas de navegacion correspondientes al estado del proyecto
 
-        // para mostrar la pestaña del inversor del presente inmueble
+        //----------------------------------------------------------
+        // para mostrar la pestaña del inversor o copropietario del presente inmueble
 
         if (ci_inversionista != "ninguno") {
-            var registro_inversor = await indiceInversiones.findOne({
-                ci_propietario: ci_inversionista,
-                codigo_inmueble: codigo_inmueble,
-            });
-            if (registro_inversor) {
-                // si el inversor EXISTE EN LA BASE DE DATOS y es actual dueño del presente INMUEBLE
-                var existe_inversor_inmueble = true;
+            // CORREGIR. QUE SEA VERIFICADO PRIMER POR ESTADO DEL TERRENO, YA QUE EL PROPIETARIO PUEDE TENER FRACCIONES DE TERRENO YA UTILIZADAS FIGURANDO COMO FRACCIONES DE INMUEBLES, Y PUDE TENER ALGUNAS FRACCIONES DEL MISMO TERRENO AUN SIN UTILIZAR ESPERANDO UTILIZARLO EN ALGUN OTRO INM SOBRE EL MISMO TERRENO.
+
+            if (aux_inmueble.fraccionado) {
+                let registro_copropietario_inm = await indiceFraccionInmueble.find(
+                    {
+                        codigo_terreno: aux_inmueble.codigo_terreno,
+                        ci_propietario: ci_inversionista,
+                    },
+                    {
+                        codigo_fraccion: 1,
+                        fraccion_bs: 1,
+                        tipo: 1,
+                    }
+                );
+
+                if (registro_copropietario_inm.length > 0) {
+                    existe_copropietario_inmueble = true;
+
+                    let registro_terreno = await indiceTerreno.findOne(
+                        {
+                            codigo_terreno: aux_inmueble.codigo_terreno,
+                        },
+                        {
+                            estado_terreno: 1,
+                        }
+                    );
+
+                    let fecha_actual = new Date();
+                    let fecha_fin_fraccionado = aux_inmueble.fecha_fin_fraccionado;
+
+                    if (
+                        registro_terreno.estado_terreno == "reservacion" &&
+                        fecha_actual <= fecha_fin_fraccionado
+                    ) {
+                        adquirir_f_inm = true;
+                    }
+                }
             } else {
-                var existe_inversor_inmueble = false;
+                // entonces se trata de un inmueble del tipo entero
+                let registro_inversor = await indiceInversiones.findOne({
+                    ci_propietario: ci_inversionista,
+                    codigo_inmueble: codigo_inmueble,
+                });
+                if (registro_inversor) {
+                    // si el inversor EXISTE EN LA BASE DE DATOS y es actual dueño del presente INMUEBLE
+                    existe_inversor_inmueble = true;
+                }
             }
+        }
+
+        //----------------------------------------------------------
+        // para mostrar la pestaña de fracciones del inmueble si es que las tuviera
+        if (aux_inmueble.fraccionado) {
+            // si es true, es porque el inmueble es del tipo fraccionado (COPROPIETARIOS) y tiene fracciones que mostrarse
+            var existe_fracciones_inmueble = true;
         } else {
-            var existe_inversor_inmueble = false;
+            var existe_fracciones_inmueble = false;
         }
 
         //----------------------------------------------------------
         // para mostrar u ocultar la pestaña de calculadora dentro del inmueble
 
-        if (
-            aux_inmueble.estado_inmueble == "disponible" ||
-            aux_inmueble.estado_inmueble == "pendiente_pago" ||
-            aux_inmueble.estado_inmueble == "remate"
-        ) {
-            // la pestaña de "calculadora" sera visible cuando el inmueble este en estado de: disponible, pendiente_pago, remate
-            var existe_calculadora = true;
+        // para mostrar la calculadora correcta del inmueble
+        if (aux_inmueble.fraccionado) {
+            // se trata de un inmueble fraccionado
+            var inm_fraccionado = true;
+
+            let fraccionesInmueble = await indiceFraccionInmueble.find({
+                codigo_inmueble: codigo_inmueble,
+                disponible: true,
+            });
+
+            if (fraccionesInmueble.length > 0) {
+                var existe_calculadora_inmueble = true;
+            } else {
+                var existe_calculadora_inmueble = false;
+            }
         } else {
-            var existe_calculadora = false;
+            // se trata de un inmueble entero
+            var inm_fraccionado = false;
+            if (
+                aux_inmueble.estado_inmueble == "disponible" ||
+                aux_inmueble.estado_inmueble == "remate"
+            ) {
+                // la pestaña de "calculadora" sera visible cuando el inmueble este en estado de: disponible, remate
+                var existe_calculadora_inmueble = true;
+            } else {
+                var existe_calculadora_inmueble = false;
+            }
         }
+
         //----------------------------------------------------------
 
         return {
             codigo_proyecto,
-            nombre_proyecto: basico_py.nombre_proyecto,
-            estado_proyecto: basico_py.estado_proyecto,
-
-            //facebook_py: basico_py.link_facebook_proyecto,
-            //tiktok_py: basico_py.link_tiktok_proyecto,
-            //youtube_py: basico_py.link_video_recorrido, // si no existe del propio inmueble, entonces en su lugar se pondra este.
+            //nombre_proyecto: basico_py.nombre_proyecto,
+            //estado_proyecto: basico_py.estado_proyecto,
 
             //tipo_inmueble, // (departamento, garzonier, tienda, otro [en ese caso especificado] )
             codigo_inmueble,
@@ -2297,8 +2445,13 @@ async function complementos_globales_inm(paquete_datos) {
             imagenes_inm_exclusiva,
 
             existe_inversor_inmueble,
+            existe_copropietario_inmueble,
+            adquirir_f_inm, // true o false
+            inm_fraccionado, // true o false
 
-            existe_calculadora,
+            existe_fracciones_inmueble,
+
+            existe_calculadora_inmueble,
         };
     }
 }

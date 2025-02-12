@@ -89,18 +89,11 @@ debajo de este --}}
                     </ul>
                 </li>
 
-                <li class="nav-item"><a class="nav-link pestana_navegador" href="/laapirest/ventana/reserva">Reserva</a>
+                <li class="nav-item"><a class="nav-link pestana_navegador" href="/laapirest/ventana/convocatoria">Convocatoria</a></li>
+                <li class="nav-item"><a class="nav-link pestana_navegador" href="/laapirest/ventana/reservacion">Reservación</a>
                 </li>
-                <li class="nav-item"><a class="nav-link pestana_navegador" href="/laapirest/ventana/pago">Pago</a>
-                </li>
-                <li class="nav-item"><a class="nav-link pestana_navegador" href="/laapirest/ventana/aprobacion">Aprobación</a>
-                </li>
-                <li class="nav-item"><a class="nav-link pestana_navegador"
-                        href="/laapirest/ventana/construccion">Construcción</a></li>
-                <li class="nav-item"><a class="nav-link pestana_navegador"
-                        href="/laapirest/ventana/construido">Construido</a></li>
-                <li class="nav-item"><a class="nav-link pestana_navegador"
-                        href="/laapirest/ventana/convocatoria">Convocatoria</a></li>
+                <li class="nav-item"><a class="nav-link pestana_navegador" href="/laapirest/ventana/construccion">Construcción</a></li>
+                <li class="nav-item"><a class="nav-link pestana_navegador" href="/laapirest/ventana/construido">Construido</a></li>
 
             </ul>
 
@@ -110,9 +103,11 @@ debajo de este --}}
         <div class="order-12 collapse navbar-collapse" id="menu_propios">
             <ul class="d-md-none navbar-nav ml-auto ">
                 <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="descripcion_te-tab">Descripción</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="fracciones_te-tab">Fracciones</a></li>
                 <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="imagenes_te-tab">Imágenes</a></li>
                 <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="documentos_te-tab">Documentos</a></li>
                 <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="proyectos_te-tab">Proyectos</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="copropietario_te-tab">Copropietario</a></li>
                 <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="estados_te-tab">Estados</a></li>
             </ul>
         </div>
@@ -147,12 +142,23 @@ debajo de este --}}
         <div class="order-12 collapse navbar-collapse" id="menu_propios">
             <ul class="d-md-none navbar-nav ml-auto ">
                 <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="descripcion_inm-tab">Descripción</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="fracciones_inm-tab">Fracciones</a></li>
                 <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="imagenes_inm-tab">Imágenes</a></li>
                 <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="documentos_inm-tab">Documentos</a></li>
                 <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="estados_inm-tab">Estados</a></li>
                 <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="propietario_inm-tab">Propietario</a></li>
                 <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="pagos_inm-tab">Pagos</a></li>
                 <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="eliminar_inm-tab">Eliminar</a></li>
+            </ul>
+        </div>
+        {{/if}}
+
+        {{#if es_fraccion}}
+        <div class="order-12 collapse navbar-collapse" id="menu_propios">
+            <ul class="d-md-none navbar-nav ml-auto ">
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="descripcion_fraccion-tab">Descripción</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="copropietario_fraccion-tab">Copropietario</a></li>
+                <li class="nav-item"><a href="#" class="nav-link aux_tabe pestana_navegador" data-id="eliminar_fraccion-tab">Eliminar</a></li>
             </ul>
         </div>
         {{/if}}

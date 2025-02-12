@@ -1,0 +1,135 @@
+{{!-- Cuotas mensuales de construccion del proyecto --}}
+
+<div class="container-fluid madre_tabla cuadro_estandart p-4">
+
+    <h5 class="texto-resaltado">CUOTAS MENSUALES CONSTRUCCIÓN</h5>
+    <h6>
+        <b>Nota: </b>No considerar el valor de Derecho de Suelo.
+        <p class="text-left mt-2">
+            Distribuir el costo de construcción en base a los meses de edificación que requerirá el proyecto.
+        </p>
+    </h6>
+
+    <div class="row">
+        <div class="col-12 ref_botones_tabla">
+            <div class="d-inline-block py-3">
+                <button class="btn btn-primary mr-3" id="id_guardar_tabla">Guardar tabla</button>
+
+                <button class="btn btn-danger" id="id_eliminar_tabla">Eliminar tabla</button>
+            </div>
+        </div>
+        <div id="tipo_tabla_objetivo" data-id="py_cuotas"></div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+
+            <div class="table-responsive">
+                <table class="text-primary table table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="text-center texto-resaltado">#</th>
+                            <th class="text-center texto-resaltado">Fecha</th>
+                            <th class="text-center texto-resaltado">Cuota Bs.</th>
+                            <th class="texto-resaltado">ACCIÓN</th>
+                        </tr>
+                    </thead>
+                    {{! clase "cuerpo_filas" como referencia para agregar una nueva fila despues de
+                    esta clase como HIJO con "append" }}
+                    <tbody class="cuerpo_filas">
+
+                        {{#if contenido_proyecto.construccion_mensual}}
+
+                            {{#each contenido_proyecto.construccion_mensual}}
+                                <tr class="fila_fila">
+                                    <td class="text-center numero_fila" data-id="{{orden}}">{{orden}}</td>
+                                    <td><input
+                                            type="date"
+                                            class="form-control fila_input"
+                                            data-tipo="texto"
+                                            style="min-width: 8em;"
+                                            value="{{fecha}}"
+                                        />
+                                    </td>
+
+                                    <td><input
+                                            type="number"
+                                            class="form-control fila_input"
+                                            data-tipo="numero"
+                                            step="1"
+                                            style="min-width: 5em;"
+                                            value="{{pago_bs}}"
+                                        />
+                                    </td>
+
+                                    <td>
+                                        <div class="d-flex">
+                                            <button
+                                                class="boton_fila_arriba d-block btn p-1"
+                                                data-id="{{orden}}"
+                                            ><i class="fas fa-arrow-circle-up size_iconos"></i></button>
+                                            <button
+                                                class="boton_fila_abajo d-block btn mx-1 p-1"
+                                                data-id="{{orden}}"
+                                            ><i
+                                                    class="fas fa-arrow-circle-down size_iconos"
+                                                ></i></button>
+                                            <button
+                                                class="boton_fila_eliminar d-block btn p-1"
+                                                data-id="{{orden}}"
+                                            ><i class="fas fa-window-close size_iconos"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                            {{/each}}
+
+                        {{else}}
+
+                            <tr class="fila_fila">
+                                <td class="text-center numero_fila" data-id="1">1</td>
+                                <td><input
+                                        type="date"
+                                        class="form-control fila_input"
+                                        data-tipo="texto"
+                                        style="min-width: 8em;"
+                                    />
+                                </td>
+
+                                <td><input
+                                        type="number"
+                                        class="form-control fila_input"
+                                        data-tipo="numero"
+                                        step="1"
+                                        style="min-width: 5em;"
+                                    />
+                                </td>
+
+                                <td>
+                                    <div class="d-flex">
+                                        <button class="boton_fila_arriba d-block btn p-1" data-id="1"><i
+                                                class="fas fa-arrow-circle-up size_iconos"
+                                            ></i></button>
+                                        <button
+                                            class="boton_fila_abajo d-block btn p-1 mx-1"
+                                            data-id="1"
+                                        ><i class="fas fa-arrow-circle-down size_iconos"></i></button>
+                                        <button
+                                            class="boton_fila_eliminar d-block btn p-1"
+                                            data-id="1"
+                                        ><i class="fas fa-window-close size_iconos"></i></button>
+                                    </div>
+                                </td>
+
+                            </tr>
+
+                        {{/if}}
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</div>

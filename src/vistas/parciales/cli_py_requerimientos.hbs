@@ -10,7 +10,7 @@
                 </div>
 
                 <div class="contenedor-detalle-texto">
-                    <h4 class="texto-resaltado"><span class="icono_izq d-inline-block d-md-none"><i class="fas fa-exclamation-triangle"></i></span>Importante</h4>
+                    <div class="titulo_1 texto-normal"><span class="icono_izq d-inline-block d-md-none"><i class="fas fa-exclamation-triangle"></i></span>Importante</div>
                     {{! para mostrar el modelo y el manual de requerimiento }}
                     <p style="text-align: justify;">
                         Si usted cuenta con los requerimientos que necesita el presente proyecto, entonces
@@ -84,7 +84,7 @@
                 </div>
 
                 <div class="contenedor-detalle-texto">
-                    <h4 class="texto-resaltado"><span class="icono_izq d-inline-block d-md-none"><i class="fas fa-clipboard-list"></i></span>Requerimientos</h4>
+                    <div class="titulo_1 texto-normal"><span class="icono_izq d-inline-block d-md-none"><i class="fas fa-clipboard-list"></i></span>Requerimientos</div>
                     <p class="escritura" style="text-align: justify;">
                         {{contenido_proyecto.nota_si_requerimientos}}
                     </p>
@@ -215,8 +215,3 @@
         </div>
     </div>
 {{/if}}
-
-<div class="text-right mt-4" title="Numero de visualizaciones">
-    <span><i class="fas fa-glasses icono_visualizaciones"></i></span>
-    <span class="numero_visualizaciones"><b>{{nv_ventana}}</b></span>
-</div>

@@ -2,48 +2,7 @@
 
 // PARA CUANDO LA PAGINA SE CARGUE (proyecto, inmueble)
 $(document).ready(function () {
-    /************************************************************************************ */
-
-    $(".knob").knob({
-        draw: function () {
-            this.cursorExt = 0.3;
-
-            var a = this.arc(this.cv), // Arc
-                pa, // Previous arc
-                r = 1;
-
-            this.g.lineWidth = this.lineWidth;
-
-            if (this.o.displayPrevious) {
-                pa = this.arc(this.v);
-                this.g.beginPath();
-                this.g.strokeStyle = this.pColor;
-                this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, pa.s, pa.e, pa.d);
-                this.g.stroke();
-            }
-
-            this.g.beginPath();
-            this.g.strokeStyle = r ? this.o.fgColor : this.fgColor;
-            this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, a.s, a.e, a.d);
-            this.g.stroke();
-
-            this.g.lineWidth = 2;
-            this.g.beginPath();
-            this.g.strokeStyle = this.o.fgColor;
-            this.g.arc(
-                this.xy,
-                this.xy,
-                this.radius - this.lineWidth + 1 + (this.lineWidth * 2) / 3,
-                0,
-                2 * Math.PI,
-                false
-            );
-            this.g.stroke();
-
-            return false;
-        },
-    });
-
+    
     /************************************************************************************ */
 
     // PARA LAS OPCIONES DE RADIO (MAESTRO PARA TODOS LOS QUE TIENE RADIOS, PARA QUE ESTOS ESTEN DEVIDAMENTE SELECCIONADOS AL RENDERIZARSE LA VENTANA)
@@ -120,11 +79,6 @@ $(document).ready(function () {
         // --------------------------------------------------------------
         // para los CUADROS check de la pestaña ESTADO DEL PROYECTO
         if (tipo_ventana == "ventana_adm_py_estados") {
-            let tipo_boolean_eleccion = $(".input_eleccion_proyecto").val();
-            // solo cuando es true, si es false se lo deja tal como esta sin hacer click
-            if (tipo_boolean_eleccion == "true") {
-                $(".casilla_py_elegido").click();
-            }
 
             let tipo_boolean_visible = $(".input_visibilidad_proyecto").val();
             // solo cuando es true, si es false se lo deja tal como esta sin hacer click
@@ -220,6 +174,7 @@ $(document).ready(function () {
     }
 
     function sus_seg() {
+        // EL SEGUNDERO, AL IGUAL QUE TODAS LAS UNIDADES MONETARIAS EN EL LADO DEL ADMINISTRADOR ESTARA SIEMPRE EN BOLIVIANOS BS.
         setInterval(() => {
 
             //----------------------------------------------------------------------------
@@ -361,150 +316,11 @@ $(document).ready(function () {
             }
 
             //----------------------------------------------------------------------------
-            //----------------------------------------------------------------------------
-            // SEGUNDERO DE RECOMPENSA DE TIEMPO DE ESPERA
-
-            var recom_r = 0;
-            var a_recom_r = [];
-            var recom_fechaInicio = new Date();
-            var recom_fechaFin = new Date();
-
-            var r_verificador = 0;
-
-            var s_recom_t = 0;
-            var s_recom_r = 0;
-
-            var n_recom = $("#contenedor_seg_recom .cuerpo_recom").length;
-            if (n_recom > 0) {
-                for (let i = 0; i < n_recom; i++) {
-                    recom_r = Number(
-                        $("#contenedor_seg_recom .cuerpo_recom .recom_r").eq(i).attr("data-recom_r")
-                    );
-
-                    a_recom_r[i] = recom_r;
-
-                    let aux_r_fi = $("#contenedor_seg_recom .cuerpo_recom .recom_fechaInicio")
-                        .eq(i)
-                        .attr("data-recom_fechaInicio");
-
-                    recom_fechaInicio = new Date(aux_r_fi); // convertimos a formato fecha
-
-                    let aux_r_ff = $("#contenedor_seg_recom .cuerpo_recom .recom_fechaFin")
-                        .eq(i)
-                        .attr("data-recom_fechaFin");
-
-                    recom_fechaFin = new Date(aux_r_ff); // convertimos a formato fecha
-
-                    s_recom_t = s_recom_t + ((recom_fechaFin - recom_fechaInicio) / 1000) * recom_r;
-
-                    let r_d_t = (recom_fechaFin - recom_fechaInicio) / 1000;
-                    let r_d_p = (new Date() - recom_fechaInicio) / 1000;
-
-                    if (r_d_p >= r_d_t) {
-                        s_recom_r = s_recom_r + r_d_t * recom_r;
-                    }
-                    if (r_d_p < r_d_t) {
-                        s_recom_r = s_recom_r + r_d_p * recom_r;
-                    }
-
-                    if (recom_r != 0) {
-                        r_verificador = r_verificador + 1;
-                    }
-                }
-            }
-
-            if (r_verificador == 0) {
-                $("#entero_tot_recompensa").text("0");
-
-                //$("#decimales_tot_ret_alq").text(",000");
-                $(".cd_r").eq(0).text(",");
-                $(".cd_r").eq(1).text("0");
-                $(".cd_r").eq(2).text("0");
-                $(".cd_r").eq(3).text("0");
-                //$(".cd").eq(4).attr("hidden", false); // ocultamos
-                $(".cd_r").eq(4).css("display", "none"); // ocultamos
-
-                let r_aux_string_progre = "0" + "%";
-                $("#ref_progreso_recompensa").css("width", r_aux_string_progre);
-                $("#ref_valor_progreso_recompensa").text(r_aux_string_progre);
-            } else {
-                // Usar Math.max con el operador de propagación para obtener el valor máximo
-                let recom_r_max = Math.max(...a_recom_r); // el valor maximo de Bs/seg
-
-                let string_recom_r_max = recom_r_max.toString();
-
-                for (let t = 0; t < string_recom_r_max.length; t++) {
-                    // las posiciones de una cadena empiezan desde CERO
-                    let porsion = string_recom_r_max.substring(t, t + 1);
-
-                    if (porsion != "0" && porsion != ".") {
-                        //console.log("entramos al caracter dist cero: " + t);
-                        // entonces la posicion es el de un numero superior a cero
-                        var n_casillas_deci = t - 1;
-                        break; // para salir de este bucle for
-                    }
-                }
-
-                let string_s_recom_r = s_recom_r.toString();
-                let array_aux = string_s_recom_r.split(".");
-                let val_entero = array_aux[0];
-                let aux_decimal = array_aux[1].substring(0, n_casillas_deci);
-
-                //---------------------------------------------------------
-                // "val_entero" se lo convertira en formato español punto mil:
-                let el_numero = Number(val_entero);
-                let aux_num_string = el_numero.toLocaleString("en"); // LO DEVUELVE EN FORMATO INGLES Y EN STRING
-
-                let numero_convertido = aux_num_string
-                    .replace(".", "#")
-                    .replace(",", ".")
-                    .replace("#", ","); // LO CONVIERTE A FORMATO ESPAÑOL, Y EN STRING
-
-                $("#entero_tot_recompensa").text(numero_convertido);
-
-                //==========================================================
-                var arr = Array.from(aux_decimal); // convierte a "aux_decimal" en un array separandolo en cada uno de sus caracteres. ej/ 539 = [5, 3, 9]
-                // ncd = 5: número de ".cd" caracteres para decimales (incluido la coma,)
-                // n_casillas_deci: número de decimales ( sin inluir la coma, )
-                var ncd = 5;
-                if (ncd > n_casillas_deci) {
-                    $(".cd_r").eq(0).text(",");
-                    for (var ii = 0; ii < arr.length; ii++) {
-                        $(".cd_r")
-                            .eq(ii + 1)
-                            .text(arr[ii]);
-                    }
-
-                    // ocultamos las casillas que no seran llenadas con decimales
-                    for (let j = ii + 1; j < ncd; j++) {
-                        $(".cd_r").eq(j).css("display", "none"); // ocultamos
-                    }
-                } else {
-                    // entonces solo seran mostrados hasta maximo: 4 digitos de los decimales, que incluido con la coma "," ocuparan la totalidad de los 5 ".cd_r"
-                    for (let k = 0; k < ncd; k++) {
-                        $(".cd_r")
-                            .eq(k + 1)
-                            .text(arr[k]);
-                    }
-                }
-                //==========================================================
-
-                let porcen_progreso = ((s_recom_r / s_recom_t) * 100).toFixed(2); // con 2 decimales
-                let aux_string_progre = porcen_progreso + "%";
-                $("#ref_progreso_recompensa").css("width", aux_string_progre);
-
-                let num_punto_coma = numero_punto_coma_query(porcen_progreso);
-
-                let formato_punto_coma = num_punto_coma + " %";
-                $("#ref_valor_progreso_recompensa").text(formato_punto_coma);
-            }
-
-            //----------------------------------------------------------------------------
-
 
         }, 1000);
     }
 
+    /*
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     function numero_punto_coma_query(numero) {
         // como ejemplo:
@@ -539,6 +355,7 @@ $(document).ready(function () {
             return 0;
         }
     }
+        */
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 });
 
@@ -703,10 +520,10 @@ function dim_ventana_inicio() {
     var url_vertical = $("#url_vertical").attr("data-url_img");
     var url_horizontal = $("#url_horizontal").attr("data-url_img");
 
-    var css_horizontal = `linear-gradient(rgba(5, 5, 54, 0.8), rgba(5, 5, 54, 0.8)),
+    var css_horizontal = `linear-gradient(rgba(16, 16, 21, 0.8), rgba(14, 14, 23, 0.8)),
     url(${url_horizontal})`;
 
-    var css_vertical = `linear-gradient(rgba(5, 5, 54, 0.8), rgba(5, 5, 54, 0.8)),
+    var css_vertical = `linear-gradient(rgba(16, 16, 21, 0.8), rgba(14, 14, 23, 0.8)),
     url(${url_vertical})`;
 
     if (ventana_madre_ancho >= 768) {
@@ -741,4 +558,39 @@ function dim_ventana_inicio() {
     //alert("ancho: " + ventana_ancho + "alto: " + ventana_alto);
 }
 
-/**************************************************************************** */
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+function numero_punto_coma_query(numero) {
+    // como ejemplo:
+    // 2275730.88; // tipo numerico
+    // sera convetido a string ingles: 2,275,730.88
+    // finalmente sera convertido a string español: 2.275.730,88
+
+    // convertimos a numerico por seguridad
+    var el_numero = Number(numero);
+    if (el_numero > 0) {
+        var aux_num_string = el_numero.toLocaleString("en"); // LO DEVUELVE EN FORMATO INGLES Y EN STRING
+
+        // dividimos el string numero en ","
+        var array_1 = aux_num_string.split(",");
+        // unimos el array con "*" en el lugar de las ","
+        var numero_string_2 = array_1.join("*");
+
+        // dividimos el string numero en "."
+        var array_2 = numero_string_2.split(".");
+        // unimos el array con "," en el lugar de las "."
+        var numero_string_3 = array_2.join(",");
+
+        // dividimos el string numero en "*"
+        var array_3 = numero_string_3.split("*");
+        // unimos el array con "." en el lugar de las "*"
+        var numero_string_4 = array_3.join(".");
+
+        var numero_convertido = numero_string_4; // NUMERO CONVERTIDO A FORMATO ESPAÑOL, Y EN STRING
+
+        return numero_convertido; // DEVUELVE COMO STRING
+    } else {
+        return 0;
+    }
+}
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

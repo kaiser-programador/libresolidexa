@@ -3,27 +3,22 @@
 const pasaporte = require("passport"); // NO es para inicializarlo, porque eso ya esta echo, sino mas bien para "ejecutarlo segun las tareas que se le definio en pasaporte.js"
 
 const {
-    indiceDocumentos,
     indice_propietario,
     indiceInversiones,
     indiceGuardados,
     indiceEmpresa,
     indiceInmueble,
-    indiceImagenesSistema,
+    indiceFraccionTerreno,
+    indiceFraccionInmueble,
 } = require("../modelos/indicemodelo");
 
-const { inmueble_card_adm_cli } = require("../ayudas/funcionesayuda_1");
+const { inmueble_card_adm_cli, fraccion_card_adm_cli } = require("../ayudas/funcionesayuda_1");
 
-const {
-    cabezeras_adm_cli,
-    datos_pagos_propietario,
-    segundero_cajas,
-    pie_pagina_cli,
-} = require("../ayudas/funcionesayuda_2");
+const { cabezeras_adm_cli, datos_propietario } = require("../ayudas/funcionesayuda_2");
 
-const { numero_punto_coma } = require("../ayudas/funcionesayuda_3");
+const { te_inm_copropietario } = require("../ayudas/funcionesayuda_4");
 
-const moment = require("moment");
+const { super_info_propietario } = require("../ayudas/funcionesayuda_5");
 
 const controladorCliInversor = {};
 
@@ -93,26 +88,9 @@ controladorCliInversor.renderizarVentanaPropietarioCli = async (req, res) => {
         var info_propietario = {};
         info_propietario.navegador_cliente = true;
         info_propietario.cab_prop_cli = true;
-        //info_propietario.estilo_cabezera = "cabezera_estilo_propietario";
+        info_propietario.estilo_cabezera = "cabezera_estilo_propietario";
         info_propietario.codigo_propietario = codigo_propietario;
         info_propietario.inversor_autenticado = req.inversor_autenticado;
-
-        //----------------------------------------------------
-        // para la url de la cabezera
-        var url_cabezera = ""; // vacio por defecto
-        const registro_cabezera = await indiceImagenesSistema.findOne(
-            { tipo_imagen: "cabecera_propietario" },
-            {
-                url: 1,
-                _id: 0,
-            }
-        );
-
-        if (registro_cabezera) {
-            url_cabezera = registro_cabezera.url;
-        }
-
-        info_propietario.url_cabezera = url_cabezera;
 
         //----------------------------------------------------
 
@@ -124,14 +102,10 @@ controladorCliInversor.renderizarVentanaPropietarioCli = async (req, res) => {
             var aux_cabezera = {
                 codigo_objetivo: codigo_propietario,
                 tipo: "propietario",
-                lado: "propietario",
             };
 
             var cabezera_cli = await cabezeras_adm_cli(aux_cabezera);
             info_propietario.cabezera_cli = cabezera_cli;
-
-            var pie_pagina = await pie_pagina_cli();
-            info_propietario.pie_pagina_cli = pie_pagina;
 
             info_propietario.es_propietario = true; // para menu navegacion comprimido
 
@@ -175,6 +149,18 @@ controladorCliInversor.renderizarVentanaPropietarioCli = async (req, res) => {
                 res.render("cli_propietario", info_propietario);
             }
 
+            if (tipo_ventana_propietario == "fracciones") {
+                var contenido_propietario = await fracciones_propietario(codigo_propietario);
+                info_propietario.fracciones_propietario = true; // para pestaña y ventana apropiada para proyecto
+                info_propietario.contenido_propietario = contenido_propietario;
+                // ------- Para verificación -------
+
+                //console.log("los datos para renderizar INFORMACION DEL PROPIETARIO");
+                //console.log(info_propietario);
+
+                res.render("cli_propietario", info_propietario);
+            }
+
             if (tipo_ventana_propietario == "propiedades") {
                 let contenido_propietario = await propiedades_propietario(codigo_propietario);
                 info_propietario.propiedades_propietario = true; // para pestaña y ventana apropiada para proyecto
@@ -183,8 +169,6 @@ controladorCliInversor.renderizarVentanaPropietarioCli = async (req, res) => {
                 // para mostrar los estados en filtro ordenador
                 info_propietario.estado_py_todos = true;
                 info_propietario.estado_py_reserva = true;
-                info_propietario.estado_py_aprobacion = true;
-                info_propietario.estado_py_pago = true;
                 info_propietario.estado_py_construccion = true;
                 info_propietario.estado_py_construido = true;
                 info_propietario.estado_rematado = true;
@@ -194,15 +178,12 @@ controladorCliInversor.renderizarVentanaPropietarioCli = async (req, res) => {
                 let aux_n_todos = contenido_propietario.length;
                 let aux_n_disponible = 0;
                 let aux_n_reservado = 0;
-                let aux_n_pendiente_aprobacion = 0;
-                let aux_n_pendiente_pago = 0;
-                let aux_n_pagado_pago = 0;
-                let aux_n_en_pago = 0;
+                let aux_n_construccion = 0;
                 let aux_n_remate = 0;
                 let aux_n_rematado = 0;
-                let aux_n_completado = 0;
+                let aux_n_construido = 0;
 
-                // guardado, disponible, reservado, pendiente, pagado, pagos, remate, completado
+                // guardado, disponible, reservado, construccion, remate, construido  OK
                 if (contenido_propietario.length > 0) {
                     for (let i = 0; i < contenido_propietario.length; i++) {
                         let aux_estado_inmueble = contenido_propietario[i].estado_inmueble;
@@ -218,23 +199,14 @@ controladorCliInversor.renderizarVentanaPropietarioCli = async (req, res) => {
                             if (aux_estado_inmueble == "reservado") {
                                 aux_n_reservado = aux_n_reservado + 1;
                             }
-                            if (aux_estado_inmueble == "pendiente_aprobacion") {
-                                aux_n_pendiente_aprobacion = aux_n_pendiente_aprobacion + 1;
-                            }
-                            if (aux_estado_inmueble == "pendiente_pago") {
-                                aux_n_pendiente_pago = aux_n_pendiente_pago + 1;
-                            }
-                            if (aux_estado_inmueble == "pagado_pago") {
-                                aux_n_pagado_pago = aux_n_pagado_pago + 1;
-                            }
-                            if (aux_estado_inmueble == "pagos") {
-                                aux_n_en_pago = aux_n_en_pago + 1;
+                            if (aux_estado_inmueble == "construccion") {
+                                aux_n_construccion = aux_n_construccion + 1;
                             }
                             if (aux_estado_inmueble == "remate") {
                                 aux_n_remate = aux_n_remate + 1;
                             }
-                            if (aux_estado_inmueble == "completado") {
-                                aux_n_completado = aux_n_completado + 1;
+                            if (aux_estado_inmueble == "construido") {
+                                aux_n_construido = aux_n_construido + 1;
                             }
                         }
                     }
@@ -261,28 +233,10 @@ controladorCliInversor.renderizarVentanaPropietarioCli = async (req, res) => {
                     info_propietario.badge_reservado = false;
                 }
 
-                if (aux_n_pendiente_aprobacion > 0) {
-                    info_propietario.badge_pendiente_aprobacion = true;
+                if (aux_n_construccion > 0) {
+                    info_propietario.badge_construccion = true;
                 } else {
-                    info_propietario.badge_pendiente_aprobacion = false;
-                }
-
-                if (aux_n_pendiente_pago > 0) {
-                    info_propietario.badge_pendiente_pago = true;
-                } else {
-                    info_propietario.badge_pendiente_pago = false;
-                }
-
-                if (aux_n_pagado_pago > 0) {
-                    info_propietario.badge_pagado_pago = true;
-                } else {
-                    info_propietario.badge_pagado_pago = false;
-                }
-
-                if (aux_n_en_pago > 0) {
-                    info_propietario.badge_en_pago = true;
-                } else {
-                    info_propietario.badge_en_pago = false;
+                    info_propietario.badge_construccion = false;
                 }
 
                 if (aux_n_remate > 0) {
@@ -297,10 +251,10 @@ controladorCliInversor.renderizarVentanaPropietarioCli = async (req, res) => {
                     info_propietario.badge_rematado = false;
                 }
 
-                if (aux_n_completado > 0) {
-                    info_propietario.badge_completado = true;
+                if (aux_n_construido > 0) {
+                    info_propietario.badge_construido = true;
                 } else {
-                    info_propietario.badge_completado = false;
+                    info_propietario.badge_construido = false;
                 }
 
                 //-----------------------------------------------
@@ -308,13 +262,10 @@ controladorCliInversor.renderizarVentanaPropietarioCli = async (req, res) => {
                 info_propietario.n_todos = aux_n_todos;
                 info_propietario.n_disponible = aux_n_disponible;
                 info_propietario.n_reservado = aux_n_reservado;
-                info_propietario.n_pendiente_aprobacion = aux_n_pendiente_aprobacion;
-                info_propietario.n_pendiente_pago = aux_n_pendiente_pago;
-                info_propietario.n_pagado_pago = aux_n_pagado_pago;
-                info_propietario.n_en_pago = aux_n_en_pago;
+                info_propietario.n_construccion = aux_n_construccion;
                 info_propietario.n_remate = aux_n_remate;
                 info_propietario.n_rematado = aux_n_rematado;
-                info_propietario.n_completado = aux_n_completado;
+                info_propietario.n_construido = aux_n_construido;
 
                 //--------------------------------------------------------------
                 info_propietario.contenido_propietario = contenido_propietario;
@@ -334,8 +285,6 @@ controladorCliInversor.renderizarVentanaPropietarioCli = async (req, res) => {
                 // para mostrar los estados en filtro ordenador
                 info_propietario.estado_py_todos = true;
                 info_propietario.estado_py_reserva = true;
-                info_propietario.estado_py_aprobacion = true;
-                info_propietario.estado_py_pago = true;
                 info_propietario.estado_py_construccion = true;
                 info_propietario.estado_py_construido = true;
                 info_propietario.estado_rematado = true;
@@ -345,15 +294,12 @@ controladorCliInversor.renderizarVentanaPropietarioCli = async (req, res) => {
                 let aux_n_todos = contenido_propietario.length;
                 let aux_n_disponible = 0;
                 let aux_n_reservado = 0;
-                let aux_n_pendiente_aprobacion = 0;
-                let aux_n_pendiente_pago = 0;
-                let aux_n_pagado_pago = 0;
-                let aux_n_en_pago = 0;
+                let aux_n_construccion = 0;
                 let aux_n_remate = 0;
                 let aux_n_rematado = 0;
-                let aux_n_completado = 0;
+                let aux_n_construido = 0;
 
-                // guardado, disponible, reservado, pendiente, pagado, pagos, remate, completado
+                // guardado, disponible, reservado, construccion, remate, construido  OK
                 if (contenido_propietario.length > 0) {
                     for (let i = 0; i < contenido_propietario.length; i++) {
                         let aux_estado_inmueble = contenido_propietario[i].estado_inmueble;
@@ -365,23 +311,14 @@ controladorCliInversor.renderizarVentanaPropietarioCli = async (req, res) => {
                         if (aux_estado_inmueble == "reservado") {
                             aux_n_reservado = aux_n_reservado + 1;
                         }
-                        if (aux_estado_inmueble == "pendiente_aprobacion") {
-                            aux_n_pendiente_aprobacion = aux_n_pendiente_aprobacion + 1;
-                        }
-                        if (aux_estado_inmueble == "pendiente_pago") {
-                            aux_n_pendiente_pago = aux_n_pendiente_pago + 1;
-                        }
-                        if (aux_estado_inmueble == "pagado_pago") {
-                            aux_n_pagado_pago = aux_n_pagado_pago + 1;
-                        }
-                        if (aux_estado_inmueble == "pagos") {
-                            aux_n_en_pago = aux_n_en_pago + 1;
+                        if (aux_estado_inmueble == "construccion") {
+                            aux_n_construccion = aux_n_construccion + 1;
                         }
                         if (aux_estado_inmueble == "remate") {
                             aux_n_remate = aux_n_remate + 1;
                         }
-                        if (aux_estado_inmueble == "completado") {
-                            aux_n_completado = aux_n_completado + 1;
+                        if (aux_estado_inmueble == "construido") {
+                            aux_n_construido = aux_n_construido + 1;
                         }
                     }
                 }
@@ -407,28 +344,10 @@ controladorCliInversor.renderizarVentanaPropietarioCli = async (req, res) => {
                     info_propietario.badge_reservado = false;
                 }
 
-                if (aux_n_pendiente_aprobacion > 0) {
-                    info_propietario.badge_pendiente_aprobacion = true;
+                if (aux_n_construccion > 0) {
+                    info_propietario.badge_construccion = true;
                 } else {
-                    info_propietario.badge_pendiente_aprobacion = false;
-                }
-
-                if (aux_n_pendiente_pago > 0) {
-                    info_propietario.badge_pendiente_pago = true;
-                } else {
-                    info_propietario.badge_pendiente_pago = false;
-                }
-
-                if (aux_n_pagado_pago > 0) {
-                    info_propietario.badge_pagado_pago = true;
-                } else {
-                    info_propietario.badge_pagado_pago = false;
-                }
-
-                if (aux_n_en_pago > 0) {
-                    info_propietario.badge_en_pago = true;
-                } else {
-                    info_propietario.badge_en_pago = false;
+                    info_propietario.badge_construccion = false;
                 }
 
                 if (aux_n_remate > 0) {
@@ -443,10 +362,10 @@ controladorCliInversor.renderizarVentanaPropietarioCli = async (req, res) => {
                     info_propietario.badge_rematado = false;
                 }
 
-                if (aux_n_completado > 0) {
-                    info_propietario.badge_completado = true;
+                if (aux_n_construido > 0) {
+                    info_propietario.badge_construido = true;
                 } else {
-                    info_propietario.badge_completado = false;
+                    info_propietario.badge_construido = false;
                 }
 
                 //-----------------------------------------------
@@ -454,12 +373,9 @@ controladorCliInversor.renderizarVentanaPropietarioCli = async (req, res) => {
                 info_propietario.n_todos = aux_n_todos;
                 info_propietario.n_disponible = aux_n_disponible;
                 info_propietario.n_reservado = aux_n_reservado;
-                info_propietario.n_pendiente_aprobacion = aux_n_pendiente_aprobacion;
-                info_propietario.n_pendiente_pago = aux_n_pendiente_pago;
-                info_propietario.n_pagado_pago = aux_n_pagado_pago;
-                info_propietario.n_en_pago = aux_n_en_pago;
+                info_propietario.n_construccion = aux_n_construccion;
                 info_propietario.n_remate = aux_n_remate;
-                info_propietario.n_completado = aux_n_completado;
+                info_propietario.n_construido = aux_n_construido;
 
                 //--------------------------------------------------------------
                 info_propietario.contenido_propietario = contenido_propietario;
@@ -470,93 +386,8 @@ controladorCliInversor.renderizarVentanaPropietarioCli = async (req, res) => {
 
                 res.render("cli_propietario", info_propietario);
             }
-
-            if (tipo_ventana_propietario == "documentos") {
-                var contenido_propietario = await documentos_propietario(codigo_propietario);
-                info_propietario.documentos_propietario = true; // para pestaña y ventana apropiada para proyecto
-                info_propietario.contenido_propietario = contenido_propietario;
-                // ------- Para verificación -------
-
-                //console.log("los datos para renderizar PROPIETARIO DOCUMENTOS PRIVADOS");
-                //console.log(info_propietario);
-
-                res.render("cli_propietario", info_propietario);
-            }
         } else {
             // si el propietario no se encuentra navegando con su cuenta privada, y desea ingresar por la url a una cuenta privada, entonces se le redireccionara a la ventana de inicio
-
-            /*
-            var registro_terreno = await indiceEmpresa.findOne(
-                {},
-                {
-                    texto_inicio_principal: 1,
-                    n_construidos: 1,
-                    n_proyectos: 1,
-                    n_inmuebles: 1,
-                    n_empleos: 1,
-                    n_ahorros: 1,
-                    n_resp_social: 1,
-                    _id: 0,
-                }
-            );
-    
-            if (registro_terreno) {
-                // conversion del documento MONGO ({OBJETO}) a "string"
-                var aux_string = JSON.stringify(registro_terreno);
-    
-                // reconversion del "string" a "objeto"
-                var datos_empresa = JSON.parse(aux_string);
-    
-                
-                // ------- Para verificación -------
-                //console.log("VEMOS SI EL CLIENTE ES VALIDADO");
-                //console.log(req.inversor_autenticado); // puede dar:false o true
-                //console.log("VEMOS SI EL CLIENTE ES VALIDADO finnnnn");
-                
-    
-                datos_empresa.inversor_autenticado = req.inversor_autenticado;
-                // si es TRUE y solo si es true, entonces se mostrara su ci
-                if (req.inversor_autenticado) {
-                    datos_empresa.ci_propietario = req.user.ci_propietario;
-                }
-    
-                // es_ninguno: true  // para las opciones de navegacion de la ventana en estado comprimido
-                datos_empresa.es_ninguno = true;
-    
-                var pie_pagina = await pie_pagina_cli();
-                datos_empresa.pie_pagina_cli = pie_pagina;
-    
-                datos_empresa.navegador_cliente = true;
-    
-                res.render("cli_inicio", datos_empresa); //increible que borrandolo FUNCIONE
-            } else {
-                var datos_empresa = {}; // lo enviamos como objeto vacio
-    
-
-                // ------- Para verificación -------
-                console.log("VEMOS SI EL CLIENTE ES VALIDADO");
-                console.log(req.inversor_autenticado); // puede dar:false o true
-                console.log("VEMOS SI EL CLIENTE ES VALIDADO finnnnn");
-
-    
-                datos_empresa.inversor_autenticado = req.inversor_autenticado;
-                // si es TRUE y solo si es true, entonces se mostrara su ci
-                if (req.inversor_autenticado) {
-                    datos_empresa.ci_propietario = req.user.ci_propietario;
-                }
-    
-                // es_ninguno: true  // para las opciones de navegacion de la ventana en estado comprimido
-                datos_empresa.es_ninguno = true;
-    
-                var pie_pagina = await pie_pagina_cli();
-                datos_empresa.pie_pagina_cli = pie_pagina;
-    
-                datos_empresa.navegador_cliente = true;
-    
-                res.render("cli_inicio", datos_empresa);
-
-            }
-            */
 
             res.redirect("/"); // rediccionara a la pagina DE INICIO DEL CLIENTE
         }
@@ -566,31 +397,10 @@ controladorCliInversor.renderizarVentanaPropietarioCli = async (req, res) => {
 };
 
 //------------------------------------------------------------------
-async function datos_propietario(codigo_propietario) {
-    try {
-        var paquete_propietario = {
-            ci_propietario: codigo_propietario,
-            codigo_inmueble: "ninguno", // porque solo nos intereza los datos del propietario, de manera que poniendo "ninguno" no existe ningun inmueble que tenga ese codigo, asi esos datos financieros el programa los dejara vacios
-        };
-
-        var aux_respuesta = await datos_pagos_propietario(paquete_propietario);
-
-        if (aux_respuesta) {
-            return aux_respuesta;
-        } else {
-            return false;
-        }
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-//------------------------------------------------------------------
 
 async function propiedades_propietario(codigo_propietario) {
     try {
-        // ordenamos por numero de piso (de menor a mayor, por ello se escribio "1")
-        // Al parecer si el dato "piso" estubiera dentro de un objero EJ/ "descripcion_inmueble", tambien funcionaria como se lo declara aqui
+        // inmuebles ENTEROS que pertenecen al propietario como ABSOLUTO
         var inm_propietario = await indiceInversiones.find(
             { ci_propietario: codigo_propietario },
             {
@@ -600,32 +410,52 @@ async function propiedades_propietario(codigo_propietario) {
             }
         );
 
-        /*
-        // si es esta navegando desde el lado del administrador
-        if (req.user.ci_propietario) {
-            var codigo_usuario = req.user.ci_propietario;
-        } else {
-            var codigo_usuario = "ninguno";
-        }
-        */
-
-        if (inm_propietario.length > 0) {
-            var contenido_inm_prop = [];
-            for (let i = 0; i < inm_propietario.length; i++) {
-                var paquete_inmueble_i = {
-                    codigo_inmueble: inm_propietario[i].codigo_inmueble,
-                    codigo_usuario: codigo_propietario,
-                    laapirest: "/", // por partir desde el lado del CLIENTE
-                };
-                contenido_inm_prop[i] = await inmueble_card_adm_cli(paquete_inmueble_i);
-                contenido_inm_prop[i].card_externo = true; // para que muestre info de card EXTERIONES
-                contenido_inm_prop[i].estado_propietario = inm_propietario[i].estado_propietario;
+        // inmuebles que pertenecen al propietario como COPROPIETARIO
+        var inm_co_propietario = await indiceFraccionInmueble.find(
+            { ci_propietario: codigo_propietario, tipo: "copropietario" },
+            {
+                codigo_inmueble: 1,
+                _id: 0,
             }
-            return contenido_inm_prop;
-        } else {
-            var contenido_inm_prop = [];
-            return contenido_inm_prop;
+        );
+
+        var contenido_inm_prop = [];
+
+        if (inm_propietario.length > 0 || inm_co_propietario.length > 0) {
+            var indice = -1;
+
+            if (inm_propietario.length > 0) {
+                for (let i = 0; i < inm_propietario.length; i++) {
+                    // paquete_inmueble = {codigo_inmueble,codigo_usuario}
+                    var paquete_inmueble_i = {
+                        codigo_inmueble: inm_propietario[i].codigo_inmueble,
+                        codigo_usuario: codigo_propietario,
+                        laapirest: "/", // por partir desde el lado del CLIENTE
+                    };
+                    indice = indice + 1;
+                    contenido_inm_prop[indice] = await inmueble_card_adm_cli(paquete_inmueble_i);
+                    contenido_inm_prop[indice].card_externo = true; // para que muestre info de card EXTERIONES
+                    contenido_inm_prop[indice].estado_propietario =
+                        inm_propietario[indice].estado_propietario;
+                }
+            }
+
+            if (inm_co_propietario.length > 0) {
+                for (let i = 0; i < inm_co_propietario.length; i++) {
+                    // paquete_inmueble = {codigo_inmueble,codigo_usuario}
+                    var paquete_inmueble_i = {
+                        codigo_inmueble: inm_co_propietario[i].codigo_inmueble,
+                        codigo_usuario: codigo_propietario,
+                        laapirest: "/", // por partir desde el lado del CLIENTE
+                    };
+                    indice = indice + 1;
+                    contenido_inm_prop[indice] = await inmueble_card_adm_cli(paquete_inmueble_i);
+                    contenido_inm_prop[indice].card_externo = true; // para que muestre info de card EXTERIONES
+                    contenido_inm_prop[indice].estado_propietario = "activo";
+                }
+            }
         }
+        return contenido_inm_prop;
     } catch (error) {
         console.log(error);
     }
@@ -655,7 +485,7 @@ async function guardados_propietario(codigo_propietario) {
                 var paquete_inmueble_i = {
                     codigo_inmueble: inm_propietario[i].codigo_inmueble,
                     codigo_usuario: codigo_propietario,
-                    laapirest: "/", // por partir desde el lado del ADMINISTRADOR
+                    laapirest: "/", // por partir desde el lado del CLIENTE
                 };
                 contenido_inm_prop[i] = await inmueble_card_adm_cli(paquete_inmueble_i);
                 contenido_inm_prop[i].card_externo = true; // para que muestre info de card EXTERIONES
@@ -676,118 +506,23 @@ async function guardados_propietario(codigo_propietario) {
 async function resumen_propietario(codigo_propietario) {
     try {
         //-------------------------------------------------------------------------------
-        // PARA EL HISTORIAL DE INVERSIONES
-        var inm_propietario = await indiceInversiones.find(
-            { ci_propietario: codigo_propietario },
-            {
-                codigo_proyecto: 1,
-                codigo_inmueble: 1,
-                estado_propietario: 1,
-
-                tiene_reserva: 1,
-                pagado_reserva: 1,
-                fecha_pagado_reserva: 1,
-
-                // tiene_pago: 1,
-                // pagado_pago: 1,
-                // fecha_pagado_pago: 1,
-
-                tiene_mensuales: 1,
-                pagos_mensuales: 1,
-
-                _id: 0,
-            }
-        );
-
-        if (inm_propietario.length > 0) {
-            // conversion del documento MONGO ([array]) a "string"
-            var aux_string = JSON.stringify(inm_propietario);
-            // reconversion del "string" a "objeto" EN ESTE CASO RESPETANDO QUE SERA UN ARRAY
-            var historial_inversiones = JSON.parse(aux_string);
-
-            // la fecha en la que uno hace el pago inicial para adquiriri el inmueble es: en reserva o en remate, por tanto solo las fechas de estos estados seran considerados.
-            moment.locale("es");
-
-            for (let i = 0; i < inm_propietario.length; i++) {
-                historial_inversiones[i].numero_fila = i + 1; // agregamos al objeto
-                historial_inversiones[i].laapirest = "/"; // por partir desde el lado del CLIENTE
-
-                // un propietario solo puede ingresar a formar parte del inmueble con: RESERVA o PAGO
-                if (historial_inversiones[i].tiene_reserva) {
-                    //var fecha_estado = historial_inversiones[i].fecha_pagado_reserva;
-                    var fecha_estado = inm_propietario[i].fecha_pagado_reserva;
-                } else {
-                    if (historial_inversiones[i].tiene_mensuales) {
-                        // pagos_mensuales:  [ [1, "2023-09-08", 88.77], [ ], [ ]]
-                        var auxiliar_fecha = inm_propietario[i].pagos_mensuales[0][1]; // la fecha esta en formato string
-
-                        var fecha_estado = auxiliar_fecha + "T00:00:00.000Z";
-                    }
-                }
-
-                //var fecha_estado_inversion = moment(fecha_estado).format("LL");
-                // Usamos "utc" para que una fecha ej/ 2023-09-02T00:00:00.000Z se muestre "2023-09-02T00:00:00.000Z" y no un dia menos.
-                // el "utc" es util para fechas que son guardadas desde inputs que admiten: dia, mes, año (sin horas). Pero para fechas guardadas como: 2023-08-18T20:50:22.055Z el uso del "utc" no es necesario usarlo.
-                var fecha_estado_inversion = moment.utc(fecha_estado).format("LL");
-                historial_inversiones[i].fecha_estado_inversion = fecha_estado_inversion;
-
-                var paquete_inmueble_i = {
-                    codigo_inmueble: historial_inversiones[i].codigo_inmueble,
-                    codigo_usuario: "ninguno", // porque es desde el lado del ADMINISTRADOR
-                    laapirest: "/", // por partir desde el lado del CLIENTE
-                };
-
-                // OJO***
-                var aux_inm_prop_i = await inmueble_card_adm_cli(paquete_inmueble_i);
-
-                // agregando nuevas propiedades
-                historial_inversiones[i].nombre_proyecto = aux_inm_prop_i.nombre_proyecto;
-                historial_inversiones[i].porcentaje = aux_inm_prop_i.porcentaje;
-                historial_inversiones[i].porcentaje_obra_inm = aux_inm_prop_i.porcentaje_obra_inm;
-                historial_inversiones[i].porcentaje_obra_inm_render =
-                    aux_inm_prop_i.porcentaje_obra_inm_render;
-                historial_inversiones[i].precio_actual_inm = aux_inm_prop_i.precio_actual_inm;
-                historial_inversiones[i].ahorro = aux_inm_prop_i.ahorro;
-                historial_inversiones[i].estado_inmueble = aux_inm_prop_i.leyenda_precio_inm;
-
-                // corrigiendo estado del inmueble
-                if (historial_inversiones[i].estado_propietario == "pasivo") {
-                    historial_inversiones[i].estado_inmueble = "rematado";
-                }
-
-                //--------------- Verificacion ----------------
-                //console.log("historial de inversiones");
-                //console.log(historial_inversiones);
-                //---------------------------------------------
-            } // for
-        } else {
-            var historial_inversiones = [];
-        }
-
-        //-------------------------------------------------------------------------------
-        // PARA LA CAJA DE SEGUNDERO
-
-        var datos_segundero = {
-            codigo_objetivo: codigo_propietario,
+        var paquete_datos = {
             ci_propietario: codigo_propietario,
-            tipo_objetivo: "propietario",
+            navegacion: "cliente",
         };
 
-        var aux_segundero_cajas = await segundero_cajas(datos_segundero);
+        var resultado = await super_info_propietario(paquete_datos);
 
-        var aux_cajas = {
-            // despues de sumar todos valores de plusvalia, contruccion y valor total
-            // convertimos a numeros con separadores de punto, coma
-            valor_total: numero_punto_coma(aux_segundero_cajas.total),
-            precio: numero_punto_coma(aux_segundero_cajas.precio),
-            plusvalia: numero_punto_coma(aux_segundero_cajas.ahorro),
-            //plusvalia_construida: aux_segundero_cajas.ahorro, // en tipo "numerico puro"
-            //-------------------------------------------------
-            // para RECOMPENSA
-            recompensa: numero_punto_coma(aux_segundero_cajas.recompensa),
-            meses: numero_punto_coma(aux_segundero_cajas.meses),
-            //-------------------------------------------------
-        };
+        var plusvalia = resultado.plusvalia;
+        var plusvalia_render = resultado.plusvalia_render;
+        var ganancia = resultado.ganancia;
+        var ganancia_render = resultado.ganancia_render;
+        var fracciones = resultado.fracciones;
+        var fracciones_render = resultado.fracciones_render;
+        var propietario = resultado.propietario;
+        var propietario_render = resultado.propietario_render;
+        var array_segundero = resultado.array_segundero;
+        var historial_propietario = resultado.historial_propietario;
 
         //-------------------------------------------------------------------------------
         // PARA LA SIGNIFICADO DE SEGUNDERO
@@ -795,37 +530,10 @@ async function resumen_propietario(codigo_propietario) {
         var registro_empresa = await indiceEmpresa.findOne(
             {},
             {
-                texto_segundero_prop: 1,
                 texto_segundero_prop_iz: 1,
-                texto_segundero_prop_recom_iz: 1,
-                texto_segundero_prop_recom_de: 1,
                 _id: 0,
             }
         );
-
-        if (registro_empresa.texto_segundero_prop != undefined) {
-            if (
-                registro_empresa.texto_segundero_prop.indexOf("/sus_precio/") != -1 &&
-                registro_empresa.texto_segundero_prop.indexOf("/sus_total/") != -1 &&
-                registro_empresa.texto_segundero_prop.indexOf("/sus_plusvalia/") != -1 &&
-                inm_propietario.length > 0
-            ) {
-                var significado_aux_0 = registro_empresa.texto_segundero_prop;
-                var significado_aux_1 = significado_aux_0.replace("/sus_precio/", aux_cajas.precio);
-                var significado_aux_2 = significado_aux_1.replace(
-                    "/sus_total/",
-                    aux_cajas.valor_total
-                );
-                var significado_aux = significado_aux_2.replace(
-                    "/sus_plusvalia/",
-                    aux_cajas.plusvalia
-                );
-            } else {
-                var significado_aux = "Significado";
-            }
-        } else {
-            var significado_aux = "Significado";
-        }
 
         //---------------------------------------------------------------
         // para mensaje debajo de segundero lado IZQUIERDO
@@ -850,69 +558,20 @@ async function resumen_propietario(codigo_propietario) {
                 }
             }
         }
-
-        //total_resumen_propietario.mensaje_segundero = mensaje_segundero_pro;
-
         //-------------------------------------------------------------------------------
-        // para mensaje debajo de segundero RECOMPENSA lado IZQUIERDO
-
-        var significado_re_iz_aux = "Mensaje segundero RECOMPENSA propietario"; // texto por defecto
-
-        if (reg_nombre_prop) {
-            if (registro_empresa.texto_segundero_prop_recom_iz != undefined) {
-                if (
-                    registro_empresa.texto_segundero_prop_recom_iz.indexOf("/nom_propietario/") !=
-                    -1
-                ) {
-                    var significado_aux_0 = registro_empresa.texto_segundero_prop_recom_iz;
-                    var significado_re_iz_aux = significado_aux_0.replace(
-                        "/nom_propietario/",
-                        reg_nombre_prop.nombres_propietario
-                    );
-                }
-            }
-        }
-
-        //total_resumen_propietario.texto_segundero_prop_recom_iz = significado_re_iz_aux;
-
-        //---------------------------------------------------------------
-        // para mensaje debajo de segundero RECOMPENSA lado DERECHO
-
-        if (registro_empresa.texto_segundero_prop_recom_de != undefined) {
-            if (
-                registro_empresa.texto_segundero_prop_recom_de.indexOf("/n_meses/") != -1 &&
-                registro_empresa.texto_segundero_prop_recom_de.indexOf("/bs_espera/") != -1
-            ) {
-                var significado_re_aux_0 = registro_empresa.texto_segundero_prop_recom_de;
-                var significado_re_aux_1 = significado_re_aux_0.replace(
-                    "/n_meses/",
-                    aux_cajas.meses
-                );
-                var significado_re_de_aux = significado_re_aux_1.replace(
-                    "/bs_espera/",
-                    aux_cajas.recompensa
-                );
-            } else {
-                var significado_re_de_aux = "Significado";
-            }
-        } else {
-            var significado_re_de_aux = "Significado";
-        }
-
-        // agregando al objeto "total_resumen_propietario"
-        //total_resumen_propietario.texto_segundero_prop_recom_de = significado_re_de_aux;
-
-        //---------------------------------------------------------------
 
         var total_resumen_propietario = {
-            historial_inversiones,
-            val_cajas: aux_cajas,
-            val_segundero_cajas: aux_segundero_cajas,
-            significado_segundero: significado_aux,
+            plusvalia,
+            plusvalia_render,
+            ganancia,
+            ganancia_render,
+            fracciones,
+            fracciones_render,
+            propietario,
+            propietario_render,
+            array_segundero,
+            historial_propietario,
             mensaje_segundero: mensaje_segundero_pro,
-
-            texto_segundero_recom_iz: significado_re_iz_aux,
-            texto_segundero_recom_de: significado_re_de_aux,
         };
         //-------------------------------------------------------------------------------
 
@@ -924,28 +583,119 @@ async function resumen_propietario(codigo_propietario) {
 
 //------------------------------------------------------------------
 
-async function documentos_propietario(codigo_propietario) {
+async function fracciones_propietario(codigo_propietario) {
     try {
-        // DOCUMENTOS PRIVADOS DEL PROPIETARIO
-        var documentos_privados = [];
-        var registro_documentos_priv = await indiceDocumentos.find({
-            ci_propietario: codigo_propietario,
-            clase_documento: "Propietario",
-        });
+        var array_card_fracciones = []; // vacio de inicio
 
-        if (registro_documentos_priv.length > 0) {
-            for (let p = 0; p < registro_documentos_priv.length; p++) {
-                documentos_privados[p] = {
-                    codigo_inmueble: registro_documentos_priv[p].codigo_inmueble,
-                    nombre_documento: registro_documentos_priv[p].nombre_documento,
-                    codigo_documento: registro_documentos_priv[p].codigo_documento,
-                    url: registro_documentos_priv[p].url,
+        // todas las fracciones que guardan relacion con el propietario
+        var aux_fracciones_te = await indiceFraccionTerreno.find(
+            { ci_propietario: codigo_propietario },
+            {
+                codigo_fraccion: 1,
+                fecha_compra: 1,
+                _id: 0,
+            }
+        );
+        var fracciones_terreno = [];
+
+        // todas las fracciones que guardan relacion con el propietario
+        // solo consideramos tipo "copropietario", porque las de tipo "inversionista" tienen su origen en la fraccion de terreno.
+        var aux_fracciones_inm = await indiceFraccionInmueble.find(
+            { ci_propietario: codigo_propietario, tipo: "copropietario" },
+            {
+                codigo_fraccion: 1,
+                fecha_copropietario: 1,
+                _id: 0,
+            }
+        );
+        var fracciones_inmueble = [];
+
+        if (aux_fracciones_te.length > 0) {
+            for (let i = 0; i < aux_fracciones_te.length; i++) {
+                fracciones_terreno[i] = {
+                    codigo_fraccion: aux_fracciones_te[i].codigo_fraccion,
+                    fecha: aux_fracciones_te[i].fecha_compra,
                 };
             }
         }
 
-        //en caso de que no existiesen documentos privados, entonces se guardara como un ARRAY vacio
-        return documentos_privados;
+        if (aux_fracciones_inm.length > 0) {
+            for (let i = 0; i < aux_fracciones_inm.length; i++) {
+                //-------------------------------
+                // pueda darse el caso que una fraccion de inmueble de tipo copropietario tenga origen en fraccion de terreno, de modo que estas fracciones copropietario NO SERAN TOMADAS EN CUENTA, porque la fecha origen de estas fracciones es la "fecha_compra" como fraccion de terreno.
+
+                if (fracciones_terreno.length > 0) {
+                    let encontrado = false; // Bandera para verificar si ya existe el codigo_fraccion
+                    for (let k = 0; k < fracciones_terreno.length; k++) {
+                        if (
+                            aux_fracciones_inm[i].codigo_fraccion ==
+                            fracciones_terreno[k].codigo_fraccion
+                        ) {
+                            encontrado = true; // Si ya existe, marcamos la bandera como verdadera
+                            break; // Salimos del bucle porque ya no necesitamos seguir buscando
+                        }
+                    }
+                    // Si no se encuentra el codigo_fraccion, lo agregamos al array limpio
+                    if (!encontrado) {
+                        let elemento = {
+                            codigo_fraccion: aux_fracciones_inm[i].codigo_fraccion,
+                            fecha: aux_fracciones_inm[i].fecha_copropietario,
+                        };
+                        fracciones_inmueble.push(elemento);
+                    }
+                } else {
+                    fracciones_inmueble[i] = {
+                        codigo_fraccion: aux_fracciones_inm[i].codigo_fraccion,
+                        fecha: aux_fracciones_inm[i].fecha_copropietario,
+                    };
+                }
+            }
+        }
+
+        if (fracciones_terreno.length > 0 || fracciones_inmueble.length > 0) {
+            // Paso 1: Unir ambos arrays
+            var arrayUnido = [];
+            for (let i = 0; i < fracciones_terreno.length; i++) {
+                arrayUnido.push(fracciones_terreno[i]); // Agregar elementos del primer array
+            }
+            for (let i = 0; i < fracciones_inmueble.length; i++) {
+                arrayUnido.push(fracciones_inmueble[i]); // Agregar elementos del segundo array
+            }
+
+            // Paso 2: Ordenar por fecha (de más reciente a más antiguo)
+            for (let i = 0; i < arrayUnido.length - 1; i++) {
+                for (let j = 0; j < arrayUnido.length - i - 1; j++) {
+                    //var fecha1 = new Date(arrayUnido[j].fecha);
+                    //var fecha2 = new Date(arrayUnido[j + 1].fecha);
+                    var fecha1 = arrayUnido[j].fecha;
+                    var fecha2 = arrayUnido[j + 1].fecha;
+                    if (fecha1 < fecha2) {
+                        // Intercambiar elementos si no están en el orden correcto
+                        var temp = arrayUnido[j];
+                        arrayUnido[j] = arrayUnido[j + 1];
+                        arrayUnido[j + 1] = temp;
+                    }
+                }
+            }
+
+            //-----------------------------------------------------------------
+
+            for (let i = 0; i < arrayUnido.length; i++) {
+                var paquete_fraccion = {
+                    codigo_fraccion: arrayUnido[i].codigo_fraccion,
+                    ci_propietario: codigo_propietario,
+                    tipo_navegacion: "cliente", // porque estamos dentro de un controlador cliente
+                };
+                var card_fraccion_i = await fraccion_card_adm_cli(paquete_fraccion);
+                array_card_fracciones[i] = card_fraccion_i;
+            }
+        }
+
+        var contenido_fracciones = {
+            array_card_fracciones,
+        };
+
+        return contenido_fracciones;
     } catch (error) {
         console.log(error);
     }
@@ -1165,6 +915,427 @@ controladorCliInversor.cambiarClavesAcceso = async (req, res) => {
         } else {
             res.json({
                 exito: "no",
+            });
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// PARA ADQUIRIR FRACCIONES DE INMUEBLE EMPLEANDO FRACCIONES DE TERRENO
+
+controladorCliInversor.adquirirFraccionInm = async (req, res) => {
+    //  viene de la RUTA  post   /propietario/accion/adquirir_fraccion_inm
+    try {
+        //--------------- Verificacion ----------------
+        //console.log("los datos de PAQUETE DE DATOS para guardar o des-guardar");
+        //console.log(req.body);
+        //---------------------------------------------
+        var codigo_inmueble = req.body.codigo_inmueble;
+        var f_vender_val = req.body.f_vender_val;
+
+        var exito = false; // por defecto
+        var mensaje = "Error, intentelo nuevamente."; // por defecto
+        var arrayFraccAdquirir = []; // por defecto (fracciones de inmueble que el usuario adquirira utilizando sus fracciones de inmueble)
+        var array_card_fracciones = []; // por defecto
+
+        // verificacion si existe la cantidad requerida de fracciones de inmuebles disponibles para ser adquridas.
+
+        let fracciones_inm_disp = await indiceFraccionInmueble
+            .find(
+                {
+                    codigo_inmueble: codigo_inmueble,
+                    disponible: true,
+                    tipo: "copropietario",
+                },
+                {
+                    codigo_fraccion: 1,
+                    fraccion_bs: 1,
+                }
+            )
+            .sort({ orden: 1 }); // ordenado del menor al mayor
+
+        if (fracciones_inm_disp.length > 0) {
+            let sum_bs_disponible = 0;
+            for (let i = 0; i < fracciones_inm_disp.length; i++) {
+                let elemento_bs = fracciones_inm_disp[i].fraccion_bs;
+                sum_bs_disponible = sum_bs_disponible + elemento_bs;
+                if (sum_bs_disponible <= f_vender_val) {
+                    arrayFraccAdquirir[i] = {
+                        codigo_fraccion: fracciones_inm_disp[i].codigo_fraccion,
+                        fraccion_bs: fracciones_inm_disp[i].fraccion_bs,
+                    };
+                } else {
+                    break; // salimos del bucle for
+                }
+            }
+
+            if (sum_bs_disponible === f_vender_val) {
+                if (req.inversor_autenticado) {
+                    var ci_propietario = req.user.ci_propietario;
+
+                    //----------------------------------------
+                    // para determinar el valor de fracciones disponibles para la adquisicion de fracciones de inmueble
+
+                    let registro_inmueble = await indiceInmueble.findOne(
+                        {
+                            codigo_inmueble: codigo_inmueble,
+                        },
+                        {
+                            codigo_terreno: 1,
+                            fecha_fin_fraccionado: 1,
+                        }
+                    );
+
+                    if (registro_inmueble) {
+                        let fecha_actual = new Date();
+                        let fecha_fin_fraccionado = registro_inmueble.fecha_fin_fraccionado;
+
+                        if (fecha_actual <= fecha_fin_fraccionado) {
+                            let registro_copropietario_te = await indiceFraccionTerreno
+                                .find(
+                                    {
+                                        codigo_terreno: registro_inmueble.codigo_terreno,
+                                        ci_propietario: ci_propietario,
+                                    },
+                                    {
+                                        codigo_fraccion: 1,
+                                        fraccion_bs: 1,
+                                    }
+                                )
+                                .sort({ orden: 1 }); // ordenado del menor al mayor
+
+                            if (registro_copropietario_te.length > 0) {
+                                // importante (fecha_actual <= fecha_fin_fraccionado) esta condicion de fechas verdaderas significa que el terreno se encuentra en etapa de RESERVACION, por tanto durante esta etapa aun no existen fracciones de inmueble del tipo "inversionista", solo existirian del tipo "copropietario"
+                                // recolectamos todas las fracciones de inmueble que el usuario podria tener adquiridos
+                                let registro_copropietario_inm = await indiceFraccionInmueble
+                                    .find(
+                                        {
+                                            codigo_terreno: registro_inmueble.codigo_terreno,
+                                            ci_propietario: ci_propietario,
+                                            tipo: "copropietario",
+                                            disponible: false,
+                                        },
+                                        {
+                                            codigo_fraccion: 1,
+                                            fraccion_bs: 1,
+                                        }
+                                    )
+                                    .sort({ orden: 1 }); // ordenado del menor al mayor
+
+                                if (registro_copropietario_inm.length > 0) {
+                                    let j = -1;
+                                    let f_te_disponibles = [];
+                                    let sum_f_disponibles_val = 0;
+                                    for (let i = 0; i < registro_copropietario_te.length; i++) {
+                                        let codigo_fraccion_te_i =
+                                            registro_copropietario_te[i].codigo_fraccion;
+                                        let fraccion_bs_te_i =
+                                            registro_copropietario_te[i].fraccion_bs;
+
+                                        let fraccionDisponible = true; // por defecto
+
+                                        for (
+                                            let k = 0;
+                                            k < registro_copropietario_inm.length;
+                                            k++
+                                        ) {
+                                            let codigo_fraccion_inm_k =
+                                                registro_copropietario_inm[k].codigo_fraccion;
+
+                                            if (codigo_fraccion_te_i === codigo_fraccion_inm_k) {
+                                                // significa que el usuario utilizo su fraccion de terreno codigo_fraccion_te_i para adquriri fraccion de inmueble
+                                                fraccionDisponible = false;
+                                                break; // salimos del bucle for k de fraccion de inmueble
+                                                // importante: 1 fraccion de terreno, solo puede adquirir 1 fraccio de inmueble. (el inmueble debe pertenecer al terreno sobre el que sera construido)
+                                            }
+                                        } // fin for k
+
+                                        if (fraccionDisponible) {
+                                            sum_f_disponibles_val =
+                                                sum_f_disponibles_val + fraccion_bs_te_i;
+                                            j = j + 1;
+                                            f_te_disponibles[j] = {
+                                                codigo_fraccion: codigo_fraccion_te_i,
+                                                disponible_bs: fraccion_bs_te_i,
+                                            };
+
+                                            if (sum_f_disponibles_val === f_vender_val) {
+                                                break; // salimos del bucle for i de fraccion de terreno
+                                            }
+                                        }
+                                    } // fin for i terreno
+
+                                    if (
+                                        sum_f_disponibles_val === f_vender_val &&
+                                        f_te_disponibles.length === arrayFraccAdquirir.length
+                                    ) {
+                                        // dado que inicialmente las fracciones de terreno fueron ordenadas por orden de menor a mayor, entonces "f_te_disponibles" mantendra ese orden de fracciones de terreno disponibles para que sean empleadas para adqurir fracciones de inmueble.
+                                        for (let i = 0; i < arrayFraccAdquirir.length; i++) {
+                                            let codigo_fraccion_ad =
+                                                arrayFraccAdquirir[i].codigo_fraccion;
+                                            let codigo_fraccion_te =
+                                                f_te_disponibles[i].codigo_fraccion;
+
+                                            // "new Date()" nos devuelve la fecha actual
+                                            await indiceFraccionInmueble.updateOne(
+                                                { codigo_fraccion: codigo_fraccion_ad },
+                                                {
+                                                    $set: {
+                                                        codigo_fraccion: codigo_fraccion_te,
+                                                        ci_propietario: ci_propietario,
+                                                        disponible: false,
+                                                        fecha_copropietario: new Date(),
+                                                    },
+                                                }
+                                            );
+                                        }
+
+                                        //-----------------------------------------------
+                                        // armado de las fracciones que seran renderizados en el navegador
+
+                                        for (let i = 0; i < arrayFraccAdquirir.length; i++) {
+                                            let codigo_fraccion =
+                                                arrayFraccAdquirir[i].codigo_fraccion;
+                                            var paquete_fraccion = {
+                                                codigo_fraccion: codigo_fraccion,
+                                                ci_propietario: ci_propietario,
+                                                tipo_navegacion: "administrador", // porque estamos dentro de un controlador administrador
+                                            };
+                                            let card_fraccion_i = await fraccion_card_adm_cli(
+                                                paquete_fraccion
+                                            );
+                                            array_card_fracciones[i] = card_fraccion_i;
+                                        }
+
+                                        exito = true;
+                                    } else {
+                                        exito = false;
+                                        mensaje =
+                                            "No cuentas con la suficiente cantidad de fracciones de terreno disponibles para adquirir la cantidad de fracciones de inmueble que deseas.";
+                                    }
+                                } else {
+                                    // el usuario cuenta con fracciones de terreno, pero no utilizo ningua de sus fracciones de terreno para adquirir fracciones de inmuebles.
+
+                                    let f_te_disponibles = [];
+                                    let sum_f_disponibles_val = 0;
+                                    for (let i = 0; i < registro_copropietario_te.length; i++) {
+                                        let codigo_fraccion_te_i =
+                                            registro_copropietario_te[i].codigo_fraccion;
+                                        let fraccion_bs_te_i =
+                                            registro_copropietario_te[i].fraccion_bs;
+
+                                        sum_f_disponibles_val =
+                                            sum_f_disponibles_val + fraccion_bs_te_i;
+
+                                        f_te_disponibles[i] = {
+                                            codigo_fraccion: codigo_fraccion_te_i,
+                                            disponible_bs: fraccion_bs_te_i,
+                                        };
+
+                                        if (sum_f_disponibles_val === f_vender_val) {
+                                            break; // salimos del bucle for i de fraccion de terreno
+                                        }
+                                    } // fin for i terreno
+
+                                    if (
+                                        sum_f_disponibles_val === f_vender_val &&
+                                        f_te_disponibles.length === arrayFraccAdquirir.length
+                                    ) {
+                                        // dado que inicialmente las fracciones de terreno fueron ordenadas por orden de menor a mayor, entonces "f_te_disponibles" mantendra ese orden de fracciones de terreno disponibles para que sean empleadas para adqurir fracciones de inmueble.
+                                        for (let i = 0; i < arrayFraccAdquirir.length; i++) {
+                                            let codigo_fraccion_ad =
+                                                arrayFraccAdquirir[i].codigo_fraccion;
+                                            let codigo_fraccion_te =
+                                                f_te_disponibles[i].codigo_fraccion;
+
+                                            // "new Date()" nos devuelve la fecha actual
+                                            await indiceFraccionInmueble.updateOne(
+                                                { codigo_fraccion: codigo_fraccion_ad },
+                                                {
+                                                    $set: {
+                                                        codigo_fraccion: codigo_fraccion_te,
+                                                        ci_propietario: ci_propietario,
+                                                        disponible: false,
+                                                        fecha_copropietario: new Date(),
+                                                    },
+                                                }
+                                            );
+                                        }
+
+                                        //-----------------------------------------------
+                                        // armado de las fracciones que seran renderizados en el navegador
+
+                                        for (let i = 0; i < arrayFraccAdquirir.length; i++) {
+                                            let codigo_fraccion =
+                                                arrayFraccAdquirir[i].codigo_fraccion;
+                                            var paquete_fraccion = {
+                                                codigo_fraccion: codigo_fraccion,
+                                                ci_propietario: ci_propietario,
+                                                tipo_navegacion: "administrador", // porque estamos dentro de un controlador administrador
+                                            };
+                                            let card_fraccion_i = await fraccion_card_adm_cli(
+                                                paquete_fraccion
+                                            );
+                                            array_card_fracciones[i] = card_fraccion_i;
+                                        }
+
+                                        exito = true;
+                                    } else {
+                                        exito = false;
+                                        mensaje =
+                                            "No cuentas con la suficiente cantidad de fracciones de terreno disponibles para adquirir la cantidad de fracciones de inmueble que deseas.";
+                                    }
+                                }
+                            }
+                        } else {
+                            // el usuario no podra adquriri fracciones de inmueble, porque no se esta dentro de la fecha plazo para la adquisicion de dichas fracciones
+                            exito = false;
+                            mensaje = "El plazo para adquirir fracciones del inmueble a vencido.";
+                        }
+                    }
+                }
+            } else {
+                // no existe la cantidad requerida de fracciones de inmueble para ser adquridias por el usuario
+                exito = false;
+                mensaje =
+                    "No existe la cantidad suficiente de fracciones de inmueble para ser adquiridas.";
+            }
+        } else {
+            // no existe la cantidad requerida de fracciones de inmueble para ser adquridias por el usuario
+            exito = false;
+            mensaje =
+                "No existe la cantidad suficiente de fracciones de inmueble para ser adquiridas.";
+        }
+
+        //-------------------------------------------------
+
+        if (exito) {
+            //-----------------------------------------------
+
+            res.json({
+                exito: "si",
+                array_card_fracciones,
+            });
+        } else {
+            res.json({
+                exito: "no",
+                mensaje,
+            });
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// PARA DESHACER FRACCIONES DE INMUEBLE ADQUIRIDAS
+
+controladorCliInversor.deshacerFraccionInm = async (req, res) => {
+    //  viene de la RUTA  post   /propietario/accion/deshacer_fraccion_inm
+    try {
+        //--------------- Verificacion ----------------
+        //console.log("los datos de PAQUETE DE DATOS para guardar o des-guardar");
+        //console.log(req.body);
+        //---------------------------------------------
+        var codigo_inmueble = req.body.codigo_inmueble;
+
+        var exito = false; // por defecto
+        var mensaje = "Error, intentelo nuevamente."; // por defecto
+
+        if (req.inversor_autenticado) {
+            var ci_propietario = req.user.ci_propietario;
+
+            let registro_copropietario_inm = await indiceFraccionInmueble.find(
+                {
+                    ci_propietario: ci_propietario,
+                    tipo: "copropietario",
+                    disponible: false,
+                    codigo_inmueble: codigo_inmueble,
+                },
+                {
+                    codigo_fraccion: 1,
+                }
+            );
+
+            if (registro_copropietario_inm.length > 0) {
+                // eliminacion de los registro de fracciones de inmueble que tiene el ci_propietario en el codigo_inmueble en especifico
+                // "deleteMany" para que elimine a TODOS los que coinciden con el filtro especificado
+
+                await indiceFraccionInmueble.deleteMany({
+                    ci_propietario: ci_propietario,
+                    tipo: "copropietario",
+                    disponible: false,
+                    codigo_inmueble: codigo_inmueble,
+                });
+                //-----------------------------------------
+                // actualizacion de los indicadores de fracciones
+                var datos_funcion = {
+                    ci_propietario,
+                    codigo_objetivo: codigo_inmueble,
+                    copropietario: "inmueble",
+                };
+                var resultado = await te_inm_copropietario(datos_funcion);
+
+                var c_ft_d_n = resultado.c_ft_d_n;
+                var c_ft_d_n_render = resultado.c_ft_d_n_render;
+                var c_ft_d_val = resultado.c_ft_d_val;
+                var c_ft_d_val_render = resultado.c_ft_d_val_render;
+                var c_fti_a_n = resultado.c_fti_a_n;
+                var c_fti_a_n_render = resultado.c_fti_a_n_render;
+                var c_fti_a_val = resultado.c_fti_a_val;
+                var c_fti_a_val_render = resultado.c_fti_a_val_render;
+                var c_fti_a_p = resultado.c_fti_a_p;
+                var c_fti_a_p_render = resultado.c_fti_a_p_render;
+                var ti_f_p_render = resultado.ti_f_p_render;
+                var ti_f_val = resultado.ti_f_val;
+                var ti_f_val_render = resultado.ti_f_val_render;
+                var ti_f_d_n = resultado.ti_f_d_n;
+                var ti_f_d_n_render = resultado.ti_f_d_n_render;
+                var ti_f_d_val = resultado.ti_f_d_val;
+                var ti_f_d_val_render = resultado.ti_f_d_val_render;
+
+                //-----------------------------------------
+                exito = true;
+            } else {
+                mensaje = "No cuenta con fracciones de inmueble para su eliminación.";
+            }
+        }
+
+        // verificacion si existe la cantidad requerida de fracciones de inmuebles disponibles para ser adquridas.
+
+        //-------------------------------------------------
+
+        if (exito) {
+            //-----------------------------------------------
+
+            res.json({
+                exito: "si",
+                c_ft_d_n,
+                c_ft_d_n_render,
+                c_ft_d_val,
+                c_ft_d_val_render,
+                c_fti_a_n,
+                c_fti_a_n_render,
+                c_fti_a_val,
+                c_fti_a_val_render,
+                c_fti_a_p,
+                c_fti_a_p_render,
+                ti_f_p_render,
+                ti_f_val,
+                ti_f_val_render,
+                ti_f_d_n,
+                ti_f_d_n_render,
+                ti_f_d_val,
+                ti_f_d_val_render,
+            });
+        } else {
+            res.json({
+                exito: "no",
+                mensaje,
             });
         }
     } catch (error) {

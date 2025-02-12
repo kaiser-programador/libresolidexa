@@ -1,0 +1,165 @@
+{{!-- SON CASI SIMILARES: adm_inm_copropietario.hbs, cli_te_copropietario.hbs, cli_inm_copropietario --}}
+
+{{!-- para que el copropietario de fracciones del terreno vea su cuenta, las fracciones del cual es dueño y los documentos correspondientes --}}
+
+{{!-- es casi similar con cli_inm_copropietario.hbs --}}
+
+<div class="contenido container-fluid">
+
+    <div id="contenedor_copropietario" class="row mt-4">
+        
+        <div class="card my-4">
+            <div class="card-header ref_boton_datos_pagos_propietario">
+                <div class="d-flex justify-content-between">
+                    <h5>COPROPIETARIO</h5>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+                    {{!-- <div class="p-3 col-12 col-sm-6"> --}}
+                    <div class="col-12 col-lg-6">
+                        <div>
+                            <div class="table-responsive mt-2">
+                                <table class="texto-normal" cellpadding="7">
+
+                                    <tbody>
+
+                                        <tr>
+                                            <td class="text-left texto-link">
+                                                Nombres:
+                                            </td>
+
+                                            <td class="text-left">
+                                                <span
+                                                >&nbsp;&nbsp;{{informacion.propietario_datos.nombres_propietario}}</span>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td class="text-left texto-link">
+                                                Apellidos:
+                                            </td>
+
+                                            <td class="text-left">
+                                                <span
+                                                >&nbsp;&nbsp;{{informacion.propietario_datos.apellidos_propietario}}</span>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td class="text-left texto-link">
+                                                C.I.:
+                                            </td>
+
+                                            <td class="text-left">
+                                                <span
+                                                >&nbsp;&nbsp;{{informacion.propietario_datos.ci_propietario}}</span>
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-12 col-lg-6">
+                        <div>
+                            <h6>Copropietario</h6>
+
+                            <div class="row">
+                                <div class="col-12 col-sm-6 col-xl-3">
+                                    <p class="text-left texto-link">
+                                        Cantidad
+                                    </p>
+                                </div>
+                                
+                                <div class="col-12 col-sm-6 col-xl-3">
+                                    <p class="text-left">
+                                        <span class="f_n_propietario">{{contenido.f_n_propietario_render}}</span>
+                                    </p>
+                                </div>
+                                <div class="col-12 col-sm-6 col-xl-3">
+                                    <p class="text-left texto-link">
+                                        Valor
+                                    </p>
+                                </div>
+                                
+                                <div class="col-12 col-sm-6 col-xl-3">
+                                    <p class="text-left">
+                                        <span class="f_val_propietario">{{contenido.f_val_propietario_render}}</span>
+                                        <span>Bs</span>
+                                    </p>
+                                </div>
+                                <div class="col-12 col-sm-6 col-xl-3">
+                                    <p class="text-left texto-link">
+                                        Participación
+                                    </p>
+                                </div>
+                                <div class="col-12 col-sm-6 col-xl-3">
+                                    <p class="text-left">
+                                        <span class="f_p_propietario">{{contenido.f_p_propietario_render}}</span>
+                                        <span>%</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="contenedor_fracciones" class="row mt-4">
+        <div class="card my-4">
+            <div class="card-header">
+                <div class="d-flex justify-content-between">
+                    <h5>FRACCIONES TERRENO COPROPIETARIO</h5>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+                    {{!-- fracciones de terreno de las cuales el propietario es dueño --}}
+                    {{#each contenido.array_fracciones}}
+                        {{> adm_cli_card_fraccion}}
+                    {{/each}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="contenedor_documentos" class="row mt-4">
+
+        <div class="card my-4">
+            <div class="card-header ref_boton_pagos_propietario">
+                <div class="d-flex justify-content-between">
+                    <h5>DOCUMENTOS COPROPIETARIO</h5>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="p-3 col-12 col-lg-9 col-xl-6">
+                        <div>
+                            {{#each contenido.documentos_privados}}
+                                <div class="mt-3">
+                                    <i class="fas fa-file-pdf estilo-pdf-garantia"></i>
+                                    <a class="ml-3" href="{{url}}" target="_blank">
+                                        {{nombre_documento}}
+                                    </a>
+                                </div>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+</div>

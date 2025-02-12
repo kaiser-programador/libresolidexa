@@ -19,6 +19,8 @@ const controladorAdmProyecto = require("../controladores/adm_proyecto");
 
 const controladorAdmInmueble = require("../controladores/adm_inmueble");
 
+const controladorAdmFraccion = require("../controladores/adm_fraccion");
+
 const controladorAdmPropietario = require("../controladores/adm_propietario");
 
 const controladorAdmAdministrador = require("../controladores/administrador");
@@ -34,6 +36,8 @@ const controladorCliTerreno = require("../controladores/cli_terreno");
 const controladorCliProyecto = require("../controladores/cli_proyecto");
 
 const controladorCliInmueble = require("../controladores/cli_inmueble");
+
+const controladorCliFraccion = require("../controladores/cli_fraccion");
 
 const controladorEmpresa = require("../controladores/cli_empresa");
 
@@ -61,11 +65,11 @@ module.exports = function (servidorDamosRutas) {
         controladorCliInicio.buscarRequerimientos
     );
 
-    // RUTA PARA BUSQUEDA DE PROYECTOS
+    // RUTA PARA BUSQUEDA DE TERRENO, que tienen fracciones disponibles
     laRuta.post(
-        "/proyectos/resultados",
+        "/fracciones_terreno/resultados",
         validador.validar_cli_2,
-        controladorCliInicio.buscarProyectos
+        controladorCliInicio.buscarFraccionesTerreno
     );
 
     // RUTA PARA RENDERIZAR LOS PROYECTOS SEGUN SU TIPO DE ESTADO LADO PUBLICO CLIENTE
@@ -90,6 +94,13 @@ module.exports = function (servidorDamosRutas) {
         "/empresa/preguntas_frecuentes",
         validador.validar_cli_2,
         controladorEmpresa.preguntasFrecuentes
+    );
+
+    // RUTA PARA EXTRACCION DEL TIPO DE CAMBIO OFICIAL DE LA MONEDA
+    laRuta.post(
+        "/empresa/operacion/tipo_cambio",
+        validador.validar_cli_2,
+        controladorEmpresa.tipo_cambio
     );
 
     //===================================================================================
@@ -134,6 +145,20 @@ module.exports = function (servidorDamosRutas) {
         controladorCliInversionista.cambiarClavesAcceso
     );
 
+    // PARA ADQUIRIR FRACCIONES DE INMUEBLE EMPLEANDO FRACCIONES DE TERRENO
+    laRuta.post(
+        "/propietario/accion/adquirir_fraccion_inm",
+        validador.validar_cli_2,
+        controladorCliInversionista.adquirirFraccionInm
+    );
+
+    // PARA DESHACER FRACCIONES DE INMUEBLE ADQUIRIDAS
+    laRuta.post(
+        "/propietario/accion/deshacer_fraccion_inm",
+        validador.validar_cli_2,
+        controladorCliInversionista.deshacerFraccionInm
+    );
+
     //===================================================================================
     //===================================================================================
     // RUTAS TERRENO DESDE LADO PUBLICO CLIENTE
@@ -143,6 +168,13 @@ module.exports = function (servidorDamosRutas) {
         "/terreno/:codigo_terreno/:vista_te",
         validador.validar_cli_2,
         controladorCliTerreno.renderVentanaTerreno
+    );
+
+    // PARA LECTURA DE PRONOSTICO PRECIOS $us/m2 DEL TERRENO
+    laRuta.post(
+        "/terreno/operacion/pronostico_precio_m2",
+        validador.validar_cli_2,
+        controladorCliTerreno.pronostico_precio_m2
     );
 
     //===================================================================================
@@ -160,6 +192,13 @@ module.exports = function (servidorDamosRutas) {
     //===================================================================================
     // RUTAS INMUEBLE DESDE LADO PUBLICO CLIENTE
 
+    // PARA LECTURA DE PRONOSTICO PRECIOS $us/m2 DEL TERRENO
+    laRuta.post(
+        "/inmueble/operacion/pronostico_precio_m2",
+        validador.validar_cli_2,
+        controladorCliInmueble.pronostico_precio_m2
+    );
+
     // RUTA PARA RENDERIZAR LA VENTANA DEL INMUEBLE, SEGUN EL TIPO DE PESTAÑA SELECCIONADO
     laRuta.get(
         "/inmueble/:codigo_inmueble/:vista_inm",
@@ -167,25 +206,15 @@ module.exports = function (servidorDamosRutas) {
         controladorCliInmueble.renderVentanaInmueble
     );
 
-    // PARA CALCULO DE TIEMPO EN QUE EL INM TRADICIONAL IGUALA LA PLUSVALIA DE SOLIDEXA
-    laRuta.post(
-        "/inmueble/operacion/calculo_tiempo",
-        validador.validar_cli_2,
-        controladorCliInmueble.calculoTiempo
-    );
+    //===================================================================================
+    //===================================================================================
+    // RUTAS FRACCION DESDE LADO PUBLICO CLIENTE
 
-    // PARA CALCULO DE FINANCIAMIENTO BANCARIO PARA PROPIETARIO
-    laRuta.post(
-        "/inmueble/operacion/calculo_banco_p",
+    // RUTA PARA RENDERIZAR LA VENTANA DE LA FRACCION, SEGUN EL TIPO DE PESTAÑA SELECCIONADO
+    laRuta.get(
+        "/fraccion/:codigo_fraccion/:vista_fraccion",
         validador.validar_cli_2,
-        controladorCliInmueble.calculo_banco_p
-    );
-
-    // PARA CALCULO DE RENDIMIENTOS DE INVERSIONISTA
-    laRuta.post(
-        "/inmueble/operacion/calculo_inversionista",
-        validador.validar_cli_2,
-        controladorCliInmueble.calculo_inversionista
+        controladorCliFraccion.renderVentanaFraccion
     );
 
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -240,13 +269,6 @@ module.exports = function (servidorDamosRutas) {
         "/laapirest/administracion/general/accion/subir_imagen",
         validador.validar_adm,
         controladorAdmGenerales.subirImagen
-    );
-
-    // PARA SUBIR IMAGEN DE LA EMPRESA: CABECERAS Y PRINCIPAL
-    laRuta.post(
-        "/laapirest/administracion/general/accion/subir_imagen_empresa",
-        validador.validar_adm,
-        controladorAdmGenerales.subirImagenEmpresa
     );
 
     // PARA ELIMINAR IMAGEN ya sea de TERRENO o PROYECTO
@@ -336,11 +358,39 @@ module.exports = function (servidorDamosRutas) {
         controladorAdmGenerales.eliminarTabla
     );
 
-    // PARA GUARDAR PROPIETARIO (DATOS O PAGOS)
+    // PARA GUARDAR PROPIETARIO (DATOS)
     laRuta.post(
-        "/laapirest/administracion/general/accion/guardar_datos_pagos_propietario/:tipo_guardado",
+        "/laapirest/administracion/general/accion/guardar_datos_propietario",
         validador.validar_adm,
-        controladorAdmGenerales.guardarDatosPagosPropietario
+        controladorAdmGenerales.guardarDatosPropietario
+    );
+
+    // PARA GUARDAR PROPIETARIO (PAGOS)
+    laRuta.post(
+        "/laapirest/administracion/general/accion/guardar_pago_propietario",
+        validador.validar_adm,
+        controladorAdmGenerales.guardarPagoPropietario
+    );
+
+    // PARA GUARDAR VENTA DE FRACCIONES DE TERRENO A COPROPIETARIO
+    laRuta.post(
+        "/laapirest/administracion/general/accion/guardar_pago_copropietario_te",
+        validador.validar_adm,
+        controladorAdmGenerales.guardarPagoCopropietarioTe
+    );
+
+    // PARA GUARDAR VENTA DE FRACCIONES DE INMUEBLE A COPROPIETARIO
+    laRuta.post(
+        "/laapirest/administracion/general/accion/guardar_pago_copropietario_inm",
+        validador.validar_adm,
+        controladorAdmGenerales.guardarPagoCopropietarioInm
+    );
+
+    // para eliminar al copropietario del terreno o inmueble. Se elimina TODOS los datos que relacionan al copropietario con las fracciones del terreno o las fracciones del inmueble, incluyendo los DOCUMENTOS PRIVADOS que tiene el copropietario con dichas fracciones.
+    laRuta.post(
+        "/laapirest/administracion/general/accion/eliminar_copropietario",
+        validador.validar_adm,
+        controladorAdmGenerales.eliminarCopropietario
     );
 
     //-----------------------------------------------------------------------------------
@@ -413,6 +463,13 @@ module.exports = function (servidorDamosRutas) {
         controladorAdmTerreno.eliminarTerreno
     );
 
+    // PARA CREAR FRACCIONES DEL TERRENO
+    laRuta.post(
+        "/laapirest/terreno/:codigo_terreno/accion/crear_fracciones_terreno",
+        validador.validar_adm,
+        controladorAdmTerreno.crearFraccionesTerreno
+    );
+
     //===================================================================================
     //===================================================================================
     // RUTAS PROYECTO
@@ -445,13 +502,6 @@ module.exports = function (servidorDamosRutas) {
         "/laapirest/proyecto/:codigo_proyecto/accion/guardar_estado_proyecto",
         validador.validar_adm,
         controladorAdmProyecto.guardarEstadoProyecto
-    );
-    //-----------------------------------------------------------------------------------
-    // PARA GUARDAR ELECCION GANADORA DEL PROYECTO   **OK
-    laRuta.post(
-        "/laapirest/proyecto/:codigo_proyecto/accion/guardar_eleccion_proyecto",
-        validador.validar_adm,
-        controladorAdmProyecto.guardarEleccionProyecto
     );
     //-----------------------------------------------------------------------------------
     // PARA GUARDAR ELECCION GANADORA DEL PROYECTO   **OK
@@ -571,25 +621,12 @@ module.exports = function (servidorDamosRutas) {
         controladorAdmInmueble.guardarDatosInmueble
     );
 
-    // PARA INSPECCIONAR EL CI DEL POTENCIAL PROPIETARIO  **OK
+    // PARA CAMBIAR EL ESTADO DEL PROPIETARIO DE ACTIVO A PASIVO. LA ELIMINACION COMPLETA DEL PROPIETARIO SE HACE CUANDO SEA REEMPLAZADO POR UNO NUEVO Y ESO ESTA EN LA SIGUIENTE RUTA:
+    // "/laapirest/administracion/general/accion/guardar_pago_propietario"
     laRuta.post(
-        "/laapirest/inmueble/:codigo_inmueble/accion/llenar_datos_pagos_propietario",
-        validador.validar_adm,
-        controladorAdmInmueble.llenar_datos_pagos_propietario
-    );
-
-    // PARA ELIMINAR PROPIETARIO DE UN INMUEBLE
-    laRuta.delete(
         "/laapirest/inmueble/:codigo_inmueble/accion/eliminar_propietario_inmueble",
         validador.validar_adm,
-        controladorAdmInmueble.eliminar_propietario_inmueble
-    );
-
-    // PARA AGREGAR NUEVO PROPIETARIO DE UN INMUEBLE
-    laRuta.post(
-        "/laapirest/inmueble/:codigo_inmueble/accion/nuevo_propietario_inmueble",
-        validador.validar_adm,
-        controladorAdmInmueble.nuevo_propietario_inmueble
+        controladorAdmInmueble.eliminarPropietarioInmueble
     );
 
     // PARA GUARDAR EL ESTADO DEL INMUEBLE  **OK
@@ -597,6 +634,13 @@ module.exports = function (servidorDamosRutas) {
         "/laapirest/inmueble/:codigo_inmueble/accion/guardar_estado_inmueble",
         validador.validar_adm,
         controladorAdmInmueble.guardarEstadoInmueble
+    );
+
+    // PARA CREAR FRACCIONES DEL INMUEBLE
+    laRuta.post(
+        "/laapirest/inmueble/:codigo_inmueble/accion/crear_fracciones_inmueble",
+        validador.validar_adm,
+        controladorAdmInmueble.crearFraccionesInmueble
     );
 
     // PARA GUARDAR DATOS DEL INVERSIONISTA
@@ -611,6 +655,24 @@ module.exports = function (servidorDamosRutas) {
         "/laapirest/inmueble/:codigo_inmueble/accion/eliminar_inmueble",
         validador.validar_adm,
         controladorAdmInmueble.eliminarInmueble
+    );
+
+    //===================================================================================
+    //===================================================================================
+    // RUTAS FRACCION
+
+    // RUTA PARA RENDERIZAR LA VENTANA DE LA FRACCION, SEGUN EL TIPO DE PESTAÑA SELECCIONADO
+    laRuta.get(
+        "/laapirest/fraccion/:codigo_fraccion/:ventana_fraccion",
+        validador.validar_adm,
+        controladorAdmFraccion.renderizarVentanaFraccion
+    );
+
+    // PARA ELIMINAR FRACCION
+    laRuta.delete(
+        "/laapirest/fraccion/:codigo_fraccion/accion/eliminar_fraccion",
+        validador.validar_adm,
+        controladorAdmFraccion.eliminarFraccion
     );
 
     //===================================================================================
@@ -636,6 +698,27 @@ module.exports = function (servidorDamosRutas) {
         "/laapirest/inversor/nuevas_claves",
         validador.validar_adm,
         controladorAdmPropietario.nuevasClavesInversor
+    );
+
+    // PARA INSPECCIONAR EL CI DEL POTENCIAL PROPIETARIO  **OK
+    laRuta.post(
+        "/laapirest/propietario/accion/llenar_datos_propietario",
+        validador.validar_adm,
+        controladorAdmPropietario.llenar_datos_propietario
+    );
+
+    // PARA INSPECCIONAR EL CI DEL POTENCIAL COPROPIETARIO DE INMUEBLE  **OK
+    laRuta.post(
+        "/laapirest/propietario/accion/llenar_datos_copropietario_inm",
+        validador.validar_adm,
+        controladorAdmPropietario.llenar_datos_copropietario_inm
+    );
+
+    // PARA INSPECCIONAR EL CI DEL POTENCIAL COPROPIETARIO DE TERRENO  **OK
+    laRuta.post(
+        "/laapirest/propietario/accion/llenar_datos_copropietario_te",
+        validador.validar_adm,
+        controladorAdmPropietario.llenar_datos_copropietario_te
     );
 
     //===================================================================================
@@ -710,31 +793,11 @@ module.exports = function (servidorDamosRutas) {
         controladorAdmAdministrador.borrarHistorial
     );
 
-    // RUTA PARA QUE EL ADMINISTRADOR MAESTRO PUEDA GUARDAR LOS DATOS GENERICOS DE LA EMPESA SOLIDEXA
-    laRuta.post(
-        "/laapirest/administrador/accion/guardar_datos_empresa",
-        validador.validar_adm,
-        controladorAdmAdministrador.guardarDatosEmpresa
-    );
-
-    // RUTA PARA GUARDAR LOS ENCABEZADOS DE VENTANAS DE LA EMPRESA
-    laRuta.post(
-        "/laapirest/administrador/accion/guardar_encabezados_empresa",
-        validador.validar_adm,
-        controladorAdmAdministrador.guardarEncabezadosEmpresa
-    );
-
     // RUTA PARA "GUARDAR FORMULARIO DE TRANSICIONES DE EMPRESA"
     laRuta.post(
         "/laapirest/administrador/accion/guardar_texto_principal_empresa",
         validador.validar_adm,
         controladorAdmAdministrador.guardarTextoPrincipalEmpresa
-    );
-    // RUTA PARA "GUARDAR FORMULARIO DE BENEFICIOS DE EMPRESA"
-    laRuta.post(
-        "/laapirest/administrador/accion/guardar_significados_empleos",
-        validador.validar_adm,
-        controladorAdmAdministrador.guardarSignificadosEmpleos
     );
 
     // RUTA PARA "GUARDAR TEXTOS DE SEGUNDERO DE: PROYECTO, INMUEBLE Y PROPIETARIO"
@@ -742,27 +805,6 @@ module.exports = function (servidorDamosRutas) {
         "/laapirest/administrador/accion/guardar_textos_segundero",
         validador.validar_adm,
         controladorAdmAdministrador.guardarTextosSegundero
-    );
-
-    // PARA GUARDAR FORMULARIO DE ENCABEZADO "QUIENES SOMOS"
-    laRuta.post(
-        "/laapirest/administrador/accion/guardar_encabezado_somos",
-        validador.validar_adm,
-        controladorAdmAdministrador.guardarEncabezadoSomos
-    );
-
-    // PARA GUARDAR FORMULARIO DE ENCABEZADO "COMO FUNCIONA"
-    laRuta.post(
-        "/laapirest/administrador/accion/guardar_encabezado_funciona",
-        validador.validar_adm,
-        controladorAdmAdministrador.guardarEncabezadoFunciona
-    );
-
-    // PARA GUARDAR FORMULARIO DE ENCABEZADO "PREGUNTAS FRECUENTES"
-    laRuta.post(
-        "/laapirest/administrador/accion/guardar_encabezado_preguntas",
-        validador.validar_adm,
-        controladorAdmAdministrador.guardarEncabezadoPreguntas
     );
 
     // PARA GUARDAR TABLA "PREGUNTAS FRECUENTES"

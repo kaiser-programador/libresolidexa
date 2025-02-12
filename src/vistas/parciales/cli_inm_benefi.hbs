@@ -39,9 +39,9 @@
 
         <div class="mx-md-4 contenedor-detalle-texto">
 
-            <h4 class="texto-resaltado"><span class="icono_izq d-inline-block d-md-none"><i
+            <div class="titulo_1 texto-normal"><span class="icono_izq d-inline-block d-md-none"><i
                         class="fas fa-gift"
-                    ></i></span>{{informacion.titulo_plusvalia_inm}}</h4>
+                    ></i></span>{{informacion.titulo_plusvalia_inm}}</div>
             <p class="escritura" style="text-align: justify;">
                 {{informacion.texto_plusvalia_inm}}
             </p>
@@ -70,8 +70,9 @@
                                     ></i>
                                 </div>
                                 <div class="my-2">
-                                    <span class="h3 texto-link"><b>{{informacion.costo_volterra_render}}</b></span>
-                                    <span class="h5 texto-link">$us</span>
+                                    <span class="h3 texto-link elvalor" data-bs="{{informacion.pv_volterra}}">{{informacion.costo_volterra_render}}</span>
+
+                                    <span class="h5 texto-link lamoneda">Bs</span>
                                 </div>
                                 <div>
                                     Es el precio justo del inmueble
@@ -86,8 +87,8 @@
                                     ></i>
                                 </div>
                                 <div class="my-2">
-                                    <span class="h3 texto-link"><b>{{informacion.plusvalia_sus_render}}</b></span>
-                                    <span class="h5 texto-link">$us</span>
+                                    <span class="h3 texto-link elvalor" data-bs="{{informacion.plusvalia_sus}}">{{informacion.plusvalia_sus_render}}</span>
+                                    <span class="h5 texto-link lamoneda">Bs</span>
                                 </div>
                                 <div>
                                     Plusvalía que se concede como beneficio al propietario del inmueble <b>SOLIDEXA</b>.
@@ -117,9 +118,9 @@
 
         <div class="mx-md-4 contenedor-detalle-texto">
             <div style="width: 100%;">
-                <h4 class="texto-resaltado"><span class="icono_izq d-inline-block d-md-none"><i
+                <div class="titulo_1 texto-normal"><span class="icono_izq d-inline-block d-md-none"><i
                             class="fas fa-balance-scale"
-                        ></i></span>{{informacion.titulo_precio_inm}}</h4>
+                        ></i></span>{{informacion.titulo_precio_inm}}</div>
                 <p class="texto-normal escritura" style="text-align: justify;">
                     {{informacion.texto_precio_inm}}
                 </p>
@@ -150,11 +151,14 @@
                                     ></i>
                                 </div>
                                 <div class="my-2">
-                                    <span class="h3 texto-link"><b>{{informacion.solid_precio_r}}</b></span>
-                                    <span class="h5 texto-link">$us/m<sup>2</sup></span>
+                                    <b>
+                                        <span class="h3 texto-link elvalor" data-bs="{{informacion.solid_precio}}">{{informacion.solid_precio_r}}</span>
+                                    </b>
+                                    
+                                    <span class="h5 texto-link"><span class="lamoneda">Bs</span>/m<sup>2</sup></span>
                                 </div>
                                 <div>
-                                    El precio que pagas por el inmueble <b>SOLIDEXA</b> es menor.
+                                    El precio justo que pagas por el inmueble <b>SOLIDEXA</b> es menor.
                                 </div>
                             </div>
                             <div class="col-6 text-center">
@@ -165,8 +169,11 @@
                                     ></i>
                                 </div>
                                 <div class="my-2" style="color: red;">
-                                    <span class="h3"><b>{{informacion.prom_sus_m2_r}}</b></span>
-                                    <span class="h5">$us/m<sup>2</sup></span>
+                                    <b>
+                                        <span class="h3 elvalor" data-bs="{{informacion.prom_bs_m2}}">{{informacion.prom_bs_m2_r}}</span>
+                                    </b>
+                                    
+                                    <span class="h5"><span class="lamoneda">Bs</span>/m<sup>2</sup></span>
                                 </div>
                                 <div>
                                     El precio promedio que pagas por el inmueble <b>tradicional</b> es más elevado.
@@ -192,9 +199,9 @@
                                     <tr>
                                         <th>Inmueble</th>
                                         <th>Superficie m<sup>2</sup></th>
-                                        <th>Precio $us</th>
-                                        <th>Precio $us/m<sup>2</sup></th>
-                                        <th>Sobreprecio $us/m<sup>2</sup></th>
+                                        <th>Precio <span class="lamoneda">Bs</span></th>
+                                        <th>Precio <span class="lamoneda">Bs</span>/m<sup>2</sup></th>
+                                        <th>Sobreprecio <span class="lamoneda">Bs</span>/m<sup>2</sup></th>
                                     </tr>
                                 </thead>
 
@@ -203,9 +210,9 @@
                                         <tr class="fila_ref">
                                             <td>{{direccion_comparativa}}</td>
                                             <td>{{m2_comparativa}}</td>
-                                            <td>{{precio_comparativa}}</td>
-                                            <td>{{sus_m2}}</td>
-                                            <td style="color: red;">{{sobreprecio_venta}}</td>
+                                            <td class="elvalor" data-bs="{{precio_comparativa}}">{{precio_comparativa_r}}</td>
+                                            <td class="elvalor" data-bs="{{sus_m2}}">{{sus_m2_r}}</td>
+                                            <td class="elvalor" data-bs="{{sobreprecio_venta}}" style="color: red;">{{sobreprecio_venta_r}}</td>
                                         </tr>
                                     {{/each}}
                                 </tbody>
@@ -244,9 +251,9 @@
         </div>
 
         <div class="mx-md-4 contenedor-detalle-texto">
-            <h4 class="texto-resaltado"><span class="icono_izq d-inline-block d-md-none"><i
+            <div class="titulo_1 texto-normal"><span class="icono_izq d-inline-block d-md-none"><i
                         class="fas fa-hard-hat"
-                    ></i></span>{{informacion.titulo_construccion_inm}}</h4>
+                    ></i></span>{{informacion.titulo_construccion_inm}}</div>
             <p class="escritura" style="text-align: justify;">
                 {{informacion.texto_construccion_inm}}
             </p>
@@ -280,8 +287,9 @@
                                     ></i>
                                 </div>
                                 <div class="my-2">
-                                    <span class="h3 texto-link"><b>{{informacion.solid_constru_r}}</b></span>
-                                    <span class="h5 texto-link">$us/m<sup>2</sup></span>
+                                    <span class="h3 texto-link elvalor" data-bs="{{contenido_proyecto.solid_constru}}">{{contenido_proyecto.solid_constru_r}}</span>
+                                    <span class="h5 texto-link lamoneda">Bs</span>
+                                    <span>/m<sup>2</sup></span>
                                 </div>
                                 <div>
                                     El precio de contrucción del inmueble <b>SOLIDEXA</b> es menor.
@@ -295,8 +303,9 @@
                                     ></i>
                                 </div>
                                 <div class="my-2" style="color: red;">
-                                    <span class="h3"><b>{{informacion.prom_constructoras_r}}</b></span>
-                                    <span class="h5">$us/m<sup>2</sup></span>
+                                    <span class="h3 elvalor" data-bs="{{informacion.prom_constructoras}}">{{informacion.prom_constructoras_r}}</span>
+                                    <span class="h5 lamoneda">Bs</span>
+                                    <span>/m<sup>2</sup></span>
                                 </div>
                                 <div>
                                     El precio promedio de construcción de un inmueble <b>tradicional</b> es más elevado.
@@ -319,9 +328,9 @@
                                 <thead>
                                     <tr>
                                         <th>Otras constructoras</th>
-                                        <th>Precio $us/m<sup>2</sup></th>
-                                        <th>Precio $us</th>
-                                        <th>Sobreprecio $us</th>
+                                        <th>Precio <span class="lamoneda">Bs</span>/m<sup>2</sup></th>
+                                        <th>Precio <span class="lamoneda">Bs</span></th>
+                                        <th>Sobreprecio <span class="lamoneda">Bs</span></th>
                                     </tr>
                                 </thead>
 
@@ -329,9 +338,9 @@
                                     {{#each informacion.constructoras_render}}
                                         <tr class="fila_ref">
                                             <td>{{nombre}}</td>
-                                            <td>{{contructora_dolar_m2}}</td>
-                                            <td>{{costo_constructora}}</td>
-                                            <td style="color: red;">{{sobreprecio}}</td>
+                                            <td class="elvalor" data-bs="{{contructora_dolar_m2}}">{{contructora_dolar_m2_r}}</td>
+                                            <td class="elvalor" data-bs="{{costo_constructora}}">{{costo_constructora_r}}</td>
+                                            <td class="elvalor" data-bs="{{sobreprecio}}" style="color: red;">{{sobreprecio_r}}</td>
                                         </tr>
                                     {{/each}}
                                 </tbody>
@@ -355,9 +364,4 @@
         </div>
 
     </div>
-</div>
-
-<div class="text-right mt-4" title="Numero de visualizaciones">
-    <span><i class="fas fa-glasses icono_visualizaciones"></i></span>
-    <span class="numero_visualizaciones"><b>{{nv_ventana}}</b></span>
 </div>

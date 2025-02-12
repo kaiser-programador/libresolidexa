@@ -3,98 +3,47 @@
 {{! <div class="col-12 col-sm-6 mt-4"> }}
 <div class="p-3 col-12 col-lg-9 col-xl-6">
 
-    <h5>RESERVA, APROBACIÓN</h5>
+    <h5>Adquisición</h5>
 
     <p class="text-left">
-        Pagos cuando el inmueble es adquirido en estado de Reservación y su posterior pago por tramites de Aprobación.
+        El primer pago del propietario para adquirir el inmueble.
     </p>
 
-    <div class="form-group row">
-        <label class="col-12 col-sm-5 col-lg-4 col-form-label">
-            Reserva
-        </label>
-
-        <div class="col-12 col-sm-7 col-lg-8 input-group">
-            <input
-                type="number"
-                id="pagado_reserva"
-                step="0.01"
-                class="form-control aux_borrador_pagos"
-                value="{{contenido_propietario.propietario_pagos.pagado_reserva}}"
-                required
-            />
-            <div class="input-group-append">
-                <span class="input-group-text bg-warning">$us</span>
+    <div class="row mt-4">
+        <div class="col-12 col-lg-10 col-xl-12">
+            <div class="row">
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <p class="text-left texto-link">
+                        {{! adquisicion puede ser: Reserva o Remate }}
+                        {{contenido_propietario.propietario_pagos.adquisicion}}
+                    </p>
+                </div>
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <p class="text-left">
+                        <span>{{contenido_propietario.propietario_pagos.pagado_primer_r}}</span>
+                        <span>Bs</span>
+                    </p>
+                </div>
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <p class="text-left texto-link">
+                        {{! <b>Fecha Reserva</b> }}
+                        Fecha Pago
+                    </p>
+                </div>
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <p class="text-left">
+                        {{contenido_propietario.propietario_pagos.fecha_re_re}}
+                    </p>
+                </div>
             </div>
+
         </div>
-
-    </div>
-
-    <div class="form-group row">
-
-        <label class="col-12 col-sm-5 col-lg-4 col-form-label">
-            Fecha Pago
-        </label>
-
-        <div class="col-12 col-sm-7 col-lg-8">
-            <input
-                type="date"
-                id="fecha_pagado_reserva"
-                value="{{contenido_propietario.propietario_pagos.fecha_pagado_reserva}}"
-                class="form-control aux_borrador_pagos"
-            />
-        </div>
-
-    </div>
-
-    <br />
-
-    <div class="form-group row">
-        <label class="col-12 col-sm-5 col-lg-4 col-form-label">
-            Aprobación
-        </label>
-
-        <div class="col-12 col-sm-7 col-lg-8 input-group">
-            <input
-                type="number"
-                id="pagado_pago"
-                step="0.01"
-                class="form-control aux_borrador_pagos"
-                value="{{contenido_propietario.propietario_pagos.pagado_pago}}"
-                required
-                title="Incluye el pago por Reserva si es que existiese"
-            />
-            <div class="input-group-append">
-                <span class="input-group-text bg-warning">$us</span>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="form-group row">
-
-        <label class="col-12 col-sm-5 col-lg-4 col-form-label">
-            Fecha Pago
-        </label>
-
-        <div class="col-12 col-sm-7 col-lg-8">
-            <input
-                type="date"
-                id="fecha_pagado_pago"
-                value="{{contenido_propietario.propietario_pagos.fecha_pagado_pago}}"
-                class="form-control aux_borrador_pagos"
-            />
-        </div>
-
     </div>
 
     <br />
 
     {{! tabla de DESGLOCE DE PAGOS }}
-    <h5>REMATE, CONSTRUCCIÓN</h5>
-    <p class="text-left">
-        Pagos cuando el inmueble es adquirido en estado de Remate o el pago de sus correspondientes cuotas en estado de Construcción.
-    </p>
+    <h5>Cuotas de construcción</h5>
     <div class="row madre_tabla">
         <div class="col-12">
 
@@ -104,8 +53,8 @@
                         <tr>
                             <th class="text-center texto-resaltado">#</th>
                             <th class="text-center texto-resaltado">Fecha</th>
-                            <th class="text-center texto-resaltado">Valor $us.</th>
-                            <th class="text-center texto-resaltado">Acción</th>
+                            <th class="text-center texto-resaltado">Cuota Bs</th>
+                            <th class="text-center texto-resaltado">Estado</th>
                         </tr>
                     </thead>
 
@@ -113,101 +62,18 @@
                     esta clase como HIJO con "append" }}
                     <tbody class="cuerpo_filas">
 
-                        {{#if contenido_propietario.propietario_pagos.tiene_mensuales}}
-
                             {{#each contenido_propietario.propietario_pagos.pagos_mensuales}}
-                                <tr class="fila_fila">
-                                    <td class="text-center numero_fila" data-id="{{numero}}">
-                                        {{numero}}
-                                    </td>
-                                    <td><input
-                                            type="date"
-                                            class="form-control fila_input"
-                                            data-tipo="texto"
-                                            style="min-width: 8em;"
-                                            value="{{fecha_pago}}"
-                                        />
-                                    </td>
-
-                                    <td><input
-                                            type="number"
-                                            class="form-control fila_input"
-                                            data-tipo="numero"
-                                            step="0.01"
-                                            style="min-width: 5em;"
-                                            value="{{pago}}"
-                                        />
-                                    </td>
-
+                                <tr class="fila_registro">
+                                    <td>{{orden}}</td>
+                                    <td>{{fecha_render}}</td>
+                                    <td>{{pago_bs_render}}</td>
                                     <td>
-                                        <div class="d-flex">
-                                            <button
-                                                class="boton_fila_arriba d-block btn p-1"
-                                                data-id="{{numero}}"
-                                            ><i
-                                                    class="fas fa-arrow-circle-up size_iconos"
-                                                ></i></button>
-                                            <button
-                                                class="boton_fila_abajo d-block btn mx-1 p-1"
-                                                data-id="{{numero}}"
-                                            ><i
-                                                    class="fas fa-arrow-circle-down size_iconos"
-                                                ></i></button>
-                                            <button
-                                                class="boton_fila_eliminar d-block btn p-1"
-                                                data-id="{{numero}}"
-                                            ><i
-                                                    class="fas fa-window-close size_iconos"
-                                                ></i></button>
-                                        </div>
+                                        <span class="{{color_css}}">
+                                            {{leyenda_pago}}
+                                        </span>
                                     </td>
                                 </tr>
-
                             {{/each}}
-
-                        {{else}}
-
-                            <tr class="fila_fila">
-                                <td class="text-center numero_fila" data-id="1">1</td>
-                                <td><input
-                                        type="date"
-                                        class="form-control fila_input"
-                                        data-tipo="texto"
-                                        style="min-width: 8em;"
-                                    />
-                                </td>
-
-                                <td><input
-                                        type="number"
-                                        class="form-control fila_input"
-                                        data-tipo="numero"
-                                        step="0.01"
-                                        style="min-width: 5em;"
-                                    />
-                                </td>
-
-                                <td>
-                                    <div class="d-flex">
-                                        <button
-                                            class="boton_fila_arriba d-block btn p-1"
-                                            data-id="1"
-                                        ><i class="fas fa-arrow-circle-up size_iconos"></i></button>
-                                        <button
-                                            class="boton_fila_abajo d-block btn p-1 mx-1"
-                                            data-id="1"
-                                        ><i
-                                                class="fas fa-arrow-circle-down size_iconos"
-                                            ></i></button>
-                                        <button
-                                            class="boton_fila_eliminar d-block btn p-1"
-                                            data-id="1"
-                                        ><i class="fas fa-window-close size_iconos"></i></button>
-                                    </div>
-                                </td>
-
-                            </tr>
-
-                        {{/if}}
 
                     </tbody>
                 </table>

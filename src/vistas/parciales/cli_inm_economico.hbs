@@ -1,4 +1,4 @@
-{{!-- PARA INFORME ECONOMICO DESDE EL LADO DEL CLIENTE PUBLICO --}}
+{{! PARA INFORME ECONOMICO DESDE EL LADO DEL CLIENTE PUBLICO }}
 
 <div class="row mt-5 cuadro_estandart py-3">
 
@@ -8,7 +8,9 @@
         </div>
 
         <div class="mx-md-4 contenedor-detalle-texto">
-            <h4 class="texto-resaltado"><span class="icono_izq d-inline-block d-md-none"><i class="fas fa-file-invoice-dollar"></i></span>{{informacion.titulo_economico_inm}}</h4>
+            <div class="titulo_1 texto-normal"><span class="icono_izq d-inline-block d-md-none"><i
+                        class="fas fa-file-invoice-dollar"
+                    ></i></span>{{informacion.titulo_economico_inm}}</div>
             <p class="escritura texto-normal" style="text-align: justify;">
                 {{informacion.texto_economico_inm}}
             </p>
@@ -24,40 +26,72 @@
                                 <div class="mb-4">
                                     <div class="d-flex justify-content-between texto-normal">
                                         <h5>{{informacion.tipo_inmueble}}</h5>
-                                        <div> {{informacion.superficie_inmueble_m2}} m<sup>2</div>
+                                        <div>
+                                            {{informacion.superficie_inmueble_m2}}
+                                            m<sup>2</sup></div>
                                     </div>
                                     <div class="progress" style="height: 0.5rem;">
-                                        <div class="progress-bar" role="progressbar" style="width: 100.00%;"></div>
+                                        <div
+                                            class="progress-bar"
+                                            role="progressbar"
+                                            style="width: 100.00%;"
+                                        ></div>
                                     </div>
                                     <div class="d-flex justify-content-between mt-1">
                                         <div class="texto-normal">
-                                            <span class="mr-3">$us {{informacion.total_presupuesto}}</span>
+                                            <span class="mr-3">
+                                                <span class="lamoneda">Bs</span>
+                                                <span
+                                                    class="elvalor"
+                                                    data-bs="{{informacion.total_presupuesto}}"
+                                                >{{informacion.total_presupuesto_r}}</span>
+                                            </span>
                                             <span>100,00 %</span>
                                         </div>
                                         <div class="texto-normal">
-                                            <span>{{informacion.sus_m2_total}} $us/m<sup>2</sup></span>
+                                            <span
+                                                class="elvalor"
+                                                data-bs="{{informacion.sus_m2_total}}"
+                                            >{{informacion.sus_m2_total_r}}</span>
+                                            <span>
+                                                <span class="lamoneda">Bs</span>/m<sup>2</sup>
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
 
                                 {{#each informacion.valores_tabla}}
-                                <div class="mb-4 ml-5">
-                                    <h5 class="texto-normal">{{presupuesto_items}}</h5>
-                                    <div class="progress" style="height: 0.5rem;">
-                                        <div class="progress-bar" role="progressbar"
-                                            style="width: {{porcentaje_item_prog}}%;">
+                                    <div class="mb-4 ml-5">
+                                        <h5 class="texto-normal">{{presupuesto_items}}</h5>
+                                        <div class="progress" style="height: 0.5rem;">
+                                            <div
+                                                class="progress-bar"
+                                                role="progressbar"
+                                                style="width: {{porcentaje_item_prog}}%;"
+                                            >
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between mt-1">
+                                            <div class="texto-normal">
+                                                <span class="mr-3">
+                                                    <span class="lamoneda">Bs</span>
+                                                    <span
+                                                        class="elvalor"
+                                                        data-bs="{{presupuesto_valores}}"
+                                                    >
+                                                        {{presupuesto_valores_r}}
+                                                    </span>
+                                                </span>
+                                                <span>{{porcentaje_item}} %</span>
+                                            </div>
+                                            <div class="texto-normal">
+                                                <span class="elvalor" data-bs="{{sus_m2}}">
+                                                    {{sus_m2_r}}
+                                                </span>
+                                                <span class="lamoneda">Bs</span>/m<sup>2</sup>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="d-flex justify-content-between mt-1">
-                                        <div class="texto-normal">
-                                            <span class="mr-3">$us {{presupuesto_valores}}</span>
-                                            <span>{{porcentaje_item}} %</span>
-                                        </div>
-                                        <div class="texto-normal">
-                                            <span>{{sus_m2}} $us/m<sup>2</sup></span>
-                                        </div>
-                                    </div>
-                                </div>
                                 {{/each}}
                             </div>
                         </div>
@@ -79,36 +113,33 @@
 </div>
 
 {{#if informacion.documentacion}}
-<div class="row mt-5 cuadro_estandart py-3">
-    <div class="col-12 d-flex">
+    <div class="row mt-5 cuadro_estandart py-3">
+        <div class="col-12 d-flex">
 
-        <div class="d-none d-md-flex mr-3 contenedor-detalle-icono">
-            <i class="fas fa-folder-open"></i>
-        </div>
+            <div class="d-none d-md-flex mr-3 contenedor-detalle-icono">
+                <i class="fas fa-folder-open"></i>
+            </div>
 
-        <div class="contenedor-detalle-texto">
-            <h4 class="texto-resaltado"><span class="icono_izq d-inline-block d-md-none"><i class="fas fa-folder-open"></i></span>Documentos</h4>
+            <div class="contenedor-detalle-texto">
+                <div class="titulo_1 texto-normal"><span
+                        class="icono_izq d-inline-block d-md-none"
+                    ><i class="fas fa-folder-open"></i></span>Documentos</div>
 
-            <div class="ml-md-4">
+                <div class="ml-md-4">
 
-                {{#each informacion.documentacion}}
-                <div class="mt-3">
-                    <i class="fas fa-file-pdf estilo-pdf-garantia"></i>
-                    <a class="ml-3" href="{{url}}" target="_blank">
-                        {{titulo_documento}}
-                    </a>
+                    {{#each informacion.documentacion}}
+                        <div class="mt-3">
+                            <i class="fas fa-file-pdf estilo-pdf-garantia"></i>
+                            <a class="ml-3" href="{{url}}" target="_blank">
+                                {{titulo_documento}}
+                            </a>
+                        </div>
+                    {{/each}}
+
                 </div>
-                {{/each}}
 
             </div>
 
         </div>
-
     </div>
-</div>
 {{/if}}
-
-<div class="text-right mt-4" title="Numero de visualizaciones">
-    <span><i class="fas fa-glasses icono_visualizaciones"></i></span>
-    <span class="numero_visualizaciones"><b>{{nv_ventana}}</b></span>
-</div>

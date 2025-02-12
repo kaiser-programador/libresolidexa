@@ -25,7 +25,7 @@
         <div class="row" id="contenedor_py_inm_render">
 
             <div class="ref_tipo_py_inm"></div>
-            {{!-- debajo de esta ref, es que se renderizaran los inmuebles resultados de la busqueda --}}
+            {{!-- debajo de esta ref, es que se renderizaran los card resultados de la busqueda --}}
             {{#each inmuebles_renderizar}}
 
                 {{> adm_cli_card_inmueble}}
@@ -36,28 +36,18 @@
     </div>
     {{/if}}
 
-    {{#if tipo_resultado_proyectos}}
+    {{#if tipo_resultado_fracciones_terreno}}
     <div class="container-fluid p-4">
         <div class="row" id="contenedor_py_inm_render">
 
             <div class="ref_tipo_py_inm"></div>
-            {{!-- debajo de esta ref, es que se renderizaran los inmuebles resultados de la busqueda --}}
+            {{!-- debajo de esta ref, es que se renderizaran los card resultados de la busqueda --}}
 
-            {{#if cards_proyectos}}
-                {{#each proyectos_renderizar}}
+            {{#each terrenos_renderizar}}
 
-                    {{> adm_cli_card_proyecto}}
+                {{> adm_cli_card_terreno}}
 
-                {{/each}}
-            {{/if}}
-
-            {{#if cards_terrenos}}
-                {{#each proyectos_renderizar}}
-
-                    {{> adm_cli_card_terreno}}
-
-                {{/each}}
-            {{/if}}
+            {{/each}}
 
         </div>
     </div>
@@ -143,7 +133,7 @@
     </div>
     {{/if}}
 
-    {{#if tipo_resultado_proyectos}}
+    {{#if tipo_resultado_fracciones_terreno}}
     <div class="container mt-5">
         <div class="contenedor-inexistentes jumbotron">
 

@@ -1,0 +1,104 @@
+{{!-- CO-PROPIETARIO --}}
+
+<div class="mt-3">
+
+    <div class="card" style="max-width: 36rem;">
+        <h5 class="card-header">SUBIR DOCUMENTO PRIVADO</h5>
+        <div class="card-body text-primary">
+            <p class="text-center">Los documentos subidos, seran de caracter PRIVADO</p>
+
+            <form enctype="multipart/form-data" id="idSubirDocumento" data-tipo_doc="propietario">
+                {{! input oculto para enviar el ci_inversionista junto con los demas inputs del formulario}}
+                <input type="text" name="ciInversionistaHtml" value="{{ci_inversionista}}" hidden />
+
+                {{! campo para seleccionar UN DOCUMENTO desde la pc }}
+                <div class="form-group row">
+                    <label
+                        for="id_input_subir_documento"
+                        class="col-form-label text-md-right col-md-5"
+                    >Seleccione archivo PDF</label>
+                    <div class="col-md-6">
+                        <input
+                            type="file"
+                            name="subirArchivoNavegador"
+                            class="clase_input_subir_documento form-control"
+                            id="id_input_subir_documento"
+                            required
+                        />
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label
+                        for="id_nombre_documento"
+                        class="col-form-label text-md-right col-md-5"
+                    >Nombre documento</label>
+                    <div class="col-md-6">
+                        <input
+                            type="text"
+                            name="nombre_documento"
+                            placeholder="Título del documento"
+                            class="form-control"
+                            id="id_nombre_documento"
+                            required
+                        />
+                    </div>
+                </div>
+
+                {{! auxiliar para guardado de documento para envio por jquery }}
+                <input type="text" name="codigo_proyecto" value="" hidden />
+                <input type="text" name="codigo_inmueble" value="{{codigo_inmueble}}" hidden />
+
+                {{! para la clase de documento (sera "Propietario", porque porque pertenecera exclusivamente al PROPIETARIO y sera de caracter PRIVADO) }}
+                <input type="text" name="clase_documento" value="Propietario" hidden />
+
+                {{! codigo_objetivo, dependiendo, puede ser de terreno, proyecto, inmueble o propietario }}
+                <input type="text" name="codigo_objetivo" value="{{codigo_propietario}}" hidden />
+
+                {{! codigo_terreno, "" (vacio) porque no se verifica si el terreno estara o no bloqueado }}
+                <input type="text" name="codigo_terreno" value="" hidden />
+                {{! ci_propietario, util para documentos privados del PROPIETARIO (aqui estara LLENO) }}
+                <input type="text" name="ci_propietario" value="{{codigo_propietario}}" hidden />
+
+                <div class="form-group ref_subir_doc text-center">
+                    <button class="btn btn-primary">Subir Documento</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<div class="mt-4">
+
+    <div class="row">
+
+        <div class="col-lg-7 mb-4">
+
+            {{! "table-responsive" es para que tenga un scroll en tamaños muy pequeños }}
+            <div class="table-responsive cuadro_estandart p-4">
+
+                <table class="tabla_contenedora table">
+                    <thead>
+                        <tr>
+                            <th class="texto-resaltado">PDF</th>
+                            <th class="texto-resaltado">TÍTULO DOCUMENTO</th>
+                            <th class="texto-resaltado">CÓDIGO INMUEBLE</th>
+                            <th class="texto-resaltado">OPERACIÓN</th>
+                        </tr>
+                    </thead>
+
+                    {{! es importante EL USO DE "REFERENCIAS ref" PARA PROCESOS DE AGREGADO Y ELIMINACION (Y MAS AUN DE RECIEN AGREGADOS) DE DOCUMENTOS, Y MAS AUN SI EXISTEN OTRAS TABLAS, ESTO PARA EVITAR CONFLICTOS }}
+                    <tbody class="cuerpo_filas texto-normal">
+
+                        {{!-- AQUI SE ENLISTARAN CON JQUERY LOS DOCUMENTOS QUE TIENE EL COPROPIETARIO CON EL INMUEBLE --}}
+
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>

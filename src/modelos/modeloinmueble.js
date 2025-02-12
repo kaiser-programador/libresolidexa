@@ -5,21 +5,27 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const inmuebleEsquema = new Schema({
+
     codigo_terreno: { type: String, default: "" },
     codigo_proyecto: { type: String, default: "" },
     codigo_inmueble: { type: String, default: "" },
     ciudad: { type: String, default: "" }, // util para busquedas de inmuebles por ciudad
 
-    //ci_propietario: { type: String, default: "" }, // ci del propietario actual (que lo tiene reservado) o final, en caso de que no exista entonces estara vacio ""
+    // false: cuando se trata de un inmueble normal, adquiridos por PROPIETARIOS ABSOLUTOS
+    // true: cuando se trata de un inmueble que esta fraccionado, que estara formado por  COPROPIETARIOS
+    fraccionado: { type: Boolean, default: false },
 
-    // guardado, disponible, reservado, pendiente_pago, pagado_pago, pendiente_aprobacion, pagos (construccion), remate, completado (construido)
-    estado_inmueble: { type: String, default: "guardado" }, //
+    // si el inmueble es "fraccionado: true", entonces se debera especificar la fecha maxima hasta donde estara permitido que el inmueble acepte adquisicion de fracciones de inmueble por parte de los copropietarios del terreno. este tiempo es de maximo 5 dias, desde el momento en que el terreno inicie su etapa de "reservacion"
+    // UNA VEZ QUE SE VENZA EL PLAZO Y EL INM NO LLEGO AL 100% DE RESERVA, ENTONCES SE CAMBIARA SU CONDICION DE fraccionado a false, DE MODO QUE SERA TRATADO COMO UN INM ENTERO PARA QUE SEA ADQUIRIDO POR PROPIETARIO ABSOLUTO.
+    fecha_fin_fraccionado: { type: Date },
+
+    // guardado, disponible, reservado, construccion, remate, construido
+    // SI SE TRATA DE UN INMUEBLE DEL TIPO FRACCIONADO Y NECESITA VENDER FRACCIONES, ENTONCES SU ESTADO SERA "DISPONIBLE"
+    estado_inmueble: { type: String, default: "guardado" },
+
     fecha_creacion: { type: Date, default: Date.now },
 
     // NO EXISTE FECHA INICIO Y FIN DE REMATE EN INMUEBLE, PORQUE SI ENTRA EN REMATE, ESTARA EN ESE ESTADO HASTA QUE LOGRE SER COMPRADO POR UN NUEVO PROPIETARIO, ASI QUE EL CAMBIO DE ESTADO DE REMATE SE LO HARA MANUALMENTE DESDE EL LADO DEL ADMINISTRADOR
-
-    valor_reserva: { type: Number, default: 0 }, // que requiere el inmueble en $us
-    valor_aprobacion: { type: Number, default: 0 }, // que requiere el inmueble en $us para los tramites, permisos construccion, etc.
 
     tipo_inmueble: { type: String, default: "" }, // Departamento, Oficina, Comercial, Casa
     torre: { type: String, default: "" },
@@ -34,28 +40,13 @@ const inmuebleEsquema = new Schema({
     // ------------------------------------------------------------
     // es el precio de venta, de un imueble similar a nuestro inmueble que es vendido por LA COMPETENCIA, importante que este precio debe ser SUPERIOR al precio de SOLIDEXA
     // TAMBIEN ES IMPORTANTE QUE ESTE PRECIO SEA IGUAL AL PROMEDIO DE LOS PRECIOS COMPARTIVOS DE INMUEBLE DEL MERCADO QUE ESTAN ALMACENADOS EN "precio_comparativa"
-    precio_competencia: { type: Number, default: 0 },
+    precio_competencia: { type: Number, default: 0 }, // En moneda Bs
 
     // ------------------------------------------------------------
-    // el el precio de contruccion del inmueble o PRECIO JUSTO, incluido el costo de derechos de terreno
-    precio_construccion: { type: Number, default: 100 },
+    // el el precio de contruccion del inmueble, NO incluye el costo de derechos de terreno
+    precio_construccion: { type: Number, default: 100 }, // En moneda Bs
 
     // ------------------------------------------------------------
-    // el valor en BS. del valor de recompensa por el tiempo de espera del inmueble hasta el inicio de su contruccion
-    recompensa: { type: Number, default: 0 }, // en moneda nacional "Bs"
-
-    // ------------------------------------------------------------
-    // PARA CUANDO EL INMUEBLE ESTE EN ESTADO DE: DISPONIBLE O REMATE. UTIL PARA CALCULADORA DE INVERSIONISTA
-
-    // Debe cubrir el pago de las cuotas anteriores y la presente exigida cuota de construcción del inmueble.
-    inversion_estado: { type: Number, default: 0 },
-
-    // Meses que cubre la presente exigida cuota de construcción del inmueble
-    periodo_estado: { type: Number, default: 0 },
-
-    // ------------------------------------------------------------
-
-    plusvalia_sus: { type: Number, default: 0 }, //  ( = precio mercado corriente de inmueble similares - precio construccion SOLIDEXA)
 
     titulo_descripcion_1: { type: String, default: "" }, // posible "informacion general *****"
     varios_descripcion_1: { type: String, default: "" }, // posible "informacion general *****"
@@ -76,7 +67,7 @@ const inmuebleEsquema = new Schema({
 
     direccion_comparativa: { type: Array, default: [] },
     m2_comparativa: { type: Array, default: [] },
-    precio_comparativa: { type: Array, default: [] },
+    precio_comparativa: { type: Array, default: [] }, // en moneda Bs
 
     titulo_garantia_1: { type: String, default: "" }, // posible "fiduciaria"
     garantia_1: { type: String, default: "" }, // posible "fiduciaria"
@@ -87,14 +78,6 @@ const inmuebleEsquema = new Schema({
     titulo_garantia_3: { type: String, default: "" }, // posible "Colectivo A"
     garantia_3: { type: String, default: "" }, // posible "Colectivo A"
 
-    // -----------------------------------------------------------------------
-    // false, porque de inicio el inmueble no estara en remate, solo estara cuando el propietario incumpla con el pago mensual de su inmueble
-    inmueble_remate: { type: Boolean, default: false },
-    penalizacion_inm: { type: Number, default: 0 }, // el valor de penalizacion que actualmente tiene el inmueble que se encuentra en remate y que debera perder el propitario que incumplio con los pagos
-    // -----------------------------------------------------------------------
-    // acumulador de penalizaciones actuales de propietarios irresponsables
-    acumulador_penalizaciones: { type: Number, default: 0 },
-
     //----------------------------------------------------------------
     // numero de vistas, segun la ventana abierta
     v_descripcion: { type: Number, default: 0 },
@@ -103,6 +86,8 @@ const inmuebleEsquema = new Schema({
     v_info_economico: { type: Number, default: 0 },
     v_empleos: { type: Number, default: 0 },
     v_inversor: { type: Number, default: 0 },
+    v_calculadora: { type: Number, default: 0 },
+    v_fracciones: { type: Number, default: 0 }, // tendra vistas solo si es un inmueble FRACCIONADO
     // ----------------------------------------------------------------
 });
 

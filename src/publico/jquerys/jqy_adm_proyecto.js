@@ -202,26 +202,6 @@ $("#guardar_estado_proyecto").click(function (e) {
 });
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// PARA LA CASILLA DE ELECCION DE PROYECTO COMO GANADOR PARA: PAGO, CONTRUCCION Y CONSTRUIDO
-
-$(".casilla_py_elegido").click(function (e) {
-    // **OK
-    var casilla = $(this).attr("data-marcado"); // el estado inicial del check, si es "false" significa que no esta seleccionado, si es "true" significa que si estea seleccionado
-
-    if (casilla == "true") {
-        // si la casilla era "true" ahora cambiara de estado a "false" (es decir no estara seleccionado)
-        $(".casilla_py_elegido").attr("data-marcado", "false");
-        $(".input_eleccion_proyecto").val("false");
-    }
-
-    if (casilla == "false") {
-        // si la casilla era "false" ahora cambiara de estado a "true" (es decir no estara seleccionado)
-        $(".casilla_py_elegido").attr("data-marcado", "true");
-        $(".input_eleccion_proyecto").val("true");
-    }
-});
-
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // PARA LA CASILLA DE VISIBILIDAD DE PROYECTO
 
 $(".casilla_py_visible").click(function (e) {
@@ -239,59 +219,6 @@ $(".casilla_py_visible").click(function (e) {
         $(".casilla_py_visible").attr("data-marcado", "true");
         $(".input_visibilidad_proyecto").val("true");
     }
-});
-
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// GUARDAR ELECCION del PROYECTO
-
-$("#guardar_eleccion_proyecto").click(function (e) {
-    // **OK
-    var codigo_proyecto = $("#id_objetivo_codigo").attr("data-objetivo_codigo");
-    let casilla_check = $(".input_eleccion_proyecto").val();
-    var paqueteDatos = {
-        casilla_check,
-    };
-
-    $.ajax({
-        url: "/laapirest/proyecto/" + codigo_proyecto + "/accion/guardar_eleccion_proyecto",
-        type: "POST",
-        data: paqueteDatos,
-    }).done(function (respuestaServidor) {
-        if (respuestaServidor.exito == "si") {
-            // agregamos los mensajes ALERT DESPUES y al MISMO NIVEL del boton id "acceso_principal"
-
-            $("#guardar_eleccion_proyecto").after(
-                `<div class="alert alert-success mt-3">
-                        <button type="button" class="close" data-dismiss="alert">
-                            <span>&times;</span>
-                        </button>
-                        <strong>Estado del proyecto guardado!</strong>
-                    </div>`
-            );
-        }
-
-        if (respuestaServidor.exito == "no") {
-            $("#guardar_eleccion_proyecto").after(
-                `<div class="alert alert-danger mt-3">
-                        <button type="button" class="close" data-dismiss="alert">
-                            <span>&times;</span>
-                        </button>
-                        <strong>Ocurrio un problema, intentelo nuevamente!</strong>
-                    </div>`
-            );
-        }
-
-        if (respuestaServidor.exito == "denegado") {
-            $("#guardar_eleccion_proyecto").after(
-                `<div class="alert alert-danger mt-3">
-                        <button type="button" class="close" data-dismiss="alert">
-                            <span>&times;</span>
-                        </button>
-                        <strong>El proyecto presente se encuentra bloqueado, por tanto no es posible realizar cambios</strong>
-                    </div>`
-            );
-        }
-    });
 });
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

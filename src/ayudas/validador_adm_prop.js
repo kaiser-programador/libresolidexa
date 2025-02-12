@@ -14,6 +14,10 @@ validador.validar_adm = async (req, res, next) => {
     // ------- Para verificación -------
     //console.log("vemos que pasa con autenticate ADMINISTRADOR");
     //console.log(req.isAuthenticated());
+
+    // (AGREGANDOLO AL req). lo agregue, es nuevo para saber si navegamos en ventanas de administrador "/laapirest/" o de cliente "/"
+    req.tipo_navegacion = "administrador";
+
     if (req.isAuthenticated()) {
         // // // // // // // // // // // // // // // // // // // // // // // // // // // // // //
         // AQUI ENCERRAR DENTRO DE UN IF SI EL ADMINISTRADOR ES EFECTIVAMENTE UN ADMINISTRADOR Y NO UN CLIENTE CON SU CUENTA INICIADA INTENTANDO ACCEDER A URL PROPIAS DE ADMINISTRADOR. SI SE COMPRUEBA EFECTIVAMENTE QUE ES UN ADMINISTRADOR, ENTONCES PERMITIR "return next();"
@@ -46,6 +50,8 @@ validador.validar_adm = async (req, res, next) => {
                 registroAdministrador.estado_administrador == "activo" &&
                 estado_navegante == "activo"
             ) {
+
+                
                 // ------- Para verificación -------
                 //console.log("ESTA VALIDADO EL ADMINISTRADOR INGRESANTE");
                 return next(); // significa que se continuara con el codigo que tenga a continuacion de el...
@@ -94,6 +100,10 @@ validador.validar_cli_2 = (req, res, next) => {
     // ------- Para verificación -------
     //console.log("vemos que pasa con autenticate CLIENTE");
     //console.log(req.isAuthenticated()); // true o false
+
+    // (AGREGANDOLO AL req). lo agregue, es nuevo para saber si navegamos en ventanas de administrador "/laapirest/" o de cliente "/"
+    req.tipo_navegacion = "cliente";
+
     if (req.isAuthenticated()) {
         // ------- Para verificación -------
         //console.log("ESTA VALIDADO EL PROPIETARIO INGRESANTE");

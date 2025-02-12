@@ -43,16 +43,24 @@
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-12 col-lg-4 col-form-label">Ciudad</label>
-                <label class="col-sm-12 col-lg-8 col-form-label" id="label_ciudad">
-                    {{contenido_terreno.ciudad}}
-                </label>
+                <label for="label_nombre" class="col-sm-12 col-lg-4 col-form-label">Nombre</label>
+                <div class="col-sm-12 col-lg-8">
+                    <input
+                        title="Nombre de referencia de la ubicación del terreno"
+                        placeholder="Ej/ La Vertiente"
+                        type="text"
+                        name="nombre"
+                        value="{{contenido_terreno.ubicacion}}"
+                        class="form-control"
+                        id="label_nombre"
+                    />
+                </div>
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-12 col-lg-4 col-form-label">Proyecto ganador</label>
-                <label class="col-sm-12 col-lg-8 col-form-label">
-                    {{contenido_terreno.proyecto_ganador}}
+                <label class="col-sm-12 col-lg-4 col-form-label">Ciudad</label>
+                <label class="col-sm-12 col-lg-8 col-form-label" id="label_ciudad">
+                    {{contenido_terreno.ciudad}}
                 </label>
             </div>
 
@@ -101,25 +109,6 @@
             </div>
 
             <div class="form-group row">
-                <label for="label_precio_sus" class="col-sm-12 col-lg-4 col-form-label">Precio</label>
-                <div class="col-sm-12 col-lg-8 input-group">
-                    <input
-                        name="precio_sus"
-                        type="number"
-                        step="0.01"
-                        value="{{contenido_terreno.precio_sus}}"
-                        class="form-control"
-                        id="label_precio_sus"
-                        min="0"
-                        required
-                    />
-                    <div class="input-group-append">
-                        <span class="input-group-text bg-warning">$us</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group row">
                 <label for="label_superficie" class="col-sm-12 col-lg-4 col-form-label">Superficie</label>
                 <div class="col-sm-12 col-lg-8 input-group">
                     <input
@@ -138,17 +127,43 @@
                 </div>
             </div>
 
+
+            {{!-- Este precio ya considera el descuento si es que el terreno lo tuviese --}}
             <div class="form-group row">
-                <label for="label_anteproyectos_maximo" class="col-sm-12 col-lg-4 col-form-label">Número
-                    anteproyectos</label>
-                <div class="col-sm-12 col-lg-8">
+                <label for="label_precio_bs" class="col-sm-12 col-lg-4 col-form-label">Precio</label>
+                <div class="col-sm-12 col-lg-8 input-group">
                     <input
+                        name="precio_bs"
                         type="number"
-                        name="anteproyectos_maximo"
-                        value="{{contenido_terreno.anteproyectos_maximo}}"
+                        step="0.01"
+                        value="{{contenido_terreno.precio_bs}}"
                         class="form-control"
-                        id="label_anteproyectos_maximo"
+                        id="label_precio_bs"
+                        min="0"
+                        required
                     />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg-warning">Bs</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="label_descuento_bs" class="col-sm-12 col-lg-4 col-form-label">Descuento</label>
+                <div class="col-sm-12 col-lg-8 input-group">
+                    <input
+                        name="descuento_bs"
+                        type="number"
+                        step="0.01"
+                        value="{{contenido_terreno.descuento_bs}}"
+                        class="form-control"
+                        id="label_descuento_bs"
+                        min="0"
+                        required
+                    />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg-warning">Bs</span>
+                    </div>
                 </div>
             </div>
 
@@ -195,89 +210,89 @@
             <h5>FECHAS TERRENO</h5>
 
             <div class="form-group row">
-                <label for="label_fecha_inicio_reserva" class="col-sm-12 col-lg-4 col-form-label">Fecha
-                    inicio reservaciones</label>
+                <label for="label_fecha_inicio_convocatoria" class="col-sm-12 col-lg-4 col-form-label">Fecha
+                    inicio convocatoria</label>
                 <div class="col-sm-12 col-lg-8">
                     <input
-                        name="fecha_inicio_reserva"
+                        name="fecha_inicio_convocatoria"
                         type="date"
-                        value="{{contenido_terreno.fecha_inicio_reserva}}"
+                        value="{{contenido_terreno.fecha_inicio_convocatoria}}"
                         class="form-control"
-                        id="label_fecha_inicio_reserva"
+                        id="label_fecha_inicio_convocatoria"
                     />
                 </div>
             </div>
 
             <div class="form-group row">
-                <label for="label_fecha_fin_reserva" class="col-sm-12 col-lg-4 col-form-label">Fecha fin
-                    reservaciones</label>
+                <label for="label_fecha_fin_convocatoria" class="col-sm-12 col-lg-4 col-form-label">Fecha fin
+                    convocatoria</label>
                 <div class="col-sm-12 col-lg-8">
                     <input
-                        name="fecha_fin_reserva"
+                        name="fecha_fin_convocatoria"
                         type="date"
-                        value="{{contenido_terreno.fecha_fin_reserva}}"
+                        value="{{contenido_terreno.fecha_fin_convocatoria}}"
                         class="form-control"
-                        id="label_fecha_fin_reserva"
+                        id="label_fecha_fin_convocatoria"
                     />
                 </div>
             </div>
 
             <div class="form-group row">
-                <label for="label_fecha_inicio_pago" class="col-sm-12 col-lg-4 col-form-label">Fecha
-                    inicio pago</label>
+                <label for="label_fecha_inicio_anteproyecto" class="col-sm-12 col-lg-4 col-form-label">Fecha
+                    inicio anteproyecto</label>
                 <div class="col-sm-12 col-lg-8">
                     <input
-                        name="fecha_inicio_pago"
+                        name="fecha_inicio_anteproyecto"
                         type="date"
-                        value="{{contenido_terreno.fecha_inicio_pago}}"
+                        value="{{contenido_terreno.fecha_inicio_anteproyecto}}"
                         class="form-control"
-                        id="label_fecha_inicio_pago"
-                        title="Fecha inicio del pago para emplearlo en los tramites de aprobacion"
+                        id="label_fecha_inicio_anteproyecto"
+                        title="Fecha inicio para la elaboración del anteproyecto arquitectónico."
                     />
                 </div>
             </div>
 
             <div class="form-group row">
-                <label for="label_fecha_fin_pago" class="col-sm-12 col-lg-4 col-form-label">Fecha fin
-                    pago</label>
+                <label for="label_fecha_fin_anteproyecto" class="col-sm-12 col-lg-4 col-form-label">Fecha fin
+                    anteproyecto</label>
                 <div class="col-sm-12 col-lg-8">
                     <input
-                        name="fecha_fin_pago"
+                        name="fecha_fin_anteproyecto"
                         type="date"
-                        value="{{contenido_terreno.fecha_fin_pago}}"
+                        value="{{contenido_terreno.fecha_fin_anteproyecto}}"
                         class="form-control"
-                        id="label_fecha_fin_pago"
-                        title="Fecha fin del pago para emplearlo en los tramites de aprobacion"
+                        id="label_fecha_fin_anteproyecto"
+                        title="Fecha de finalización para la elaboración del anteproyecto arquitectónico."
                     />
                 </div>
             </div>
 
             <div class="form-group row">
-                <label for="label_fecha_inicio_aprobacion" class="col-sm-12 col-lg-4 col-form-label">Fecha
-                    inicio aprobación</label>
+                <label for="label_fecha_inicio_reservacion" class="col-sm-12 col-lg-4 col-form-label">Fecha
+                    inicio reservación</label>
                 <div class="col-sm-12 col-lg-8">
                     <input
-                        name="fecha_inicio_aprobacion"
+                        name="fecha_inicio_reservacion"
                         type="date"
-                        value="{{contenido_terreno.fecha_inicio_aprobacion}}"
+                        value="{{contenido_terreno.fecha_inicio_reservacion}}"
                         class="form-control"
-                        id="label_fecha_inicio_aprobacion"
-                        title="Fecha de inicio que demorara la tramitación hasta la obtención de los permisos de construcción"
+                        id="label_fecha_inicio_reservacion"
+                        title="Fecha de que se da inicio a la etapa de reservación para los inmuebles que seran edificados sobre el terreno."
                     />
                 </div>
             </div>
 
             <div class="form-group row">
-                <label for="label_fecha_fin_aprobacion" class="col-sm-12 col-lg-4 col-form-label">Fecha fin
-                    aprobación</label>
+                <label for="label_fecha_fin_reservacion" class="col-sm-12 col-lg-4 col-form-label">Fecha fin
+                    reservación</label>
                 <div class="col-sm-12 col-lg-8">
                     <input
-                        name="fecha_fin_aprobacion"
+                        name="fecha_fin_reservacion"
                         type="date"
-                        value="{{contenido_terreno.fecha_fin_aprobacion}}"
+                        value="{{contenido_terreno.fecha_fin_reservacion}}"
                         class="form-control"
-                        id="label_fecha_fin_aprobacion"
-                        title="Fecha fin que concluira la tramitación hasta la obtención de los permisos de construcción"
+                        id="label_fecha_fin_reservacion"
+                        title="Fecha en que concluira la etapa de reservación de los inmuebles que seran edificados sobre el terreno"
                     />
                 </div>
             </div>
@@ -413,7 +428,7 @@
 
             {{! *********************************************************************** }}
             {{! UBICACION MAPA }}
-            <h5>UBICACIÓN DEL TERRENO https://</h5>
+            <h5>Ubicación del terreno https://</h5>
             <div class="form-group">
                 <input
                     type="text"
@@ -427,7 +442,7 @@
             {{! *********************************************************************** }}
             {{! VIDEO YOUTUBE RECORRIDO VIRTUAL }}
             {{! para mostrar vista aereo del terreno y alrededores, topografos tomando medidas }}
-            <h5>YOUTUBE TERRENO https://</h5>
+            <h5>YouTube terreno https://</h5>
             <div class="form-group">
                 <input
                     type="text"
@@ -440,7 +455,7 @@
             </div>
             {{! redes sociales para dar a conocer por este medio la convocatoria para anteproyectos sobre este terreno
             y para comunicar los anteproyectos que se bayan subiendo }}
-            <h5>FACEBOOK TERRENO https://</h5>
+            <h5>Facebook terreno https://</h5>
             <div class="form-group">
                 <input
                     type="text"
@@ -452,7 +467,7 @@
                 />
             </div>
 
-            <h5>INSTAGRAM TERRENO https://</h5>
+            <h5>Instagram terreno https://</h5>
             <div class="form-group">
                 <input
                     type="text"
@@ -464,7 +479,7 @@
                 />
             </div>
 
-            <h5>TIKTOK TERRENO https://</h5>
+            <h5>TikTok terreno https://</h5>
             <div class="form-group">
                 <input
                     type="text"

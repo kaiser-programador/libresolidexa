@@ -64,17 +64,21 @@
                 <div>
                     <b>
                         <span
-                            class="h5 v_precio_venta_sus"
-                            valor="{{precio_actual_inm}}"
-                        >{{precio_actual_inm}}</span>
-                        <span class="h5">$us</span>
-                        <span class="v_precio" valor="{{num_puro_precio_actual}}" hidden></span>
+                            class="h5 v_precio_venta_sus elvalor"
+                            valor="{{precio_justo_render}}"
+                            data-bs="{{precio_justo}}"
+                        >{{precio_justo_render}}</span>
+                        <span class="h5 lamoneda">Bs</span>
+                        <span class="v_precio" valor="{{precio_justo}}" hidden></span>
                     </b>
                 </div>
                 <div>
                     <b>
-                        <span class="h6"><s>{{precio_competencia}}</s></span>
-                        <span class="h6">$us</span>
+                        <span class="h6"><s
+                                class="elvalor"
+                                data-bs="{{precio_competencia}}"
+                            >{{precio_competencia_render}}</s></span>
+                        <span class="h6 lamoneda">Bs</span>
                     </b>
                 </div>
             </div>
@@ -90,7 +94,10 @@
                         estado="si_guardado"
                     >
                         <a>
-                            <i class="fas fa-bookmark ml-4 estilo_colorido" title="Inmueble guardado"></i>
+                            <i
+                                class="fas fa-bookmark ml-4 estilo_colorido"
+                                title="Inmueble guardado"
+                            ></i>
                         </a>
                     </div>
                 {{else}}
@@ -100,7 +107,10 @@
                         estado="no_guardado"
                     >
                         <a>
-                            <i class="fas fa-bookmark ml-4 estilo_gris" title="Guardar inmueble"></i>
+                            <i
+                                class="fas fa-bookmark ml-4 estilo_gris"
+                                title="Guardar inmueble"
+                            ></i>
                         </a>
                     </div>
                 {{/if}}
@@ -185,15 +195,21 @@
                     <div class="h6">Financiado</div>
                     <div class="h6">
                         <b>
-                            <span class="v_financiado">{{financiado}}</span>
-                            <span>$us</span>
+                            <span
+                                class="v_financiado elvalor"
+                                data-bs="{{financiamiento}}"
+                            >{{financiamiento_render}}</span>
+                            <span class="lamoneda">Bs</span>
                         </b>
                     </div>
                 </div>
                 <div class="text-right">
                     <div class="h6">Meta</div>
                     <div class="h6">
-                        <span><b>{{meta}} $us</b></span>
+                        <b>
+                            <span class="elvalor" data-bs="{{meta}}">{{meta_render}}</span>
+                            <span class="lamoneda">Bs</span>
+                        </b>
                     </div>
                 </div>
             </div>
@@ -203,11 +219,11 @@
                     <div
                         class="progress-bar"
                         role="progressbar"
-                        style="width: {{porcentaje}}%;"
+                        style="width: {{p_financiamiento}}%;"
                     ></div>
                 </div>
                 <div class="css-val-porcentaje-celda">
-                    <span>{{porcentaje_render}}</span>
+                    <span>{{p_financiamiento_render}}</span>
                     <span>%</span>
                 </div>
             </div>
@@ -216,24 +232,82 @@
                 <div class="d-flex justify-content-between my-2">
                     <div>
                         <i class="fas fa-clock texto-resaltado"></i>
-                        <span class="h6">{{factor_tiempo_titulo}}</span>
+                        <span class="h6">{{plazo_titulo}}</span>
                     </div>
                     <div>
-                        <span class="h6"><b>{{factor_tiempo_tiempo}}</b></span>
+                        <span class="h6"><b>{{plazo_tiempo}}</b></span>
                     </div>
                 </div>
             {{/if}}
 
-            <div class="d-flex justify-content-between my-2">
-                <div>
-                    <i class="fas fa-coins texto-resaltado"></i>
-                    <span class="h6">Reserva</span>
-                </div>
-                <div>
-                    <span class="h6"><b>{{reserva}}</b></span>
-                    <span class="h6"><b>$us</b></span>
-                </div>
-            </div>
+            {{#if refracu}}
+                {{#if ver_reserva}}
+                    {{! Solo sera visible para la etapa de Reserva, tiempo en que dura la optencion de los permisos de contruccion y se reserven el 100% de todos los inmueble }}
+                    <div class="d-flex justify-content-between my-2">
+                        <div>
+                            <i class="fas fa-coins texto-resaltado"></i>
+                            <span class="h6">{{titulo_refracu}}</span>
+                        </div>
+                        <div>
+                            <b>
+                                <span
+                                    class="h6 elvalor"
+                                    data-bs="{{valor_refracu}}"
+                                >{{valor_refracu_render}}</span>
+                            </b>
+                            <b>
+                                <span class="h6 lamoneda">Bs</span>
+                            </b>
+                        </div>
+                    </div>
+                {{/if}}
+
+                {{#if ver_cuota}}
+                    {{! Cuota de contruccion mensual, para las etapa de Contruccion o Remate }}
+                    <div class="d-flex justify-content-between my-2">
+                        <div>
+                            <i class="fas fa-coins texto-resaltado"></i>
+                            <span class="h6">{{titulo_refracu}}</span>
+                        </div>
+                        <div>
+                            <b>
+                                <span
+                                    class="h6 elvalor"
+                                    data-bs="{{valor_refracu}}"
+                                >{{valor_refracu_render}}</span>
+                            </b>
+                            <b>
+                                <span class="h6 lamoneda">Bs</span>
+                            </b>
+                        </div>
+                    </div>
+                {{/if}}
+
+                {{#if ver_fraccion}}
+                    {{! etapa de: RESERVA, CONSTRUCCION. para inmuebles que tienen fracciones listas para ser vendidas  }}
+                    {{! si el inmueble ya no necesita vender fracciones y se encuentra en construccion, entonces se mostraran los datos de "ver_cuota" }}
+                    <div class="d-flex justify-content-between my-2">
+                        <div>
+                            <i class="fas fa-chart-pie texto-resaltado"></i>
+                            <span class="h6">{{titulo_refracu}}</span>
+                        </div>
+                        <div>
+                            <i class="fas fa-less-than-equal"></i>
+                            {{! se mostrara el valor de la fraccion mas elevada }}
+                            <b>
+                                <span
+                                    class="h6 elvalor"
+                                    data-bs="{{valor_refracu}}"
+                                >{{valor_refracu_render}}</span>
+                            </b>
+                            <b>
+                                <span class="h6 lamoneda">Bs</span>
+                            </b>
+                        </div>
+                    </div>
+
+                {{/if}}
+            {{/if}}
 
             <div class="d-flex justify-content-between mt-1">
                 <div class="linea-v text-center w-50">
@@ -259,8 +333,12 @@
                     <div>
                         <div class="h6">
                             <b>
-                                <span class="v_ahorro" valor="{{num_puro_ahorro}}">{{ahorro}}</span>
-                                <span>$us</span>
+                                <span
+                                    class="v_ahorro elvalor"
+                                    valor="{{plusvalia}}"
+                                    data-bs="{{plusvalia}}"
+                                >{{plusvalia_render}}</span>
+                                <span class="lamoneda">Bs</span>
                             </b>
                         </div>
                     </div>

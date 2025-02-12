@@ -4,22 +4,23 @@ const {
     indiceTerreno,
     indiceProyecto,
     indiceImagenesProyecto,
-    //indiceDocumentos,
-    //indiceInversiones,
     indiceInmueble,
-    //indice_propietario,
-    //indiceGuardados,
     indiceHistorial,
     indiceAdministrador,
     indiceImagenesTerreno,
+    indiceFraccionTerreno,
+    indiceFraccionInmueble,
+    indiceGuardados,
+    indiceInversiones,
 } = require("../modelos/indicemodelo");
 
-//const { proyecto_info_cd  } = require("./funcionesayuda_2");
-const { inmueble_info_cd, proyecto_info_cd } = require("./funcionesayuda_4");
-
-const { funcion_tiempo_estado, numero_punto_coma } = require("./funcionesayuda_3");
-
-const moment = require("moment");
+const { numero_punto_coma } = require("./funcionesayuda_3");
+const {
+    super_info_inm,
+    super_info_py,
+    super_info_te,
+    super_info_fraccion,
+} = require("./funcionesayuda_5");
 
 const funcionesAyuda_1 = {};
 
@@ -91,7 +92,7 @@ funcionesAyuda_1.guardarAccionAdministrador = async function (aux_accion_adm) {
 funcionesAyuda_1.terreno_card_adm_cli = async function (paquete_terreno) {
     try {
         var codigo_terreno = paquete_terreno.codigo_terreno;
-        var datos_terreno = await indiceTerreno.findOne(
+        var registro_terreno = await indiceTerreno.findOne(
             { codigo_terreno: codigo_terreno },
             {
                 codigo_terreno: 1,
@@ -99,62 +100,93 @@ funcionesAyuda_1.terreno_card_adm_cli = async function (paquete_terreno) {
                 bandera_ciudad: 1,
                 provincia: 1,
                 direccion: 1,
-                precio_sus: 1,
+                precio_bs: 1,
                 superficie: 1,
-                anteproyectos_maximo: 1,
-                anteproyectos_registrados: 1,
                 link_youtube: 1,
                 link_facebook: 1,
                 link_instagram: 1,
                 link_tiktok: 1,
                 estado_terreno: 1,
                 fecha_creacion: 1,
-                fecha_inicio_reserva: 1,
-                fecha_fin_reserva: 1,
-                fecha_inicio_aprobacion: 1,
-                fecha_fin_aprobacion: 1,
-                fecha_inicio_pago: 1,
-                fecha_fin_pago: 1,
+
+                fecha_inicio_convocatoria: 1,
+                fecha_fin_convocatoria: 1,
+                fecha_inicio_anteproyecto: 1,
+                fecha_fin_anteproyecto: 1,
+                fecha_inicio_reservacion: 1,
+                fecha_fin_reservacion: 1,
                 fecha_inicio_construccion: 1,
                 fecha_fin_construccion: 1,
                 _id: 0,
             }
         );
 
-        if (datos_terreno) {
+        if (registro_terreno) {
             // conversion del documento MONGO ({OBJETO}) a "string"
-            var aux_string = JSON.stringify(datos_terreno);
+            var aux_string = JSON.stringify(registro_terreno);
             // reconversion del "string" a "objeto"
             var terreno_card = JSON.parse(aux_string);
 
-            terreno_card.superficie = numero_punto_coma(datos_terreno.superficie);
-            terreno_card.superficie_num = datos_terreno.superficie;
-            terreno_card.precio_sus = numero_punto_coma(datos_terreno.precio_sus);
-            terreno_card.precio_sus_num = datos_terreno.precio_sus;
+            terreno_card.superficie = numero_punto_coma(registro_terreno.superficie);
+            terreno_card.superficie_num = registro_terreno.superficie;
+            terreno_card.precio_bs = numero_punto_coma(registro_terreno.precio_bs);
+            terreno_card.precio_bs_num = registro_terreno.precio_bs;
 
             terreno_card.laapirest = paquete_terreno.laapirest;
 
-            var datos_tiempo = funcion_datos_tiempo(datos_terreno);
+            var paquete_tiempo = {
+                estado_terreno: registro_terreno.estado_terreno,
+                fecha_creacion: registro_terreno.fecha_creacion,
+                fecha_inicio_convocatoria: registro_terreno.fecha_inicio_convocatoria,
+                fecha_fin_convocatoria: registro_terreno.fecha_fin_convocatoria,
+                fecha_inicio_anteproyecto: registro_terreno.fecha_inicio_anteproyecto,
+                fecha_fin_anteproyecto: registro_terreno.fecha_fin_anteproyecto,
+                fecha_inicio_reservacion: registro_terreno.fecha_inicio_reservacion,
+                fecha_fin_reservacion: registro_terreno.fecha_fin_reservacion,
+                fecha_inicio_construccion: registro_terreno.fecha_inicio_construccion,
+                fecha_fin_construccion: registro_terreno.fecha_fin_construccion,
+            };
+
+            var datos_tiempo = funcion_datos_tiempo(paquete_tiempo);
 
             // ya considera el estado del terreno: guardado, reserva, pago, contruccion y construido
             terreno_card.vencimiento = datos_tiempo.fecha; // para ORDENAMIENTO
 
-            var resultado_tiempo = funcion_tiempo_estado(datos_tiempo);
-            terreno_card.factor_tiempo_tiempo = resultado_tiempo.factor_tiempo_tiempo;
-            terreno_card.factor_tiempo_titulo = resultado_tiempo.factor_tiempo_titulo;
-            terreno_card.factor_tiempo_porcentaje = resultado_tiempo.factor_tiempo_porcentaje;
-            terreno_card.factor_tiempo_porcentaje_render = numero_punto_coma(
-                resultado_tiempo.factor_tiempo_porcentaje
-            );
-            terreno_card.disponibles =
-                datos_terreno.anteproyectos_maximo - datos_terreno.anteproyectos_registrados; // para ORDENAMIENTO
+            //----------------------------------------------------------------------
 
-            terreno_card.porcentaje_circular =
-                (datos_terreno.anteproyectos_registrados / datos_terreno.anteproyectos_maximo) * 100;
+            var datos_inm = {
+                // datos del terreno
+                codigo_terreno,
+                precio_terreno: registro_terreno.precio_bs,
+                fecha_fin_convocatoria: registro_terreno.fecha_fin_convocatoria,
+            };
+            var resultado = await super_info_te(datos_inm);
 
-            // ------- Para verificación -------
-            //console.log("los datos del card terreno");
-            //console.log(terreno_card);
+            var fracciones_disponibles = resultado.fracciones_disponibles;
+            var fracciones_invertidas = resultado.fracciones_invertidas;
+            var plazo_titulo = resultado.plazo_titulo;
+            var plazo_tiempo = resultado.plazo_tiempo;
+            var meta = resultado.meta;
+            var meta_render = resultado.meta_render;
+            var financiamiento = resultado.financiamiento;
+            var financiamiento_render = resultado.financiamiento_render;
+            var p_financiamiento = resultado.p_financiamiento;
+            var p_financiamiento_render = resultado.p_financiamiento_render;
+            var fraccion = resultado.fraccion; // bs
+            var fraccion_render = resultado.fraccion_render; // bs
+
+            //-------------------------------------------------------------------
+            terreno_card.disponibles = fracciones_disponibles; // para ORDENAMIENTO
+            terreno_card.porcentaje = p_financiamiento;
+            terreno_card.porcentaje_render = p_financiamiento_render;
+            terreno_card.financiado = financiamiento;
+            terreno_card.financiado_num = financiamiento_render;
+            terreno_card.meta = meta_render;
+            terreno_card.meta_num = meta;
+            terreno_card.factor_tiempo_titulo = plazo_titulo;
+            terreno_card.factor_tiempo_tiempo = plazo_tiempo;
+            terreno_card.fraccion = fraccion;
+            terreno_card.fraccion_render = fraccion_render;
 
             //----------------------------------------------------------------------
             // Para encontrar la imagen principal del terreno
@@ -165,7 +197,7 @@ funcionesAyuda_1.terreno_card_adm_cli = async function (paquete_terreno) {
                     nombre_imagen: 1,
                     codigo_imagen: 1,
                     extension_imagen: 1, // ej: ".jpg"
-                    url:1,
+                    url: 1,
                     _id: 0,
                 }
             );
@@ -188,8 +220,63 @@ funcionesAyuda_1.terreno_card_adm_cli = async function (paquete_terreno) {
     }
 };
 
-/*************************************************************************************/
-/*************************************************************************************/
+//====================================================================================
+//====================================================================================
+// ARMADOR DEL CARD DE UNA FRACCION (INTERNO y EXTERNO) (LADO: CLIENTE y ADMINISTRADOR)
+// paquete_fraccion = {codigo_fraccion,inmueble,codigo_usuario,tipo_navegacion}
+funcionesAyuda_1.fraccion_card_adm_cli = async function (paquete_fraccion) {
+    try {
+        var codigo_fraccion = paquete_fraccion.codigo_fraccion;
+        var ci_propietario = paquete_fraccion.ci_propietario; // codigo || "ninguno"
+        var tipo_navegacion = paquete_fraccion.tipo_navegacion; // "administrador" || "cliente"
+
+        var fraccion_card = {};
+
+        fraccion_card.codigo_fraccion = codigo_fraccion;
+
+        if (tipo_navegacion == "cliente") {
+            fraccion_card.lado_administrador = false;
+            fraccion_card.lado_cliente = true;
+        } else {
+            if (tipo_navegacion == "administrador") {
+                fraccion_card.lado_administrador = true;
+                fraccion_card.lado_cliente = false;
+            }
+        }
+
+        //----------------------------------------------------------------------
+
+        var datos_funcion = {
+            codigo_fraccion,
+            ci_propietario,
+        };
+        var resultado = await super_info_fraccion(datos_funcion);
+
+        //----------------------------------------------------------------------
+        fraccion_card.fraccion_bs = resultado.fraccion_bs;
+        fraccion_card.fraccion_bs_render = resultado.fraccion_bs_render;
+        fraccion_card.ganancia_bs = resultado.ganancia_bs;
+        fraccion_card.ganancia_bs_render = resultado.ganancia_bs_render;
+        fraccion_card.plusvalia_bs = resultado.plusvalia_bs;
+        fraccion_card.plusvalia_bs_render = resultado.plusvalia_bs_render;
+        fraccion_card.existe_inversionista = resultado.existe_inversionista;
+        fraccion_card.existe_copropietario = resultado.existe_copropietario;
+        fraccion_card.menor_igual = resultado.menor_igual;
+        fraccion_card.verde = resultado.verde;
+        fraccion_card.gris = resultado.gris;
+        fraccion_card.azul = resultado.azul;
+        fraccion_card.dias_plusvalia = resultado.dias_plusvalia;
+        fraccion_card.dias_inversionista = resultado.dias_inversionista;
+        //----------------------------------------------------------------------
+
+        return fraccion_card;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+//====================================================================================
+//====================================================================================
 // ARMADOR DEL CARD DE UN PROYECTO (INTERNO y EXTERNO) (LADO: CLIENTE y ADMINISTRADOR)
 // paquete_proyecto = {codigo_proyecto,laapirest}
 funcionesAyuda_1.proyecto_card_adm_cli = async function (paquete_proyecto) {
@@ -206,7 +293,6 @@ funcionesAyuda_1.proyecto_card_adm_cli = async function (paquete_proyecto) {
                 codigo_proyecto: 1,
                 codigo_terreno: 1,
                 nombre_proyecto: 1,
-                proyecto_ganador: 1, // true o false
                 meses_construccion: 1,
                 link_youtube_proyecto: 1,
                 link_instagram_proyecto: 1,
@@ -217,7 +303,7 @@ funcionesAyuda_1.proyecto_card_adm_cli = async function (paquete_proyecto) {
             }
         );
 
-        var datos_terreno = await indiceTerreno.findOne(
+        var registro_terreno = await indiceTerreno.findOne(
             { codigo_terreno: aux_proyecto.codigo_terreno },
             {
                 ciudad: 1,
@@ -226,46 +312,97 @@ funcionesAyuda_1.proyecto_card_adm_cli = async function (paquete_proyecto) {
                 direccion: 1,
                 estado_terreno: 1,
                 fecha_creacion: 1,
-                fecha_inicio_reserva: 1,
-                fecha_fin_reserva: 1,
-                fecha_inicio_aprobacion: 1,
-                fecha_fin_aprobacion: 1,
-                fecha_inicio_pago: 1,
-                fecha_fin_pago: 1,
+                precio_bs: 1,
+                descuento_bs: 1,
+                superficie: 1,
+
+                fecha_inicio_convocatoria: 1,
+                fecha_fin_convocatoria: 1,
+                fecha_inicio_anteproyecto: 1,
+                fecha_fin_anteproyecto: 1,
+                fecha_inicio_reservacion: 1,
+                fecha_fin_reservacion: 1,
+
                 fecha_inicio_construccion: 1,
                 fecha_fin_construccion: 1,
+                rend_fraccion_mensual: 1,
+
                 _id: 0,
             }
         );
 
         // importante: para especificar si se trata de un inmueble guardado o no (lado cliente), en el paquete de datos debera venir si se trata de lado cliente o administrador.
 
-        if (aux_proyecto && datos_terreno) {
+        if (aux_proyecto && registro_terreno) {
             // conversion del documento MONGO ({OBJETO}) a "string"
             var aux_string = JSON.stringify(aux_proyecto);
             // reconversion del "string" a "objeto"
             var proyecto_card = JSON.parse(aux_string);
 
-            var aux_proyecto_info = await proyecto_info_cd(codigo_proyecto);
-            // agregacion de nuevas propiedades a la info del proyecto
+            //-------------------------------------------------------------------
+            var datos_funcion = {
+                //------------------------------
+                // datos del proyecto
+                codigo_proyecto,
+
+                //------------------------------
+                // datos del terreno
+                estado_terreno: registro_terreno.estado_terreno,
+                precio_terreno: registro_terreno.precio_bs,
+                descuento_terreno: registro_terreno.descuento_bs,
+                rend_fraccion_mensual: registro_terreno.rend_fraccion_mensual,
+                superficie_terreno: registro_terreno.superficie,
+                fecha_inicio_convocatoria: registro_terreno.fecha_inicio_convocatoria,
+                fecha_inicio_reservacion: registro_terreno.fecha_inicio_reservacion,
+                fecha_fin_reservacion: registro_terreno.fecha_fin_reservacion,
+                fecha_fin_construccion: registro_terreno.fecha_fin_construccion,
+            };
+            var resultado = await super_info_py(datos_funcion);
+
+            var inmuebles_total = resultado.inmuebles_total;
+            var inmuebles_disponibles = resultado.inmuebles_disponibles;
+            var dormitorios_total = resultado.dormitorios_total;
+            var banos_total = resultado.banos_total;
+            var derecho_suelo = resultado.derecho_suelo;
+            var derecho_suelo_render = resultado.derecho_suelo_render;
+            var precio_justo = resultado.precio_justo;
+            var precio_justo_render = resultado.precio_justo_render;
+            var plusvalia = resultado.plusvalia;
+            var plusvalia_render = resultado.plusvalia_render;
+            var descuento_suelo = resultado.descuento_suelo;
+            var descuento_suelo_render = resultado.descuento_suelo_render;
+            var plazo_titulo = resultado.plazo_titulo;
+            var plazo_tiempo = resultado.plazo_tiempo;
+            var p_financiamiento = resultado.p_financiamiento;
+            var p_financiamiento_render = resultado.p_financiamiento_render;
+            var financiamiento = resultado.financiamiento;
+            var financiamiento_render = resultado.financiamiento_render;
+            var meta = resultado.meta;
+            var meta_render = resultado.meta_render;
+            var array_segundero = resultado.array_segundero;
+            //-------------------------------------------------------------------
+
             proyecto_card.laapirest = paquete_proyecto.laapirest;
             proyecto_card.codigo_proyecto = codigo_proyecto;
-            proyecto_card.n_inmuebles = aux_proyecto_info.n_inmuebles;
-            proyecto_card.n_inmuebles = aux_proyecto_info.n_inmuebles;
-            proyecto_card.n_disponibles = aux_proyecto_info.n_disponibles;
-            proyecto_card.financiado = aux_proyecto_info.financiado;
-            proyecto_card.financiado_num = aux_proyecto_info.financiado_num;
-            proyecto_card.meta = aux_proyecto_info.meta;
-            proyecto_card.meta_num = aux_proyecto_info.meta_num;
-            proyecto_card.ahorro = aux_proyecto_info.ahorro;
-            proyecto_card.ahorro_num = aux_proyecto_info.ahorro_num;
-            proyecto_card.porcentaje = aux_proyecto_info.porcentaje;
-            proyecto_card.porcentaje_render = aux_proyecto_info.porcentaje_render;
+            proyecto_card.n_inmuebles = inmuebles_total;
+            proyecto_card.n_disponibles = inmuebles_disponibles;
+            proyecto_card.financiado = financiamiento_render;
+            proyecto_card.financiado_num = financiamiento;
+            proyecto_card.meta = meta_render;
+            proyecto_card.meta_num = meta;
+            proyecto_card.ahorro = plusvalia_render;
+            proyecto_card.ahorro_num = plusvalia;
+            proyecto_card.porcentaje = p_financiamiento;
+            proyecto_card.porcentaje_render = p_financiamiento_render;
+            proyecto_card.factor_tiempo_tiempo = plazo_tiempo;
+            proyecto_card.factor_tiempo_titulo = plazo_titulo;
 
-            proyecto_card.ciudad = datos_terreno.ciudad;
-            proyecto_card.bandera_ciudad = datos_terreno.bandera_ciudad;
-            proyecto_card.provincia = datos_terreno.provincia;
-            proyecto_card.direccion = datos_terreno.direccion;
+            //-------------------------------------------------------------------
+
+            proyecto_card.ciudad = registro_terreno.ciudad;
+            proyecto_card.bandera_ciudad = registro_terreno.bandera_ciudad;
+            proyecto_card.provincia = registro_terreno.provincia;
+            proyecto_card.direccion = registro_terreno.direccion;
 
             //--------------------------------------------------------------
             // Imagen principal proyecto
@@ -279,7 +416,7 @@ funcionesAyuda_1.proyecto_card_adm_cli = async function (paquete_proyecto) {
                     codigo_imagen: 1,
                     extension_imagen: 1,
                     parte_principal: 1, // es un ARRAY
-                    url:1,
+                    url: 1,
                 }
             );
 
@@ -309,15 +446,23 @@ funcionesAyuda_1.proyecto_card_adm_cli = async function (paquete_proyecto) {
 
             //--------------------------------------------------------------
 
-            var datos_tiempo = funcion_datos_tiempo(datos_terreno);
+            var paquete_tiempo = {
+                estado_terreno: registro_terreno.estado_terreno,
+                fecha_creacion: registro_terreno.fecha_creacion,
+                fecha_inicio_convocatoria: registro_terreno.fecha_inicio_convocatoria,
+                fecha_fin_convocatoria: registro_terreno.fecha_fin_convocatoria,
+                fecha_inicio_anteproyecto: registro_terreno.fecha_inicio_anteproyecto,
+                fecha_fin_anteproyecto: registro_terreno.fecha_fin_anteproyecto,
+                fecha_inicio_reservacion: registro_terreno.fecha_inicio_reservacion,
+                fecha_fin_reservacion: registro_terreno.fecha_fin_reservacion,
+                fecha_inicio_construccion: registro_terreno.fecha_inicio_construccion,
+                fecha_fin_construccion: registro_terreno.fecha_fin_construccion,
+            };
+
+            var datos_tiempo = funcion_datos_tiempo(paquete_tiempo);
 
             // ya considera el estado del terreno: guardado, reserva, pago, contruccion y construido
             proyecto_card.vencimiento = datos_tiempo.fecha; // para ORDENAMIENTO
-
-            var resultado_tiempo = funcion_tiempo_estado(datos_tiempo);
-            proyecto_card.factor_tiempo_tiempo = resultado_tiempo.factor_tiempo_tiempo;
-            proyecto_card.factor_tiempo_titulo = resultado_tiempo.factor_tiempo_titulo;
-            proyecto_card.factor_tiempo_porcentaje = resultado_tiempo.factor_tiempo_porcentaje;
 
             return proyecto_card;
         } else {
@@ -337,13 +482,14 @@ funcionesAyuda_1.inmueble_card_adm_cli = async function (paquete_inmueble) {
         // codigo_usuario puede ser: codigo || "ninguno"
         var codigo_inmueble = paquete_inmueble.codigo_inmueble;
 
-        var aux_inmueble = await indiceInmueble.findOne(
+        var registro_inmueble = await indiceInmueble.findOne(
             { codigo_inmueble: codigo_inmueble },
             {
                 codigo_terreno: 1,
                 codigo_proyecto: 1,
-                // guardado, disponible, reservado, pendiente, pagado, pagos, remate, completado
+                // guardado, disponible, reservado, construccion, remate, construido
                 estado_inmueble: 1, // util para los botones de "guardar"
+                fraccionado: 1,
                 fecha_creacion: 1,
                 tipo_inmueble: 1,
                 piso: 1,
@@ -356,28 +502,31 @@ funcionesAyuda_1.inmueble_card_adm_cli = async function (paquete_inmueble) {
 
                 link_youtube_inmueble: 1,
 
+                precio_construccion: 1,
+
                 _id: 0,
             }
         );
 
-        var aux_proyecto = await indiceProyecto.findOne(
-            { codigo_proyecto: aux_inmueble.codigo_proyecto },
+        var registro_proyecto = await indiceProyecto.findOne(
+            { codigo_proyecto: registro_inmueble.codigo_proyecto },
             {
                 codigo_terreno: 1,
                 nombre_proyecto: 1,
-                proyecto_ganador: 1, // true o false
                 meses_construccion: 1,
 
                 link_facebook_proyecto: 1,
                 link_instagram_proyecto: 1,
                 link_tiktok_proyecto: 1,
 
+                construccion_mensual: 1,
+
                 _id: 0,
             }
         );
 
-        var datos_terreno = await indiceTerreno.findOne(
-            { codigo_terreno: aux_proyecto.codigo_terreno },
+        var registro_terreno = await indiceTerreno.findOne(
+            { codigo_terreno: registro_proyecto.codigo_terreno },
             {
                 ciudad: 1,
                 bandera_ciudad: 1,
@@ -385,14 +534,20 @@ funcionesAyuda_1.inmueble_card_adm_cli = async function (paquete_inmueble) {
                 direccion: 1,
                 estado_terreno: 1,
                 fecha_creacion: 1,
-                fecha_inicio_reserva: 1,
-                fecha_fin_reserva: 1,
-                fecha_inicio_aprobacion: 1,
-                fecha_fin_aprobacion: 1,
-                fecha_inicio_pago: 1,
-                fecha_fin_pago: 1,
+
+                fecha_inicio_convocatoria: 1,
+                fecha_fin_convocatoria: 1,
+                fecha_inicio_anteproyecto: 1,
+                fecha_fin_anteproyecto: 1,
+                fecha_inicio_reservacion: 1,
+                fecha_fin_reservacion: 1,
                 fecha_inicio_construccion: 1,
                 fecha_fin_construccion: 1,
+
+                precio_bs: 1,
+                descuento_bs: 1,
+                rend_fraccion_mensual: 1,
+                superficie: 1,
 
                 _id: 0,
             }
@@ -400,50 +555,186 @@ funcionesAyuda_1.inmueble_card_adm_cli = async function (paquete_inmueble) {
 
         // importante: para especificar si se trata de un inmueble guardado o no (lado cliente), en el paquete de datos debera venir si se trata de lado cliente o administrador.
 
-        if (aux_inmueble && aux_proyecto && datos_terreno) {
+        if (registro_inmueble && registro_proyecto && registro_terreno) {
             // conversion del documento MONGO ({OBJETO}) a "string"
-            var aux_string = JSON.stringify(aux_inmueble);
+            var aux_string = JSON.stringify(registro_inmueble);
             // reconversion del "string" a "objeto"
             var inmueble_card = JSON.parse(aux_string);
 
             inmueble_card.superficie_inmueble_render = numero_punto_coma(
-                aux_inmueble.superficie_inmueble_m2
+                registro_inmueble.superficie_inmueble_m2
             );
             inmueble_card.codigo_inmueble = codigo_inmueble;
             inmueble_card.laapirest = paquete_inmueble.laapirest;
-            inmueble_card.link_facebook = aux_proyecto.link_facebook_proyecto;
-            inmueble_card.link_instagram = aux_proyecto.link_instagram_proyecto;
-            inmueble_card.link_tiktok = aux_proyecto.link_tiktok_proyecto;
-            inmueble_card.nombre_proyecto = aux_proyecto.nombre_proyecto;
-            inmueble_card.meses_construccion = aux_proyecto.meses_construccion;
+            inmueble_card.link_facebook = registro_proyecto.link_facebook_proyecto;
+            inmueble_card.link_instagram = registro_proyecto.link_instagram_proyecto;
+            inmueble_card.link_tiktok = registro_proyecto.link_tiktok_proyecto;
+            inmueble_card.nombre_proyecto = registro_proyecto.nombre_proyecto;
+            inmueble_card.meses_construccion = registro_proyecto.meses_construccion;
 
-            var aux_inmueble_info = await inmueble_info_cd(paquete_inmueble);
+            //-------------------------------------------------------------------
+            var datos_inm = {
+                // datos del inmueble
+                codigo_inmueble,
+                precio_construccion: registro_inmueble.precio_construccion,
+                precio_competencia: registro_inmueble.precio_competencia,
+                superficie_inmueble: registro_inmueble.superficie_inmueble_m2,
+                fraccionado: registro_inmueble.fraccionado,
+                // datos del proyecto
+                construccion_mensual: registro_proyecto.construccion_mensual,
+                // datos del terreno
+                estado_terreno: registro_terreno.estado_terreno,
+                precio_terreno: registro_terreno.precio_bs,
+                descuento_terreno: registro_terreno.descuento_bs,
+                rend_fraccion_mensual: registro_terreno.rend_fraccion_mensual,
+                superficie_terreno: registro_terreno.superficie,
+                fecha_inicio_convocatoria: registro_terreno.fecha_inicio_convocatoria,
+                fecha_inicio_reservacion: registro_terreno.fecha_inicio_reservacion,
+                fecha_fin_reservacion: registro_terreno.fecha_fin_reservacion,
+                fecha_fin_construccion: registro_terreno.fecha_fin_construccion,
+            };
+            var resultado = await super_info_inm(datos_inm);
 
-            // agregacion de nuevas propiedades a la info del inmueble
-            inmueble_card.porcentaje_obra_inm = aux_inmueble_info.porcentaje_obra_inm;
-            inmueble_card.porcentaje_obra_inm_render = aux_inmueble_info.porcentaje_obra_inm_render;
-            inmueble_card.reserva = aux_inmueble_info.reserva;
-            inmueble_card.financiado = aux_inmueble_info.financiado;
-            inmueble_card.meta = aux_inmueble_info.meta;
-            inmueble_card.ahorro = aux_inmueble_info.ahorro;
-            inmueble_card.num_puro_ahorro = aux_inmueble_info.num_puro_ahorro;
-            inmueble_card.porcentaje = aux_inmueble_info.porcentaje;
-            inmueble_card.porcentaje_render = aux_inmueble_info.porcentaje_render;
-            inmueble_card.precio_actual_inm = aux_inmueble_info.precio_actual_inm;
-            inmueble_card.num_puro_precio_actual = aux_inmueble_info.num_puro_precio_actual;
-            inmueble_card.precio_competencia = aux_inmueble_info.precio_competencia;
-            inmueble_card.inmueble_guardado = aux_inmueble_info.inmueble_guardado;
-            inmueble_card.inmueble_propiedad = aux_inmueble_info.inmueble_propiedad;
-            inmueble_card.ciudad = datos_terreno.ciudad;
-            inmueble_card.bandera_ciudad = datos_terreno.bandera_ciudad;
-            inmueble_card.provincia = datos_terreno.provincia;
-            inmueble_card.direccion = datos_terreno.direccion;
+            //-----------------------
+            // precio justo, derecho suelo, plusvalia
+            var precio_justo = resultado.precio_justo;
+            var precio_justo_render = resultado.precio_justo_render;
+            var plusvalia = resultado.plusvalia;
+            var plusvalia_render = resultado.plusvalia_render;
+            //------------------------------
+            // financiamiento, meta, porcentaje
+            var plazo_titulo = resultado.plazo_titulo;
+            var plazo_tiempo = resultado.plazo_tiempo;
+            var p_financiamiento = resultado.p_financiamiento;
+            var p_financiamiento_render = resultado.p_financiamiento_render;
+            var financiamiento = resultado.financiamiento;
+            var financiamiento_render = resultado.financiamiento_render;
+            var meta = resultado.meta;
+            var meta_render = resultado.meta_render;
+            //-----------------------
+            // reserva, fraccio , cuota
+            var refracu = resultado.refracu;
+            var titulo_refracu = resultado.titulo_refracu;
+            var valor_refracu = resultado.valor_refracu;
+            var valor_refracu_render = resultado.valor_refracu_render;
+            var ver_fraccion = resultado.ver_fraccion;
+            var ver_reserva = resultado.ver_reserva;
+            var ver_cuota = resultado.ver_cuota;
+
+            //-------------------------------------------------------------------
+            inmueble_card.refracu = refracu;
+            inmueble_card.ver_fraccion = ver_fraccion;
+            inmueble_card.ver_reserva = ver_reserva;
+            inmueble_card.ver_cuota = ver_cuota;
+            inmueble_card.titulo_refracu = titulo_refracu;
+            inmueble_card.valor_refracu = valor_refracu;
+            inmueble_card.valor_refracu_render = valor_refracu_render;
+
+            inmueble_card.precio_justo = precio_justo;
+            inmueble_card.precio_justo_render = precio_justo_render;
+            inmueble_card.plusvalia = plusvalia;
+            inmueble_card.plusvalia_render = plusvalia_render;
+            inmueble_card.financiamiento = financiamiento;
+            inmueble_card.financiamiento_render = financiamiento_render;
+            inmueble_card.meta = meta;
+            inmueble_card.meta_render = meta_render;
+            inmueble_card.p_financiamiento = p_financiamiento;
+            inmueble_card.p_financiamiento_render = p_financiamiento_render;
+            inmueble_card.plazo_titulo = plazo_titulo;
+            inmueble_card.plazo_tiempo = plazo_tiempo;
+
+            var precio_competencia = registro_inmueble.precio_competencia;
+            var precio_competencia_render = numero_punto_coma(precio_competencia);
+            inmueble_card.precio_competencia = precio_competencia;
+            inmueble_card.precio_competencia_render = precio_competencia_render;
+
+            //-------------------------------------------------------------------
+
+            var ci_propietario = paquete_inmueble.codigo_usuario;
+
+            //-------------------------------------------------------------------
+            // para saber si el presente inmueble es guardado del usuario
+
+            if (ci_propietario == "ninguno") {
+                var inmueble_guardado = false;
+            } else {
+                var registro_inmueble_guardado = await indiceGuardados.findOne(
+                    {
+                        codigo_inmueble: codigo_inmueble,
+                        ci_propietario: ci_propietario,
+                    },
+                    {
+                        codigo_inmueble: 1,
+                        _id: 0,
+                    }
+                );
+
+                if (registro_inmueble_guardado) {
+                    // significa que el inmueble si es guardado por el usuario
+                    var inmueble_guardado = true;
+                } else {
+                    // significa que el inmueble no es guardado por el usuario
+                    var inmueble_guardado = false;
+                }
+            }
+
+            //--------------------------------------------------------------
+            // para saber si el presente inmueble es PROPIEDAD o CO-PROPIEDAD del usuario
+
+            if (ci_propietario == "ninguno") {
+                var inmueble_propiedad = false;
+            } else {
+                var registro_inmueble_propiedad = await indiceInversiones.findOne(
+                    {
+                        codigo_inmueble: codigo_inmueble,
+                        ci_propietario: ci_propietario,
+                    },
+                    {
+                        codigo_inmueble: 1,
+                        _id: 0,
+                    }
+                );
+
+                if (registro_inmueble_propiedad) {
+                    // significa que el inmueble si es propiedad actual del usuario
+                    var inmueble_propiedad = true;
+                } else {
+                    // entonces revisamos si es co-propietario del inmueble
+                    var registro_inmueble_copropiedad = await indiceFraccionInmueble.findOne(
+                        {
+                            codigo_inmueble: codigo_inmueble,
+                            ci_propietario: ci_propietario,
+                        },
+                        {
+                            codigo_inmueble: 1,
+                            _id: 0,
+                        }
+                    );
+
+                    if (registro_inmueble_copropiedad) {
+                        // significa que el usuario es copropietario del inmueble
+                        var inmueble_propiedad = true;
+                    } else {
+                        // significa que el usuario no es propietario ni copropietario del inmueble
+                        var inmueble_propiedad = false;
+                    }
+                }
+            }
+
+            //--------------------------------------------------------------
+
+            inmueble_card.inmueble_guardado = inmueble_guardado;
+            inmueble_card.inmueble_propiedad = inmueble_propiedad;
+            inmueble_card.ciudad = registro_terreno.ciudad;
+            inmueble_card.bandera_ciudad = registro_terreno.bandera_ciudad;
+            inmueble_card.provincia = registro_terreno.provincia;
+            inmueble_card.direccion = registro_terreno.direccion;
 
             //--------------------------------------------------------------
             // Imagen principal INMUEBLE
             var registro_imagenes_py = await indiceImagenesProyecto.find(
                 {
-                    codigo_proyecto: aux_inmueble.codigo_proyecto,
+                    codigo_proyecto: registro_inmueble.codigo_proyecto,
                     imagen_respon_social: false, // no se tomaran en cuenta las imagenes de responsabilidad social
                 },
                 {
@@ -451,7 +742,7 @@ funcionesAyuda_1.inmueble_card_adm_cli = async function (paquete_inmueble) {
                     codigo_imagen: 1,
                     extension_imagen: 1,
                     parte_principal: 1, // es un ARRAY
-                    url:1,
+                    url: 1,
                 }
             );
 
@@ -482,18 +773,26 @@ funcionesAyuda_1.inmueble_card_adm_cli = async function (paquete_inmueble) {
 
             //--------------------------------------------------------------
 
-            var datos_tiempo = funcion_datos_tiempo(datos_terreno);
+            var paquete_tiempo = {
+                estado_terreno: registro_terreno.estado_terreno,
+                fecha_creacion: registro_terreno.fecha_creacion,
+                fecha_inicio_convocatoria: registro_terreno.fecha_inicio_convocatoria,
+                fecha_fin_convocatoria: registro_terreno.fecha_fin_convocatoria,
+                fecha_inicio_anteproyecto: registro_terreno.fecha_inicio_anteproyecto,
+                fecha_fin_anteproyecto: registro_terreno.fecha_fin_anteproyecto,
+                fecha_inicio_reservacion: registro_terreno.fecha_inicio_reservacion,
+                fecha_fin_reservacion: registro_terreno.fecha_fin_reservacion,
+                fecha_inicio_construccion: registro_terreno.fecha_inicio_construccion,
+                fecha_fin_construccion: registro_terreno.fecha_fin_construccion,
+            };
+
+            var datos_tiempo = funcion_datos_tiempo(paquete_tiempo);
 
             // ya considera el estado del terreno: guardado, reserva, pago, contruccion y construido
             inmueble_card.vencimiento = datos_tiempo.fecha; // para ORDENAMIENTO
 
-            var resultado_tiempo = funcion_tiempo_estado(datos_tiempo);
-            inmueble_card.factor_tiempo_tiempo = resultado_tiempo.factor_tiempo_tiempo;
-            inmueble_card.factor_tiempo_titulo = resultado_tiempo.factor_tiempo_titulo;
-            inmueble_card.factor_tiempo_porcentaje = resultado_tiempo.factor_tiempo_porcentaje;
-
             //--------------------------------------------------------------
-            var cuadro_precio_inm = funcion_cuadro_precio_inm(aux_inmueble.estado_inmueble);
+            var cuadro_precio_inm = funcion_cuadro_precio_inm(registro_inmueble.estado_inmueble);
             inmueble_card.leyenda_precio_inm = cuadro_precio_inm.leyenda_precio_inm;
             inmueble_card.color_precio_inm = cuadro_precio_inm.color_precio_inm;
             //--------------------------------------------------------------
@@ -509,7 +808,7 @@ funcionesAyuda_1.inmueble_card_adm_cli = async function (paquete_inmueble) {
 
 /*************************************************************************************/
 //---------------------------------------------------------------------
-
+// PARA CARDS DE: TERRENO, PROYECTO, INMUEBLE
 function funcion_datos_tiempo(datos_terreno) {
     var datos_tiempo = {};
     datos_tiempo.estado = datos_terreno.estado_terreno;
@@ -520,22 +819,22 @@ function funcion_datos_tiempo(datos_terreno) {
         datos_tiempo.fecha_fin = 0;
     }
 
-    if (datos_terreno.estado_terreno == "reserva") {
-        datos_tiempo.fecha = datos_terreno.fecha_fin_reserva;
-        datos_tiempo.fecha_inicio = datos_terreno.fecha_inicio_reserva;
-        datos_tiempo.fecha_fin = datos_terreno.fecha_fin_reserva;
+    if (datos_terreno.estado_terreno == "convocatoria") {
+        datos_tiempo.fecha = datos_terreno.fecha_fin_convocatoria;
+        datos_tiempo.fecha_inicio = datos_terreno.fecha_inicio_convocatoria;
+        datos_tiempo.fecha_fin = datos_terreno.fecha_fin_convocatoria;
     }
 
-    if (datos_terreno.estado_terreno == "aprobacion") {
-        datos_tiempo.fecha = datos_terreno.fecha_fin_aprobacion;
-        datos_tiempo.fecha_inicio = datos_terreno.fecha_inicio_aprobacion;
-        datos_tiempo.fecha_fin = datos_terreno.fecha_fin_aprobacion;
+    if (datos_terreno.estado_terreno == "anteproyecto") {
+        datos_tiempo.fecha = datos_terreno.fecha_fin_anteproyecto;
+        datos_tiempo.fecha_inicio = datos_terreno.fecha_inicio_anteproyecto;
+        datos_tiempo.fecha_fin = datos_terreno.fecha_fin_anteproyecto;
     }
 
-    if (datos_terreno.estado_terreno == "pago") {
-        datos_tiempo.fecha = datos_terreno.fecha_fin_pago;
-        datos_tiempo.fecha_inicio = datos_terreno.fecha_inicio_pago;
-        datos_tiempo.fecha_fin = datos_terreno.fecha_fin_pago;
+    if (datos_terreno.estado_terreno == "reservacion") {
+        datos_tiempo.fecha = datos_terreno.fecha_fin_reservacion;
+        datos_tiempo.fecha_inicio = datos_terreno.fecha_inicio_reservacion;
+        datos_tiempo.fecha_fin = datos_terreno.fecha_fin_reservacion;
     }
 
     if (datos_terreno.estado_terreno == "construccion") {
@@ -567,27 +866,16 @@ function funcion_cuadro_precio_inm(aux_estado_inmueble) {
         var leyenda_precio_inm = "Reservado";
         var color_precio_inm = "en_gris";
     }
-    if (aux_estado_inmueble == "pendiente_pago") {
-        var leyenda_precio_inm = "Pendiente";
-        var color_precio_inm = "en_amarillo";
-    }
-    if (aux_estado_inmueble == "pagado_pago") {
-        var leyenda_precio_inm = "Pagado";
-        var color_precio_inm = "en_gris";
-    }
-    if (aux_estado_inmueble == "pendiente_aprobacion") {
-        var leyenda_precio_inm = "Aprobación";
-        var color_precio_inm = "en_amarillo";
-    }
-    if (aux_estado_inmueble == "pagos") {
+    if (aux_estado_inmueble == "construccion") {
         var leyenda_precio_inm = "Construcción";
         var color_precio_inm = "en_amarillo";
     }
+
     if (aux_estado_inmueble == "remate") {
         var leyenda_precio_inm = "Remate";
         var color_precio_inm = "en_azul";
     }
-    if (aux_estado_inmueble == "completado") {
+    if (aux_estado_inmueble == "construido") {
         var leyenda_precio_inm = "Construido";
         var color_precio_inm = "en_gris";
     }

@@ -1,10 +1,7 @@
 {{! cabezeras INTERNAS de lado de ADMINISTRADOR, EJ/ cuando estamos en la ventana propia del terreno }}
 {{! valido para TERRENOS, PROYECTOS, INMUEBLES, PROPIETARIOS, ADMINISTRADOR }}
 
-<div
-    class="cabezera-secundario w-100"
-    style="background-image: linear-gradient(rgba(5, 5, 54, 0.8),rgba(5, 5, 54, 0.8)),url({{url_cabezera}});background-repeat: no-repeat;background-size: cover;background-position: center;"
->
+<div class="{{estilo_cabezera}} cabezera-secundario w-100"></div>
 
     <div class="letras_cabezera p-3" style="display: flex; justify-content: space-between;">
 
@@ -71,6 +68,15 @@
                     <span>{{cabezera_adm.adm_nombres}}</span>
                 </div>
                 <div class="codigo-cabezera">{{cabezera_adm.ci_administrador}}</div>
+            </div>
+        {{/if}}
+
+        {{#if cab_fracc_adm}}
+            <div>
+                <div>
+                    <span style="text-transform: capitalize;">Fracción</span>
+                </div>
+                <div class="py-2 codigo-cabezera">{{cabezera_adm.codigo}}</div>
             </div>
         {{/if}}
 

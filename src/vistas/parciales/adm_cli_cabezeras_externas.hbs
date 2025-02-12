@@ -1,10 +1,7 @@
 {{! cabezeras EXTERNAS de lado de ADMINISTRADOR y CLIENTE }}
 {{! valido para TERRENOS, PROYECTOS, INMUEBLES, PROPIETARIOS }}
 
-<div
-    class="cabezera-primario {{estilo_cabezera}} w-100"
-    style="display: flex; align-items: center; background-image: linear-gradient(rgba(5, 5, 54, 0.8),rgba(5, 5, 54, 0.8)),url({{url_cabezera}});background-repeat: no-repeat;background-size: cover;background-position: center;"
->
+<div class="{{estilo_cabezera}} cabezera-primario w-100">
 
     <div class="px-2 text-center w-100 py-4">
         <div style="display: flex; align-items: center;justify-content: center;">
@@ -225,37 +222,7 @@
                             </div>
                         {{/if}}
 
-                        {{#if es_pendiente_aprobacion}}
-                            <div
-                                class="dropdown-item orden_gral_inm_py"
-                                el_orden="menor"
-                                tipo_orden="precio"
-                            >Precio
-                            </div>
-
-                            <div
-                                class="dropdown-item orden_gral_inm_py"
-                                el_orden="menor"
-                                tipo_orden="ahorro"
-                            >Ganancia
-                            </div>
-
-                            <div
-                                class="dropdown-item orden_gral_inm_py"
-                                el_orden="menor"
-                                tipo_orden="superficie"
-                            >Superficie
-                            </div>
-
-                            <div
-                                class="dropdown-item orden_gral_inm_py"
-                                el_orden="menor"
-                                tipo_orden="vencimiento"
-                            >Vencimiento
-                            </div>
-                        {{/if}}
-
-                        {{#if es_pendiente_pago}}
+                        {{#if es_fraccion}}
                             <div
                                 class="dropdown-item orden_gral_inm_py"
                                 el_orden="menor"

@@ -2,27 +2,13 @@
 
 {{!-- ------------------------------------------------------- --}}
 {{!-- DATOS PARA SEGUNDERO DE PLUSVALIA --}}
-
+{{!-- plus_r viene en unidades de: bs/seg --}}
 <div id="contenedor_seg_plus" hidden>
-    {{! usamos data-  para no tener problemas con nombre que tengan añadidos espacios largos o saltos de lineas provocados por handlebars }}
-    {{#each informacion.val_segundero_cajas.array_plusvalia}}
+    {{#each informacion.array_segundero}}
         <div class="cuerpo_plus">
             <span class="plus_r" data-plus_r="{{plus_r}}"></span>
             <span class="plus_fechaInicio" data-plus_fechaInicio="{{plus_fechaInicio}}"></span>
             <span class="plus_fechaFin" data-plus_fechaFin="{{plus_fechaFin}}"></span>
-        </div>
-    {{/each}}
-</div>
-{{!-- ------------------------------------------------------- --}}
-{{!-- DATOS PARA SEGUNDERO DE RECOMPENSA --}}
-
-<div id="contenedor_seg_recom" hidden>
-    {{! usamos data-  para no tener problemas con nombre que tengan añadidos espacios largos o saltos de lineas provocados por handlebars }}
-    {{#each informacion.val_segundero_cajas.array_recompensa}}
-        <div class="cuerpo_recom">
-            <span class="recom_r" data-recom_r="{{recom_r}}"></span>
-            <span class="recom_fechaInicio" data-recom_fechaInicio="{{recom_fechaInicio}}"></span>
-            <span class="recom_fechaFin" data-recom_fechaFin="{{recom_fechaFin}}"></span>
         </div>
     {{/each}}
 </div>
@@ -31,95 +17,95 @@
 
 <div class="contenido container">
     
-    {{> segu_esta_te_py_inm_prop}}
+    {{> segu_propietario_fraccion}}
 
     <div class="row my-4 cuadro_estandart">
         <div class="col-12">
             {{! table }}
-            <h5 class="my-3 text-center"><b>Historial de propiedades</b></h5>
-            <div class="table-responsive barra-deslizadora-mob cuadro_estandart p4">
+            <h5 class="my-3 text-center"><b>Historial</b></h5>
 
-                <table class="table tabla_contenedora">
-                    <thead>
-                        <tr>
-                            <th class="text-right texto-resaltado">#</th>
-                            <th class="text-right texto-resaltado">Fecha pago</th>
-                            <th class="text-right texto-resaltado">Proyecto</th>
-                            <th class="text-right texto-resaltado">Precio justo $us</th>
-                            <th class="text-right texto-resaltado">Plusvalía $us</th>
-                            <th class="text-right texto-resaltado">Inmueble</th>
-                            {{! A ESTADO COMERCIAL CON EL CODIGO DE COLORES }}
-                            <th class="text-right texto-resaltado">Estado</th>
-                            {{! BARRA %, LOS CONSTRUIDOS SERAN 100% }}
-                            <th class="text-center texto-resaltado">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Obra&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                        </tr>
-                    </thead>
-
-                    <tbody class="texto-normal">
-
-                        {{#each informacion.historial_inversiones}}
-                            {{! con este class que tiene el codigo del documento, se podra identificarlo para REMOVE en el JQUERY }}
-                            <tr class="fila_registro">
-
-                                <td class="text-right">
-                                    {{numero_fila}}
-                                </td>
-
-                                <td class="text-right">
-                                    {{fecha_estado_inversion}}
-                                </td>
-
-                                <td class="text-right">
-                                    <a href="{{laapirest}}proyecto/{{codigo_proyecto}}/descripcion">
-                                        {{nombre_proyecto}}
-                                    </a>
-                                </td>
-
-                                <td class="text-right">
-                                    <span>{{precio_actual_inm}}</span>
-                                </td>
-
-                                <td class="text-right">
-                                    {{! en caso de que sea un entero entregado, la ganancia que se pondra sera la PLUSVALÍA }}
-                                    <span>{{ahorro}}</span>
-                                </td>
-
-                                <td class="text-right">
-                                    <a
-                                        href="{{laapirest}}inmueble/{{codigo_inmueble}}/descripcion"
-                                        style="letter-spacing: 0.1em;"
-                                    >
-                                        {{codigo_inmueble}}
-                                    </a>
-                                </td>
-
-                                <td class="color_estado_comercial text-right">
-                                    {{estado_inmueble}}
-                                </td>
-
-                                <td>
-                                    <div style="position: relative;">
-                                        <div class="progress" style="height: 1.5rem;">
-                                            <div
-                                                class="progress-bar"
-                                                role="progressbar"
-                                                style="width: {{porcentaje_obra_inm}}%;"
-                                            ></div>
+            {{!-- ---------------------------------------- --}}
+            {{#each informacion.historial_propietario}}
+                <div class="col-12 col-sm-6 ">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div>
+                                        {{titulo_terreproy}}
+                                    </div>
+                                    <div class="d-flex">
+                                        <div style="width: 15%;margin-top: 0.25em; margin-left: 0.25em;">
+                                            <img
+                                                src="/rutavirtualpublico/imagenes/{{bandera_ciudad}}"
+                                                title="Bandera ciudad"
+                                                style="width: 100%;"
+                                            />
                                         </div>
-                                        <div class="css-val-porcentaje-celda">
-                                            <b>{{porcentaje_obra_inm_render}}%</b>
+                                        <div>
+                                            <a href="{{laapirest}}{{terreproy}}/{{codigo_terreproy}}/descripcion">
+                                                {{nombre_terreproy}}
+                                            </a>
                                         </div>
                                     </div>
-                                </td>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div>
+                                        {{titulo_producto}}
+                                    </div>
+                                    <div>
+                                        <a href="{{laapirest}}{{tipo_producto}}/{{codigo_producto}}/descripcion">
+                                            {{codigo_producto}}
+                                        </a>
+                                    </div>
+                                    <div>
+                                        {{!-- Fraccion o Propietario --}}
+                                        {{titulo_fracpro}}
+                                    </div>
+                                    <div class="h6">
+                                        <b>
+                                            <span class="elvalor" data-bs="{{fracpro}}">{{fracpro_render}}</span>
+                                            <span class="lamoneda">Bs</span>
+                                        </b>
+                                    </div>
+                                    <div>
+                                        {{estado}}
+                                    </div>
+                                </div>
 
-                            </tr>
+                                <div class="col-6">
+                                    <div>
+                                        Plusvalía
+                                    </div>
+                                    <div class="h6">
+                                        <b>
+                                            <span class="elvalor" data-bs="{{plusvalia}}">{{plusvalia_render}}</span>
+                                            <span class="lamoneda">Bs</span>
+                                        </b>
+                                    </div>
+                                    <div>
+                                        Ganancia
+                                    </div>
+                                    <div class="h6">
+                                        <b>
+                                            <span class="elvalor" data-bs="{{ganancia}}">{{ganancia_render}}</span>
+                                            <span class="lamoneda">Bs</span>
+                                        </b>
+                                    </div>
+                                    <div title="{{fecha_title}}">
+                                        {{!-- Hace x dias --}}
+                                        {{fecha_render}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+            {{!-- ---------------------------------------- --}}
 
-                        {{/each}}
-
-                    </tbody>
-
-                </table>
-            </div>
         </div>
     </div>
 </div>

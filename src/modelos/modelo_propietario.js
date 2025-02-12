@@ -10,8 +10,6 @@ const encripta = require("bcryptjs");
 const inversionistaEsquema = new Schema({
     ci_solicitante: String, // el administrador que registra a este nuevo PROPIETARIO o el jefe administrador que solicita que sea eliminado
 
-    ///estado_propietario: { type: String, default: 'activo' }, // activo   o    eliminado
-
     nombres_propietario: { type: String, default: "" },
 
     apellidos_propietario: { type: String, default: "" }, // paterno y materno o solo uno de ellos si fuera el caso

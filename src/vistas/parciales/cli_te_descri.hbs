@@ -1,6 +1,6 @@
 {{!-- PARTE DESCRIPCION DEL TERRENO DEL LADO DEL CLIENTE PUBLICO --}}
 
-{{> segu_esta_te_py_inm_prop}}
+{{> segu_esta_te_py_inm}}
 
 <div class="row cuadro_estandart py-3 mt-5">
 
@@ -11,7 +11,7 @@
         </div>
 
         <div class="mx-md-4 contenedor-detalle-texto">
-            <h4 class="texto-resaltado"><span class="icono_izq d-inline-block d-md-none"><i class="fas fa-exclamation-triangle"></i></span>Importante</h4>
+            <div class="titulo_1 texto-normal"><span class="icono_izq d-inline-block d-md-none"><i class="fas fa-exclamation-triangle"></i></span>Invierte</div>
             <p class="escritura" style="text-align: justify;">
                 {{informacion.importante}}
             </p>
@@ -29,7 +29,7 @@
         </div>
 
         <div class="mx-md-4 contenedor-detalle-texto">
-            <h4 class="texto-resaltado"><span class="icono_izq d-inline-block d-md-none"><i class="fas fa-map-marked"></i></span>Ubicación y proximidades</h4>
+            <div class="titulo_1 texto-normal"><span class="icono_izq d-inline-block d-md-none"><i class="fas fa-map-marked"></i></span>Ubicación y proximidades</div>
             <p class="text-left">
                 <span class="texto-resaltado"><b>Dirección:</b></span>
                 <span>{{informacion.direccion}}</span>
@@ -158,7 +158,7 @@
         </div>
 
         <div class="contenedor-detalle-texto">
-            <h4 class="texto-resaltado"><span class="icono_izq d-inline-block d-md-none"><i class="fas fa-folder-open"></i></span>Documentos</h4>
+            <div class="titulo_1 texto-normal"><span class="icono_izq d-inline-block d-md-none"><i class="fas fa-folder-open"></i></span>Documentos</div>
 
             <div class="ml-md-4">
 
@@ -178,8 +178,3 @@
     </div>
 </div>
 {{/if}}
-
-<div class="text-right mt-4" title="Numero de visualizaciones">
-    <span><i class="fas fa-glasses icono_visualizaciones"></i></span>
-    <span class="numero_visualizaciones"><b>{{nv_ventana}}</b></span>
-</div>

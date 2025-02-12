@@ -21,7 +21,6 @@ const {
     indiceGuardados,
     indiceTerreno,
     indiceRequerimientos,
-    indiceImagenesSistema,
 } = require("../modelos/indicemodelo");
 
 const {
@@ -31,9 +30,9 @@ const {
     inmueble_card_adm_cli,
 } = require("../ayudas/funcionesayuda_1");
 
-const { cabezeras_adm_cli, pie_pagina_adm } = require("../ayudas/funcionesayuda_2");
+const { cabezeras_adm_cli } = require("../ayudas/funcionesayuda_2");
 
-const { proyecto_info_cd } = require("../ayudas/funcionesayuda_4");
+const { super_info_py } = require("../ayudas/funcionesayuda_5");
 
 const moment = require("moment");
 
@@ -72,34 +71,6 @@ controladorAdmProyecto.crearNuevoProyecto = (req, res) => {
 
             // ahora guardamos en la base de datos solo el codigo del terreno
             await codigoNuevoTerreno.save();
-
-            // con este nuevo proyecto creado, vemos si se completo o no el limite de proyectos permitidos (se contaran el numero total actual de proyectos que tiene el terreno, incluido el reciente que acaba de crearse, pues ya esta guardado en la base de datos)
-            var aux_proyectos_terreno = await indiceProyecto.find(
-                { codigo_terreno: req.params.codigo_terreno },
-                { codigo_terreno: 1, _id: 0 }
-            );
-
-            if (aux_proyectos_terreno.length > 0) {
-                var aux_terreno = await indiceTerreno.findOne(
-                    { codigo_terreno: req.params.codigo_terreno },
-                    { anteproyectos_maximo: 1, _id: 0 }
-                );
-                if (aux_terreno) {
-                    // actualizamos el numero total de anteproyectos registrados que tiene este terreno
-                    await indiceTerreno.updateOne(
-                        { codigo_terreno: req.params.codigo_terreno },
-                        { $set: { anteproyectos_registrados: aux_proyectos_terreno.length } }
-                    ); // guardamos el registro con el dato modificado
-
-                    // si con este nuevo proyecto, el terreno cumple con la cantidad maxima de anteproyectos creados, entonces se cambia su propiedad de true a false
-                    if (aux_terreno.anteproyectos_maximo <= aux_proyectos_terreno.length) {
-                        await indiceTerreno.updateOne(
-                            { codigo_terreno: req.params.codigo_terreno },
-                            { $set: { convocatoria_disponible: false } }
-                        ); // guardamos el registro con el dato modificado
-                    }
-                }
-            }
 
             //--------------------------------------------
             // guardamos en el historial de acciones
@@ -140,24 +111,7 @@ controladorAdmProyecto.renderizarVentanaProyecto = async (req, res) => {
             // VERIFICAMOS QUE EL PROYECTO EXISTA EN LA BASE DE DATOS
             var info_proyecto = {};
             info_proyecto.cab_py_adm = true;
-            //info_proyecto.estilo_cabezera = "cabezera_estilo_proyecto";
-
-            //----------------------------------------------------
-            // para la url de la cabezera
-            var url_cabezera = ""; // vacio por defecto
-            const registro_cabezera = await indiceImagenesSistema.findOne(
-                { tipo_imagen: "cabecera_proyecto" },
-                {
-                    url: 1,
-                    _id: 0,
-                }
-            );
-
-            if (registro_cabezera) {
-                url_cabezera = registro_cabezera.url;
-            }
-
-            info_proyecto.url_cabezera = url_cabezera;
+            info_proyecto.estilo_cabezera = "cabezera_estilo_proyecto";
 
             //----------------------------------------------------
 
@@ -166,7 +120,6 @@ controladorAdmProyecto.renderizarVentanaProyecto = async (req, res) => {
             var aux_cabezera = {
                 codigo_objetivo: codigo_proyecto,
                 tipo: "proyecto",
-                lado: "administrador",
             };
 
             info_proyecto.es_proyecto = true; // para menu navegacion comprimido
@@ -174,12 +127,22 @@ controladorAdmProyecto.renderizarVentanaProyecto = async (req, res) => {
             var cabezera_adm = await cabezeras_adm_cli(aux_cabezera);
             info_proyecto.cabezera_adm = cabezera_adm;
 
-            var pie_pagina = await pie_pagina_adm();
-            info_proyecto.pie_pagina_adm = pie_pagina;
-
             if (tipo_ventana_proyecto == "descripcion") {
                 var contenido_proyecto = await proyecto_descripcion(codigo_proyecto);
                 info_proyecto.descripcion_proyecto = true; // para pestaña y ventana apropiada para proyecto
+                info_proyecto.contenido_proyecto = contenido_proyecto;
+                // ------- Para verificación -------
+
+                //console.log("los datos para renderizar la DESCRIPCION DEL PROYECTO");
+                //console.log(info_proyecto);
+
+                res.render("adm_proyecto", info_proyecto);
+            }
+
+            // para la tabla de cuotas mensuales de construccion del proyecto
+            if (tipo_ventana_proyecto == "cuotas") {
+                var contenido_proyecto = await proyecto_cuotas(codigo_proyecto);
+                info_proyecto.cuotas_proyecto = true; // para pestaña y ventana apropiada para proyecto
                 info_proyecto.contenido_proyecto = contenido_proyecto;
                 // ------- Para verificación -------
 
@@ -237,14 +200,8 @@ controladorAdmProyecto.renderizarVentanaProyecto = async (req, res) => {
                     );
 
                     if (registro_terreno) {
-                        if (registro_terreno.estado_terreno == "reserva") {
+                        if (registro_terreno.estado_terreno == "reservacion") {
                             info_proyecto.estado_py_reserva = true;
-                        }
-                        if (registro_terreno.estado_terreno == "aprobacion") {
-                            info_proyecto.estado_py_aprobacion = true;
-                        }
-                        if (registro_terreno.estado_terreno == "pago") {
-                            info_proyecto.estado_py_pago = true;
                         }
                         if (registro_terreno.estado_terreno == "construccion") {
                             info_proyecto.estado_py_construccion = true;
@@ -278,13 +235,11 @@ controladorAdmProyecto.renderizarVentanaProyecto = async (req, res) => {
                 let aux_n_todos = contenido_proyecto.length;
                 let aux_n_disponible = 0;
                 let aux_n_reservado = 0;
-                let aux_n_pendiente_aprobacion = 0;
-                let aux_n_pendiente_pago = 0;
-                let aux_n_pagado_pago = 0;
-                let aux_n_en_pago = 0;
+                let aux_n_construccion = 0;
                 let aux_n_remate = 0;
-                let aux_n_completado = 0;
-                // guardado, disponible, reservado, pendiente, pagado, pagos, remate, completado
+                let aux_n_construido = 0;
+
+                // guardado, disponible, reservado, construccion, remate, construido  OK
                 if (contenido_proyecto.length > 0) {
                     for (let i = 0; i < contenido_proyecto.length; i++) {
                         let aux_estado_inmueble = contenido_proyecto[i].estado_inmueble;
@@ -294,23 +249,14 @@ controladorAdmProyecto.renderizarVentanaProyecto = async (req, res) => {
                         if (aux_estado_inmueble == "reservado") {
                             aux_n_reservado = aux_n_reservado + 1;
                         }
-                        if (aux_estado_inmueble == "pendiente_aprobacion") {
-                            aux_n_pendiente_aprobacion = aux_n_pendiente_aprobacion + 1;
-                        }
-                        if (aux_estado_inmueble == "pendiente_pago") {
-                            aux_n_pendiente_pago = aux_n_pendiente_pago + 1;
-                        }
-                        if (aux_estado_inmueble == "pagado_pago") {
-                            aux_n_pagado_pago = aux_n_pagado_pago + 1;
-                        }
-                        if (aux_estado_inmueble == "pagos") {
-                            aux_n_en_pago = aux_n_en_pago + 1;
+                        if (aux_estado_inmueble == "construccion") {
+                            aux_n_construccion = aux_n_construccion + 1;
                         }
                         if (aux_estado_inmueble == "remate") {
                             aux_n_remate = aux_n_remate + 1;
                         }
-                        if (aux_estado_inmueble == "completado") {
-                            aux_n_completado = aux_n_completado + 1;
+                        if (aux_estado_inmueble == "construido") {
+                            aux_n_construido = aux_n_construido + 1;
                         }
                     }
                 }
@@ -336,28 +282,10 @@ controladorAdmProyecto.renderizarVentanaProyecto = async (req, res) => {
                     info_proyecto.badge_reservado = false;
                 }
 
-                if (aux_n_pendiente_aprobacion > 0) {
-                    info_proyecto.badge_pendiente_aprobacion = true;
+                if (aux_n_construccion > 0) {
+                    info_proyecto.badge_construccion = true;
                 } else {
-                    info_proyecto.badge_pendiente_aprobacion = false;
-                }
-
-                if (aux_n_pendiente_pago > 0) {
-                    info_proyecto.badge_pendiente_pago = true;
-                } else {
-                    info_proyecto.badge_pendiente_pago = false;
-                }
-
-                if (aux_n_pagado_pago > 0) {
-                    info_proyecto.badge_pagado_pago = true;
-                } else {
-                    info_proyecto.badge_pagado_pago = false;
-                }
-
-                if (aux_n_en_pago > 0) {
-                    info_proyecto.badge_en_pago = true;
-                } else {
-                    info_proyecto.badge_en_pago = false;
+                    info_proyecto.badge_construccion = false;
                 }
 
                 if (aux_n_remate > 0) {
@@ -366,10 +294,10 @@ controladorAdmProyecto.renderizarVentanaProyecto = async (req, res) => {
                     info_proyecto.badge_remate = false;
                 }
 
-                if (aux_n_completado > 0) {
-                    info_proyecto.badge_completado = true;
+                if (aux_n_construido > 0) {
+                    info_proyecto.badge_construido = true;
                 } else {
-                    info_proyecto.badge_completado = false;
+                    info_proyecto.badge_construido = false;
                 }
 
                 //-----------------------------------------------
@@ -377,12 +305,9 @@ controladorAdmProyecto.renderizarVentanaProyecto = async (req, res) => {
                 info_proyecto.n_todos = aux_n_todos;
                 info_proyecto.n_disponible = aux_n_disponible;
                 info_proyecto.n_reservado = aux_n_reservado;
-                info_proyecto.n_pendiente_aprobacion = aux_n_pendiente_aprobacion;
-                info_proyecto.n_pendiente_pago = aux_n_pendiente_pago;
-                info_proyecto.n_pagado_pago = aux_n_pagado_pago;
-                info_proyecto.n_en_pago = aux_n_en_pago;
+                info_proyecto.n_construccion = aux_n_construccion;
                 info_proyecto.n_remate = aux_n_remate;
-                info_proyecto.n_completado = aux_n_completado;
+                info_proyecto.n_construido = aux_n_construido;
 
                 //--------------------------------------------------------------
 
@@ -460,7 +385,6 @@ async function proyecto_descripcion(codigo_proyecto) {
                 codigo_terreno: 1,
                 codigo_proyecto: 1,
                 nombre_proyecto: 1,
-                proyecto_ganador: 1,
                 meses_construccion: 1,
 
                 tipo_proyecto: 1,
@@ -475,7 +399,6 @@ async function proyecto_descripcion(codigo_proyecto) {
                 trafico: 1,
                 area_construida: 1,
                 proyecto_descripcion: 1,
-                penalizacion: 1,
 
                 titulo_garantia_1: 1,
                 garantia_1: 1,
@@ -514,11 +437,103 @@ async function proyecto_descripcion(codigo_proyecto) {
             // reconversion del "string" a "objeto"
             var aux_objeto = JSON.parse(aux_string);
 
-            // capitales del proyecto
-            var resultado_capitales = await proyecto_info_cd(codigo_proyecto);
-            aux_objeto.meta = resultado_capitales.meta;
-            aux_objeto.financiado = resultado_capitales.financiado_num;
-            aux_objeto.porcentaje = resultado_capitales.porcentaje;
+            let registro_terreno = await indiceTerreno.findOne(
+                { codigo_terreno: registro_proyecto.codigo_terreno },
+                {
+                    estado_terreno: 1,
+                    precio_bs: 1,
+                    descuento_bs: 1,
+                    rend_fraccion_mensual: 1,
+                    superficie: 1,
+                    fecha_inicio_convocatoria: 1,
+                    fecha_inicio_reservacion: 1,
+                    fecha_fin_reservacion: 1,
+                    fecha_fin_construccion: 1,
+                    _id: 0,
+                }
+            );
+
+            if (registro_terreno) {
+                var estado_terreno = registro_terreno.estado_terreno;
+                var precio_terreno = registro_terreno.precio_bs;
+                var descuento_terreno = registro_terreno.descuento_bs;
+                var rend_fraccion_mensual = registro_terreno.rend_fraccion_mensual;
+                var superficie_terreno = registro_terreno.superficie;
+                var fecha_inicio_convocatoria = registro_terreno.fecha_inicio_convocatoria;
+                var fecha_inicio_reservacion = registro_terreno.fecha_inicio_reservacion;
+                var fecha_fin_reservacion = registro_terreno.fecha_fin_reservacion;
+                var fecha_fin_construccion = registro_terreno.fecha_fin_construccion;
+
+                var paquete_datos = {
+                    codigo_proyecto,
+                    estado_terreno,
+                    precio_terreno,
+                    descuento_terreno,
+                    rend_fraccion_mensual,
+                    superficie_terreno,
+                    fecha_inicio_convocatoria,
+                    fecha_inicio_reservacion,
+                    fecha_fin_reservacion,
+                    fecha_fin_construccion,
+                };
+
+                var resultado_funcion = await super_info_py(paquete_datos);
+
+                var p_financiamiento = resultado_funcion.p_financiamiento;
+                var financiamiento = resultado_funcion.financiamiento;
+                var meta = resultado_funcion.meta;
+
+                aux_objeto.meta = meta;
+                aux_objeto.financiado = financiamiento;
+                aux_objeto.porcentaje = p_financiamiento;
+            }
+
+            return aux_objeto;
+        } else {
+            return false;
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+//------------------------------------------------------------------
+
+async function proyecto_cuotas(codigo_proyecto) {
+    try {
+        const registro_proyecto = await indiceProyecto.findOne(
+            { codigo_proyecto: codigo_proyecto },
+            {
+                construccion_mensual: 1,
+                _id: 0,
+            }
+        );
+
+        var construccion_mensual = [];
+
+        if (registro_proyecto) {
+            let array = registro_proyecto.construccion_mensual;
+
+            if (array.length > 0) {
+                for (let i = 0; i < array.length; i++) {
+                    let fecha = array[i].fecha; // la fecha esta en formato String Ej "2010-10-10"
+
+                    if (fecha) {
+                        var fechaString = fecha;
+                    } else {
+                        var fechaString = "";
+                    }
+
+                    construccion_mensual[i] = {
+                        orden: i + 1,
+                        fecha: fechaString, // ej: "2010-10-10" (año-mes-dia)
+                        pago_bs: array[i].pago_bs, // ya esta en tipo Numerico, porque asi esta guardado en la base de datos dentro del array
+                    };
+                }
+            }
+
+            var aux_objeto = {
+                construccion_mensual: construccion_mensual,
+            };
 
             return aux_objeto;
         } else {
@@ -880,7 +895,6 @@ async function proyecto_estados(codigo_proyecto) {
             { codigo_proyecto: codigo_proyecto },
             {
                 estado_proyecto: 1,
-                proyecto_ganador: 1,
                 visible: 1,
                 _id: 0,
             }
@@ -1010,7 +1024,6 @@ controladorAdmProyecto.guardarDatosProyecto = async (req, res) => {
                 proyectoEncontrado.terreno = req.body.terreno;
                 proyectoEncontrado.area_construida = req.body.area_construida;
                 proyectoEncontrado.proyecto_descripcion = req.body.proyecto_descripcion;
-                proyectoEncontrado.penalizacion = req.body.penalizacion;
 
                 /**--------------- */
                 proyectoEncontrado.titulo_otros_1 = req.body.titulo_otros_1;
@@ -1143,80 +1156,6 @@ controladorAdmProyecto.guardarEstadoProyecto = async (req, res) => {
 
 /************************************************************************************ */
 /************************************************************************************ */
-// CONTROLADOR PARA GUARDAR ELECCION DEL PROYECTO
-
-controladorAdmProyecto.guardarEleccionProyecto = async (req, res) => {
-    // **OK
-    // ruta   POST  "/laapirest/proyecto/:codigo_proyecto/accion/guardar_estado_proyecto"
-
-    try {
-        const codigoProyecto = req.params.codigo_proyecto;
-        const registro_proyecto = await indiceProyecto.findOne(
-            { codigo_proyecto: codigoProyecto },
-            { codigo_terreno: 1 }
-        );
-
-        if (registro_proyecto) {
-            var acceso = await verificadorTerrenoBloqueado(registro_proyecto.codigo_terreno);
-            if (acceso == "permitido") {
-                if (req.body.casilla_check == "true") {
-                    // todos proyectos que puede tener el terreno, pasaran a "false", devido a que solo puede existir un proyecto ganador como "true"
-                    await indiceProyecto.updateMany(
-                        //  REVISAR ESTE "updateMany"
-                        { codigo_terreno: registro_proyecto.codigo_terreno },
-                        { $set: { proyecto_ganador: false } }
-                    );
-
-                    // ahora solo cambiamos a "true" el proyecto ganador seleccionado
-                    await indiceProyecto.updateOne(
-                        { codigo_proyecto: codigoProyecto },
-                        { $set: { proyecto_ganador: true } }
-                    ); // guardamos el registro con el dato modificado
-
-                    var accion_administrador =
-                        "Proyecto " + codigoProyecto + " seleccionado como ganador";
-                }
-
-                if (req.body.casilla_check == "false") {
-                    await indiceProyecto.updateOne(
-                        { codigo_proyecto: codigoProyecto },
-                        { $set: { proyecto_ganador: false } }
-                    ); // guardamos el registro con el dato modificado
-                    var accion_administrador =
-                        "Proyecto " + codigoProyecto + " DE-seleccionado como ganador";
-                }
-
-                //-------------------------------------------------------------------
-                // guardamos en el historial de acciones
-                var ci_administrador = req.user.ci_administrador; // extraido de la SESION guardada del administrador
-                var aux_accion_adm = {
-                    ci_administrador,
-                    accion_administrador,
-                };
-                await guardarAccionAdministrador(aux_accion_adm);
-                //-------------------------------------------------------------------
-
-                res.json({
-                    exito: "si",
-                });
-            } else {
-                // si el acceso es denegado
-                res.json({
-                    exito: "denegado",
-                });
-            }
-        } else {
-            res.json({
-                exito: "no",
-            });
-        }
-    } catch (error) {
-        console.log(error);
-    }
-};
-
-/************************************************************************************ */
-/************************************************************************************ */
 // CONTROLADOR PARA GUARDAR VISIBILIDAD DEL PROYECTO
 
 controladorAdmProyecto.guardarVisibilidadProyecto = async (req, res) => {
@@ -1239,7 +1178,8 @@ controladorAdmProyecto.guardarVisibilidadProyecto = async (req, res) => {
                         { $set: { visible: true } }
                     ); // guardamos el registro con el dato modificado
 
-                    var accion_administrador = "Proyecto " + codigoProyecto + " seleccionado a VISIBLE";
+                    var accion_administrador =
+                        "Proyecto " + codigoProyecto + " seleccionado a VISIBLE";
                 }
 
                 if (req.body.casilla_check == "false") {
@@ -1323,38 +1263,6 @@ controladorAdmProyecto.eliminarProyecto = async (req, res) => {
                         //await proyectoEncontrado.remove(); // eliminamos para no tener problemas con la caducidad de remove
                         await indiceProyecto.deleteOne({ codigo_proyecto: codigo_proyecto });
 
-                        //------------------------------------------------------
-                        // actualizacion de "anteproyectos_registrados" y "convocatoria_disponible" de terreno
-                        var aux_proyectos_terreno = await indiceProyecto.find(
-                            { codigo_terreno: proyectoEncontrado.codigo_terreno },
-                            { codigo_terreno: 1, _id: 0 }
-                        );
-
-                        if (aux_proyectos_terreno.length > 0) {
-                            var aux_terreno = await indiceTerreno.findOne(
-                                { codigo_terreno: proyectoEncontrado.codigo_terreno },
-                                { anteproyectos_maximo: 1, _id: 0 }
-                            );
-                            if (aux_terreno) {
-                                // actualizamos el numero total de anteproyectos registrados que tiene este terreno
-                                await indiceTerreno.updateOne(
-                                    { codigo_terreno: proyectoEncontrado.codigo_terreno },
-                                    {
-                                        $set: {
-                                            anteproyectos_registrados: aux_proyectos_terreno.length,
-                                        },
-                                    }
-                                ); // guardamos el registro con el dato modificado
-
-                                // como el anteproyecto fue eliminado, entonces se cambia su propiedad "convocatoria_disponible" a true
-
-                                await indiceTerreno.updateOne(
-                                    { codigo_terreno: proyectoEncontrado.codigo_terreno },
-                                    { $set: { convocatoria_disponible: true } }
-                                ); // guardamos el registro con el dato modificado
-                            }
-                        }
-
                         //-------------------------------------------------------------------
                         // guardamos en el historial de acciones
                         var ci_administrador = req.user.ci_administrador; // extraido de la SESION guardada del administrador
@@ -1387,7 +1295,8 @@ controladorAdmProyecto.eliminarProyecto = async (req, res) => {
         } else {
             res.json({
                 exito: "no",
-                mensaje: "Proyecto No encontrado, por favor refresque la ventana e intentelo nuevamente",
+                mensaje:
+                    "Proyecto No encontrado, por favor refresque la ventana e intentelo nuevamente",
             });
         }
     } catch (error) {
@@ -1403,12 +1312,10 @@ async function eliminadorImagenesProyecto(codigo_proyecto) {
         });
 
         if (registroImagenesProyecto) {
-
             const storage = getStorage();
 
             // eliminamos los ARCHIVOS IMAGEN uno por uno
             for (let i = 0; i < registroImagenesProyecto.length; i++) {
-
                 /*
                 let imagenNombreExtension =
                     registroImagenesProyecto[i].codigo_imagen +
@@ -1421,8 +1328,9 @@ async function eliminadorImagenesProyecto(codigo_proyecto) {
 
                 //const storage = getStorage();
 
-                var nombre_y_ext = registroImagenesProyecto[i].codigo_imagen +
-                registroImagenesProyecto[i].extension_imagen;
+                var nombre_y_ext =
+                    registroImagenesProyecto[i].codigo_imagen +
+                    registroImagenesProyecto[i].extension_imagen;
 
                 // para encontrar en la carpeta "subido" en firebase con el nombre y la extension de la imagen incluida
                 var direccionActualImagen = "subido/" + nombre_y_ext;
@@ -1437,7 +1345,6 @@ async function eliminadorImagenesProyecto(codigo_proyecto) {
                 //console.log("Archivo eliminado DE FIREBASE con éxito");
 
                 //--------------------------------------------------
-
             }
             // luego de eliminar todos los ARCHIVOS IMAGEN, procedemos a ELIMINARLO DE LA BASE DE DATOS
             //await indiceImagenesProyecto.remove({ codigo_proyecto: codigo_proyecto });
@@ -1457,12 +1364,10 @@ async function eliminadorDocumentosProyecto(codigo_proyecto) {
         });
 
         if (registroDocumentosProyecto) {
-
             const storage = getStorage();
 
             // eliminamos los ARCHIVOS DOCUMENTOS PDF uno por uno (sean publicos o privados)
             for (let i = 0; i < registroDocumentosProyecto.length; i++) {
-
                 /*
                 let documentoNombreExtension = registroDocumentosProyecto[i].codigo_documento + ".pdf";
                 // eliminamos el ARCHIVO DOCUMENTO DE LA CARPETA DONDE ESTA GUARDADA
@@ -1791,8 +1696,10 @@ controladorAdmProyecto.guardarTextosSegunderosPy = async (req, res) => {
         if (proyectoEncontrado) {
             var acceso = await verificadorTerrenoBloqueado(proyectoEncontrado.codigo_terreno);
             if (acceso == "permitido") {
-                proyectoEncontrado.mensaje_segundero_py_inm_a = req.body.mensaje_segundero_py_inm_a_html;
-                proyectoEncontrado.mensaje_segundero_py_inm_b = req.body.mensaje_segundero_py_inm_b_html;
+                proyectoEncontrado.mensaje_segundero_py_inm_a =
+                    req.body.mensaje_segundero_py_inm_a_html;
+                proyectoEncontrado.mensaje_segundero_py_inm_b =
+                    req.body.mensaje_segundero_py_inm_b_html;
                 proyectoEncontrado.nota_precio_justo = req.body.nota_precio_justo;
 
                 await proyectoEncontrado.save();
@@ -1801,7 +1708,8 @@ controladorAdmProyecto.guardarTextosSegunderosPy = async (req, res) => {
                 // guardamos en el historial de acciones
                 var ci_administrador = req.user.ci_administrador; // extraido de la SESION guardada del administrador
                 var accion_administrador =
-                    "Guarda TEXTOS SEGUNDEROS y NOTA DE PRECIO JUSTO del proyecto " + codigoProyecto;
+                    "Guarda TEXTOS SEGUNDEROS y NOTA DE PRECIO JUSTO del proyecto " +
+                    codigoProyecto;
                 var aux_accion_adm = {
                     ci_administrador,
                     accion_administrador,
@@ -1961,7 +1869,8 @@ controladorAdmProyecto.guardarRequerimientosInexistente = async (req, res) => {
         if (proyectoEncontrado) {
             var acceso = await verificadorTerrenoBloqueado(proyectoEncontrado.codigo_terreno);
             if (acceso == "permitido") {
-                proyectoEncontrado.nota_no_requerimientos = req.body.inexistente_requerimientos_html;
+                proyectoEncontrado.nota_no_requerimientos =
+                    req.body.inexistente_requerimientos_html;
 
                 await proyectoEncontrado.save();
 

@@ -1,0 +1,218 @@
+{{!-- PERMITIRA SEGUN EL ESTADO DEL INMUEBLE, LA POSIBILIDAD DE QUE COPROPIETARIO DEL TERRENO ADQUIEREAN FRACCIONES DEL INMUEBLE. --}}
+{{!-- para visualizar las fracciones que forman parte el inmueble --}}
+
+{{!-- valor del precio justo del inmueble expresado en bs --}}
+<span id="precio_justo_inm" data-precio_justo_inm="{{contenido.precio_te_inm}}"></span>
+
+<div class="contenido container-fluid">
+
+    <div class="row">
+        <div class="col-sm-12 col-lg-4">
+            <div class="card my-3">
+                <h5 class="card-header">FRACCIONES</h5>
+
+                <div class="card-body text-primary">
+
+                    <div>
+                        <div>
+                            <span>Disponibles</span>
+                            <i
+                                class="icono_popover fas fa-info-circle ml-1"
+                                data-toggle="popover"
+                                data-html="true"
+                                data-content="Cuentas con este valor de fracciones de terreno disponibles, que puedes utilizar para adquirir fracciones de inmuebles que serán construidos."
+                            ></i>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <span class="c_ft_d_n" data-c_ft_d_n="{{contenido.c_ft_d_n}}">{{contenido.c_ft_d_n_render}}</span>
+                            </div>
+                            <div>
+                                <span class="c_ft_d_val" data-c_ft_d_val="{{contenido.c_ft_d_val}}">{{contenido.c_ft_d_val_render}}</span>
+                                <span>Bs</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        Utiliza tus fracciones de terreno disponibles, para adquirir fracciones de inmueble en esta propiedad y así obtener mayores ganancias por plusvalía.
+                    </div>
+
+                    <hr>
+
+                    <span class="f_boton" data-f_boton="menos">-</span>
+                    <span id="f_vender_n" data-f_vender_n="0">0</span>
+                    <span class="f_boton" data-f_boton="suma">+</span>
+                    
+                    <div class="row">
+                        <div class="col-12 col-sm-6 col-xl-3">
+                            <p class="text-left texto-link">
+                                Valor
+                            </p>
+                        </div>
+                        
+                        <div class="col-12 col-sm-6 col-xl-3">
+                            <p class="text-left">
+                                <span id="f_vender_val" data-f_vender_val="0">0</span>
+                                <span>Bs</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button
+                        type="button"
+                        class="btn btn-primary mr-3"
+                        id="adquirir_frac_inm"
+                        >
+                        Adquirir
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-lg-4">
+            <div class="card my-3">
+                <h5 class="card-header">COPROPIETARIO</h5>
+
+                <div class="card-body text-primary">
+                    
+                    <div>
+                        <div>
+                            <span>Participación</span>
+                            <i
+                                class="icono_popover fas fa-info-circle ml-1"
+                                data-toggle="popover"
+                                data-html="true"
+                                data-content="Es el porcentaje de participación que tienes en el inmueble."
+                            ></i>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <span class="c_fti_a_p">{{contenido.c_fti_a_p_render}}</span>
+                                <span>%</span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <hr>
+                    <div>
+                        <div>
+                            <span>Adquiridos</span>
+                            <i
+                                class="icono_popover fas fa-info-circle ml-1"
+                                data-toggle="popover"
+                                data-html="true"
+                                data-content="Es la cantidad de fracciones de inmueble que adquiriste sobre esta propiedad."
+                            ></i>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <span class="c_fti_a_n" data-c_fti_a_n="{{contenido.c_fti_a_n}}">{{contenido.c_fti_a_n_render}}</span>
+                            </div>
+                            <div>
+                                <span class="c_fti_a_val" data-c_fti_a_val="{{contenido.c_fti_a_val}}">{{contenido.c_fti_a_val_render}}</span>
+                                <span>Bs</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button
+                        type="button"
+                        class="btn btn-danger mr-3"
+                        id="deshacer_frac_inm"
+                        >
+                        Deshacer
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-lg-4">
+            <div class="card my-3">
+                <h5 class="card-header">INMUEBLE</h5>
+
+                <div class="card-body text-primary">
+                    
+                    <div>
+                        <div>
+                            <span>Financiamiento</span>
+                            <i
+                                class="icono_popover fas fa-info-circle ml-1"
+                                data-toggle="popover"
+                                data-html="true"
+                                data-content="Es el nivel de financiamiento de la propiedad mediante la adquisición de fracciones de inmueble por parte de sus futuros copropietarios."
+                            ></i>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <span class="ti_f_p">{{contenido.ti_f_p_render}}</span>
+                                <span>%</span>
+                            </div>
+                            <div>
+                                <span class="ti_f_val" data-ti_f_val="{{contenido.ti_f_val}}">{{contenido.ti_f_val_render}}</span>
+                                <span>Bs</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div>
+                            <span>Disponibles</span>
+                            <i
+                                class="icono_popover fas fa-info-circle ml-1"
+                                data-toggle="popover"
+                                data-html="true"
+                                data-content="Es la cantidad de fracciones de inmueble disponibles en la propiedad, para ser adquiridas por futuros copropietarios."
+                            ></i>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <span class="ti_f_d_n" data-ti_f_d_n="{{contenido.ti_f_d_n}}">{{contenido.ti_f_d_n_render}}</span>
+                            </div>
+                            <div>
+                                <span class="ti_f_d_val" data-ti_f_d_val="{{contenido.ti_f_d_val}}">{{contenido.ti_f_d_val_render}}</span>
+                                <span>Bs</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="text-center">
+                        {{!-- ej: Finaliza en x dias --}}
+                        {{contenido.leyenda_tiempo}}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="contenido container-fluid contenedor_fracciones_inmueble">
+    <div class="row">
+
+        <div class="contenedor_titulo_fracciones col-12">
+            <h5 class="cuadro_estandart p-2 rounded text-center">
+                FRACCIONES DEL INMUEBLE
+            </h5>
+        </div>
+
+        {{!-- las fracciones de inmueble que adquiere el copropietario --}}
+        {{#each contenido.array_fracciones}}
+        {{> adm_cli_card_fraccion}}
+        {{/each}}
+        
+    </div>
+</div>

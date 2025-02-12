@@ -9,7 +9,7 @@ const proyectoEsquema = new Schema({
 
     codigo_proyecto: { type: String, default: "" },
     nombre_proyecto: { type: String, default: "" },
-    proyecto_ganador: { type: Boolean, default: false }, // "true" ganador para: pago, construccion, construido (solo puede existir uno entre todos los proyectos del terreno)
+
     visible: { type: Boolean, default: false }, // "false" para ocultar en los resultados
     estado_proyecto: { type: String, default: "guardado" }, // guardado o completado
 
@@ -24,19 +24,13 @@ const proyectoEsquema = new Schema({
 
     meses_construccion: { type: Number, default: 12 },
 
-    // no es necesario especificar el numero de inmuebles, porque se lo hara con funciones, asi como los ocupados y disponibles
-
     total_departamentos: { type: Number, default: 0 },
     total_oficinas: { type: Number, default: 0 },
     total_comerciales: { type: Number, default: 0 },
     total_casas: { type: Number, default: 0 },
-    //dormitorios: { type: Number, default: 0 },
-    //banos: { type: Number, default: 0 }, // numero de baños
-    //terreno: { type: Number, default: "" },
     garajes: { type: Number, default: 0 },
     area_construida: { type: Number, default: "" },
     proyecto_descripcion: { type: String, default: "" },
-    penalizacion: { type: Number, default: 15 }, // castigo por incumplimiento de pago en %
 
     trafico:{ type: Number, default: 0 }, // numero de personas por hora
 
@@ -63,14 +57,24 @@ const proyectoEsquema = new Schema({
     link_instagram_proyecto: { type: String, default: "" },
     link_tiktok_proyecto: { type: String, default: "" },
 
+    //---------------------------------------------------------
+    // precio de construccion por m2 ( NO CONSIDERA EL PRECIO DEL TERRENO )
     contructora_dolar_m2_1: { type: Number, default: "" },
     contructora_dolar_m2_2: { type: Number, default: "" },
     contructora_dolar_m2_3: { type: Number, default: "" },
-    //contructora_dolar_promedio: { type: Number, default: '' }, // de las tres contructoras dolar/m2
+
     volterra_dolar_m2: { type: Number, default: "" },
 
+    //---------------------------------------------------------------
     // [ [#,item,valor] , [#,item,valor] , ... , [#,item,valor] ]
+    // en moneda Bs (bolivianos)
     presupuesto_proyecto: { type: Array, default: [] },
+
+    // [ {fecha: String, pago_bs: Number}, {fecha: String, pago_bs: Number} , ... , {fecha: String, pago_bs: Number} ] LOS PAGOS en moneda Bs (bolivianos) y entero sin decimales
+    // no considera el derecho de suelo, solo la construccion
+    construccion_mensual: { type: Array, default: [] }, // NUEVO
+
+    // IMPORTANTE: tanto presupuesto_proyecto y construccion_mensual estaran en la pestaña de "Presupuesto", existiran un submenu que permitira seleccionar el tipo de informacion que se desea y siempre con el tipo de moneda que se desea Bs o $us
     //----------------------------------------------------------------
     // TEXTOS y segunderos PROYECTO e INMUEBLE
 
@@ -122,7 +126,7 @@ const proyectoEsquema = new Schema({
             "Los costos de construcción fueron obtenidas de diferentes constructoras que operan en el mercado. Por lo general estas empresas trabajan con una tarifa fija de contrucción $us/m2 que viene determinada por el mercado tradicional.",
     },
 
-    titulo_precio_inm: { type: String, default: "Precio económico" },
+    titulo_precio_inm: { type: String, default: "Precio justo" },
     texto_precio_inm: {
         type: String,
         default:
@@ -160,19 +164,6 @@ const proyectoEsquema = new Schema({
         default:
             "Proyecto finalizado con éxito, gracias a todos los propietarios por confiar en nosotros.",
     }, // para las etapa de: Construido
-
-    // mensajes que estaran debajo del segundero RECOMPENSA visto en las ventanas de:PROYECTO y sus INMUEBLES
-    mensaje_segundero_py_inm_c: {
-        type: String,
-        default:
-            "Con SOLIDEXA obtienes ganancias mientras se tramitan los permisos necesarios para la construcción.",
-    }, // para las etapas de: Reserva, Pago y Aprobación
-
-    mensaje_segundero_py_inm_d: {
-        type: String,
-        default:
-            "Ganancia generada por el tiempo de espera hasta la obtencion de los permisos de construcción.",
-    }, // para las etapaS de: Construcción Y Construido
 
     nota_precio_justo: {
         type: String,

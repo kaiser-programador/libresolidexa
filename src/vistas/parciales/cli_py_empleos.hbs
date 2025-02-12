@@ -2,8 +2,8 @@
 
 <div class="row mt-5 cuadro_estandart py-3">
     <div class="col-12 col-md-6 py-3">
-        <h4 class="texto-resaltado text-center">La unión hace la fuerza</h4>
-        <h5 class="texto-resaltado text-center">Sinergia país</h5>
+        <div class="titulo_2 text-center">Sinergia país</div>
+        <div class="titulo_3 text-center">La unión hace la fuerza</div>
         <div class="main_engranajes">
 
             {{! PARA ENGRANAJES TAMAÑO NORMAL }}
@@ -49,7 +49,7 @@
                         <span class="linea-1"></span>
                     </div>
                     <div>
-                        <i class="fas fa-users propietario-resumen-icono-footer"></i>
+                        <i class="fas fa-users icono_1"></i>
                     </div>
                 </div>
 
@@ -58,7 +58,7 @@
                         <span class="linea-2"></span>
                     </div>
                     <div>
-                        <i class="fas fa-hard-hat propietario-resumen-icono-footer"></i>
+                        <i class="fas fa-hard-hat icono_1"></i>
                     </div>
                 </div>
 
@@ -68,7 +68,7 @@
                     </div>
                     <div>
                         <img
-                            class="propietario-resumen-bandera-footer"
+                            class="propietario-resumen-bandera"
                             src="/rutavirtualpublico/imagenes/bolivia.png"
                             title="Bandera Bolivia"
                         />
@@ -120,7 +120,7 @@
                         <span class="linea-1"></span>
                     </div>
                     <div>
-                        <i class="fas fa-users propietario-resumen-icono-footer"></i>
+                        <i class="fas fa-users icono_1"></i>
                     </div>
                 </div>
 
@@ -129,7 +129,7 @@
                         <span class="linea-2"></span>
                     </div>
                     <div>
-                        <i class="fas fa-hard-hat propietario-resumen-icono-footer"></i>
+                        <i class="fas fa-hard-hat icono_1"></i>
                     </div>
                 </div>
 
@@ -139,7 +139,7 @@
                     </div>
                     <div>
                         <img
-                            class="propietario-resumen-bandera-footer"
+                            class="propietario-resumen-bandera"
                             src="/rutavirtualpublico/imagenes/bolivia.png"
                             title="Bandera Bolivia"
                         />
@@ -156,25 +156,25 @@
 
         <div class="row">
             <div class="col-4">
-                <h5 class="text-center mb-4 texto-resaltado">Propietarios</h5>
+                <div class="titulo_3 text-center mb-4">Propietarios</div>
             </div>
             <div class="col-4">
-                <h5 class="text-center mb-4 texto-resaltado">SOLIDEXA</h5>
+                <div class="titulo_3 text-center mb-4">SOLIDEXA</div>
             </div>
             <div class="col-4">
-                <h5 class="text-center mb-4 texto-resaltado">País</h5>
+                <div class="titulo_3 text-center mb-4">País</div>
             </div>
         </div>
 
         <div class="row">
             <div class="col-4">
                 <div class="text-center mb-2">
-                    <i class="fas fa-users propietario-resumen-icono"></i>
+                    <i class="fas fa-users icono_1"></i>
                 </div>
             </div>
             <div class="col-4">
                 <div class="text-center mb-2">
-                    <i class="fas fa-hard-hat propietario-resumen-icono"></i>
+                    <i class="fas fa-hard-hat icono_1"></i>
                 </div>
             </div>
             <div class="col-4">
@@ -184,9 +184,9 @@
                     >
                         <div>
                             <img
+                                class="propietario-resumen-bandera"
                                 src="/rutavirtualpublico/imagenes/bolivia.png"
                                 title="Bandera Bolivia"
-                                style="width: 100%;"
                             />
                         </div>
                     </div>
@@ -207,37 +207,20 @@
                                     d="M16,4c0-1.11,0.89-2,2-2s2,0.89,2,2s-0.89,2-2,2S16,5.11,16,4z M20,22v-6h2.5l-2.54-7.63C19.68,7.55,18.92,7,18.06,7h-0.12 c-0.86,0-1.63,0.55-1.9,1.37l-0.86,2.58C16.26,11.55,17,12.68,17,14v8H20z M12.5,11.5c0.83,0,1.5-0.67,1.5-1.5s-0.67-1.5-1.5-1.5 S11,9.17,11,10S11.67,11.5,12.5,11.5z M5.5,6c1.11,0,2-0.89,2-2s-0.89-2-2-2s-2,0.89-2,2S4.39,6,5.5,6z M7.5,22v-7H9V9 c0-1.1-0.9-2-2-2H4C2.9,7,2,7.9,2,9v6h1.5v7H7.5z M14,22v-4h1v-4c0-0.82-0.68-1.5-1.5-1.5h-2c-0.82,0-1.5,0.68-1.5,1.5v4h1v4H14z"
                                 ></path></g></svg>
                     </div>
-                    <h5 class="pl-3 pb-2">{{contenido_proyecto.py_nfp}}</h5>
+                    <div class="titulo_4 pl-3 pb-2">{{contenido_proyecto.py_nfp}}</div>
                 </div>
 
                 <div style="display: flex; justify-content: center;align-items: center;">
-                    <div>
-                        <i class="fas fa-coins icono-empleos"></i>
+                    <div class="titulo_4">
+                        <i class="fas fa-coins"></i>
                     </div>
-                    <h6 class="pl-3">{{contenido_proyecto.py_dfp}} $us</h6>
-                </div>
-            </div>
-
-            <div class="col-4">
-                <div style="display: flex; justify-content: center;align-items: center;">
-                    <div class="mb-3">
-                        <svg
-                            class="familia-menor"
-                            xmlns="http://www.w3.org/2000/svg"
-                            enable-background="new 0 0 24 24"
-                            viewBox="0 0 24 24"
-                        ><g><rect fill="none" height="24" width="24"></rect><path
-                                    d="M16,4c0-1.11,0.89-2,2-2s2,0.89,2,2s-0.89,2-2,2S16,5.11,16,4z M20,22v-6h2.5l-2.54-7.63C19.68,7.55,18.92,7,18.06,7h-0.12 c-0.86,0-1.63,0.55-1.9,1.37l-0.86,2.58C16.26,11.55,17,12.68,17,14v8H20z M12.5,11.5c0.83,0,1.5-0.67,1.5-1.5s-0.67-1.5-1.5-1.5 S11,9.17,11,10S11.67,11.5,12.5,11.5z M5.5,6c1.11,0,2-0.89,2-2s-0.89-2-2-2s-2,0.89-2,2S4.39,6,5.5,6z M7.5,22v-7H9V9 c0-1.1-0.9-2-2-2H4C2.9,7,2,7.9,2,9v6h1.5v7H7.5z M14,22v-4h1v-4c0-0.82-0.68-1.5-1.5-1.5h-2c-0.82,0-1.5,0.68-1.5,1.5v4h1v4H14z"
-                                ></path></g></svg>
+                    <div class="titulo_4 pl-3">
+                        <span
+                            class="elvalor"
+                            data-bs="{{contenido_proyecto.py_dfp_n}}"
+                        >{{contenido_proyecto.py_dfp}}</span>
+                        <span class="lamoneda">Bs</span>
                     </div>
-                    <h5 class="pl-3 pb-2">{{contenido_proyecto.py_inm_nfe}}</h5>
-                </div>
-
-                <div style="display: flex; justify-content: center;align-items: center;">
-                    <div>
-                        <i class="fas fa-coins icono-empleos"></i>
-                    </div>
-                    <h6 class="pl-3">{{contenido_proyecto.py_dfe}} $us</h6>
                 </div>
             </div>
 
@@ -253,52 +236,111 @@
                                     d="M16,4c0-1.11,0.89-2,2-2s2,0.89,2,2s-0.89,2-2,2S16,5.11,16,4z M20,22v-6h2.5l-2.54-7.63C19.68,7.55,18.92,7,18.06,7h-0.12 c-0.86,0-1.63,0.55-1.9,1.37l-0.86,2.58C16.26,11.55,17,12.68,17,14v8H20z M12.5,11.5c0.83,0,1.5-0.67,1.5-1.5s-0.67-1.5-1.5-1.5 S11,9.17,11,10S11.67,11.5,12.5,11.5z M5.5,6c1.11,0,2-0.89,2-2s-0.89-2-2-2s-2,0.89-2,2S4.39,6,5.5,6z M7.5,22v-7H9V9 c0-1.1-0.9-2-2-2H4C2.9,7,2,7.9,2,9v6h1.5v7H7.5z M14,22v-4h1v-4c0-0.82-0.68-1.5-1.5-1.5h-2c-0.82,0-1.5,0.68-1.5,1.5v4h1v4H14z"
                                 ></path></g></svg>
                     </div>
-                    <h5 class="pl-3 pb-2">{{contenido_proyecto.py_inm_nfb}}</h5>
+                    <div class="titulo_4 pl-3 pb-2">{{contenido_proyecto.py_inm_nfe}}</div>
                 </div>
 
                 <div style="display: flex; justify-content: center;align-items: center;">
-                    <div>
-                        <i class="fas fa-coins icono-empleos"></i>
+                    <div class="titulo_4">
+                        <i class="fas fa-coins"></i>
                     </div>
-                    <h6 class="pl-3">{{contenido_proyecto.py_dfb}} $us</h6>
+                    <div class="titulo_4 pl-3">
+                        <span
+                            class="elvalor"
+                            data-bs="{{contenido_proyecto.py_dfe_n}}"
+                        >{{contenido_proyecto.py_dfe}}</span>
+                        <span class="lamoneda">Bs</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-4">
+                <div style="display: flex; justify-content: center;align-items: center;">
+                    <div class="mb-3">
+                        <svg
+                            class="familia-menor"
+                            xmlns="http://www.w3.org/2000/svg"
+                            enable-background="new 0 0 24 24"
+                            viewBox="0 0 24 24"
+                        ><g><rect fill="none" height="24" width="24"></rect><path
+                                    d="M16,4c0-1.11,0.89-2,2-2s2,0.89,2,2s-0.89,2-2,2S16,5.11,16,4z M20,22v-6h2.5l-2.54-7.63C19.68,7.55,18.92,7,18.06,7h-0.12 c-0.86,0-1.63,0.55-1.9,1.37l-0.86,2.58C16.26,11.55,17,12.68,17,14v8H20z M12.5,11.5c0.83,0,1.5-0.67,1.5-1.5s-0.67-1.5-1.5-1.5 S11,9.17,11,10S11.67,11.5,12.5,11.5z M5.5,6c1.11,0,2-0.89,2-2s-0.89-2-2-2s-2,0.89-2,2S4.39,6,5.5,6z M7.5,22v-7H9V9 c0-1.1-0.9-2-2-2H4C2.9,7,2,7.9,2,9v6h1.5v7H7.5z M14,22v-4h1v-4c0-0.82-0.68-1.5-1.5-1.5h-2c-0.82,0-1.5,0.68-1.5,1.5v4h1v4H14z"
+                                ></path></g></svg>
+                    </div>
+                    <div class="titulo_4 pl-3 pb-2">{{contenido_proyecto.py_inm_nfb}}</div>
+                </div>
+
+                <div style="display: flex; justify-content: center;align-items: center;">
+                    <div class="titulo_4">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <div class="titulo_4 pl-3">
+                        <span
+                            class="elvalor"
+                            data-bs="{{contenido_proyecto.py_dfb_n}}"
+                        >{{contenido_proyecto.py_dfb}}</span>
+                        <span class="lamoneda">Bs</span>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="row">
             <div class="col-4 text-center">
-                <div class="mt-3 btn btn-outline-primary btn-propietarios">Significado</div>
+                <div class="mt-3 btn boton-linea-secundario btn-propietarios">Significado</div>
             </div>
             <div class="col-4 text-center">
-                <div class="mt-3 btn btn-outline-primary btn-empresa">Significado</div>
+                <div class="mt-3 btn boton-linea-secundario btn-empresa">Significado</div>
             </div>
             <div class="col-4 text-center">
-                <div class="mt-3 btn btn-outline-primary btn-pais">Significado</div>
+                <div class="mt-3 btn boton-linea-secundario btn-pais">Significado</div>
             </div>
         </div>
 
         <div class="row">
             <div class="col-12 significado-propietarios" style="display: none;">
-                <div class="alert alert-primary mt-3">
-                    <p><strong>Propietarios</strong></p>
+                <div class="encuadre mt-3">
+                    <p class="titulo_4">Propietarios</p>
                     <p class="escritura">
-                        {{contenido_proyecto.significado_py_propietarios}}
+                        Los
+                        <span>{{contenido_proyecto.py_nfp}}</span>
+                        propietarios que conforman el presente proyecto y sus respectivas familias
+                        se benefician con una plusvalía de regalo equivalente a
+                        <span
+                            class="elvalor"
+                            data-bs="{{contenido_proyecto.py_dfp_n}}"
+                        >{{contenido_proyecto.py_dfp}}</span>
+                        <span class="lamoneda">Bs</span>.
                     </p>
                 </div>
             </div>
             <div class="col-12 significado-empresa" style="display: none;">
-                <div class="alert alert-primary mt-3">
-                    <p><strong>SOLIDEXA</strong></p>
+                <div class="encuadre mt-3">
+                    <p class="titulo_4">SOLIDEXA</p>
                     <p class="escritura">
-                        {{contenido_proyecto.significado_py_empresa}}
+                        Mediante el presente proyecto, SOLIDEXA genera
+                        <span>{{contenido_proyecto.py_inm_nfe}}</span>
+                        trabajos directos, contribuyendo de esta manera a mejorar la situación
+                        económica de las familias bolivianas por un valor de
+                        <span
+                            class="elvalor"
+                            data-bs="{{contenido_proyecto.py_dfe_n}}"
+                        >{{contenido_proyecto.py_dfe}}</span>
+                        <span class="lamoneda">Bs</span>.
                     </p>
                 </div>
             </div>
             <div class="col-12 significado-pais" style="display: block;">
-                <div class="alert alert-primary mt-3">
-                    <p><strong>País</strong></p>
+                <div class="encuadre mt-3">
+                    <p class="titulo_4">País</p>
                     <p class="escritura">
-                        {{contenido_proyecto.significado_py_pais}}
+                        Mediante el presente proyecto, SOLIDEXA genera
+                        <span>{{contenido_proyecto.py_inm_nfb}}</span>
+                        trabajos indirectos, contribuyendo de esta manera en el mejoramiento de la
+                        situación económica de nuestro país por un valor de
+                        <span
+                            class="elvalor"
+                            data-bs="{{contenido_proyecto.py_dfb_n}}"
+                        >{{contenido_proyecto.py_dfb}}</span>
+                        <span class="lamoneda">Bs</span>.
                     </p>
                 </div>
             </div>
@@ -324,7 +366,7 @@
         </div>
 
         <div class="mx-md-4 contenedor-detalle-texto">
-            <h4 class="texto-resaltado">
+            <div class="titulo_1 texto-normal">
                 <div class="d-inline-block d-md-none mr-3 mt-3">
                     <svg
                         class="familia-menor"
@@ -336,7 +378,7 @@
                             ></path></g></svg>
                 </div>
                 Generando empleos para las familias bolivianas
-            </h4>
+            </div>
             <p class="escritura texto-normal" style="text-align: justify;">
                 {{contenido_proyecto.descripcion_empleo}}
             </p>
@@ -347,8 +389,11 @@
 
                     <div class="d-flex justify-content-center">
 
-                        {{!-- anteriormente no incluia barra-deslizadora-mob --}}
-                        <div class="contenedor_resumen_eco barra-deslizadora-mob" style="width: 50rem; overflow: auto;">
+                        {{! anteriormente no incluia barra-deslizadora-mob }}
+                        <div
+                            class="contenedor_resumen_eco barra-deslizadora-mob"
+                            style="width: 50rem; overflow: auto;"
+                        >
                             <div class="" style="max-width: 50rem; min-width: 30rem;">
                                 <div class="mb-4">
 
@@ -370,12 +415,21 @@
 
                                     <div class="d-flex justify-content-between mt-1 texto-normal">
                                         <div>
-                                            <span class="mr-3">$us
-                                                {{contenido_proyecto.total_beneficio}}</span>
+                                            <span class="mr-3">
+                                                <span class="lamoneda">Bs</span>
+                                                <span
+                                                    class="elvalor"
+                                                    data-bs="{{contenido_proyecto.total_beneficio_n}}"
+                                                >
+                                                    {{contenido_proyecto.total_beneficio}}
+                                                </span>
+                                            </span>
                                             <span>100,0 %</span>
                                         </div>
                                         <div>
-                                            <span class="en_azul"><strong>Directo</strong></span>  / <span class="en_verde"><strong>Indirecto</strong></span>
+                                            <span class="en_azul"><strong>Directo</strong></span>
+                                            /
+                                            <span class="en_verde"><strong>Indirecto</strong></span>
                                         </div>
                                     </div>
                                 </div>
@@ -383,7 +437,9 @@
                                 {{#each contenido_proyecto.valores_tabla}}
                                     <div class="mb-4 ml-5">
 
-                                        <div class="d-flex justify-content-between mt-1 texto-normal">
+                                        <div
+                                            class="d-flex justify-content-between mt-1 texto-normal"
+                                        >
                                             <h5>{{empleo_beneficiario}}</h5>
                                             <div>
                                                 <span>Cantidad:</span>
@@ -400,13 +456,25 @@
                                             </div>
                                         </div>
 
-                                        <div class="d-flex justify-content-between mt-1 texto-normal">
+                                        <div
+                                            class="d-flex justify-content-between mt-1 texto-normal"
+                                        >
                                             <div>
-                                                <span class="mr-3">$us {{empleo_beneficio}}</span>
+                                                <span class="mr-3">
+                                                    <span class="lamoneda">Bs</span>
+                                                    <span
+                                                        class="elvalor"
+                                                        data-bs="{{empleo_beneficio_n}}"
+                                                    >
+                                                        {{empleo_beneficio}}
+                                                    </span>
+                                                </span>
                                                 <span>{{empleo_porcentaje}} %</span>
                                             </div>
+
                                             <div>
-                                                <span class="{{tipo_color}}"><strong>{{empleo_tipo}}</strong></span>
+                                                <span class="{{tipo_color}}"><strong
+                                                    >{{empleo_tipo}}</strong></span>
                                             </div>
                                         </div>
                                     </div>
@@ -423,9 +491,4 @@
 
     </div>
 
-</div>
-
-<div class="text-right mt-4" title="Numero de visualizaciones">
-    <span><i class="fas fa-glasses icono_visualizaciones"></i></span>
-    <span class="numero_visualizaciones"><b>{{nv_ventana}}</b></span>
 </div>

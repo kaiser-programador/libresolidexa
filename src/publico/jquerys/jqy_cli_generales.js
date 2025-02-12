@@ -78,19 +78,19 @@ $(".radio_tipo_busqueda").click(function (e) {
     if (val_seleccionado == "inmueble") {
         $("#formulario_busqueda_requerimiento").attr("hidden", true); // ocultamos
         $("#formulario_busqueda_cli").attr("hidden", false); // mostramos
-        $("#formulario_busqueda_proyectos").attr("hidden", true); // ocultamos
+        $("#formulario_busqueda_fracciones").attr("hidden", true); // ocultamos
     }
 
     if (val_seleccionado == "requerimiento") {
         $("#formulario_busqueda_requerimiento").attr("hidden", false); // mostramos
         $("#formulario_busqueda_cli").attr("hidden", true); // ocultamos
-        $("#formulario_busqueda_proyectos").attr("hidden", true); // ocultamos
+        $("#formulario_busqueda_fracciones").attr("hidden", true); // ocultamos
     }
 
     if (val_seleccionado == "proyecto") {
         $("#formulario_busqueda_requerimiento").attr("hidden", true); // ocultamos
         $("#formulario_busqueda_cli").attr("hidden", true); // ocultamos
-        $("#formulario_busqueda_proyectos").attr("hidden", false); // mostramos
+        $("#formulario_busqueda_fracciones").attr("hidden", false); // mostramos
     }
 
     //-----------------------------------------------
@@ -107,61 +107,42 @@ $(".radio_inm_py_busq").click(function (e) {
         $(".radio_inm_py_busq").eq(0).attr("data-seleccionada", "si");
         $(".radio_inm_py_busq").eq(1).attr("data-seleccionada", "no");
         $(".radio_inm_py_busq").eq(2).attr("data-seleccionada", "no");
-        $(".radio_inm_py_busq").eq(3).attr("data-seleccionada", "no");
 
         $(".contenedor_disponible_busq").attr("hidden", false);
-        $(".contenedor_pendiente_apro_busq").attr("hidden", true);
-        $(".contenedor_pendiente_pago_busq").attr("hidden", true);
+        $(".contenedor_fraccion_busq").attr("hidden", true);
         $(".contenedor_remate_busq").attr("hidden", true);
 
         var v_min = $("#range_precio_disponible_busq").attr("min");
         $("#range_precio_disponible_busq").val(v_min);
         $("#input_precio_disponible_busq").val(v_min);
     }
-    if (val_seleccionado == "pendiente_aprobacion") {
+
+    if (val_seleccionado == "remate") {
         $(".radio_inm_py_busq").eq(0).attr("data-seleccionada", "no");
         $(".radio_inm_py_busq").eq(1).attr("data-seleccionada", "si");
         $(".radio_inm_py_busq").eq(2).attr("data-seleccionada", "no");
-        $(".radio_inm_py_busq").eq(3).attr("data-seleccionada", "no");
 
         $(".contenedor_disponible_busq").attr("hidden", true);
-        $(".contenedor_pendiente_apro_busq").attr("hidden", false);
-        $(".contenedor_pendiente_pago_busq").attr("hidden", true);
-        $(".contenedor_remate_busq").attr("hidden", true);
-
-        var v_min = $("#range_precio_pendiente_apro_busq").attr("min");
-        $("#range_precio_pendiente_apro_busq").val(v_min);
-        $("#input_precio_pendiente_apro_busq").val(v_min);
-    }
-    if (val_seleccionado == "pendiente_pago") {
-        $(".radio_inm_py_busq").eq(0).attr("data-seleccionada", "no");
-        $(".radio_inm_py_busq").eq(1).attr("data-seleccionada", "no");
-        $(".radio_inm_py_busq").eq(2).attr("data-seleccionada", "si");
-        $(".radio_inm_py_busq").eq(3).attr("data-seleccionada", "no");
-
-        $(".contenedor_disponible_busq").attr("hidden", true);
-        $(".contenedor_pendiente_apro_busq").attr("hidden", true);
-        $(".contenedor_pendiente_pago_busq").attr("hidden", false);
-        $(".contenedor_remate_busq").attr("hidden", true);
-
-        var v_min = $("#range_precio_pendiente_pago_busq").attr("min");
-        $("#range_precio_pendiente_pago_busq").val(v_min);
-        $("#input_precio_pendiente_pago_busq").val(v_min);
-    }
-    if (val_seleccionado == "remate") {
-        $(".radio_inm_py_busq").eq(0).attr("data-seleccionada", "no");
-        $(".radio_inm_py_busq").eq(1).attr("data-seleccionada", "no");
-        $(".radio_inm_py_busq").eq(2).attr("data-seleccionada", "no");
-        $(".radio_inm_py_busq").eq(3).attr("data-seleccionada", "si");
-
-        $(".contenedor_disponible_busq").attr("hidden", true);
-        $(".contenedor_pendiente_apro_busq").attr("hidden", true);
-        $(".contenedor_pendiente_pago_busq").attr("hidden", true);
         $(".contenedor_remate_busq").attr("hidden", false);
+        $(".contenedor_fraccion_busq").attr("hidden", true);
 
         var v_min = $("#range_precio_remate_busq").attr("min");
         $("#range_precio_remate_busq").val(v_min);
         $("#input_precio_remate_busq").val(v_min);
+    }
+
+    if (val_seleccionado == "fraccion") {
+        $(".radio_inm_py_busq").eq(0).attr("data-seleccionada", "no");
+        $(".radio_inm_py_busq").eq(1).attr("data-seleccionada", "no");
+        $(".radio_inm_py_busq").eq(2).attr("data-seleccionada", "si");
+
+        $(".contenedor_disponible_busq").attr("hidden", true);
+        $(".contenedor_remate_busq").attr("hidden", true);
+        $(".contenedor_fraccion_busq").attr("hidden", false);
+
+        var v_min = $("#range_precio_fraccion_busq").attr("min");
+        $("#range_precio_fraccion_busq").val(v_min);
+        $("#input_precio_fraccion_busq").val(v_min);
     }
 
     //-----------------------------------------------
@@ -202,16 +183,10 @@ $("#range_precio_disponible_busq").change(function (e) {
     $("#input_precio_disponible_busq").val(el_valor);
 });
 
-$("#range_precio_pendiente_apro_busq").change(function (e) {
+$("#range_precio_fraccion_busq").change(function (e) {
     let cambio = $(this);
     let el_valor = cambio.val();
-    $("#input_precio_pendiente_apro_busq").val(el_valor);
-});
-
-$("#range_precio_pendiente_pago_busq").change(function (e) {
-    let cambio = $(this);
-    let el_valor = cambio.val();
-    $("#input_precio_pendiente_pago_busq").val(el_valor);
+    $("#input_precio_fraccion_busq").val(el_valor);
 });
 
 $("#range_precio_remate_busq").change(function (e) {
@@ -233,12 +208,8 @@ $("#input_precio_disponible_busq").keyup(function (e) {
     mover_range("disponible");
 });
 
-$("#input_precio_pendiente_apro_busq").keyup(function (e) {
-    mover_range("pendiente_apro");
-});
-
-$("#input_precio_pendiente_pago_busq").keyup(function (e) {
-    mover_range("pendiente_pago");
+$("#input_precio_fraccion_busq").keyup(function (e) {
+    mover_range("fraccion");
 });
 
 $("#input_precio_remate_busq").keyup(function (e) {
@@ -255,14 +226,9 @@ function mover_range(tipo_input) {
         $("#range_precio_disponible_busq").val(valor_numerico);
     }
 
-    if (tipo_input == "pendiente_apro") {
-        let valor_numerico = Number($("#input_precio_pendiente_apro_busq").val());
-        $("#range_precio_pendiente_apro_busq").val(valor_numerico);
-    }
-
-    if (tipo_input == "pendiente_pago") {
-        let valor_numerico = Number($("#input_precio_pendiente_pago_busq").val());
-        $("#range_precio_pendiente_pago_busq").val(valor_numerico);
+    if (tipo_input == "fraccion") {
+        let valor_numerico = Number($("#input_precio_fraccion_busq").val());
+        $("#range_precio_fraccion_busq").val(valor_numerico);
     }
 
     if (tipo_input == "remate") {
@@ -421,7 +387,56 @@ $(".clase_flecha_filtro_orden").click(function (e) {
     }
 });
 
-// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//==================================================================
+//==================================================================
+// checkbox para el seleccion o deseleccion de la casilla
+
+$("#ajustar_economia").change(function () {
+    if ($(this).is(":checked")) {
+        // Acción cuando el checkbox está seleccionado
+
+        $("#tc_paralelo").prop("readonly", false); // Quita el atributo readonly
+        $("#inflacion").prop("readonly", false); // Quita el atributo readonly
+
+        $("#tc_paralelo").removeClass("input_respuesta");
+        $("#inflacion").removeClass("input_respuesta");
+    } else {
+        // Acción cuando el checkbox está deseleccionado
+
+        $("#tc_paralelo").prop("readonly", true); // Añade el atributo readonly
+        $("#inflacion").prop("readonly", true); // Añade el atributo readonly
+
+        $("#tc_paralelo").addClass("input_respuesta");
+        $("#inflacion").addClass("input_respuesta");
+
+        $("#tc_paralelo").val(6);
+        $("#inflacion").val(4.9);
+    }
+});
+
+//==================================================================
+//==================================================================
+// checkbox para el seleccion o deseleccion de la casilla de comision de intermediario, valido para terreno o inmueble
+
+$("#ajustar_comision").change(function () {
+    if ($(this).is(":checked")) {
+        // Acción cuando el checkbox está seleccionado
+
+        $("#input_comision").prop("readonly", false); // Quita el atributo readonly
+        $("#input_comision").removeClass("input_respuesta");
+
+        $("#input_comision").val(3);
+    } else {
+        // Acción cuando el checkbox está deseleccionado
+
+        $("#input_comision").prop("readonly", true); // Añade el atributo readonly
+        $("#input_comision").addClass("input_respuesta");
+
+        $("#input_comision").val(0);
+    }
+});
+//==================================================================
+//==================================================================
 /*
 $(".cabezera_py_inm").on("click", "#ver_fotos_py", function (e) {
     
@@ -486,12 +501,82 @@ $('[data-fancybox="images"]').fancybox({
     },
 });
 
-/*
-animationEffect: "slide",
-transitionEffect: "circular",
-loop:true
-*/
-
-//transitionEffect: "circular"
-
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Al momento de seleccionar un tipo de moneda desde el menu superior
+
+$("#id_body").on("click", ".tipo_moneda", function (e) {
+    let tipoMoneda = $(this).attr("data-tipo_moneda"); // bs o sus
+
+    // en el cargado de toda ventana se asegura que existan los valores de: tipoCambio y tipoMoneda, por tanto se puede extraer directaente el tipoCambio, puesto que esta previamente asegurado su existencia
+
+    let tipoCambio = Number(sessionStorage.getItem("tipoCambio")); // Number, porque en sessionStorage al final los datos se almacenan en tipo string, por mas que se los alamacene en type numerico
+
+    // funcion
+    let datosMoneda = {
+        tipoCambio,
+        tipoMoneda,
+    };
+    tipoMonedaTipoCambio(datosMoneda);
+
+    // ahora se guarda en la memoria del navegador el tipo de moneda que se selecciono:
+    sessionStorage.setItem("tipoMoneda", tipoMoneda);
+});
+
+//==================================================================
+//==================================================================
+// CALCULADORA ---- rangue, input del rangue EN fracciones de terreno o inmueble
+
+// cuando se mueve manualmente el punto del rangue
+$("#range_fracciones").change(function (e) {
+    let cambio = $(this);
+    let el_valor = cambio.val();
+    $("#input_fracciones").val(el_valor);
+});
+
+// cuando se escribe directamente dentro de la caja del input
+$("#input_fracciones").keyup(function (e) {
+    let maximo = Number($(".limite_max").attr("data-maximo"));
+    let num_f = Number($("#input_fracciones").val());
+
+    if (num_f >= 0 && num_f <= maximo) {
+        let valor_numerico = Number($("#input_fracciones").val());
+        $("#range_fracciones").val(valor_numerico);
+    } else {
+        alert("El número de fracciones no debe superar los límites establecidos " + num_f);
+    }
+});
+
+// cada vez que la caja del input cambia de valor
+$("#input_fracciones").change(function (e) {
+    var tc_oficial = Number(sessionStorage.getItem("tipoCambio"));
+    var tipoMoneda = sessionStorage.getItem("tipoMoneda");
+    if (tipoMoneda === "sus") {
+        var cambio = tc_oficial;
+    } else {
+        if (tipoMoneda === "bs") {
+            var cambio = 1;
+        }
+    }
+
+    // precio unitario de la fraccion Bs
+    let fraccion_bs = Number($(".fraccion_bs").attr("data-fraccion_bs"));
+
+    // precio justo del terreno Bs
+    let solidexa_bs = Number($(".solidexa_bs").attr("data-solidexa_bs"));
+
+    //---------------------------
+
+    let num_f = Number($("#input_fracciones").val());
+
+    let fraccion_val = num_f * fraccion_bs * (1 / cambio);
+    let terreno_val = solidexa_bs * (1 / cambio);
+
+    let participacion = Math.floor(fraccion_val / terreno_val);
+    let participacion_render = numero_punto_coma_query(participacion);
+    let fraccion_val_render = numero_punto_coma_query(fraccion_val);
+
+    $("#valor_adquiridos").val(fraccion_val_render);
+    $("#participacion").val(participacion_render);
+});
+//==================================================================
+//==================================================================

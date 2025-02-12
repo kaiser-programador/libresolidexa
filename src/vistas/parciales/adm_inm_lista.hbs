@@ -1,0 +1,86 @@
+{{! Para mostrar el listado de copropietarios del inmueble }}
+{{! ordenado del mas antiguo al mas reciente segun fecha de venta }}
+{{! codigo fraccion y c.i tendran el estilo de link, de modo que al hacer clien en ella conducira a la cuenta privada ya sea de la fraccion de inmueble o del usuario }}
+{{! # / Fecha de venta / codigo fraccion / valor fraccion / nombre apellido / ci }}
+
+<div class="contenido container-fluid">
+
+    <div class="row mt-4">
+        <div class="col-12 col-lg-9 col-xl-6">
+
+            <div class="card">
+                <div class="card-header">
+                    <h5>COPROPIETARIOS</h5>
+                </div>
+
+                <div class="card-body">
+
+                    {{! anteriormente no incluia barra-deslizadora-mob }}
+                    {{! "table-responsive" es para que tenga un scroll en tamaños muy pequeños }}
+                    <div
+                        class="tabla_caracteristicas barra-deslizadora-mob table-responsive cuadro_estandart p-4"
+                    >
+
+                        <table class="tabla_contenedora table">
+                            <thead>
+                                <tr>
+                                    {{! # / Fecha de venta / codigo fraccion / valor fraccion / nombre apellido / ci }}
+                                    <th class="texto-resaltado">#</th>
+                                    <th class="texto-resaltado">Fecha</th>
+                                    <th class="texto-resaltado">Fracción</th>
+                                    <th class="texto-resaltado">Valor</th>
+                                    <th class="texto-resaltado">Nombre</th>
+                                    <th class="texto-resaltado">C.I.</th>
+                                </tr>
+                            </thead>
+
+                            <tbody class="cuerpo_filas texto-normal">
+
+                                {{#each contenido_propietario.propietarios_inmueble}}
+                                    <tr class="fila_registro">
+
+                                        <td>
+                                            <span>{{orden}}</span>
+                                        </td>
+                                        <td>
+                                            <span>{{fecha_copropietario}}</span>
+                                        </td>
+                                        <td>
+                                            <td>
+                                                <a
+                                                    href="/laapirest/fraccion/{{codigo_fraccion}}/descripcion"
+                                                >
+                                                    {{codigo_fraccion}}
+                                                </a>
+                                            </td>
+                                        </td>
+                                        <td>
+                                            <span>{{fraccion_bs}}</span>
+                                        </td>
+                                        <td>
+                                            <span>{{nombres_propietario}}</span>
+                                            <span>{{apellidos_propietario}}</span>
+                                        </td>
+                                        <td>
+                                            <a
+                                                href="/laapirest/propietario/{{ci_propietario}}/datos"
+                                            >
+                                                {{ci_propietario}}
+                                            </a>
+                                        </td>
+
+                                    </tr>
+                                {{/each}}
+
+                            </tbody>
+
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

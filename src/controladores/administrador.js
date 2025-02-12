@@ -8,19 +8,15 @@ const {
     indiceProyecto,
     indiceInmueble,
     indiceDocumentos,
-    indiceImagenesSistema,
     indiceTerreno,
 } = require("../modelos/indicemodelo");
 
 const moment = require("moment");
 
-const {
-    cabezeras_adm_cli,
-    segundero_cajas,
-    pie_pagina_adm,
-} = require("../ayudas/funcionesayuda_2");
+const { cabezeras_adm_cli } = require("../ayudas/funcionesayuda_2");
 
 const { numero_punto_coma } = require("../ayudas/funcionesayuda_3");
+const { super_info_py } = require("../ayudas/funcionesayuda_5");
 
 const controladorAdmAdministrador = {};
 
@@ -37,24 +33,7 @@ controladorAdmAdministrador.renderizarVentanaAdministrador = async (req, res) =>
         var info_administrador = {};
         info_administrador.cab_adm_adm = true;
 
-        //info_administrador.estilo_cabezera = "cabezera_estilo_administrador";
-
-        //----------------------------------------------------
-        // para la url de la cabezera
-        var url_cabezera = ""; // vacio por defecto
-        const registro_cabezera = await indiceImagenesSistema.findOne(
-            { tipo_imagen: "cabecera_administrador" },
-            {
-                url: 1,
-                _id: 0,
-            }
-        );
-
-        if (registro_cabezera) {
-            url_cabezera = registro_cabezera.url;
-        }
-
-        info_administrador.url_cabezera = url_cabezera;
+        info_administrador.estilo_cabezera = "cabezera_estilo_administrador";
 
         //----------------------------------------------------
 
@@ -80,14 +59,10 @@ controladorAdmAdministrador.renderizarVentanaAdministrador = async (req, res) =>
         var aux_cabezera = {
             codigo_objetivo: codigo_administrador,
             tipo: "administrador",
-            lado: "administrador", // aunque para esta ventana, solo existira el lado administrador
         };
 
         var cabezera_adm = await cabezeras_adm_cli(aux_cabezera);
         info_administrador.cabezera_adm = cabezera_adm;
-
-        var pie_pagina = await pie_pagina_adm();
-        info_administrador.pie_pagina_adm = pie_pagina;
 
         if (tipo_ventana_administrador == "cuenta") {
             // esta pestaña no esta habilitada para el ADMINISTRADOR MAESTRO, mas si para los administradores ORDINARIOS.
@@ -225,23 +200,6 @@ controladorAdmAdministrador.renderizarVentanaAdministrador = async (req, res) =>
             }
         }
 
-        if (tipo_ventana_administrador == "imagenes") {
-            if (clase_administrador.clase == "maestro") {
-                // porque solo el administrador maestro puede ingresar a esta pestaña privada
-                var contenido_administrador = await imagenes_administrador(codigo_administrador);
-                info_administrador.imagenes_administrador = true; // para pestaña y ventana apropiada para proyecto
-                info_administrador.contenido_administrador = contenido_administrador;
-
-                //--------------- Verificacion ----------------
-                //console.log("los datos de renderizacion de imagenes del sistema es:");
-                //console.log(contenido_administrador);
-                //---------------------------------------------
-                res.render("adm_administrador", info_administrador);
-            } else {
-                res.redirect("/laapirest/accesosistema"); // rediccionara a la pagina inicio del sistema
-            }
-        }
-
         if (tipo_ventana_administrador == "numeros") {
             if (clase_administrador.clase == "maestro") {
                 // porque solo el administrador maestro puede ingresar a esta pestaña privada
@@ -350,55 +308,7 @@ async function genericos_administrador() {
         var datos_empresa = await indiceEmpresa.findOne(
             {},
             {
-                nombre_empresa: 1,
                 texto_inicio_principal: 1,
-                whatsapp: 1,
-                telefono_fijo: 1,
-                facebook: 1,
-                instagram: 1,
-                tiktok: 1,
-                youtube: 1,
-                direccion: 1,
-                year_derecho: 1,
-                texto_footer: 1,
-                mision_vision: 1,
-
-                /*
-                encabezado_guardado_terreno: 1,
-                texto_guardado_terreno: 1,
-                inexistente_guardado_terreno: 1,
-                encabezado_guardado_proyecto: 1,
-                texto_guardado_proyecto: 1,
-                inexistente_guardado_proyecto: 1,
-                encabezado_guardado_inmueble: 1,
-                texto_guardado_inmueble: 1,
-                inexistente_guardado_inmueble: 1,
-                encabezado_convocatoria: 1,
-                texto_convocatoria: 1,
-                inexistente_convocatoria: 1,
-                encabezado_reserva: 1,
-                texto_reserva: 1,
-                inexistente_reserva: 1,
-                encabezado_pago: 1,
-                texto_pago: 1,
-                inexistente_pago: 1,
-                encabezado_construccion: 1,
-                texto_construccion: 1,
-                inexistente_construccion: 1,
-                encabezado_construido: 1,
-                texto_construido: 1,
-                inexistente_construido: 1,
-                */
-
-                /*
-                significado_py_propietarios: 1,
-                significado_py_empresa: 1,
-                significado_py_pais: 1,
-                significado_inm_propietarios: 1,
-                significado_inm_empresa: 1,
-                significado_inm_pais: 1,
-                */
-
                 _id: 0,
             }
         );
@@ -425,49 +335,7 @@ async function textos_administrador() {
         var datos_empresa = await indiceEmpresa.findOne(
             {},
             {
-                encabezado_guardado_terreno: 1,
-                texto_guardado_terreno: 1,
-                inexistente_guardado_terreno: 1,
-                encabezado_guardado_proyecto: 1,
-                texto_guardado_proyecto: 1,
-                inexistente_guardado_proyecto: 1,
-                encabezado_guardado_inmueble: 1,
-                texto_guardado_inmueble: 1,
-                inexistente_guardado_inmueble: 1,
-                encabezado_convocatoria: 1,
-                texto_convocatoria: 1,
-                inexistente_convocatoria: 1,
-                encabezado_reserva: 1,
-                texto_reserva: 1,
-                inexistente_reserva: 1,
-                encabezado_aprobacion: 1,
-                texto_aprobacion: 1,
-                inexistente_aprobacion: 1,
-                encabezado_pago: 1,
-                texto_pago: 1,
-                inexistente_pago: 1,
-                encabezado_construccion: 1,
-                texto_construccion: 1,
-                inexistente_construccion: 1,
-                encabezado_construido: 1,
-                texto_construido: 1,
-                inexistente_construido: 1,
-
-                significado_py_propietarios: 1,
-                significado_py_empresa: 1,
-                significado_py_pais: 1,
-                significado_inm_propietarios: 1,
-                significado_inm_empresa: 1,
-                significado_inm_pais: 1,
-
-                texto_segundero_py: 1,
-                texto_segundero_inm: 1,
-                texto_segundero_recom_inm_py: 1,
-                texto_segundero_prop: 1,
                 texto_segundero_prop_iz: 1,
-                texto_segundero_prop_recom_iz: 1,
-                texto_segundero_prop_recom_de: 1,
-
                 _id: 0,
             }
         );
@@ -493,20 +361,6 @@ async function somos_administrador() {
     try {
         var datos_somos = {};
         var lista_somos = [];
-
-        var somos_empresa = await indiceEmpresa.findOne(
-            {},
-            {
-                encabezado_somos: 1,
-                texto_somos: 1,
-                _id: 0,
-            }
-        );
-
-        if (somos_empresa) {
-            datos_somos.encabezado_somos = somos_empresa.encabezado_somos;
-            datos_somos.texto_somos = somos_empresa.texto_somos;
-        }
 
         var somos_empresa_detalle = await indiceImagenesEmpresa_sf
             .find(
@@ -550,20 +404,6 @@ async function funciona_administrador() {
     try {
         var datos_funciona = {};
         var lista_funciona = [];
-
-        var funciona_empresa = await indiceEmpresa.findOne(
-            {},
-            {
-                encabezado_funciona: 1,
-                texto_funciona: 1,
-                _id: 0,
-            }
-        );
-
-        if (funciona_empresa) {
-            datos_funciona.encabezado_funciona = funciona_empresa.encabezado_funciona;
-            datos_funciona.texto_funciona = funciona_empresa.texto_funciona;
-        }
 
         var funciona_empresa_detalle = await indiceImagenesEmpresa_sf
             .find(
@@ -676,8 +516,6 @@ async function preguntas_administrador() {
             }
 
             var datos_administrador = {
-                encabezado_preguntas: datos_empresa.encabezado_preguntas,
-                texto_preguntas: datos_empresa.texto_preguntas,
                 existen_preguntas,
                 tabla_preguntas,
             };
@@ -685,107 +523,6 @@ async function preguntas_administrador() {
         } else {
             return false;
         }
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-//------------------------------------------------------------------
-
-async function imagenes_administrador() {
-    try {
-        // el objeto que sera devuelto como resultado con valores por defecto
-        var datos_imagenes_sistema = {
-            inicio_horizontal: false,
-            inicio_vertical: false,
-            cabecera_convocatoria: false,
-            cabecera_reserva: false,
-            cabecera_aprobacion: false,
-            cabecera_pago: false,
-            cabecera_construccion: false,
-            cabecera_construido: false,
-            cabecera_administrador: false,
-            cabecera_propietario: false,
-            cabecera_terreno: false,
-            cabecera_proyecto: false,
-            cabecera_inmueble: false,
-            cabecera_empresa: false,
-            cabecera_resultados_inmuebles: false,
-            cabecera_resultados_requerimientos: false,
-            lista_imagenes: [],
-        };
-        var imagenes_sistema = await indiceImagenesSistema.find(
-            {},
-            {
-                imagen: 1,
-                tipo_imagen: 1,
-                completo: 1,
-                url: 1,
-                _id: 0,
-            }
-        );
-
-        if (imagenes_sistema.length > 0) {
-            for (let i = 0; i < imagenes_sistema.length; i++) {
-                if (imagenes_sistema[i].tipo_imagen == "inicio_horizontal") {
-                    datos_imagenes_sistema.inicio_horizontal = true;
-                }
-                if (imagenes_sistema[i].tipo_imagen == "inicio_vertical") {
-                    datos_imagenes_sistema.inicio_vertical = true;
-                }
-                if (imagenes_sistema[i].tipo_imagen == "cabecera_convocatoria") {
-                    datos_imagenes_sistema.cabecera_convocatoria = true;
-                }
-                if (imagenes_sistema[i].tipo_imagen == "cabecera_reserva") {
-                    datos_imagenes_sistema.cabecera_reserva = true;
-                }
-                if (imagenes_sistema[i].tipo_imagen == "cabecera_aprobacion") {
-                    datos_imagenes_sistema.cabecera_aprobacion = true;
-                }
-                if (imagenes_sistema[i].tipo_imagen == "cabecera_pago") {
-                    datos_imagenes_sistema.cabecera_pago = true;
-                }
-                if (imagenes_sistema[i].tipo_imagen == "cabecera_construccion") {
-                    datos_imagenes_sistema.cabecera_construccion = true;
-                }
-                if (imagenes_sistema[i].tipo_imagen == "cabecera_construido") {
-                    datos_imagenes_sistema.cabecera_construido = true;
-                }
-                if (imagenes_sistema[i].tipo_imagen == "cabecera_administrador") {
-                    datos_imagenes_sistema.cabecera_administrador = true;
-                }
-                if (imagenes_sistema[i].tipo_imagen == "cabecera_propietario") {
-                    datos_imagenes_sistema.cabecera_propietario = true;
-                }
-                if (imagenes_sistema[i].tipo_imagen == "cabecera_terreno") {
-                    datos_imagenes_sistema.cabecera_terreno = true;
-                }
-                if (imagenes_sistema[i].tipo_imagen == "cabecera_proyecto") {
-                    datos_imagenes_sistema.cabecera_proyecto = true;
-                }
-                if (imagenes_sistema[i].tipo_imagen == "cabecera_inmueble") {
-                    datos_imagenes_sistema.cabecera_inmueble = true;
-                }
-                if (imagenes_sistema[i].tipo_imagen == "cabecera_empresa") {
-                    datos_imagenes_sistema.cabecera_empresa = true;
-                }
-                if (imagenes_sistema[i].tipo_imagen == "cabecera_resultados_inmuebles") {
-                    datos_imagenes_sistema.cabecera_resultados_inmuebles = true;
-                }
-                if (imagenes_sistema[i].tipo_imagen == "cabecera_resultados_requerimientos") {
-                    datos_imagenes_sistema.cabecera_resultados_requerimientos = true;
-                }
-            }
-
-            // conversion del documento MONGO ([array]) a "string"
-            var aux_string = JSON.stringify(imagenes_sistema);
-            // reconversion del "string" a "objeto" EN ESTE CASO RESPETANDO QUE SERA UN ARRAY
-            var objeto_ima_sistema = JSON.parse(aux_string);
-
-            datos_imagenes_sistema.lista_imagenes = objeto_ima_sistema;
-        }
-
-        return datos_imagenes_sistema;
     } catch (error) {
         console.log(error);
     }
@@ -965,102 +702,6 @@ controladorAdmAdministrador.cambiarClaves = async (req, res) => {
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-controladorAdmAdministrador.guardarDatosEmpresa = async (req, res) => {
-    //  viene de la RUTA  POST   '/laapirest/administrador/accion/guardar_datos_empresa'
-    try {
-        // ------- Para verificación -------
-        //console.log("los datos desde DATOS EMPRESA del formulario html");
-        //console.log(req.body);
-
-        const registro_empresa = await indiceEmpresa.findOne({});
-
-        if (registro_empresa) {
-            registro_empresa.nombre_empresa = req.body.nombre_empresa_html;
-            registro_empresa.whatsapp = req.body.whatsapp_html;
-            registro_empresa.telefono_fijo = req.body.telefono_fijo_html;
-            registro_empresa.facebook = req.body.facebook_html;
-            registro_empresa.instagram = req.body.instagram_html;
-            registro_empresa.tiktok = req.body.tiktok_html;
-            registro_empresa.youtube = req.body.youtube_html;
-            registro_empresa.direccion = req.body.direccion_html;
-            registro_empresa.texto_footer = req.body.texto_footer_adm_html;
-            registro_empresa.mision_vision = req.body.mision_vision_html;
-            registro_empresa.year_derecho = req.body.year_derecho_html;
-
-            await registro_empresa.save();
-
-            res.json({
-                exito: "si",
-            });
-        } else {
-            res.json({
-                exito: "no",
-            });
-        }
-    } catch (error) {
-        console.log(error);
-    }
-};
-
-// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-controladorAdmAdministrador.guardarEncabezadosEmpresa = async (req, res) => {
-    //  viene de la RUTA  POST   '/laapirest/administrador/accion/guardar_encabezados_empresa'
-    try {
-        // ------- Para verificación -------
-        //console.log("los datos ENCABEZADOS EMPRESA desde el formulario html");
-        //console.log(req.body);
-
-        const registro_empresa = await indiceEmpresa.findOne({});
-
-        if (registro_empresa) {
-            registro_empresa.encabezado_guardado_terreno = req.body.encabezado_guardado_terreno;
-            registro_empresa.texto_guardado_terreno = req.body.texto_guardado_terreno;
-            registro_empresa.inexistente_guardado_terreno = req.body.inexistente_guardado_terreno;
-            registro_empresa.encabezado_guardado_proyecto = req.body.encabezado_guardado_proyecto;
-            registro_empresa.texto_guardado_proyecto = req.body.texto_guardado_proyecto;
-            registro_empresa.inexistente_guardado_proyecto = req.body.inexistente_guardado_proyecto;
-            registro_empresa.encabezado_guardado_inmueble = req.body.encabezado_guardado_inmueble;
-            registro_empresa.texto_guardado_inmueble = req.body.texto_guardado_inmueble;
-            registro_empresa.inexistente_guardado_inmueble = req.body.inexistente_guardado_inmueble;
-            registro_empresa.encabezado_convocatoria = req.body.encabezado_convocatoria;
-            registro_empresa.texto_convocatoria = req.body.texto_convocatoria;
-            registro_empresa.inexistente_convocatoria = req.body.inexistente_convocatoria;
-            registro_empresa.encabezado_reserva = req.body.encabezado_reserva;
-            registro_empresa.texto_reserva = req.body.texto_reserva;
-            registro_empresa.inexistente_reserva = req.body.inexistente_reserva;
-
-            registro_empresa.encabezado_aprobacion = req.body.encabezado_aprobacion;
-            registro_empresa.texto_aprobacion = req.body.texto_aprobacion;
-            registro_empresa.inexistente_aprobacion = req.body.inexistente_aprobacion;
-
-            registro_empresa.encabezado_pago = req.body.encabezado_pago;
-            registro_empresa.texto_pago = req.body.texto_pago;
-            registro_empresa.inexistente_pago = req.body.inexistente_pago;
-            registro_empresa.encabezado_construccion = req.body.encabezado_construccion;
-            registro_empresa.texto_construccion = req.body.texto_construccion;
-            registro_empresa.inexistente_construccion = req.body.inexistente_construccion;
-            registro_empresa.encabezado_construido = req.body.encabezado_construido;
-            registro_empresa.texto_construido = req.body.texto_construido;
-            registro_empresa.inexistente_construido = req.body.inexistente_construido;
-
-            await registro_empresa.save();
-
-            res.json({
-                exito: "si",
-            });
-        } else {
-            res.json({
-                exito: "no",
-            });
-        }
-    } catch (error) {
-        console.log(error);
-    }
-};
-
-// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 controladorAdmAdministrador.guardarTextoPrincipalEmpresa = async (req, res) => {
     //  viene de la RUTA  POST   '/laapirest/administrador/accion/guardar_texto_principal_empresa'
     try {
@@ -1090,40 +731,6 @@ controladorAdmAdministrador.guardarTextoPrincipalEmpresa = async (req, res) => {
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-controladorAdmAdministrador.guardarSignificadosEmpleos = async (req, res) => {
-    //  viene de la RUTA  POST   '/laapirest/administrador/accion/guardar_significados_empleos'
-    try {
-        // ------- Para verificación -------
-        //console.log("los datos desde DATOS EMPRESA del formulario html SIGNIFICADOS EMPLEOS");
-        //console.log(req.body);
-
-        const registro_empresa = await indiceEmpresa.findOne({});
-
-        if (registro_empresa) {
-            registro_empresa.significado_py_propietarios = req.body.significado_py_propietarios;
-            registro_empresa.significado_py_empresa = req.body.significado_py_empresa;
-            registro_empresa.significado_py_pais = req.body.significado_py_pais;
-            registro_empresa.significado_inm_propietarios = req.body.significado_inm_propietarios;
-            registro_empresa.significado_inm_empresa = req.body.significado_inm_empresa;
-            registro_empresa.significado_inm_pais = req.body.significado_inm_pais;
-
-            await registro_empresa.save();
-
-            res.json({
-                exito: "si",
-            });
-        } else {
-            res.json({
-                exito: "no",
-            });
-        }
-    } catch (error) {
-        console.log(error);
-    }
-};
-
-// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 controladorAdmAdministrador.guardarTextosSegundero = async (req, res) => {
     //  viene de la RUTA  POST   '/laapirest/administrador/accion/guardar_textos_segundero'
     try {
@@ -1134,14 +741,7 @@ controladorAdmAdministrador.guardarTextosSegundero = async (req, res) => {
         const registro_empresa = await indiceEmpresa.findOne({});
 
         if (registro_empresa) {
-            registro_empresa.texto_segundero_py = req.body.texto_segundero_py;
-            registro_empresa.texto_segundero_inm = req.body.texto_segundero_inm;
-            registro_empresa.texto_segundero_recom_inm_py = req.body.texto_segundero_recom_inm_py;
-            registro_empresa.texto_segundero_prop = req.body.texto_segundero_prop;
             registro_empresa.texto_segundero_prop_iz = req.body.texto_segundero_prop_iz;
-
-            registro_empresa.texto_segundero_prop_recom_iz = req.body.texto_segundero_prop_recom_iz;
-            registro_empresa.texto_segundero_prop_recom_de = req.body.texto_segundero_prop_recom_de;
 
             await registro_empresa.save();
 
@@ -1696,98 +1296,6 @@ controladorAdmAdministrador.borrarHistorial = async (req, res) => {
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-controladorAdmAdministrador.guardarEncabezadoSomos = async (req, res) => {
-    //  viene de la RUTA  POST   '/laapirest/administrador/accion/guardar_encabezado_somos'
-
-    try {
-        // ------- Para verificación -------
-        //console.log("los datos ENCABEZADO SOMOS EMPRESA del formulario html");
-        //console.log(req.body);
-
-        const registro_empresa = await indiceEmpresa.findOne({});
-
-        if (registro_empresa) {
-            registro_empresa.encabezado_somos = req.body.encabezado_somos;
-            registro_empresa.texto_somos = req.body.texto_somos;
-
-            await registro_empresa.save();
-
-            res.json({
-                exito: "si",
-            });
-        } else {
-            res.json({
-                exito: "no",
-            });
-        }
-    } catch (error) {
-        console.log(error);
-    }
-};
-
-// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-controladorAdmAdministrador.guardarEncabezadoFunciona = async (req, res) => {
-    //  viene de la RUTA  POST   '/laapirest/administrador/accion/guardar_encabezado_funciona'
-
-    try {
-        // ------- Para verificación -------
-        //console.log("los datos ENCABEZADO FUNCIONA EMPRESA del formulario html");
-        //console.log(req.body);
-
-        const registro_empresa = await indiceEmpresa.findOne({});
-
-        if (registro_empresa) {
-            registro_empresa.encabezado_funciona = req.body.encabezado_funciona;
-            registro_empresa.texto_funciona = req.body.texto_funciona;
-
-            await registro_empresa.save();
-
-            res.json({
-                exito: "si",
-            });
-        } else {
-            res.json({
-                exito: "no",
-            });
-        }
-    } catch (error) {
-        console.log(error);
-    }
-};
-
-// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-controladorAdmAdministrador.guardarEncabezadoPreguntas = async (req, res) => {
-    //  viene de la RUTA  POST   '/laapirest/administrador/accion/guardar_encabezado_preguntas'
-    try {
-        // ------- Para verificación -------
-        //console.log("los datos ENCABEZADO PREGUNTAS FRECUENTES EMPRESA del formulario html");
-        //console.log(req.body);
-
-        var registro_empresa = await indiceEmpresa.findOne({});
-
-        if (registro_empresa) {
-            registro_empresa.encabezado_preguntas = req.body.encabezado_preguntas_html;
-            registro_empresa.texto_preguntas = req.body.texto_preguntas_html;
-
-            await registro_empresa.save();
-
-            res.json({
-                exito: "si",
-            });
-        } else {
-            res.json({
-                exito: "no",
-            });
-        }
-    } catch (error) {
-        console.log(error);
-    }
-};
-
-// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 controladorAdmAdministrador.guardarTablaPreguntas = async (req, res) => {
     //  viene de la RUTA  POST   '/laapirest/administrador/accion/guardar_tabla_preguntas'
 
@@ -1872,24 +1380,12 @@ controladorAdmAdministrador.actualizarNumerosEmpresa = async (req, res) => {
         var n_proyectos = await indiceProyecto.find().countDocuments();
         var n_inmuebles = await indiceInmueble.find().countDocuments();
 
-        if (n_proyectos == 0) {
-            n_proyectos = "";
-        } else {
-            n_proyectos = numero_punto_coma(n_proyectos);
-        }
-
-        if (n_inmuebles == 0) {
-            n_inmuebles = "";
-        } else {
-            n_inmuebles = numero_punto_coma(n_inmuebles);
-        }
-
         //----------------------------------------------------------------
         // n_construidos
-        var n_construidos = ""; // valor por defecto
+        var n_construidos = 0; // valor por defecto
 
         var ma_construidos = await indiceProyecto.find(
-            { proyecto_ganador: true, estado_proyecto: "completado" },
+            { estado_proyecto: "completado" },
             {
                 area_construida: 1,
                 _id: 0,
@@ -1904,21 +1400,21 @@ controladorAdmAdministrador.actualizarNumerosEmpresa = async (req, res) => {
                 sum_m2 = sum_m2 + auxiliar_i;
             }
             if (sum_m2 > 0) {
-                n_construidos = numero_punto_coma(sum_m2.toFixed(2));
+                n_construidos = Number(sum_m2.toFixed(2));
             } else {
-                n_construidos = "";
+                n_construidos = 0;
             }
         } else {
-            n_construidos = "";
+            n_construidos = 0;
         }
 
         //----------------------------------------------------------------
         // n_empleos
 
-        var n_empleos = ""; // valor por defecto
+        var n_empleos = 0; // valor por defecto
 
         var ma_empleos = await indiceProyecto.find(
-            { proyecto_ganador: true, estado_proyecto: "completado" },
+            { estado_proyecto: "completado" },
             {
                 tabla_empleos_sociedad: 1,
                 _id: 0,
@@ -1942,59 +1438,100 @@ controladorAdmAdministrador.actualizarNumerosEmpresa = async (req, res) => {
             }
             // despues de recorrer todas las resp sociales de todas los proyectos
             if (sum_empleos > 0) {
-                n_empleos = numero_punto_coma(sum_empleos);
+                n_empleos = sum_empleos;
             } else {
-                n_empleos = "";
+                n_empleos = 0;
             }
         } else {
-            n_empleos = "";
+            n_empleos = 0;
         }
 
         //----------------------------------------------------------------
-        // n_ahorros $us SON LAS PLUSVALIAS DE REGALO
+        // n_ahorros Bs SON LAS PLUSVALIAS DE REGALO
 
-        var n_ahorros = ""; // valor por defecto
+        var n_ahorros = 0; // valor por defecto
 
-        var ma_codigos_py = await indiceProyecto.find(
-            { proyecto_ganador: true, estado_proyecto: "completado" },
+        var registro_proyectos = await indiceProyecto.find(
+            { estado_proyecto: "completado" },
             {
                 codigo_proyecto: 1,
+                codigo_terreno: 1,
                 _id: 0,
             }
         );
 
-        if (ma_codigos_py.length > 0) {
+        if (registro_proyectos.length > 0) {
             var codigo_aux = "";
             var sum_plusvalias = 0;
+
             var datos_segundero = {
                 codigo_objetivo: "",
                 tipo_objetivo: "proyecto",
             };
-            //var capitalesProyecto = {};
+
             var valor_plusvalia = 0;
-            for (let m = 0; m < ma_codigos_py.length; m++) {
-                codigo_aux = ma_codigos_py[m].codigo_proyecto;
-                datos_segundero.codigo_objetivo = codigo_aux;
-                var capitalesProyecto = await segundero_cajas(datos_segundero);
-                valor_plusvalia = Number(capitalesProyecto.ahorro);
-                sum_plusvalias = sum_plusvalias + valor_plusvalia;
+            for (let m = 0; m < registro_proyectos.length; m++) {
+                var registro_terreno = await indiceTerreno.findOne(
+                    { codigo_terreno: registro_proyectos[m].codigo_terreno },
+                    {
+                        estado_terreno: 1,
+                        precio_bs: 1,
+                        descuento_bs: 1,
+                        rend_fraccion_mensual: 1,
+                        superficie: 1,
+                        fecha_inicio_convocatoria: 1,
+                        fecha_inicio_reservacion: 1,
+                        fecha_fin_reservacion: 1,
+                        fecha_fin_construccion: 1,
+                        _id: 0,
+                    }
+                );
+
+                if (registro_terreno) {
+                    //-------------------------------------------------------------------
+                    var datos_funcion = {
+                        //------------------------------
+                        // datos del proyecto
+                        codigo_proyecto: registro_proyectos[m].codigo_proyecto,
+
+                        //------------------------------
+                        // datos del terreno
+                        estado_terreno: registro_terreno.estado_terreno,
+                        precio_terreno: registro_terreno.precio_bs,
+                        descuento_terreno: registro_terreno.descuento_bs,
+                        rend_fraccion_mensual: registro_terreno.rend_fraccion_mensual,
+                        superficie_terreno: registro_terreno.superficie,
+                        fecha_inicio_convocatoria: registro_terreno.fecha_inicio_convocatoria,
+                        fecha_inicio_reservacion: registro_terreno.fecha_inicio_reservacion,
+                        fecha_fin_reservacion: registro_terreno.fecha_fin_reservacion,
+                        fecha_fin_construccion: registro_terreno.fecha_fin_construccion,
+                    };
+                    var resultado = await super_info_py(datos_funcion);
+
+                    var plusvalia = resultado.plusvalia;
+
+                    //-------------------------------------------------------------------
+
+                    valor_plusvalia = plusvalia;
+                    sum_plusvalias = sum_plusvalias + valor_plusvalia;
+                }
             }
             if (sum_plusvalias > 0) {
-                n_ahorros = numero_punto_coma(sum_plusvalias.toFixed(0));
+                n_ahorros = Math.round(sum_plusvalias);
             } else {
-                n_ahorros = "";
+                n_ahorros = 0;
             }
         } else {
-            n_ahorros = "";
+            n_ahorros = 0;
         }
 
         //----------------------------------------------------------------
         // n_resp_social
 
-        var n_resp_social = ""; // valor por defecto
+        var n_resp_social = 0; // valor por defecto
 
         var ma_resp_social = await indiceProyecto.find(
-            { proyecto_ganador: true, estado_proyecto: "completado" },
+            { estado_proyecto: "completado" },
             {
                 monto_dinero_rs: 1,
                 _id: 0,
@@ -2011,12 +1548,12 @@ controladorAdmAdministrador.actualizarNumerosEmpresa = async (req, res) => {
             // despues de recorrer todas las resp sociales de todas los proyectos
             if (sum_rs > 0) {
                 // redondeamos a valor entero para que no ocupe demasiado espacio en los cuadros descendentes de la ventana principal del sistema
-                n_resp_social = numero_punto_coma(sum_rs.toFixed(0));
+                n_resp_social = Math.round(sum_rs);
             } else {
-                n_resp_social = "";
+                n_resp_social = 0;
             }
         } else {
-            n_resp_social = "";
+            n_resp_social = 0;
         }
 
         //----------------------------------------------------------------
@@ -2039,7 +1576,7 @@ controladorAdmAdministrador.actualizarNumerosEmpresa = async (req, res) => {
                 n_proyectos,
                 n_inmuebles,
                 n_empleos,
-                n_ahorros, // $us son las plusvalias de regalo
+                n_ahorros, // Bs son las plusvalias de regalo
                 n_resp_social, // Bs
             };
 

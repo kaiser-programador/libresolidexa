@@ -346,4 +346,171 @@ $("#creador_nuevo_proyecto").click(function (e) {
         }
     });
 });
+
+/************************************************************************************* */
+// PARA CREAR FRACCIONES DE TERRENO
+
+$("#crear_fracciones_terreno").click(function (e) {
+    var codigo_terreno = $("#id_objetivo_codigo").attr("data-objetivo_codigo");
+    let valor_fraccion = $("#label_valor_fraccion").val();
+    let cantidad_fraccion = $("#label_cantidad_fraccion").val();
+
+    var esEnteroPositivo_1 = /^[1-9]\d*$/.test(valor_fraccion);
+    var esEnteroPositivo_2 = /^[1-9]\d*$/.test(cantidad_fraccion);
+
+    if (
+        esEnteroPositivo_1 !== "" &&
+        esEnteroPositivo_2 !== "" &&
+        esEnteroPositivo_1 &&
+        esEnteroPositivo_2
+    ) {
+        // verificamos si valor_fraccion y cantidad_fraccion no sean vacios y que sean numeros enteros positivos
+
+        var paqueteDatos = {
+            codigo_terreno,
+            valor_fraccion,
+            cantidad_fraccion,
+        };
+
+        $.ajax({
+            url: "/laapirest/terreno/" + codigo_terreno + "/accion/crear_fracciones_terreno",
+            type: "POST",
+            data: paqueteDatos,
+        }).done(function (respuestaServidor) {
+            if (respuestaServidor.exito == "si") {
+                var arrayFraccionesCreadas = respuestaServidor.arrayFraccionesCreadas;
+
+                if (arrayFraccionesCreadas.length > 0) {
+
+                    for (let k = 0; k < arrayFraccionesCreadas.length; k++) {
+
+                        let codigo_fraccion = arrayFraccionesCreadas[k].codigo_fraccion;
+                        let fraccion_bs = arrayFraccionesCreadas[k].valor_fraccion;
+                        let ganancia = arrayFraccionesCreadas[k].ganancia;
+                        let dias_inversionista = arrayFraccionesCreadas[k].dias_inversionista;
+
+                        // procedemos a renderizar las fracciones de inmueble recientemente creadas.
+
+                        // con AFTER lO Agregamos despues del titulo y al mismo nivel que este (no como hijo)
+                        $(".contenedor_titulo_fracciones").after(
+                            // usando acento grave y el ${} para las partes que deven cambiar
+                            // estructura html basada en "adm_cli_fraccion.hbs". AQUI ESTARA CON EL BOTON ELIMINAR PORQUE ESTA SIENDO CREADO DESDE CUENTA DE UN ADMINISTRADOR
+                            `
+                            <div class="card_un_fraccion mb-3 col-12 col-sm-6 col-md-4 col-lg-3">
+
+                                <div class="card">
+
+                                    <div class="card-body">
+
+                                        <div class="text-center mb-2" title="Código fracción de terreno">
+                                            <span class="h6"><b>Disponible</b></span>
+                                        </div>
+
+                                        <div class="text-center mb-2" title="Valor fracción de terreno">
+                                            <span class="h6"><b>${fraccion_bs}</b></span>
+                                            <span class="h6"><b>$us</b></span>
+                                        </div>
+
+                                        <div class="linea-x"></div>
+
+                                        <div class="text-center">Inversionista</div>
+
+                                        <div class="d-flex justify-content-between my-2">
+                                            <div class="linea-v text-center w-50">
+                                                <div>
+                                                    <div class="h6">
+                                                        <b>
+                                                            <span>${ganancia}</span>
+                                                            <span>$us</span>
+                                                        </b>
+                                                    </div>
+                                                </div>
+
+                                                <div class="mb-1">
+                                                    <span class="h6">Ganancia</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="text-center w-50">
+                                                <div>
+                                                    <div class="h6">
+                                                        <b>
+                                                            <span>${dias_inversionista}</span>
+                                                            <span>Días</span>
+                                                        </b>
+                                                    </div>
+                                                </div>
+
+                                                <div class="mb-1">
+                                                    <span class="h6">Duración</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            `
+                        );
+                    } // fin for
+                }
+
+                // agregamos los mensajes ALERT DESPUES y al MISMO NIVEL del boton id "crear_fracciones_terreno"
+
+                $("#crear_fracciones_terreno").after(
+                    `<div class="alert alert-success mt-3">
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>&times;</span>
+                            </button>
+                            <strong>Fracciones de terreno creadas!</strong>
+                        </div>`
+                );
+            }
+
+            if (respuestaServidor.exito == "no") {
+                $("#crear_fracciones_terreno").after(
+                    `<div class="alert alert-danger mt-3">
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>&times;</span>
+                            </button>
+                            <strong>Ocurrio un problema, intentelo nuevamente!</strong>
+                        </div>`
+                );
+            }
+
+            if (respuestaServidor.exito == "denegado") {
+                $("#crear_fracciones_terreno").after(
+                    `<div class="alert alert-danger mt-3">
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>&times;</span>
+                            </button>
+                            <strong>El terreno se encuentra bloqueado, por tanto no es posible realizar cambios</strong>
+                        </div>`
+                );
+            }
+
+            if (respuestaServidor.exito == "no_fracciones") {
+                $("#crear_fracciones_terreno").after(
+                    `<div class="alert alert-danger mt-3">
+                        <button type="button" class="close" data-dismiss="alert">
+                            <span>&times;</span>
+                        </button>
+                        <strong>Para la creacion de fracciones deberá primero eliminar todas las existentes.</strong>
+                    </div>`
+                );
+            }
+
+        });
+    } else {
+        $("#crear_fracciones_terreno").after(
+            `<div class="alert alert-danger mt-3">
+                <button type="button" class="close" data-dismiss="alert">
+                    <span>&times;</span>
+                </button>
+                <strong>Los campos deben ser valores numéricos enteros positivos</strong>
+            </div>`
+        );
+    }
+});
 /************************************************************************************* */

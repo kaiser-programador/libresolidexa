@@ -1,5 +1,4 @@
 {{! barra de opciones de la aplicacion del lado del cliente }}
-{{! pagina de edifio }}
 
 {{! <nav class="navbar navbar-expand-md navbar-light bg-light contenedor_nav_estados_proyecto"> }}
 <nav class="menu-navegacion-adm fixed-top navbar navbar-expand-md">
@@ -8,7 +7,7 @@
 
         {{! para el logo de la empresa }}
 
-        {{! parece cuando la ventana es mayor que md }}
+        {{! aparece cuando la ventana es mayor que md }}
         <div class="order-1 order-md-1 collapse navbar-collapse" id="buscador-tio">
             <button class="deslizador_busqueda btn btn-outline-secondary boton_resaltado">
                 <i class="fas fa-search"></i>
@@ -88,18 +87,55 @@
 
             {{! ml-auto  significa que el "margen left" margen a la izquierda sea auto, esto para que los menus "li" sean desplazados a la derecha }}
             <ul class="navbar-nav ml-auto">
+
+                <div class="pestana_moneda mr-3" title="Tipo de moneda">
+                    <div class="dropdown">
+                        <li
+                            class="nav-item dropdown-toggle pestana_moneda_2"
+                            type="button"
+                            id="dropdownMoneda"
+                            data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false"
+                        >
+                            <span>
+                                <img
+                                    id="moneda_bandera"
+                                    class="circulo-moneda"
+                                    src="/rutavirtualpublico/imagenes/bolivia.png"
+                                />
+                            </span>
+                            <span id="moneda" class="ml-1" data-moneda="bs">Bs</span>
+                        </li>
+                        <div class="dropdown-menu dropdown-moneda" aria-labelledby="dropdownMoneda">
+                            <div class="dropdown-header"><div class="titulo_4">Moneda</div></div>
+                            <div
+                                class="dropdown-item tipo_moneda"
+                                data-tipo_moneda="bs"
+                            >Boliviano</div>
+                            <div
+                                class="dropdown-item tipo_moneda"
+                                data-tipo_moneda="sus"
+                            >Dolar</div>
+                            <div class="dropdown-divider"></div>
+                            <div class="text-center">
+                                <span id="tcOficial"></span>
+                                <span>Bs/$us</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
                 <li class="nav-item"><a
                         class="nav-link pestana_navegador"
-                        href="/ventana/reserva"
-                    >Reserva</a></li>
+                        href="/ventana/convocatoria"
+                    >Convocatoria</a>
+                </li>
                 <li class="nav-item"><a
                         class="nav-link pestana_navegador"
-                        href="/ventana/pago"
-                    >Pago</a></li>
-                <li class="nav-item"><a
-                        class="nav-link pestana_navegador"
-                        href="/ventana/aprobacion"
-                    >Aprobación</a></li>
+                        href="/ventana/reservacion"
+                    >Reservación</a></li>
                 <li class="nav-item"><a
                         class="nav-link pestana_navegador"
                         href="/ventana/construccion"
@@ -108,11 +144,7 @@
                 <li class="nav-item"><a
                         class="nav-link pestana_navegador"
                         href="/ventana/construido"
-                    >Construido</a></li>
-                <li class="nav-item"><a
-                        class="nav-link pestana_navegador"
-                        href="/ventana/convocatoria"
-                    >Convocatoria</a>
+                    >Construido</a>
                 </li>
             </ul>
 
@@ -133,8 +165,30 @@
                     <li class="nav-item"><a
                             href="#"
                             class="nav-link aux_tabe pestana_navegador"
+                            data-id="fracciones_te-tab"
+                        >Fracciones</a></li>
+
+                    <li class="nav-item"><a
+                            href="#"
+                            class="nav-link aux_tabe pestana_navegador"
                             data-id="proyectos_te-tab"
                         >Proyectos</a></li>
+
+                    {{#if global_te.existe_copropietario_terreno}}
+                        <li class="nav-item"><a
+                                href="#"
+                                class="nav-link aux_tabe pestana_navegador"
+                                data-id="copropietario_te-tab"
+                            >Copropietario</a></li>
+                    {{/if}}
+
+                    {{#if global_te.existe_calculadora_terreno}}
+                    <li class="nav-item"><a
+                            href="#"
+                            class="nav-link aux_tabe pestana_navegador"
+                            data-id="calculadora_te-tab"
+                        >Calculadora</a></li>
+                    {{/if}}
 
                 </ul>
             </div>
@@ -194,7 +248,7 @@
                             {{/if}}
                         </a></li>
 
-                    {{!-- global_py.existe_res_soc estaba dentro del #if: global_py.estado_proyecto_construido --}}
+                    {{! global_py.existe_res_soc estaba dentro del #if: global_py.estado_proyecto_construido }}
 
                     {{#if global_py.existe_res_soc}}
                         <li class="nav-item"><a
@@ -216,6 +270,14 @@
                             class="nav-link aux_tabe pestana_navegador"
                             data-id="descripcion_inm-tab"
                         >Descripción</a></li>
+
+                    {{#if global_inm.existe_fracciones_inmueble}}
+                        <li class="nav-item"><a
+                                href="#"
+                                class="nav-link aux_tabe pestana_navegador"
+                                data-id="fracciones_inm-tab"
+                            >Fracciones</a></li>
+                    {{/if}}
 
                     <li class="nav-item"><a
                             href="#"
@@ -241,11 +303,13 @@
                             data-id="empleos_inm-tab"
                         >Empleos</a></li>
 
-                    <li class="nav-item"><a
-                            href="#"
-                            class="nav-link aux_tabe pestana_navegador"
-                            data-id="calculadora_inm-tab"
-                        >Calculadora</a></li>
+                    {{#if global_inm.existe_calculadora_inmueble}}
+                        <li class="nav-item"><a
+                                href="#"
+                                class="nav-link aux_tabe pestana_navegador"
+                                data-id="calculadora_inm-tab"
+                            >Calculadora</a></li>
+                        {{/if}}
 
                     {{#if global_inm.existe_inversor_inmueble}}
                         <li class="nav-item"><a
@@ -253,6 +317,36 @@
                                 class="nav-link aux_tabe pestana_navegador"
                                 data-id="inversor_inmueble-tab"
                             >Inversor</a></li>
+                    {{/if}}
+
+                    {{#if global_inm.existe_copropietario_inmueble}}
+                        <li class="nav-item"><a
+                                href="#"
+                                class="nav-link aux_tabe pestana_navegador"
+                                data-id="copropietario_inmueble-tab"
+                            >Copropietario</a></li>
+                    {{/if}}
+
+                </ul>
+            </div>
+        {{/if}}
+
+        {{#if es_fraccion}}
+            <div class="order-12 collapse navbar-collapse" id="menu_propios">
+                <ul class="d-md-none navbar-nav ml-auto">
+
+                    <li class="nav-item"><a
+                            href="#"
+                            class="nav-link aux_tabe pestana_navegador"
+                            data-id="descripcion_fraccion-tab"
+                        >Descripción</a></li>
+
+                    {{#if global_fraccion.existe_copropietario}}
+                        <li class="nav-item"><a
+                                href="#"
+                                class="nav-link aux_tabe pestana_navegador"
+                                data-id="copropietario_fraccion-tab"
+                            >Copropietario</a></li>
                     {{/if}}
 
                 </ul>
@@ -267,6 +361,11 @@
                             class="nav-link aux_tabe pestana_navegador"
                             data-id="resumen_prop-tab"
                         >Resumen</a></li>
+                    <li class="nav-item"><a
+                            href="#"
+                            class="nav-link aux_tabe pestana_navegador"
+                            data-id="fracciones_prop-tab"
+                        >Fracciones</a></li>
                     <li class="nav-item"><a
                             href="#"
                             class="nav-link aux_tabe pestana_navegador"
@@ -441,9 +540,9 @@
                                     type="radio"
                                     name="name_radio_inm_busq"
                                     class="radio_tipo_busqueda"
-                                    value="inmueble"
+                                    value="fracciones_terreno"
                                 />
-                                Inmueble
+                                Terreno
                             </label>
 
                             <label class="d-block">
@@ -451,9 +550,9 @@
                                     type="radio"
                                     name="name_radio_inm_busq"
                                     class="radio_tipo_busqueda"
-                                    value="proyecto"
+                                    value="inmueble"
                                 />
-                                Proyecto
+                                Inmueble
                             </label>
 
                             <label class="d-block">
@@ -522,20 +621,13 @@
 
                     </form>
 
-                    {{! para busqueda de PROYECTOS }}
+                    {{! para busqueda de FRACCIONES TERRENO }}
                     <form
-                        id="formulario_busqueda_proyectos"
+                        id="formulario_busqueda_fracciones"
                         class="mx-1"
-                        action="/proyectos/resultados"
+                        action="/fracciones_terreno/resultados"
                         method="POST"
                     >
-
-                        <input
-                            type="search"
-                            name="html_palabras_proyecto"
-                            class="form-control"
-                            placeholder="Buscar proyecto"
-                        />
 
                         <div class="mt-3 mx-1">
                             <h6 class="titul texto-link">Selecciona ciudad</h6>
@@ -543,7 +635,7 @@
                             <div>
                                 <select
                                     name="selectorCiudad"
-                                    id="selector_ciudad_busq_py"
+                                    id="selector_ciudad_busq_frac_te"
                                     title="Selecciona una ciudad"
                                     class="form-control"
                                 >
@@ -561,84 +653,12 @@
                             </div>
                             <input
                                 type="text"
-                                name="name_ciudad_busq_py"
-                                id="ciudad_elegida_py"
+                                name="name_ciudad_busq_frac_te"
+                                id="ciudad_elegida_frac_te"
                                 value="Todos"
                                 class="form-control"
                                 hidden
                             />
-                        </div>
-
-                        <div class="mt-3">
-                            <h6 class="titul texto-link">Tipo de proyecto</h6>
-                            <div class="mx-1">
-                                <label class="d-block">
-                                    <input
-                                        type="radio"
-                                        name="name_radio_py_busq"
-                                        class="radio_py_busq"
-                                        value="reservacion"
-                                        data-seleccionada="no"
-                                        required
-                                    />
-                                    Reserva
-                                </label>
-                                <label class="d-block">
-                                    <input
-                                        type="radio"
-                                        name="name_radio_py_busq"
-                                        class="radio_py_busq"
-                                        value="pago"
-                                        data-seleccionada="no"
-                                        required
-                                    />
-                                    Pago
-                                </label>
-                                <label class="d-block">
-                                    <input
-                                        type="radio"
-                                        name="name_radio_py_busq"
-                                        class="radio_py_busq"
-                                        value="aprobacion"
-                                        data-seleccionada="no"
-                                        required
-                                    />
-                                    Aprobación
-                                </label>
-                                <label class="d-block">
-                                    <input
-                                        type="radio"
-                                        name="name_radio_py_busq"
-                                        class="radio_py_busq"
-                                        value="construccion"
-                                        data-seleccionada="no"
-                                        required
-                                    />
-                                    Construcción
-                                </label>
-                                <label class="d-block">
-                                    <input
-                                        type="radio"
-                                        name="name_radio_py_busq"
-                                        class="radio_py_busq"
-                                        value="construido"
-                                        data-seleccionada="no"
-                                        required
-                                    />
-                                    Construido
-                                </label>
-                                <label class="d-block">
-                                    <input
-                                        type="radio"
-                                        name="name_radio_py_busq"
-                                        class="radio_py_busq"
-                                        value="convocatoria"
-                                        data-seleccionada="no"
-                                        required
-                                    />
-                                    Convocatoria (Terreno)
-                                </label>
-                            </div>
                         </div>
 
                         <div class="text-center mt-3">
@@ -707,27 +727,7 @@
                                     />
                                     Disponible
                                 </label>
-                                <label class="d-block" title="Pago pendiente">
-                                    <input
-                                        type="radio"
-                                        name="name_radio_inm_busq"
-                                        class="radio_inm_py_busq"
-                                        value="pendiente_pago"
-                                        data-seleccionada="no"
-                                    />
-                                    Pago pendiente
-                                </label>
-                                <label class="d-block" title="Aprobación pendiente">
-                                    <input
-                                        type="radio"
-                                        name="name_radio_inm_busq"
-                                        class="radio_inm_py_busq"
-                                        value="pendiente_aprobacion"
-                                        data-seleccionada="no"
-                                        
-                                    />
-                                    Aprobación
-                                </label>
+
                                 <label class="d-block">
                                     <input
                                         type="radio"
@@ -737,6 +737,17 @@
                                         data-seleccionada="no"
                                     />
                                     Remate
+                                </label>
+
+                                <label class="d-block" title="Fracción">
+                                    <input
+                                        type="radio"
+                                        name="name_radio_inm_busq"
+                                        class="radio_inm_py_busq"
+                                        value="fraccion"
+                                        data-seleccionada="no"
+                                    />
+                                    Fracción
                                 </label>
                             </div>
                         </div>
@@ -777,7 +788,7 @@
                             </div>
                         </div>
 
-                        <div class="contenedor_pendiente_apro_busq mx-1">
+                        <div class="contenedor_fraccion_busq mx-1">
                             <div class="mt-2">
                                 <h6 class="titul texto-link">Precio min.</h6>
 
@@ -788,8 +799,8 @@
 
                                 <input
                                     type="range"
-                                    name="html_range_precio_pendiente_apro_busq"
-                                    id="range_precio_pendiente_apro_busq"
+                                    name="html_range_precio_fraccion_busq"
+                                    id="range_precio_fraccion_busq"
                                     min="0"
                                     max="100000"
                                     step="10000"
@@ -800,45 +811,8 @@
                                 <div class="input-group">
                                     <input
                                         type="number"
-                                        name="html_input_precio_pendiente_apro_busq"
-                                        id="input_precio_pendiente_apro_busq"
-                                        value="200000"
-                                        class="form-control"
-                                        min="0"
-                                    />
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">$us</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="contenedor_pendiente_pago_busq mx-1">
-                            <div class="mt-2">
-                                <h6 class="titul texto-link">Precio min.</h6>
-
-                                <div class="d-flex justify-content-between">
-                                    <div class="limite_min">0 $us</div>
-                                    <div class="limite_max">+ 100.000 $us</div>
-                                </div>
-
-                                <input
-                                    type="range"
-                                    name="html_range_precio_pendiente_pago_busq"
-                                    id="range_precio_pendiente_pago_busq"
-                                    min="0"
-                                    max="100000"
-                                    step="10000"
-                                    value="100000"
-                                    class="w-100"
-                                />
-
-                                <div class="input-group">
-                                    <input
-                                        type="number"
-                                        name="html_input_precio_pendiente_pago_busq"
-                                        id="input_precio_pendiente_pago_busq"
+                                        name="html_input_precio_fraccion_busq"
+                                        id="input_precio_fraccion_busq"
                                         value="200000"
                                         class="form-control"
                                         min="0"
@@ -1149,7 +1123,11 @@
                 </div>
 
                 <div class="text-center">
-                    <input type="submit" class="ref_boton_acceder btn btn-primary" value="Acceder" />
+                    <input
+                        type="submit"
+                        class="ref_boton_acceder btn btn-primary"
+                        value="Acceder"
+                    />
                 </div>
 
             </div>

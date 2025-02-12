@@ -4,7 +4,7 @@
 {{!-- datos elementales --}}
 <div id="id_tipo_ventana" data-tipo_ventana="normal"></div>
 
-{{!-- data-objetivo_tipo = terreno, inmueble, proyecto, propietario --}}
+{{!-- data-objetivo_tipo = fraccion, terreno, inmueble, proyecto, propietario --}}
 <div id="id_objetivo_tipo" data-objetivo_tipo="propietario"></div>
 <div id="id_objetivo_codigo" data-objetivo_codigo="{{codigo_propietario}}"></div>
 {{!-- ------------------------- --}}
@@ -31,6 +31,18 @@
         </li>
         {{/if}}
 
+        {{#if fracciones_propietario}}
+        <li class="nav-item">
+            <a href="/propietario/{{codigo_propietario}}/fracciones" class="nav-link active" id="fracciones_prop-tab"
+                role="tab" aria-controls="fracciones_prop" aria-selected="true">Fracciones</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/propietario/{{codigo_propietario}}/fracciones" class="nav-link" id="fracciones_prop-tab"
+                role="tab" aria-controls="fracciones_prop" aria-selected="false">Fracciones</a>
+        </li>
+        {{/if}}
+
 
         {{#if propiedades_propietario}}
         <li class="nav-item">
@@ -49,18 +61,6 @@
                 <span class="badge badge-success ml-1">{{n_propiedades}}</span>
                 {{/if}}
                 </a>
-        </li>
-        {{/if}}
-
-        {{#if documentos_propietario}}
-        <li class="nav-item">
-            <a href="/propietario/{{codigo_propietario}}/documentos" class="nav-link active"
-                id="documentos_prop-tab" role="tab" aria-controls="documentos_prop" aria-selected="true">Documentos</a>
-        </li>
-        {{else}}
-        <li class="nav-item">
-            <a href="/propietario/{{codigo_propietario}}/documentos" class="nav-link" id="documentos_prop-tab"
-                role="tab" aria-controls="documentos_prop" aria-selected="false">Documentos</a>
         </li>
         {{/if}}
 
@@ -106,16 +106,16 @@
 {{> adm_cli_prop_resumen}}
 {{/if}}
 
+{{#if fracciones_propietario}}
+<span id="tipo_pestana_prop" data-id="fracciones_propietario"></span>
+<span class="segundero_propietario" data-segundero="no"></span>
+{{> adm_cli_prop_fracciones}}
+{{/if}}
+
 {{#if propiedades_propietario}}
 <span id="tipo_pestana_prop" data-id="propiedades_propietario"></span>
 <span class="segundero_propietario" data-segundero="no"></span>
 {{> adm_cli_prop_propiedades}}
-{{/if}}
-
-{{#if documentos_propietario}}
-<span id="tipo_pestana_prop" data-id="documentos_propietario"></span>
-<span class="segundero_propietario" data-segundero="no"></span>
-{{> cli_prop_documentos}}
 {{/if}}
 
 {{#if guardados_propietario}}

@@ -587,139 +587,6 @@ $(".contenedor_imagenes_subidas").on("click", ".boton_eliminar_imagen_jquery", f
     }
 });
 
-//*************************************************************************************** */
-// PARA SUBIR IMAGEN DE EMPRESA SISTEMA: CABECERAS, PRINCIPAL
-
-$("#idSubirImagenEmpresa").on("submit", function (e) {
-    e.preventDefault(); // EVITAMOS QUE EL FORMULARIO SE DIRIJA AL SRC POR DEFECTO
-
-    $(".alert").remove(); // por seguridad borramos todos los alert
-
-    // con "after" el nuevo contenido se pondra DESPUES y al MISMO NIVEL
-    $(".ref_subir_img").after(
-        `<div class="alert alert-warning mt-3">
-            <button type="button" class="close" data-dismiss="alert">
-                <span>&times;</span>
-            </button>
-            <strong>Espere, imagen subiendose...!</strong>
-        </div>`
-    );
-
-    var datosFormulario = new FormData(document.getElementById("idSubirImagenEmpresa"));
-
-    $.ajax({
-        type: "post",
-        //url: rutaServidor,
-        url: "/laapirest/administracion/general/accion/subir_imagen_empresa",
-        data: datosFormulario,
-        //dataType: "html",  // inhabilitar esto, porque si esta habilitado, las respuestas json del servidor seran entendidas como STRING y no como OBJETOS
-        cache: false,
-        contentType: false,
-        processData: false,
-    }).done(function (respuestaServidor) {
-        var tipoRespuesta = respuestaServidor.exito;
-
-        if (tipoRespuesta == "si") {
-            // buscamos si el tipo de imagen existe renderizado, si existe entonces sera cambiado por la nueva imagen, sino existe entonces sera creado como nuevo
-
-            var n_imagenes = $(".cuadro_contenedor_imagen").length;
-
-            var tipo_imagen = respuestaServidor.tipo_imagen;
-
-            var url = respuestaServidor.url;
-
-            var imagen = respuestaServidor.imagen;
-
-            if (n_imagenes > 0) {
-                for (let i = 0; i < n_imagenes; i++) {
-                    let tipo_imagen_i = $(".boton_eliminar_imagen_jquery").eq(i).attr("data-id");
-
-                    if (tipo_imagen_i === tipo_imagen) {
-                        // si se encuentra la imagen, entonces eliminamos todo su contenedor con REMOVE
-                        // porque luego sera reemplazada con la nueva imagen subida
-                        $(".cuadro_contenedor_imagen").eq(i).remove();
-
-                        break; // una vez encontrado la imagen deseada, salimos del bucle "for"
-                    }
-                }
-            }
-
-            // ahora renderizamos la imagen subida
-            // con AFTER lO Agregamos despues del titulo y al mismo nivel que este (no como hijo)
-            $(".ref_titulo_imagen").after(
-                // usando acento grave y el ${} para las partes que deven cambiar
-
-                `<div class="cuadro_contenedor_imagen imagenes mb-3 col-12 col-sm-6 col-md-4 col-lg-3">
-                    <div class="card">
-    
-                        <div class="card-header p-0">
-                            <div class="d-flex justify-content-between p-0 m-0">
-    
-                                <div class="align-self-center py-2 px-3 text-primary">
-                                    <h6>${imagen}</h6>
-                                </div>
-    
-                                <div
-                                    class="boton_eliminar_imagen_jquery text-center ir_rojo align-self-center border-left mr-2"
-                                    data-id="${tipo_imagen}"
-                                    style="color: red;"
-                                >
-                                    <i class="fas fa-window-close py-1" style="font-size: 2em;"></i>
-                                </div>
-    
-                            </div>
-                        </div>
-    
-                        <div class="card-body">
-                            <img
-                                src="${url}"
-                                alt="${imagen}"
-                                title="${imagen}"
-                                class="estilo_imagen card-img-top"
-                                loading="lazy"
-                            />
-                        </div>
-    
-                    </div>
-                </div>`
-            );
-
-            $(".alert").remove(); // por seguridad borramos todos los alert
-
-            // con "after" el nuevo contenido se pondra DESPUES y al MISMO NIVEL
-            $(".ref_subir_img").after(
-                `<div class="alert alert-success mt-3">
-                    <button type="button" class="close" data-dismiss="alert">
-                        <span>&times;</span>
-                    </button>
-                    <strong>Imagen subida!</strong>
-                </div>`
-            );
-        }
-
-        if (tipoRespuesta == "no") {
-            // si la imagen no fue guardada, entonces procedemos a mostrar la respuesta del servidor
-            //alert(respuestaServidor.mensaje);
-            // aunque desde el servido viene como respuesta un "mensaje", aqui lo escribimos manualmente (el mismo mensaje que el de servidor)
-
-            $(".alert").remove(); // por seguridad borramos todos los alert
-
-            // con "after" el nuevo contenido se pondra DESPUES y al MISMO NIVEL
-            $(".ref_subir_img").after(
-                `<div class="alert alert-danger mt-3">
-                    <button type="button" class="close" data-dismiss="alert">
-                        <span>&times;</span>
-                    </button>
-                    <strong>Solo imagenes estan permitidos!</strong>
-                </div>`
-            );
-        }
-
-        // borramos los datos anteriores de los inputs de la imagen nueva subida
-        $("#id_input_subir_imagen").val("");
-    });
-});
-
 /************************************************************************************* */
 /************************************************************************************* */
 
@@ -1276,7 +1143,6 @@ $("#idSubirDocumento").on("submit", function (e) {
         contentType: false,
         processData: false,
     }).done(function (respuestaServidor) {
-
         $(".alert").remove(); // por seguridad borramos todos los alert
 
         var tipoRespuesta = respuestaServidor.exito;
@@ -1642,7 +1508,7 @@ $(".madre_tabla").on("click", ".boton_fila_eliminar", function () {
 });
 
 // ---------------------------------------------------------------------------
-// para "GUARDAR TABLA" DE: PRESUPUESTO DE PROYECTO || RESPONSABILIDAD SOCIAL PROYECTO || EMPLEOS PROYECTO
+// para "GUARDAR TABLA" DE: PRESUPUESTO DE PROYECTO || RESPONSABILIDAD SOCIAL PROYECTO || EMPLEOS PROYECTO || CUOTAS MENSUALES DE CONSTRUCCION DEL PROYECTO
 $(".madre_tabla").on("click", "#id_guardar_tabla", function () {
     //$("#id_guardar_tabla").click(function (e) {
 
@@ -1783,7 +1649,7 @@ $(".madre_tabla").on("click", "#id_guardar_tabla", function () {
 });
 
 // ---------------------------------------------------------------------------
-// para "ELIMINAR TABLA" DE: PRESUPUESTO DE PROYECTO || RESPONSABILIDAD SOCIAL PROYECTO
+// para "ELIMINAR TABLA" DE: PRESUPUESTO DE PROYECTO || RESPONSABILIDAD SOCIAL PROYECTO || CUOTAS MENSUALES DE CONSTRUCCION DE PROYECTO
 
 $(".madre_tabla").on("click", "#id_eliminar_tabla", function () {
     const respuestaEliminar = confirm("¿Desea eliminar la tabla?");
@@ -1845,87 +1711,32 @@ $(".madre_tabla").on("click", "#id_eliminar_tabla", function () {
 });
 
 /* *************************************************************************** */
-// AL MOMENTO DE HACER CLICK EN BOTON DE "LLENAR INFORMACION COMO: DATOS Y/O PAGOS DEL PROPIETARIO"
+// AL MOMENTO DE HACER CLICK EN BOTON DE "LLENAR INFORMACION DE LOS DATOS DEL PROPIETARIO"
 
-$(".contenido").on("click", ".llenar_datos_pagos_propietario", function () {
+$(".contenido").on("click", ".llenar_datos_propietario", function () {
     // **OK
     // IMPORTANTE, CUANDO SE USE ESTE METODO DE "ON", NO DEBE USARSE EL "PREVENTDEFAULT"
     // e.preventDefault(); // Cancelamos el evento por defecto del elemento
-    /////"datos_pagos_a" "datos_pagos_b" o o "datos" o "pagos"
-    // tambien debemos asegurararnos que el campo input de CI debe estar llenado (no debe estar vacio)
-
-    let $boton = $(this);
-    let tipo_llenado = $boton.attr("data-tipo_llenado");
 
     // limpieza de inputs
-    if (tipo_llenado == "datos_pagos_a") {
-        $("#label_ci_propietario").text("");
-        $("#label_ci_propietario").attr("data-ci", "");
+    $("#label_ci_propietario").text("");
+    $("#label_ci_propietario").attr("data-ci", "");
 
-        $(".aux_borrador_datos").val("");
-        $(".aux_borrador_pagos").val("");
-    }
-    if (tipo_llenado == "datos_pagos_b") {
-        $(".aux_borrador_datos").val("");
-        $(".aux_borrador_pagos").val("");
-    }
-    if (tipo_llenado == "datos") {
-        $(".aux_borrador_datos").val("");
-    }
-    if (tipo_llenado == "pagos") {
-        $(".aux_borrador_pagos").val("");
-    }
+    $(".aux_borrador_datos").val("");
 
-    if (tipo_llenado == "datos_pagos_a") {
-        var ci_propietario = $("#idCedulaIdentidad").val();
-    }
-    if (tipo_llenado == "datos_pagos_b" || tipo_llenado == "datos" || tipo_llenado == "pagos") {
-        var ci_propietario = $boton.attr("data-ci");
-    }
-
-    if (tipo_llenado == "datos") {
-        var codigo_inmueble = "";
-    }
-    if (
-        tipo_llenado == "datos_pagos_a" ||
-        tipo_llenado == "datos_pagos_b" ||
-        tipo_llenado == "pagos"
-    ) {
-        var codigo_inmueble = $boton.attr("data-codigo_inmueble");
-    }
+    var ci_propietario = $("#idCedulaIdentidad").val();
 
     // limpiar todas las filas de la tabla de pagos mensuales, dejando solo una fila limpia
 
     if (ci_propietario != "") {
-        if (
-            tipo_llenado == "datos_pagos_a" ||
-            tipo_llenado == "datos_pagos_b" ||
-            tipo_llenado == "pagos"
-        ) {
-            // borramos el contenido de TODOS los inputs de la tabla
-            $(".fila_input").val("");
-
-            let n_filas = $(".fila_fila").length; // numero de filas de la tabla
-            // eliminamos todas las filas de la tabla, excepto la primera (pocicion 0 de la matriz de elementos)
-            if (n_filas > 1) {
-                for (let i = 0; i < n_filas - 1; i++) {
-                    // "(n_filas - 1)" porque la primara fila no sera eliminada
-                    // al eliminar una fila, las que se encuentran debajo de esta suben un nivel, de manera que se ira eliminando siempre la posicion "1" en cada ciclo de eliminacion (sin tocar la posicion 0, es decir la PRIMERA FILA)
-                    $(".fila_fila").eq(1).remove(); //
-                }
-            }
-        }
-
         // empaquetandolos los datos necesarios en el objeto "paqueteDatos"
         var paqueteDatos = {
-            codigo_inmueble,
             ci_propietario,
         };
 
         // entramos a la ruta de servidor
         $.ajax({
-            url:
-                "/laapirest/inmueble/" + codigo_inmueble + "/accion/llenar_datos_pagos_propietario",
+            url: "/laapirest/propietario/accion/llenar_datos_propietario",
             type: "POST",
             data: paqueteDatos,
         }).done(function (aux_respuestaServidor) {
@@ -1938,15 +1749,10 @@ $(".contenido").on("click", ".llenar_datos_pagos_propietario", function () {
             //console.log("nombres del propietario desde el servidor");
             //console.log(respuestaServidor.respuesta.propietario_datos.nombres_propietario);
 
-            if (
-                tipo_llenado == "datos_pagos_a" ||
-                tipo_llenado == "datos_pagos_b" ||
-                tipo_llenado == "datos"
-            ) {
+            if (respuestaServidor.respuesta.propietario_datos.propietario_registrado == true) {
                 $("#label_ci_propietario").text(ci_propietario);
                 $("#label_ci_propietario").attr("data-ci", ci_propietario);
-                $("#guardar_datos_pagos_propietario").attr("data-ci", ci_propietario);
-                $("#eliminar_datos_pagos_propietario").attr("data-ci", ci_propietario);
+                $("#guardar_datos_propietario").attr("data-ci", ci_propietario);
 
                 $("#nombres_propietario").val(
                     respuestaServidor.respuesta.propietario_datos.nombres_propietario
@@ -1972,79 +1778,15 @@ $(".contenido").on("click", ".llenar_datos_pagos_propietario", function () {
                 $("#telefonos_propietario").val(
                     respuestaServidor.respuesta.propietario_datos.telefonos_propietario
                 );
-            }
-
-            if (
-                tipo_llenado == "datos_pagos_a" ||
-                tipo_llenado == "datos_pagos_b" ||
-                tipo_llenado == "pagos"
-            ) {
-                $("#pagado_reserva").val(
-                    respuestaServidor.respuesta.propietario_pagos.pagado_reserva
+            } else {
+                $(".ref_idCedulaIdentidad").after(
+                    `<div class="alert alert-danger mt-3">
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>&times;</span>
+                            </button>
+                            <strong>El usuario es completamente nuevo</strong>
+                        </div>`
                 );
-                $("#fecha_pagado_reserva").val(
-                    respuestaServidor.respuesta.propietario_pagos.fecha_pagado_reserva
-                );
-
-                $("#pagado_pago").val(respuestaServidor.respuesta.propietario_pagos.pagado_pago);
-                $("#fecha_pagado_pago").val(
-                    respuestaServidor.respuesta.propietario_pagos.fecha_pagado_pago
-                );
-
-                var numero_mensuales =
-                    respuestaServidor.respuesta.propietario_pagos.pagos_mensuales.length;
-
-                if (numero_mensuales >= 1) {
-                    var html_nueva_fila = $(".fila_fila").eq(0).html(); // rescatara todo lo que esta dentro de "fila_fila", tomando a la primera fila como referencia
-
-                    // numero_mensuales - 1 porque ya se cuenta con una primera fila creada.
-                    for (let i = 0; i < numero_mensuales - 1; i++) {
-                        // "after" inserta contenido DESPUES de ".fila_fila" (0) y A su mismo NIVEL
-                        $(".fila_fila")
-                            .eq(0)
-                            .after(`<tr class="fila_fila">` + html_nueva_fila + `</tr>`);
-                    }
-
-                    // "numero_mensuales", porque ahora se procederan a llenar todas las filas
-                    for (let j = 0; j < numero_mensuales; j++) {
-                        $(".numero_fila")
-                            .eq(j)
-                            .text(j + 1);
-                        $(".numero_fila")
-                            .eq(j)
-                            .attr("data-id", j + 1);
-                        $(".boton_fila_arriba")
-                            .eq(j)
-                            .attr("data-id", j + 1);
-                        $(".boton_fila_abajo")
-                            .eq(j)
-                            .attr("data-id", j + 1);
-                        $(".boton_fila_eliminar")
-                            .eq(j)
-                            .attr("data-id", j + 1);
-                    }
-
-                    // llenado de los inputs de la tabla
-                    var n_input = numero_mensuales * 2; // "*2" debido a que existen 2 propiedades: fecha y pago
-
-                    var n_columnas = n_input / numero_mensuales;
-
-                    for (let k = 0; k < numero_mensuales; k++) {
-                        var pago_mes_fecha =
-                            respuestaServidor.respuesta.propietario_pagos.pagos_mensuales[k]
-                                .fecha_pago;
-                        var pago_mes_valor =
-                            respuestaServidor.respuesta.propietario_pagos.pagos_mensuales[k].pago;
-
-                        $(".fila_input")
-                            .eq(k * n_columnas)
-                            .val(pago_mes_fecha);
-
-                        $(".fila_input")
-                            .eq(k * n_columnas + 1)
-                            .val(pago_mes_valor);
-                    }
-                }
             }
         });
     } else {
@@ -2059,19 +1801,405 @@ $(".contenido").on("click", ".llenar_datos_pagos_propietario", function () {
     }
 });
 
-/**************************************************************************** */
-// PARA GUARDAR DATOS Y/O PAGOS DEL PROPIETARIO
-// como esta funcion sera usado en ventana de inmueble y de inversionista/propietario, entoces esta en "generales"
+//===============================================================================
+// AL MOMENTO DE HACER CLICK EN BOTON DE "LLENAR INFORMACION DE LOS DATOS DEL PROPIETARIO"
+// llenar_datos_copropietario_inm es casi similar a llenar_datos_copropietario_te
 
-$("#guardar_datos_pagos_propietario").click(function (e) {
+$(".contenido").on("click", ".llenar_datos_copropietario_te", function () {
+    // **OK
+    // IMPORTANTE, CUANDO SE USE ESTE METODO DE "ON", NO DEBE USARSE EL "PREVENTDEFAULT"
+    // e.preventDefault(); // Cancelamos el evento por defecto del elemento
+
+    $("#contenedor_eliminar_copropietario").attr("hidden", true); // ocultamos
+    $("#contenedor_copropietario").attr("hidden", true); // ocultamos
+    $("#contenedor_fracciones").attr("hidden", true); // ocultamos
+    $("#contenedor_documentos").attr("hidden", true); // ocultamos
+
+    let codigo_inmueble = $(this).attr("data-codigo_inmueble");
+
+    // limpieza de inputs
+    $("#label_ci_propietario").text("");
+    $("#label_ci_propietario").attr("data-ci", "");
+
+    $(".aux_borrador_datos").val("");
+
+    var ci_propietario = $("#idCedulaIdentidad").val();
+
+    // limpiar todas las filas de la tabla de pagos mensuales, dejando solo una fila limpia
+
+    if (ci_propietario != "") {
+        // empaquetandolos los datos necesarios en el objeto "paqueteDatos"
+        var paqueteDatos = {
+            ci_propietario,
+            codigo_inmueble,
+        };
+
+        // entramos a la ruta de servidor
+        $.ajax({
+            url: "/laapirest/propietario/accion/llenar_datos_copropietario_te",
+            type: "POST",
+            data: paqueteDatos,
+        }).done(function (respuestaServidor) {
+            // ------- Para verificación -------
+            //console.log("la respuesta del servidor");
+            //console.log(respuestaServidor);
+
+            var propietario_datos = respuestaServidor.propietario_datos;
+            var array_fracciones = respuestaServidor.array_fracciones;
+            var documentos_privados = respuestaServidor.documentos_privados;
+            var caso = respuestaServidor.caso;
+            var c_fti_a_val = respuestaServidor.c_fti_a_val;
+            var c_fti_a_val_render = respuestaServidor.c_fti_a_val_render;
+            var c_fti_a_n = respuestaServidor.c_fti_a_n;
+            var c_fti_a_n_render = respuestaServidor.c_fti_a_n_render;
+
+            $("#label_ci_propietario").text(ci_propietario);
+            $("#label_ci_propietario").attr("data-ci", ci_propietario);
+            $("#guardar_datos_propietario").attr("data-ci", ci_propietario);
+
+            if (caso == "nuevo_a") {
+                // significa que es un usuario completamente nuevo: no tiene datos ni es dueño de fracciones de este inmueble
+                $(".ref_idCedulaIdentidad").after(
+                    `<div class="alert alert-danger mt-3">
+                        <strong>El usuario ${ci_propietario} es completamente nuevo.</strong>
+                    </div>`
+                );
+            } else {
+                if (caso == "nuevo_b") {
+                    // el usuario cuenta con datos registrados, pero NO cuenta con fracciones en el inmueble
+
+                    `<div class="alert alert-danger mt-3">
+                        <strong>El usuario ${ci_propietario} no cuenta con fracciones del presente inmueble.</strong>
+                    </div>`;
+
+                    $("#nombres_propietario").val(propietario_datos.nombres_propietario);
+                    $("#apellidos_propietario").val(propietario_datos.apellidos_propietario);
+                    $("#departamento_propietario").val(propietario_datos.departamento_propietario);
+                    $("#provincia_propietario").val(propietario_datos.provincia_propietario);
+                    $("#domicilio_propietario").val(propietario_datos.domicilio_propietario);
+                    $("#ocupacion_propietario").val(propietario_datos.ocupacion_propietario);
+                    $("#fecha_nacimiento_propietario").val(
+                        propietario_datos.fecha_nacimiento_propietario
+                    );
+                    $("#telefonos_propietario").val(propietario_datos.telefonos_propietario);
+                }
+            }
+
+            //---------------------------------------------------------------
+            // LLENADO DEL NIVEL DE PARTICIPACION ACTUAL QUE TIENE EL COPROPIETARIO EN EL INMUEBLE
+
+            $(".c_fti_a_n").text(c_fti_a_n_render);
+            $(".c_fti_a_val").text(c_fti_a_val_render);
+            $(".c_fti_a_p").text(c_fti_a_p_render);
+
+            //---------------------------------------------------------------
+            // LLENADO DE FRACCIONES QUE TIENEN EL COPROPIETARIO EN EL TERRENO
+            if (array_fracciones.length > 0) {
+                for (let i = 0; i < array_fracciones.length; i++) {
+                    let codigo_fraccion = array_fracciones[i].codigo_fraccion;
+                    let fraccion_bs = array_fracciones[i].fraccion_bs;
+                    let fraccion_bs_render = array_fracciones[i].fraccion_bs_render;
+                    let plusvalia_bs = array_fracciones[i].plusvalia_bs;
+                    let plusvalia_bs_render = array_fracciones[i].plusvalia_bs_render;
+
+                    // con AFTER lO Agregamos despues del titulo y al mismo nivel que este (no como hijo)
+                    $(".ref_fracciones").after(
+                        `
+                        AQUI ESTARA LA ESTRUCTURA HTML DE LOS CARD FRACCIONES DE TERRENO COMPLETO, ES DECIR SE MOSTRARA LA PARTE DE COPROPIETARIO Y DE INVERSIONISTA
+                        `
+                    );
+                }
+            }
+
+            //---------------------------------------------------------------
+            // LLENADO DE DOCUMENTOS QUE TIENEN EL COPROPIETARIO EN EL TERRENO
+            if (documentos_privados.length > 0) {
+                for (let i = 0; i < documentos_privados.length; i++) {
+                    let codigo_documento = documentos_privados[i].codigo_documento;
+                    let nombre_documento = documentos_privados[i].nombre_documento;
+                    let codigo_inmueble = documentos_privados[i].codigo_inmueble;
+                    let url = documentos_privados[i].url;
+
+                    // agregamos la fila tabla del documento
+                    // LO Agregamos despues del cuerpo de la tabla (.cuerpo_filas), COMO HIJO (con "append")
+                    $(".cuerpo_filas").append(
+                        // usando acento grave y el ${} para las partes que deven cambiar
+
+                        `<tr class="fila_registro">
+                            <td class="text-center">
+                                <i
+                                    class="texto-link fas fa-file-pdf"
+                                    style="font-size: 2em;"
+                                ></i>
+                            </td>
+                            <td class="nom_doc" data-id="${nombre_documento}">
+                                ${nombre_documento}
+                            </td>
+                            <td class="cod_inm" data-id="${codigo_inmueble}">
+                                ${codigo_inmueble}
+                            </td>
+                            <td>
+                                <div class="contenedor_ver_eliminar_documento">
+                                    <button
+                                        class="boton_eliminar_documento_jquery btn btn-danger"
+                                        data-id="${codigo_documento}"
+                                    >Eliminar</button>
+                                    <a
+                                        href="${url}"
+                                        target="_blank"
+                                        class="btn btn-success"
+                                    >Ver</a>
+                                </div>
+                            </td>
+                        </tr>`
+                    );
+                }
+            }
+
+            $("#contenedor_eliminar_copropietario").attr("hidden", false); // mostramos
+            $("#contenedor_copropietario").attr("hidden", false); // mostramos
+            $("#contenedor_fracciones").attr("hidden", false); // mostramos
+            $("#contenedor_documentos").attr("hidden", false); // mostramos
+        });
+    } else {
+        $(".ref_idCedulaIdentidad").after(
+            `<div class="alert alert-danger mt-3">
+                <button type="button" class="close" data-dismiss="alert">
+                    <span>&times;</span>
+                </button>
+                <strong>Ingrese un documento de identidad</strong>
+            </div>`
+        );
+    }
+});
+
+//===============================================================================
+// AL MOMENTO DE HACER CLICK EN BOTON DE "LLENAR INFORMACION DE LOS DATOS DEL PROPIETARIO"
+// llenar_datos_copropietario_inm es casi similar a llenar_datos_copropietario_te
+
+$(".contenido").on("click", ".llenar_datos_copropietario_inm", function () {
+    // **OK
+    // IMPORTANTE, CUANDO SE USE ESTE METODO DE "ON", NO DEBE USARSE EL "PREVENTDEFAULT"
+    // e.preventDefault(); // Cancelamos el evento por defecto del elemento
+
+    $("#contenedor_eliminar_copropietario").attr("hidden", true); // ocultamos
+    $("#contenedor_copropietario").attr("hidden", true); // ocultamos
+    $("#contenedor_fracciones").attr("hidden", true); // ocultamos
+    $("#contenedor_documentos").attr("hidden", true); // ocultamos
+
+    let codigo_inmueble = $(this).attr("data-codigo_inmueble");
+
+    // limpieza de inputs
+    $("#label_ci_propietario").text("");
+    $("#label_ci_propietario").attr("data-ci", "");
+
+    $(".aux_borrador_datos").val("");
+
+    var ci_propietario = $("#idCedulaIdentidad").val();
+
+    // limpiar todas las filas de la tabla de pagos mensuales, dejando solo una fila limpia
+
+    if (ci_propietario != "") {
+        // empaquetandolos los datos necesarios en el objeto "paqueteDatos"
+        var paqueteDatos = {
+            ci_propietario,
+            codigo_inmueble,
+        };
+
+        // entramos a la ruta de servidor
+        $.ajax({
+            url: "/laapirest/propietario/accion/llenar_datos_copropietario_inm",
+            type: "POST",
+            data: paqueteDatos,
+        }).done(function (respuestaServidor) {
+            // ------- Para verificación -------
+            //console.log("la respuesta del servidor");
+            //console.log(respuestaServidor);
+
+            var propietario_datos = respuestaServidor.propietario_datos;
+            var array_fracciones = respuestaServidor.array_fracciones;
+            var documentos_privados = respuestaServidor.documentos_privados;
+            var caso = respuestaServidor.caso;
+            var c_fti_a_val = respuestaServidor.c_fti_a_val;
+            var c_fti_a_val_render = respuestaServidor.c_fti_a_val_render;
+            var c_fti_a_n = respuestaServidor.c_fti_a_n;
+            var c_fti_a_n_render = respuestaServidor.c_fti_a_n_render;
+
+            $("#label_ci_propietario").text(ci_propietario);
+            $("#label_ci_propietario").attr("data-ci", ci_propietario);
+            $("#guardar_datos_propietario").attr("data-ci", ci_propietario);
+
+            if (caso == "nuevo_a") {
+                // significa que es un usuario completamente nuevo: no tiene datos ni es dueño de fracciones de este inmueble
+                $(".ref_idCedulaIdentidad").after(
+                    `<div class="alert alert-success mt-3">
+                        <strong>El usuario ${ci_propietario} es completamente nuevo.</strong>
+                    </div>`
+                );
+            } else {
+                if (caso == "nuevo_b") {
+                    // el usuario cuenta con datos registrados, pero NO cuenta con fracciones en el inmueble
+
+                    `<div class="alert alert-success mt-3">
+                        <strong>El usuario ${ci_propietario} no cuenta con fracciones del presente inmueble.</strong>
+                    </div>`;
+
+                    $("#nombres_propietario").val(propietario_datos.nombres_propietario);
+                    $("#apellidos_propietario").val(propietario_datos.apellidos_propietario);
+                    $("#departamento_propietario").val(propietario_datos.departamento_propietario);
+                    $("#provincia_propietario").val(propietario_datos.provincia_propietario);
+                    $("#domicilio_propietario").val(propietario_datos.domicilio_propietario);
+                    $("#ocupacion_propietario").val(propietario_datos.ocupacion_propietario);
+                    $("#fecha_nacimiento_propietario").val(
+                        propietario_datos.fecha_nacimiento_propietario
+                    );
+                    $("#telefonos_propietario").val(propietario_datos.telefonos_propietario);
+                }
+            }
+
+            //---------------------------------------------------------------
+            // LLENADO DEL NIVEL DE PARTICIPACION ACTUAL QUE TIENE EL COPROPIETARIO EN EL INMUEBLE
+
+            $(".c_fti_a_n").text(c_fti_a_n_render);
+            $(".c_fti_a_val").text(c_fti_a_val_render);
+            $(".c_fti_a_p").text(c_fti_a_p_render);
+            //---------------------------------------------------------------
+            // LLENADO DE FRACCIONES QUE TIENEN EL COPROPIETARIO EN EL INMUEBLE
+            if (array_fracciones.length > 0) {
+                for (let i = 0; i < array_fracciones.length; i++) {
+                    let codigo_fraccion = array_fracciones[i].codigo_fraccion;
+                    let fraccion_bs = array_fracciones[i].fraccion_bs;
+                    let fraccion_bs_render = array_fracciones[i].fraccion_bs_render;
+                    let plusvalia_bs = array_fracciones[i].plusvalia_bs;
+                    let plusvalia_bs_render = array_fracciones[i].plusvalia_bs_render;
+
+                    // con AFTER lO Agregamos despues del titulo y al mismo nivel que este (no como hijo)
+                    $(".ref_fracciones").after(
+                        `
+                        <div class="card_un_fraccion mb-3 col-12 col-sm-6 col-md-4 col-lg-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="text-center mb-2">
+                                        <a href="laapirest/fraccion/${codigo_fraccion}/descripcion">
+                                            <span class="h6"><b>${codigo_fraccion}</b></span>
+                                        </a>
+                                    </div>
+
+                                    <div class="text-center mb-2" title="Valor fracción de terreno">
+                                        <span class="h6"><b class="elvalor" data-bs="${fraccion_bs}">${fraccion_bs_render}</b></span>
+                                        <span class="h6"><b class="lamoneda">Bs</b></span>
+                                    </div>
+
+                                    <div class="linea-x"></div>
+                                    <div class="text-center">Copropietario</div>
+                                    <div class="d-flex justify-content-between my-2">
+                                        <div class="linea-v text-center w-50">
+                                            <div>
+                                                <div class="h6">
+                                                    <b>
+                                                        <span class="elvalor" data-bs="${plusvalia_bs}">${plusvalia_bs_render}</span>
+                                                        <span class="lamoneda">Bs</span>
+                                                    </b>
+                                                </div>
+                                            </div>
+
+                                            <div class="mb-1">
+                                                <span class="h6">Plusvalía</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="text-center w-50">
+                                            <div>
+                                                <div class="h6">
+                                                    <b>
+                                                        <span>{{dias_plusvalia}}</span>
+                                                        <span>Días</span>
+                                                    </b>
+                                                </div>
+                                            </div>
+
+                                            <div class="mb-1">
+                                                <span class="h6">Duración</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        `
+                    );
+                }
+            }
+
+            //---------------------------------------------------------------
+            // LLENADO DE DOCUMENTOS QUE TIENEN EL COPROPIETARIO EN EL INMUEBLE
+            if (documentos_privados.length > 0) {
+                for (let i = 0; i < documentos_privados.length; i++) {
+                    let codigo_documento = documentos_privados[i].codigo_documento;
+                    let nombre_documento = documentos_privados[i].nombre_documento;
+                    let codigo_inmueble = documentos_privados[i].codigo_inmueble;
+                    let url = documentos_privados[i].url;
+
+                    // agregamos la fila tabla del documento
+                    // LO Agregamos despues del cuerpo de la tabla (.cuerpo_filas), COMO HIJO (con "append")
+                    $(".cuerpo_filas").append(
+                        // usando acento grave y el ${} para las partes que deven cambiar
+
+                        `<tr class="fila_registro">
+                            <td class="text-center">
+                                <i
+                                    class="texto-link fas fa-file-pdf"
+                                    style="font-size: 2em;"
+                                ></i>
+                            </td>
+                            <td class="nom_doc" data-id="${nombre_documento}">
+                                ${nombre_documento}
+                            </td>
+                            <td class="cod_inm" data-id="${codigo_inmueble}">
+                                ${codigo_inmueble}
+                            </td>
+                            <td>
+                                <div class="contenedor_ver_eliminar_documento">
+                                    <button
+                                        class="boton_eliminar_documento_jquery btn btn-danger"
+                                        data-id="${codigo_documento}"
+                                    >Eliminar</button>
+                                    <a
+                                        href="${url}"
+                                        target="_blank"
+                                        class="btn btn-success"
+                                    >Ver</a>
+                                </div>
+                            </td>
+                        </tr>`
+                    );
+                }
+            }
+
+            $("#contenedor_eliminar_copropietario").attr("hidden", false); // mostramos
+            $("#contenedor_copropietario").attr("hidden", false); // mostramos
+            $("#contenedor_fracciones").attr("hidden", false); // mostramos
+            $("#contenedor_documentos").attr("hidden", false); // mostramos
+        });
+    } else {
+        $(".ref_idCedulaIdentidad").after(
+            `<div class="alert alert-danger mt-3">
+                <button type="button" class="close" data-dismiss="alert">
+                    <span>&times;</span>
+                </button>
+                <strong>Ingrese un documento de identidad</strong>
+            </div>`
+        );
+    }
+});
+
+/**************************************************************************** */
+// PARA GUARDAR DATOS DEL PROPIETARIO y TAMBIEN DE COPROPIETARIO DE ALGUNA FRACCION SEA DEL TIPO TERRENO O INMUEBLE
+
+$("#guardar_datos_propietario").click(function (e) {
     // guardaremos los datos del inversionista, puede que se trate de uno completamente NUEVO o de uno del que ya se tienen sus datos, pero que puede haber cambiado su numero de telefono, es por eso que igualmente se actualizaran esos datos (se los tratara como si fuese un INVERSIONISTA NUEVO)
 
-    // leemos el estado incial del inmueble (el estado inicial antes de pretender cambiarlo a uno nuevo)
-    var $botonGuardarInversionista = $(this);
-
-    //let codigoInmueble = $botonGuardarInversionista.attr("data-id");
-    let tipo_guardado = $botonGuardarInversionista.attr("data-id");
-    let ci_propietario = $botonGuardarInversionista.attr("data-ci");
+    let ci_propietario = $("#label_ci_propietario").attr("data-ci");
 
     if (ci_propietario) {
         // si existe un ci de propietario que registrar ya sea sus datos o pagos
@@ -2080,197 +2208,49 @@ $("#guardar_datos_pagos_propietario").click(function (e) {
         paqueteDatos.ci_propietario = ci_propietario;
 
         var propietario_datos = {};
-        var propietario_pagos = {};
 
-        // ------- Para verificación -------
-        //console.log("entramos guardar los datos del  propietaio desde el navegador");
-        //console.log(paqueteDatos);
+        //let aux_fech_nac_prop = $("#fecha_nacimiento_propietario").attr("value"); // esta con attr NO FUNCIONA, para que funcione en caso de inputs tiene que ser con .val
+        let aux_fech_nac_prop = $("#fecha_nacimiento_propietario").val();
 
-        // guardar del propietario: datos
-        // "guardar_datos" cuando se gusrda solo DATOS desde la pestaña DATOS de la ventana PROPIETARIO (este no requiere del codigo del inmueble)
-        // "guardar_datos_pagos_a" cuando se guardan DATOS y PAGOS desde la pestaña PROPIETARIO de la ventana INMUEBLE
-        // "guardar_datos_pagos_b" cuando se guardan DATOS y PAGOS desde la pestaña PAGOS de la ventana INMUEBLE
-        if (
-            tipo_guardado == "guardar_datos" ||
-            tipo_guardado == "guardar_datos_pagos_a" ||
-            tipo_guardado == "guardar_datos_pagos_b"
-        ) {
-            //let aux_fech_nac_prop = $("#fecha_nacimiento_propietario").attr("value"); // esta con attr NO FUNCIONA, para que funcione en caso de inputs tiene que ser con .val
-            let aux_fech_nac_prop = $("#fecha_nacimiento_propietario").val();
+        // IMPORTANTE: PARA VALIDAR SI EL CAMPO DE FECHA ESTA VACIA, SE LO HACE CON "length"
+        if (aux_fech_nac_prop.toString().length != 0) {
+            // si existe la fecha de nacimiento, porque este es necesario ya que a partir de este dato se dara las contraseñas por defecto al nuevo propietario del inmueble
+            propietario_datos.nombres_propietario = $("#nombres_propietario").val();
+            propietario_datos.apellidos_propietario = $("#apellidos_propietario").val();
+            propietario_datos.telefonos_propietario = $("#telefonos_propietario").val();
+            propietario_datos.fecha_nacimiento_propietario = $(
+                "#fecha_nacimiento_propietario"
+            ).val();
+            propietario_datos.ocupacion_propietario = $("#ocupacion_propietario").val();
+            propietario_datos.departamento_propietario = $("#departamento_propietario").val();
+            propietario_datos.provincia_propietario = $("#provincia_propietario").val();
+            propietario_datos.domicilio_propietario = $("#domicilio_propietario").val();
 
-            // IMPORTANTE: PARA VALIDAR SI EL CAMPO DE FECHA ESTA VACIA, SE LO HACE CON "length"
-            if (aux_fech_nac_prop.toString().length != 0) {
-                // si existe la fecha de nacimiento, porque este es necesario ya que a partir de este dato se dara las contraseñas por defecto al nuevo propietario del inmueble
-                propietario_datos.nombres_propietario = $("#nombres_propietario").val();
-                propietario_datos.apellidos_propietario = $("#apellidos_propietario").val();
-                propietario_datos.telefonos_propietario = $("#telefonos_propietario").val();
-                propietario_datos.fecha_nacimiento_propietario = $(
-                    "#fecha_nacimiento_propietario"
-                ).val();
-                propietario_datos.ocupacion_propietario = $("#ocupacion_propietario").val();
-                propietario_datos.departamento_propietario = $("#departamento_propietario").val();
-                propietario_datos.provincia_propietario = $("#provincia_propietario").val();
-                propietario_datos.domicilio_propietario = $("#domicilio_propietario").val();
+            paqueteDatos.propietario_datos = propietario_datos;
 
-                paqueteDatos.propietario_datos = propietario_datos;
-                var datos_personales = true; // porque si se guardan solo datos, entonces no existen inputs de tabla de pagos mensuales, ahora si se guardaran datos y pagos tambien, entonces se verificara nuevamente en las siguiente lineas de codigo si existen inputs vacion o no.
-                var inputs_vacios = 0; // para el caso de que solo se esten guardando DATOS "guardar_datos", en caso de que se guardaran tambien "pagos" ese valor de inputs_vacios = 0 se corregira con el siguiente if
-            } else {
+            if (
+                $("#nombres_propietario").val() == "" ||
+                $("#apellidos_propietario").val() == "" ||
+                $("#telefonos_propietario").val() == "" ||
+                $("#ocupacion_propietario").val() == "" ||
+                $("#departamento_propietario").val() == "" ||
+                $("#provincia_propietario").val() == "" ||
+                $("#domicilio_propietario").val() == ""
+            ) {
                 var datos_personales = false;
+            } else {
+                var datos_personales = true;
             }
+        } else {
+            var datos_personales = false;
         }
 
-        // guardar del propietario: pagos
-        if (tipo_guardado == "guardar_datos_pagos_a" || tipo_guardado == "guardar_datos_pagos_b") {
-            propietario_pagos.codigo_inmueble =
-                $("#id_objetivo_codigo").attr("data-objetivo_codigo");
-
-            propietario_pagos.pagado_reserva = $("#pagado_reserva").val();
-            propietario_pagos.fecha_pagado_reserva = $("#fecha_pagado_reserva").val();
-
-            propietario_pagos.pagado_pago = $("#pagado_pago").val();
-            propietario_pagos.fecha_pagado_pago = $("#fecha_pagado_pago").val();
-
-            if ($("#pagado_reserva").val() == "") {
-                propietario_pagos.tiene_reserva = false;
-            } else {
-                propietario_pagos.tiene_reserva = true;
-            }
-
-            if ($("#pagado_pago").val() == "") {
-                propietario_pagos.tiene_pago = false;
-            } else {
-                propietario_pagos.tiene_pago = true;
-            }
-
-            paqueteDatos.propietario_pagos = propietario_pagos;
-            // ---------------------------------------------
-            // tratamiento de los pagos mensuales
-            let n_inputs = $(".fila_input").length; // numero de inputs de la tabla
-
-            var inputs_vacios = 0; // por defecto, luego se verificara si es correcto
-            var vacios_permitidos = 0;
-
-            for (let i = 0; i < n_inputs; i++) {
-                let valor_input = $(".fila_input").eq(i).val();
-
-                // IMPORTANTE, AUNQUE EN EL INPUT HTML ESTA ESPECIFICADO QUE EL TIPO DE DATO QUE SE INGRESARA ES "NUMERICO", AL RESCATARLO CON JQUERY, LO TOMA COMO "STRING", POR TANTO PARA SOLUCIONAR ESTE PROBLEMA SE DEVERA HACER UNA RECONVERSION CON NUM
-                if (valor_input == "") {
-                    inputs_vacios = inputs_vacios + 1;
-                    if (i == 0 || i == 1) {
-                        // solo seran los 2 primeros inputs que pueden estar vacion permitidos
-                        vacios_permitidos = vacios_permitidos + 1;
-                    }
-                }
-            }
-
-            // ------- Para verificación -------
-            /*
-            console.log(
-                "los inputs vacios son: " +
-                    inputs_vacios +
-                    " los inputs permitidos son: " +
-                    vacios_permitidos
-            );
-            */
-
-            if (inputs_vacios == 2 && vacios_permitidos == 2) {
-                // solo se admite la primera fila vacia, es decir maximo 2 inputs vacios son permitidos
-                propietario_pagos.tiene_mensuales = false;
-                propietario_pagos.pagos_mensuales = []; // vacio, porque no cuenta con pagos mensuales
-                inputs_vacios = 0; // sera para poder acceder a la funcion del servidor
-            } else {
-                // Despues de recorre todo los inputs con el for, entonces se procedera llenar el array con los datos de los pagos mensuales
-                if (inputs_vacios == 0) {
-                    propietario_pagos.tiene_mensuales = true;
-
-                    let n_filas = $(".fila_fila").length;
-                    let n_inputs = $(".fila_input").length;
-                    let n_columnas = n_inputs / n_filas;
-                    // almacenamos los valores de los inputs de la tabla
-                    let array_tabla = [];
-                    let sub_array_tabla = [];
-                    var aux = -1;
-                    var sub_aux = -1;
-                    for (let j = 0; j < n_inputs; j++) {
-                        sub_aux = sub_aux + 1;
-                        var tipo_input = $(".fila_input").eq(j).attr("data-tipo");
-                        if (tipo_input == "numero") {
-                            var aux_contenido = Number($(".fila_input").eq(j).val()); // en formato numerico
-                        } else {
-                            var aux_contenido = $(".fila_input").eq(j).val(); // en formato texto simple
-                        }
-
-                        sub_array_tabla[sub_aux] = aux_contenido;
-
-                        // ------- Para verificación -------
-                        //console.log("SUB_TABLA EN PROCESO DE LLENADO");
-                        //console.log(sub_array_tabla);
-
-                        if (sub_aux == n_columnas - 1) {
-                            aux = aux + 1;
-                            sub_array_tabla.unshift(aux + 1); // Añade "aux+1" numero de fila al inicio del array (+1 para que inicie desde 1 y no desde 0)
-
-                            // ------- Para verificación -------
-                            //console.log("SUB TABLA");
-                            //console.log(sub_array_tabla);
-
-                            array_tabla[aux] = sub_array_tabla; // ok "aux" porque lo pocicionara en ubicacion 0 dentro del array
-                            // ------- Para verificación -------
-                            //console.log("TABLA");
-                            //console.log(array_tabla);
-                            sub_aux = -1; // para iniciar de nuevo la siguiente fila de llenado
-                            sub_array_tabla = []; // limpiamos para la siguiente fila de llenado
-                        }
-                    }
-
-                    propietario_pagos.tiene_mensuales = true;
-
-                    //--------------- Verificacion ----------------
-                    //console.log("EL ARRAY DE PAGOS PROPIETARIO ANTES DEL JSON");
-                    //console.log(array_tabla);
-                    //---------------------------------------------
-
-                    var aux_string = JSON.stringify(array_tabla);
-
-                    //--------------- Verificacion ----------------
-                    //console.log("EL ARRAY DE PAGOS PROPIETARIO DESPUES DEL JSON");
-                    //console.log(aux_string);
-                    //---------------------------------------------
-
-                    var aux_string1 = JSON.stringify(aux_string);
-
-                    //--------------- Verificacion ----------------
-                    //console.log("EL ARRAY DE PAGOS PROPIETARIO DESPUES DEL JSON 2");
-                    //console.log(aux_string1);
-                    //---------------------------------------------
-
-                    // propietario_pagos.pagos_mensuales = aux_string;
-                    propietario_pagos.pagos_mensuales = array_tabla;
-                    paqueteDatos.propietario_pagos = propietario_pagos;
-
-                    inputs_vacios = 0; // sera para poder acceder a la funcion del servidor
-                }
-            }
-            // ---------------------------------------------
-        }
-
-        if (datos_personales == true && inputs_vacios == 0) {
-            // ------- Para verificación -------
-            /*
-            console.log(
-                "entramos a guardar datos desde el navegador y vemos los datos que se enviaran"
-            );
-            console.log(paqueteDatos);
-            */
-
+        if (datos_personales == true) {
             var verdad_paqueteDatos = JSON.stringify(paqueteDatos);
 
             $.ajax({
                 type: "POST",
-                url:
-                    "/laapirest/administracion/general/accion/guardar_datos_pagos_propietario/" +
-                    tipo_guardado,
+                url: "/laapirest/administracion/general/accion/guardar_datos_propietario",
 
                 data: { contenedor: verdad_paqueteDatos },
                 //data: paqueteDatos,
@@ -2288,14 +2268,245 @@ $("#guardar_datos_pagos_propietario").click(function (e) {
                     );
                 }
 
-                if (tipoRespuesta == "no") {
+                if (tipoRespuesta == "nuevo") {
+                    let usuario = respuestaServidor.usuario;
+                    let clave = respuestaServidor.clave;
+
+                    // mostraremos el usuario y clave por defecto del propietario nuevo
                     $(".ref_boton_datos_pagos_propietario").after(
-                        `<div class="alert alert-danger mt-3">
+                        `<div class="alert alert-success mt-3">
                             <button type="button" class="close" data-dismiss="alert">
                                 <span>&times;</span>
                             </button>
-                            <strong>Proyecto no econtrado, intentelo nuevamente!</strong>
+                            <strong>Nuevas claves de acceso:</strong>
+                            <br>
+                            Usuario: <strong>${usuario}</strong>
+                            <br>
+                            Clave: <strong>${clave}</strong>
                         </div>`
+                    );
+                }
+            });
+        } else {
+            // con "after" el nuevo contenido se pondra DESPUES y al MISMO NIVEL
+            $(".ref_boton_datos_pagos_propietario").after(
+                `<div class="alert alert-danger mt-3 mx-3">
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span>&times;</span>
+                    </button>
+                    <strong>Todos los campos de DATOS del propietario deben estar llenados!</strong>
+                </div>`
+            );
+        }
+    } else {
+        // con "after" el nuevo contenido se pondra DESPUES y al MISMO NIVEL
+        $(".ref_boton_datos_pagos_propietario").after(
+            `<div class="alert alert-danger mt-3 mx-3">
+                <button type="button" class="close" data-dismiss="alert">
+                    <span>&times;</span>
+                </button>
+                <strong>No existen datos de propietario que deban ser registrados</strong>
+            </div>`
+        );
+    }
+});
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// PARA GUARDAR PAGO DEL PROPIETARIO ABSOLUTO sobre un INMUEBLE ENTERO
+
+$("#guardar_pago_propietario").click(function (e) {
+    let ci_propietario = $("#label_ci_propietario").attr("data-ci");
+
+    let codigo_inmueble = $("#id_objetivo_codigo").attr("data-objetivo_codigo");
+
+    if (ci_propietario) {
+        // si existe un ci de propietario que registrar ya sea sus datos o pagos
+
+        var paqueteDatos = {
+            ci_propietario,
+            codigo_inmueble,
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/laapirest/administracion/general/accion/guardar_pago_propietario",
+            data: paqueteDatos,
+        }).done(function (respuestaServidor) {
+            var tipoRespuesta = respuestaServidor.exito;
+
+            if (tipoRespuesta == "si") {
+                let pagado_render = respuestaServidor.pagado_render;
+
+                alert(`Pago de ${pagado_render} Bs. guardado. La ventana se recargara`);
+                // usamos el metodo DE RECARGAR/ACTUALIZAR LA PAGINA, porque asi se visualizara el pago que efectuo el propietario.
+                location.reload();
+            }
+
+            if (tipoRespuesta == "no") {
+                $(".ref_boton_datos_pagos_propietario").after(
+                    `<div class="alert alert-danger mt-3">
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>&times;</span>
+                            </button>
+                            <strong>Inmueble no econtrado</strong>
+                        </div>`
+                );
+            }
+
+            if (tipoRespuesta == "denegado") {
+                $(".ref_boton_datos_pagos_propietario").after(
+                    `<div class="alert alert-danger mt-3">
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>&times;</span>
+                            </button>
+                            <strong>El proyecto presente se encuentra bloqueado, por tanto no es posible realizar cambios</strong>
+                        </div>`
+                );
+            }
+        });
+    } else {
+        // con "after" el nuevo contenido se pondra DESPUES y al MISMO NIVEL
+        $(".ref_boton_datos_pagos_propietario").after(
+            `<div class="alert alert-danger mt-3 mx-3">
+                <button type="button" class="close" data-dismiss="alert">
+                    <span>&times;</span>
+                </button>
+                <strong>No existen datos de propietario cuyo pago deba ser registrado</strong>
+            </div>`
+        );
+    }
+});
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// para registrar pago de un usuario por adquirir fracciones de inmueble. Ahora este usuario sera un copropietario del inmueble.
+
+$("#guardar_pago_copropietario_inm").click(function (e) {
+    let ci_propietario = $("#label_ci_propietario").attr("data-ci");
+    let codigo_inmueble = $("#id_objetivo_codigo").attr("data-objetivo_codigo");
+    let val_fracciones_inm = Number($("#f_vender_val").attr("data-f_vender_val")); //Bs
+    let f_vender_n = Number($("#f_vender_n").attr("data-f_vender_n")); // CANTAIDAD DE FRACCIONES QUE SERAN VENDIDAS. valido solo para actualizaciones despues de la respuesta del servidor
+
+    if (f_vender_n > 0) {
+        if (ci_propietario) {
+            // si existe un ci de propietario que registrar ya sea sus datos o pagos
+
+            var paqueteDatos = {
+                ci_propietario,
+                codigo_inmueble,
+                val_fracciones_inm,
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/laapirest/administracion/general/accion/guardar_pago_copropietario_inm",
+                data: paqueteDatos,
+            }).done(function (respuestaServidor) {
+                var tipoRespuesta = respuestaServidor.exito;
+
+                if (tipoRespuesta == "si") {
+                    let val_fracciones_inm = respuestaServidor.val_fracciones_inm;
+                    let array_card_fracciones = respuestaServidor.array_card_fracciones;
+                    let c_fti_a_val = respuestaServidor.f_val_propietario; // para participacion actual del copropietario
+                    let c_fti_a_n = respuestaServidor.f_n_propietario;
+
+                    if (array_card_fracciones.length > 0) {
+                        for (let i = 0; i < array_card_fracciones.length; i++) {
+                            let codigo_fraccion = array_card_fracciones[i].codigo_fraccion;
+                            let fraccion_bs = array_card_fracciones[i].fraccion_bs;
+
+                            // aqui renderizaremos las fracciones de inmueble del cual el propietario acaba de comprar
+                        }
+                    }
+
+                    //------------------------------------------------
+                    // actualizacion de los valores correspondientes aL INMUEBLE sus fracciones:
+
+                    let precio_justo_inm = Number(
+                        $("#precio_justo_inm").attr("data-precio_justo_inm")
+                    );
+
+                    let ti_f_d_n = Number($(".ti_f_d_n").attr("data-ti_f_d_n"));
+                    let ti_f_d_val = Number($(".ti_f_d_val").attr("data-ti_f_d_val"));
+
+                    ti_f_d_n = ti_f_d_n - f_vender_n;
+                    ti_f_d_val = ti_f_d_val - val_fracciones_inm;
+
+                    let ti_f_d_n_render = numero_punto_coma_query(ti_f_d_n);
+                    let ti_f_d_val_render = numero_punto_coma_query(ti_f_d_val);
+
+                    let aux_ti_f_p = (
+                        ((precio_justo_inm - ti_f_d_val) / precio_justo_inm) *
+                        100
+                    ).toFixed(2);
+
+                    let ti_f_p_render = numero_punto_coma_query(Number(aux_ti_f_p));
+
+                    $(".ti_f_d_n").attr("data-ti_f_d_n", ti_f_d_n);
+                    $(".ti_f_d_val").attr("data-ti_f_d_val", ti_f_d_val);
+
+                    $(".ti_f_d_n").text(ti_f_d_n_render);
+                    $(".ti_f_d_val").text(ti_f_d_val_render);
+                    $(".ti_f_p").text(ti_f_p_render);
+
+                    //-------------------------------------------------------
+                    // actualizacion del porcentaje de participacion del copropietario
+
+                    if (c_fti_a_val > 0) {
+                        let string_p_participacion = (
+                            (c_fti_a_val / precio_justo_inm) *
+                            100
+                        ).toFixed(2);
+                        var c_fti_a_p = Number(string_p_participacion); // numerico con 2 decimales
+                        var c_fti_a_p_render = numero_punto_coma_query(c_fti_a_p); // string con coma decimal
+
+                        var c_fti_a_val_render = numero_punto_coma_query(c_fti_a_val);
+                    } else {
+                        var c_fti_a_p = 0;
+                        var c_fti_a_p_render = "0";
+                        var c_fti_a_val_render = "0";
+                    }
+
+                    var c_fti_a_n_render = numero_punto_coma_query(c_fti_a_n);
+
+                    $(".c_fti_a_n").text(c_fti_a_n_render);
+                    $(".c_fti_a_p").text(c_fti_a_p_render);
+                    $(".c_fti_a_val").text(c_fti_a_val_render);
+
+                    //--------------------------------------------------------
+                    // llevando a valor por defecto
+                    $("#f_vender_n").attr("data-f_vender_n", 0);
+                    $("#f_vender_n").text("0");
+                    //--------------------------------------------------------
+
+                    $(".ref_boton_datos_pagos_propietario").after(
+                        `<div class="alert alert-success mt-3">
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>&times;</span>
+                            </button>
+                            <strong>Fracciones ${val_fracciones_inm} Bs. vendidas con exito.</strong>
+                        </div>`
+                    );
+                }
+
+                if (tipoRespuesta == "insuficiente") {
+                    $(".ref_boton_datos_pagos_propietario").after(
+                        `<div class="alert alert-danger mt-3">
+                                <button type="button" class="close" data-dismiss="alert">
+                                    <span>&times;</span>
+                                </button>
+                                <strong>Fracciones disponibles insuficientes.</strong>
+                            </div>`
+                    );
+                }
+
+                if (tipoRespuesta == "no") {
+                    $(".ref_boton_datos_pagos_propietario").after(
+                        `<div class="alert alert-danger mt-3">
+                                <button type="button" class="close" data-dismiss="alert">
+                                    <span>&times;</span>
+                                </button>
+                                <strong>Inmueble no econtrado</strong>
+                            </div>`
                     );
                 }
 
@@ -2311,52 +2522,311 @@ $("#guardar_datos_pagos_propietario").click(function (e) {
                 }
             });
         } else {
-            if (
-                tipo_guardado == "guardar_datos" ||
-                tipo_guardado == "guardar_datos_pagos_a" ||
-                tipo_guardado == "guardar_datos_pagos_b"
-            ) {
-                // con "after" el nuevo contenido se pondra DESPUES y al MISMO NIVEL
-                $(".ref_boton_datos_pagos_propietario").after(
-                    `<div class="alert alert-danger mt-3 mx-3">
-                        <button type="button" class="close" data-dismiss="alert">
-                            <span>&times;</span>
-                        </button>
-                        <strong>Todos los campos de DATOS del propietario deben estar llenados!</strong>
-                    </div>`
-                );
-            }
-
-            if (
-                tipo_guardado == "guardar_pagos" ||
-                tipo_guardado == "guardar_datos_pagos_a" ||
-                tipo_guardado == "guardar_datos_pagos_b"
-            ) {
-                // ------- Para verificación -------
-                //console.log("los inputs de la tabla de pagos mensuales no estan llenados");
-
-                // con "after" el nuevo contenido se pondra DESPUES y al MISMO NIVEL
-                $(".ref_boton_datos_pagos_propietario").after(
-                    `<div class="alert alert-danger mt-3 mx-3">
-                        <button type="button" class="close" data-dismiss="alert">
-                            <span>&times;</span>
-                        </button>
-                        <strong>Todos los campos de la tabla de pagos mensuales deben estar llenados!</strong>
-                    </div>`
-                );
-            }
+            // con "after" el nuevo contenido se pondra DESPUES y al MISMO NIVEL
+            $(".ref_boton_datos_pagos_propietario").after(
+                `<div class="alert alert-danger mt-3 mx-3">
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span>&times;</span>
+                    </button>
+                    <strong>No existen datos de propietario cuyo pago deba ser registrado</strong>
+                </div>`
+            );
         }
     } else {
-        // con "after" el nuevo contenido se pondra DESPUES y al MISMO NIVEL
         $(".ref_boton_datos_pagos_propietario").after(
             `<div class="alert alert-danger mt-3 mx-3">
                 <button type="button" class="close" data-dismiss="alert">
                     <span>&times;</span>
                 </button>
-                <strong>No existen datos de propietario que deban ser registrados</strong>
+                <strong>El número de fracciones a vender debe ser mayor a 0</strong>
             </div>`
         );
     }
+});
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// para registrar pago de un usuario por adquirir fracciones de terreno. Ahora este usuario sera un copropietario del terreno.
+
+$("#guardar_pago_copropietario_te").click(function (e) {
+    let ci_propietario = $("#label_ci_propietario").attr("data-ci");
+    let codigo_terreno = $("#id_objetivo_codigo").attr("data-objetivo_codigo");
+    let val_fracciones_te = Number($("#f_vender_val").attr("data-f_vender_val")); //Bs
+    let f_vender_n = Number($("#f_vender_n").attr("data-f_vender_n")); // CANTAIDAD DE FRACCIONES QUE SERAN VENDIDAS. valido solo para actualizaciones despues de la respuesta del servidor
+
+    if (f_vender_n > 0) {
+        if (ci_propietario) {
+            // si existe un ci de propietario que registrar ya sea sus datos o pagos
+
+            var paqueteDatos = {
+                ci_propietario,
+                codigo_terreno,
+                val_fracciones_te,
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/laapirest/administracion/general/accion/guardar_pago_copropietario_te",
+                data: paqueteDatos,
+            }).done(function (respuestaServidor) {
+                var tipoRespuesta = respuestaServidor.exito;
+
+                if (tipoRespuesta == "si") {
+                    let val_fracciones_inm = respuestaServidor.val_fracciones_inm;
+                    let array_card_fracciones = respuestaServidor.array_card_fracciones;
+                    let c_fti_a_val = respuestaServidor.f_val_propietario; // para participacion actual del copropietario
+                    let c_fti_a_n = respuestaServidor.f_n_propietario;
+
+                    if (array_card_fracciones.length > 0) {
+                        for (let i = 0; i < array_card_fracciones.length; i++) {
+                            let codigo_fraccion = array_card_fracciones[i].codigo_fraccion;
+                            let fraccion_bs = array_card_fracciones[i].fraccion_bs;
+
+                            // aqui renderizaremos las fracciones de inmueble del cual el propietario acaba de comprar
+                        }
+                    }
+
+                    //------------------------------------------------
+                    // actualizacion de los valores correspondientes aL TERRENO sus fracciones:
+
+                    let precio_terreno = Number($("#precio_terreno").attr("data-precio_terreno"));
+
+                    let ti_f_d_n = Number($(".ti_f_d_n").attr("data-ti_f_d_n"));
+                    let ti_f_d_val = Number($(".ti_f_d_val").attr("data-ti_f_d_val"));
+
+                    ti_f_d_n = ti_f_d_n - f_vender_n;
+                    ti_f_d_val = ti_f_d_val - val_fracciones_inm;
+
+                    let ti_f_d_n_render = numero_punto_coma_query(ti_f_d_n);
+                    let ti_f_d_val_render = numero_punto_coma_query(ti_f_d_val);
+
+                    let aux_ti_f_p = (
+                        ((precio_terreno - ti_f_d_val) / precio_terreno) *
+                        100
+                    ).toFixed(2);
+
+                    let ti_f_p_render = numero_punto_coma_query(Number(aux_ti_f_p));
+
+                    $(".ti_f_d_n").attr("data-ti_f_d_n", ti_f_d_n);
+                    $(".ti_f_d_val").attr("data-ti_f_d_val", ti_f_d_val);
+
+                    $(".ti_f_d_n").text(ti_f_d_n_render);
+                    $(".ti_f_d_val").text(ti_f_d_val_render);
+                    $(".ti_f_p").text(ti_f_p_render);
+
+                    //-------------------------------------------------------
+                    // actualizacion del porcentaje de participacion del copropietario
+
+                    if (c_fti_a_val > 0) {
+                        let string_p_participacion = ((c_fti_a_val / precio_terreno) * 100).toFixed(
+                            2
+                        );
+                        var c_fti_a_p = Number(string_p_participacion); // numerico con 2 decimales
+                        var c_fti_a_p_render = numero_punto_coma_query(c_fti_a_p); // string con coma decimal
+
+                        var c_fti_a_val_render = numero_punto_coma_query(c_fti_a_val);
+                    } else {
+                        var c_fti_a_p = 0;
+                        var c_fti_a_p_render = "0";
+                        var c_fti_a_val_render = "0";
+                    }
+
+                    var c_fti_a_n_render = numero_punto_coma_query(c_fti_a_n);
+
+                    $(".c_fti_a_n").text(c_fti_a_n_render);
+                    $(".c_fti_a_p").text(c_fti_a_p_render);
+                    $(".c_fti_a_val").text(c_fti_a_val_render);
+
+                    //--------------------------------------------------------
+                    // llevando a valor por defecto
+                    $("#f_vender_n").attr("data-f_vender_n", 0);
+                    $("#f_vender_n").text("0");
+                    //--------------------------------------------------------
+
+                    $(".ref_boton_datos_pagos_propietario").after(
+                        `<div class="alert alert-success mt-3">
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>&times;</span>
+                            </button>
+                            <strong>Fracciones ${val_fracciones_inm} Bs. vendidas con exito.</strong>
+                        </div>`
+                    );
+                }
+
+                if (tipoRespuesta == "insuficiente") {
+                    $(".ref_boton_datos_pagos_propietario").after(
+                        `<div class="alert alert-danger mt-3">
+                                <button type="button" class="close" data-dismiss="alert">
+                                    <span>&times;</span>
+                                </button>
+                                <strong>Fracciones disponibles insuficientes.</strong>
+                            </div>`
+                    );
+                }
+
+                if (tipoRespuesta == "no") {
+                    $(".ref_boton_datos_pagos_propietario").after(
+                        `<div class="alert alert-danger mt-3">
+                                <button type="button" class="close" data-dismiss="alert">
+                                    <span>&times;</span>
+                                </button>
+                                <strong>Terreno no econtrado</strong>
+                            </div>`
+                    );
+                }
+
+                if (tipoRespuesta == "denegado") {
+                    $(".ref_boton_datos_pagos_propietario").after(
+                        `<div class="alert alert-danger mt-3">
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>&times;</span>
+                            </button>
+                            <strong>El proyecto presente se encuentra bloqueado, por tanto no es posible realizar cambios</strong>
+                        </div>`
+                    );
+                }
+            });
+        } else {
+            // con "after" el nuevo contenido se pondra DESPUES y al MISMO NIVEL
+            $(".ref_boton_datos_pagos_propietario").after(
+                `<div class="alert alert-danger mt-3 mx-3">
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span>&times;</span>
+                    </button>
+                    <strong>No existen datos de propietario cuyo pago deba ser registrado</strong>
+                </div>`
+            );
+        }
+    } else {
+        $(".ref_boton_datos_pagos_propietario").after(
+            `<div class="alert alert-danger mt-3 mx-3">
+                <button type="button" class="close" data-dismiss="alert">
+                    <span>&times;</span>
+                </button>
+                <strong>El número de fracciones a vender debe ser mayor a 0</strong>
+            </div>`
+        );
+    }
+});
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// para eliminar al copropietario del terreno o inmueble. Se elimina TODOS los datos que relacionan al copropietario con las fracciones del terreno o las fracciones del inmueble, incluyendo los DOCUMENTOS PRIVADOS que tiene el copropietario con dichas fracciones.
+
+$("#eliminar_copropietario").click(function (e) {
+    let ci_propietario = $("#label_ci_propietario").attr("data-ci");
+    let codigo_objetivo = $("#id_objetivo_codigo").attr("data-objetivo_codigo");
+    let clase = $("#clase").attr("data-clase");
+
+    // si existe un ci de propietario que registrar ya sea sus datos o pagos
+
+    var paqueteDatos = {
+        ci_propietario,
+        codigo_objetivo,
+        clase,
+    };
+
+    $.ajax({
+        type: "POST",
+        url: "/laapirest/administracion/general/accion/eliminar_copropietario",
+        data: paqueteDatos,
+    }).done(function (respuestaServidor) {
+        var tipoRespuesta = respuestaServidor.exito;
+
+        if (tipoRespuesta == "si") {
+
+            alert(`Copropietario ${ci_propietario} eliminado. La ventana se recargara`);
+            // usamos el metodo DE RECARGAR/ACTUALIZAR LA PAGINA, porque asi se visualizara el pago que efectuo el propietario.
+            location.reload();
+        }
+
+        if (tipoRespuesta == "denegado") {
+            $("#eliminar_copropietario").after(
+                `<div class="alert alert-danger mt-3">
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span>&times;</span>
+                    </button>
+                    <strong>El proyecto presente se encuentra bloqueado, por tanto no es posible realizar cambios</strong>
+                </div>`
+            );
+        }
+    });
+});
+
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// para botones de + y - para la venta de fracciones disponibles a los interesados que desean adquirirlos.
+
+$("body").on("click", ".f_boton", function () {
+    let f_boton = $(".f_boton").attr("data-f_boton");
+
+    // numero actual de fracciones para ser vendidas
+    let f_vender_n = Number($("#f_vender_n").attr("data-f_vender_n"));
+
+    let sum_f_val = 0;
+
+    // numero TOTAL de fracciones disponibles
+    let n_f_disponibles = $(".fraccion_disponible_bs").length;
+
+    if (f_boton === "mas") {
+        if (f_vender_n + 1 <= n_f_disponibles) {
+            // se permite incrementar las fracciones a vender
+            var nuevo_f_vender_n = f_vender_n + 1;
+        } else {
+            // NO se permite incrementar las fracciones a vender
+            var nuevo_f_vender_n = f_vender_n;
+        }
+    } else {
+        if (f_boton === "menos") {
+            if (f_vender_n - 1 > 0) {
+                // se permite reducir las fracciones a vender, siendo como limite minimo permitido: 1
+                var nuevo_f_vender_n = f_vender_n - 1;
+            } else {
+                // NO se permite reducir las fracciones a vender, por tanto se pondra el valor minimo por defecto: 0
+                var nuevo_f_vender_n = 0;
+            }
+        }
+    }
+
+    for (let i = 0; i < nuevo_f_vender_n; i++) {
+        let f_val_i = Number(
+            $(".fraccion_disponible_bs").eq(i).attr("data-fraccion_disponible_bs")
+        );
+        sum_f_val = sum_f_val + f_val_i;
+    }
+
+    //----------------------------------------------------------------
+    // actualizando los valores de las nuevas fracciones a ser vendidas al interesado
+
+    let f_vender_val = sum_f_val;
+    let f_vender_val_render = numero_punto_coma_query(f_vender_val);
+    let f_vender_n_render = numero_punto_coma_query(nuevo_f_vender_n);
+
+    $("#f_vender_n").attr("data-f_vender_n", nuevo_f_vender_n);
+    $("#f_vender_n").text(f_vender_n_render);
+    $("#f_vender_val").attr("data-f_vender_val", f_vender_val);
+    $("#f_vender_val").text(f_vender_val_render);
+    //----------------------------------------------------------------
+    // visualizacion de los potenciales valores de n,va, % de fracciones inmueble si el comprador adquiriera las nuevas fracciones de inmueble
+    // ESTE FRAGMENTO DE CODIGO SOLO SERA USADO PARA LADO CALCULADORA SIMULACION
+    let f_prop_actual = Number($("#f_prop_actual").attr("data-f_prop_actual"));
+    let f_n_prop_actual = Number($("#f_n_prop_actual").attr("data-f_n_prop_actual"));
+
+    let precio_justo_inm = Number($("#precio_justo_inm").attr("data-precio_justo_inm"));
+
+    let f_potencial_val = f_prop_actual + sum_f_val;
+    let f_potencial_val_render = numero_punto_coma_query(f_potencial_val);
+
+    let string_f_potencial_p = ((f_potencial_val / precio_justo_inm) * 100).toFixed(2);
+    let f_potencial_p = Number(string_f_potencial_p); // numerico con 2 decimales
+    let f_potencial_p_render = numero_punto_coma_query(f_potencial_p); // string con coma decimal
+
+    let f_potencial_n = f_n_prop_actual + f_vender_n;
+    let f_potencial_n_render = numero_punto_coma_query(f_potencial_n);
+
+    $(".f_n_propietario").text(f_potencial_n_render);
+    $(".f_val_propietario").text(f_potencial_val_render);
+    $(".f_p_propietario").text(f_potencial_p_render);
+
+    //----------------------------------------------------------------
 });
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

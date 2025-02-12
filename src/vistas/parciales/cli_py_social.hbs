@@ -14,21 +14,26 @@
                 <div class="col-12 col-md-9 col-lg-6 mb-4">
                     {{! <div class="col-12 col-md-6 col-lg-4 mb-4"> }}
 
-                    <h4 class="texto-resaltado"><span class="icono_izq d-inline-block d-md-none"><i class="fas fa-hand-holding-heart"></i></span>Beneficiario</h4>
+                    <div class="titulo_1 texto-normal"><span
+                            class="icono_izq d-inline-block d-md-none"
+                        ><i class="fas fa-hand-holding-heart"></i></span>Beneficiario</div>
                     <h3>{{contenido_proyecto.beneficiario_rs}}</h3>
 
                     <h4 class="mt-3 texto-resaltado">Monto</h4>
 
                     <div class="borde_entero p-0 mb-2 d-flex mr-lg-5">
-                        <div class="dolar_seg_social">
-                            $us
+                        <div class="dolar_seg_social lamoneda">
+                            Bs
                         </div>
                         {{! w-100 }}
                         <div
                             class="text-center px-2 py-1 align-self-center d-block w-100"
                             style="font-size: 2.3rem;font-weight: 500;letter-spacing: 0.8rem;"
                         >
-                            {{contenido_proyecto.monto_dinero_rs}}
+                            <span
+                                class="elvalor"
+                                data-bs="{{contenido_proyecto.monto_dinero_rs}}"
+                            >{{contenido_proyecto.monto_dinero_rs_r}}</span>
                         </div>
                     </div>
 
@@ -39,7 +44,7 @@
 
                 <div class="col-12 col-lg-6">
                     {{! <div class="col-12 col-md-6 offset-lg-1 col-lg-7"> }}
-                    <h4 class="texto-resaltado">Descripción</h4>
+                    <h4 class="texto-normal">Descripción</h4>
                     <div class="escritura">
                         {{contenido_proyecto.descripcion_rs}}
                     </div>
@@ -49,13 +54,13 @@
 
             <div class="row mt-4">
                 <div class="col-12">
-                    <h4 class="texto-resaltado">¿De donde se obtienen estos recursos?</h4>
+                    <h4 class="texto-normal">¿De donde se obtienen estos recursos?</h4>
                     <p class="text-left">
-                        Gracias al uso eficiente de los recursos materiales y humanos, a la optimización
-                        de las tareas de ejecución y al establecimiento de una cadena competitiva con
-                        nuestros proveedores, logramos obtener beneficios económicos a lo largo del
-                        desarrollo del presente proyecto, dichos recursos obtenidos son destinados a
-                        causas sociales como una contribución a nuestra sociedad.
+                        Gracias al uso eficiente de los recursos materiales y humanos, a la
+                        optimización de las tareas de ejecución y al establecimiento de una cadena
+                        competitiva con nuestros proveedores, logramos obtener beneficios económicos
+                        a lo largo del desarrollo del presente proyecto, dichos recursos obtenidos
+                        son destinados a causas sociales como una contribución a nuestra sociedad.
                     </p>
                 </div>
 
@@ -81,7 +86,9 @@
 
                 <div class="row">
                     <div class="col-12 mb-3">
-                        <h4 class="texto-resaltado"><span class="icono_izq d-inline-block d-md-none"><i class="fas fa-film"></i></span>Vídeo</h4>
+                        <div class="titulo_1 texto-normal"><span
+                                class="icono_izq d-inline-block d-md-none"
+                            ><i class="fas fa-film"></i></span>Vídeo</div>
                     </div>
 
                     {{! las imagenes son como los span }}
@@ -117,9 +124,13 @@
                 <div class="row">
                     <div class="col-12 mb-4">
                         <div class="d-flex justify-content-between">
-                            <h4 class="texto-resaltado"><span class="icono_izq d-inline-block d-md-none"><i class="fas fa-camera-retro"></i></span>Imágenes</h4>
+                            <div class="titulo_1 texto-normal"><span
+                                    class="icono_izq d-inline-block d-md-none"
+                                ><i class="fas fa-camera-retro"></i></span>Imágenes</div>
                             <div>
-                                <button class="btn btn-primary" id="ver_fotos_rspy"><i class="fas fa-binoculars"></i><span class="ml-2">Ver</span></button>
+                                <button class="btn btn-primary" id="ver_fotos_rspy"><i
+                                        class="fas fa-binoculars"
+                                    ></i><span class="ml-2">Ver</span></button>
                             </div>
                         </div>
 
@@ -162,11 +173,7 @@
                                 href="{{imagen_rs}}"
                                 data-fancybox="gallery_rs"
                                 data-caption="{{nombre_imagen}}"
-                            ><img
-                                    src="{{imagen_rs}}"
-                                    alt="{{nombre_imagen}}"
-                                    loading="lazy"
-                                /></a>
+                            ><img src="{{imagen_rs}}" alt="{{nombre_imagen}}" loading="lazy" /></a>
                         {{/each}}
                     </div>
                     {{! /////////////////////////////////////////// }}
@@ -195,7 +202,10 @@
 
                 <div class="row">
                     <div class="col-12 mb-4">
-                        <h4 class="texto-resaltado"><span class="icono_izq d-inline-block d-md-none"><i class="fas fa-clipboard-list"></i></span>Detalles de beneficio entregado</h4>
+                        <div class="titulo_1 texto-normal"><span
+                                class="icono_izq d-inline-block d-md-none"
+                            ><i class="fas fa-clipboard-list"></i></span>Detalles de beneficio
+                            entregado</div>
                     </div>
 
                     <div class="col-12">
@@ -210,9 +220,12 @@
                                             class="texto-resaltado"
                                         >Ítem&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
                                         <th class="texto-resaltado">Unidad</th>
-                                        <th class="texto-resaltado">Precio unitario $us/Unid </th>
+                                        <th class="texto-resaltado">Precio unitario
+                                            <span class="lamoneda">Bs</span>/Unid
+                                        </th>
                                         <th class="texto-resaltado">Cantidad</th>
-                                        <th class="texto-resaltado">Total $us</th>
+                                        <th class="texto-resaltado">Total
+                                            <span class="lamoneda">Bs</span></th>
                                     </tr>
                                 </thead>
 
@@ -223,9 +236,12 @@
                                             <td>{{rs_numero}}</td>
                                             <td>{{rs_item}}</td>
                                             <td>{{rs_unidad}}</td>
-                                            <td>{{rs_pu}}</td>
+                                            <td class="elvalor" data-bs="{{rs_pu}}">{{rs_pu_r}}</td>
                                             <td>{{rs_cantidad}}</td>
-                                            <td>{{rs_total}}</td>
+                                            <td
+                                                class="elvalor"
+                                                data-bs="{{rs_total}}"
+                                            >{{rs_total_r}}</td>
                                         </tr>
                                     {{/each}}
 
@@ -243,8 +259,3 @@
     </div>
 
 {{/if}}
-
-<div class="text-right mt-4" title="Numero de visualizaciones">
-    <span><i class="fas fa-glasses icono_visualizaciones"></i></span>
-    <span class="numero_visualizaciones"><b>{{nv_ventana}}</b></span>
-</div>

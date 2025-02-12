@@ -1,6 +1,7 @@
 // este{} sera el indice que contendra todos los modelos de datos creados
 
 module.exports = {
+    
     indiceAdministrador: require("./modeloadministrador"),
 
     indiceProyecto: require("./modeloproyecto"), // de esta manera para acceder al esquema del edificio, que esta contenida en el archivo "modeloedificio.js" se lo hara llamando desde el indice asi:
@@ -29,6 +30,8 @@ module.exports = {
 
     indiceRequerimientos: require("./modelo_requerimientos"),
 
-    indiceImagenesSistema: require("./modelo_ima_sistema"),
+    indiceFraccionTerreno: require("./modelo_fraccion_terreno"),
+
+    indiceFraccionInmueble: require("./modelo_fraccion_inmueble"),
 
 };

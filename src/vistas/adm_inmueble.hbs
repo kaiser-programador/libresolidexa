@@ -30,6 +30,22 @@
         </li>
         {{/if}}
 
+        {{!-- se trata de un inmueble que pertenece a varios COPROPIETARIOS --}}
+        {{#if inmueble_fraccionado}}
+        {{#if fracciones_inmueble}}
+        <li class="nav-item">
+            <a href="/laapirest/inmueble/{{codigo_inmueble}}/fracciones" class="nav-link active"
+                id="fracciones_inm-tab" role="tab" aria-controls="fracciones_inm"
+                aria-selected="true">Fracciones</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/inmueble/{{codigo_inmueble}}/fracciones" class="nav-link" id="fracciones_inm-tab"
+                role="tab" aria-controls="fracciones_inm" aria-selected="false">Fracciones</a>
+        </li>
+        {{/if}}
+        {{/if}}
+
         {{#if imagenes_inmueble}}
         <li class="nav-item">
             <a href="/laapirest/inmueble/{{codigo_inmueble}}/imagenes" class="nav-link active" id="imagenes_inm-tab"
@@ -67,6 +83,8 @@
         </li>
         {{/if}}
 
+        {{!-- se trata de un inmueble que pertenece a un solo PROPIETARIO ABSOLUTO --}}
+        {{#if inmueble_entero}}
         {{#if propietario_inmueble}}
         <li class="nav-item">
             <a href="/laapirest/inmueble/{{codigo_inmueble}}/propietario" class="nav-link active" id="propietario_inm-tab"
@@ -78,17 +96,33 @@
                 role="tab" aria-controls="propietario_inm" aria-selected="false">Propietario</a>
         </li>
         {{/if}}
+        {{/if}}
 
-        {{#if pagos_inmueble}}
+        {{!-- se trata de un inmueble que pertenece a varios COPROPIETARIOS --}}
+        {{#if inmueble_fraccionado}}
+        {{#if copropietario_inmueble}}
         <li class="nav-item">
-            <a href="/laapirest/inmueble/{{codigo_inmueble}}/pagos" class="nav-link active" id="pagos_inm-tab"
-                role="tab" aria-controls="pagos_inm" aria-selected="true">Pagos</a>
+            <a href="/laapirest/inmueble/{{codigo_inmueble}}/copropietario" class="nav-link active" id="copropietario_inm-tab"
+                role="tab" aria-controls="copropietario_inm" aria-selected="true">Copropietario</a>
         </li>
         {{else}}
         <li class="nav-item">
-            <a href="/laapirest/inmueble/{{codigo_inmueble}}/pagos" class="nav-link" id="pagos_inm-tab" role="tab"
-                aria-controls="pagos_inm" aria-selected="false">Pagos</a>
+            <a href="/laapirest/inmueble/{{codigo_inmueble}}/copropietario" class="nav-link" id="copropietario_inm-tab"
+                role="tab" aria-controls="copropietario_inm" aria-selected="false">Copropietario</a>
         </li>
+        {{/if}}
+
+        {{#if lista_inmueble}}
+        <li class="nav-item">
+            <a href="/laapirest/inmueble/{{codigo_inmueble}}/lista" class="nav-link active" id="lista_inm-tab"
+                role="tab" aria-controls="lista_inm" aria-selected="true">Lista</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/laapirest/inmueble/{{codigo_inmueble}}/lista" class="nav-link" id="lista_inm-tab" role="tab"
+                aria-controls="lista_inm" aria-selected="false">Lista</a>
+        </li>
+        {{/if}}
         {{/if}}
 
         {{#if eliminar_inmueble}}
@@ -110,6 +144,11 @@
 {{> adm_inm_descripcion}}
 {{/if}}
 
+{{!-- se trata de un inmueble que pertenece a varios COPROPIETARIOS --}}
+{{#if fracciones_inmueble}}
+{{> adm_inm_fracciones}}
+{{/if}}
+
 {{#if imagenes_inmueble}}
 {{> adm_inm_imagenes}}
 {{/if}}
@@ -126,8 +165,14 @@
 {{> adm_inm_propietario}}
 {{/if}}
 
-{{#if pagos_inmueble}}
-{{> adm_inm_pagos}}
+{{!-- se trata de un inmueble que pertenece a varios COPROPIETARIOS --}}
+{{#if copropietario_inmueble}}
+{{> adm_inm_copropietario}}
+{{/if}}
+
+{{!-- se trata de un inmueble que pertenece a varios COPROPIETARIOS --}}
+{{#if lista_inmueble}}
+{{> adm_inm_lista}}
 {{/if}}
 
 {{#if eliminar_inmueble}}

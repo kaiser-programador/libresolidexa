@@ -1,0 +1,1097 @@
+{{! para segmento de la pestaña DESCRIPCION de: terreno, proyecto, inmueble, cliente }}
+
+{{! segundero GANANCIA DE PLUSVALÍA }}
+
+{{#if info_segundero}}
+
+    <div class="row mt-5 cuadro_estandart py-3">
+
+        {{#if caracteristicas_inmueble}}
+            <div class="col-12 pt-4 pb-3">
+                <h3 class="text-center">
+                    <div class="envolvente">
+                        <i class="fas fa-house-user {{informacion.color_precio_inm}}"></i>
+                    </div>
+                    <span class="titulo_2">Inmueble</span>
+                    <span class="titulo_2">{{informacion.leyenda_precio_inm}}</span>
+                </h3>
+            </div>
+        {{/if}}
+
+        {{! ------------------------------------------------ }}
+        <div class="col-12 col-md-6 py-3">
+
+            <div class="text-center pb-3">
+                <div class="titulo_2 texto-normal">
+                    Ganancia
+                </div>
+            </div>
+
+            <div class="borde_entero p-0 mb-2 d-flex">
+                {{! los font-size y font-weight son iguales para "h1", pero sin el espaciado inferior por defecto de los "h´s" }}
+
+                <div class="dolar_seg_social lamoneda">
+                    Bs
+                </div>
+
+                <div
+                    class="text-right px-2 py-1 align-self-center d-block w-100"
+                    style="font-size: 2.5rem;font-weight: 500;letter-spacing: 1rem;"
+                    id="entero_tot_ret_alq"
+                >
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end">
+                <div
+                    id="decimales_tot_ret_alq"
+                    class="borde_decimal py-1 h4 text-right px-2 www-75"
+                    style="letter-spacing: 1rem;"
+                >
+                    <div class="cd"></div><div class="cd"></div><div class="cd"></div><div
+                        class="cd"
+                    ></div><div class="cd"></div>
+                </div>
+            </div>
+
+            <div style="position: relative;">
+                <div class="progress" style="height: 2rem;">
+                    <div
+                        class="progress-bar"
+                        role="progressbar"
+                        style="width: 0%;"
+                        id="ref_progreso_generandose"
+                    ></div>
+                </div>
+                <div class="css-val-porcentaje-segundero">
+                    <b id="ref_valor_progreso_generandose"></b>
+                </div>
+            </div>
+
+            <div class="px-2 mt-3">
+                <div class="text-center escritura">
+                    {{informacion.mensaje_segundero}}
+                </div>
+            </div>
+
+            {{! para ocultar o mostrar abajo }}
+
+            <div class="text-center">
+                <button
+                    class="btn boton-primario mt-3"
+                    data-toggle="collapse"
+                    data-target="#detalles_plusvalia"
+                    aria-expanded="false"
+                >Detalles</button>
+            </div>
+
+            <div class="collapse" id="detalles_plusvalia">
+                <div class="my-3">
+
+                    <div class="row">
+
+                        <div class="col-4">
+                            <div class="p-2">
+                                <div>
+                                    <div style="text-align: center;">
+                                        <i class="fas fa-hard-hat icono_1"></i>
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <span
+                                            class="titulo_3 elvalor"
+                                            data-bs="{{informacion.precio_justo}}"
+                                        >{{informacion.precio_justo_render}}</span>
+                                        <span class="titulo_4 lamoneda">Bs</span>
+                                    </div>
+                                    <div class="titulo_4" style="text-align: center;">Precio Justo</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="p-2">
+                                <div>
+                                    <div style="text-align: center;">
+                                        <i class="fas fa-award icono_1"></i>
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <span
+                                            class="titulo_3 elvalor"
+                                            data-bs="{{informacion.plusvalia}}"
+                                        >{{informacion.plusvalia_render}}</span>
+                                        <span class="titulo_4 lamoneda">Bs</span>
+                                    </div>
+                                    <div class="titulo_4" style="text-align: center;">Ganancia</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="p-2">
+                                <div>
+                                    <div style="text-align: center;">
+                                        <i class="fas fa-hotel icono_1"></i>
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <span
+                                            class="titulo_3 elvalor"
+                                            data-bs="{{informacion.precio_tradicional}}"
+                                        >{{informacion.precio_tradicional_render}}</span>
+                                        <span class="titulo_4 lamoneda">Bs</span>
+                                    </div>
+                                    <div class="titulo_4" style="text-align: center;">Precio
+                                        tradicional</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="text-center">
+                                Al pagar el precio justo por los inmuebles, adquieres propiedades
+                                que en el mercado tradicional tienen un valor superior, lo que te
+                                genera ganancias considerables como beneficio.
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        {{! ------------------------------------------------ }}
+        {{! lado DERECHO segundero }}
+        <div class="col-12 col-md-6 py-3">
+
+            <div class="text-center pb-3">
+                <div class="titulo_2 texto-normal">
+                    Terreno
+                </div>
+            </div>
+
+            <div class="my-3">
+
+                <div class="row">
+
+                    <div class="col-6">
+                        <div class="p-2">
+                            <div>
+                                <div style="text-align: center;">
+                                    <i class="fas fa-hand-holding-usd icono_1"></i>
+                                </div>
+
+                                <b>
+                                    <div style="text-align: center;">
+                                        <span
+                                            class="titulo_3 elvalor"
+                                            data-bs="{{informacion.derecho_suelo}}"
+                                        >{{informacion.derecho_suelo_render}}</span>
+                                        <span class="titulo_4 lamoneda">Bs</span>
+                                    </div>
+                                    <div class="titulo_4" style="text-align: center;">Precio
+                                        <i
+                                            class="icono_popover fas fa-info-circle ml-1"
+                                            data-toggle="popover"
+                                            data-html="true"
+                                            data-content="{{informacion.popover_precio}}"
+                                        ></i>
+                                    </div>
+                                </b>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-2">
+                            <div>
+                                <div style="text-align: center;">
+                                    <i class="fas fa-hand-holding-heart icono_1"></i>
+                                </div>
+                                <b>
+                                    <div style="text-align: center;">
+                                        <span
+                                            class="titulo_3 elvalor"
+                                            data-bs="{{informacion.descuento_suelo}}"
+                                        >{{informacion.descuento_suelo_render}}</span>
+                                        <span class="titulo_4 lamoneda">Bs</span>
+                                    </div>
+
+                                    <div class="titulo_4" style="text-align: center;">Descuento
+                                        <i
+                                            class="icono_popover fas fa-info-circle ml-1"
+                                            data-toggle="popover"
+                                            data-html="true"
+                                            data-content="{{informacion.popover_precio}}"
+                                        ></i>
+                                    </div>
+                                </b>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="text-center escritura">
+                            {{informacion.mensaje_terreno}}
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+        {{! ------------------------------------------------ }}
+    </div>
+
+{{/if}}
+
+{{! estado y caracteristicas }}
+
+{{#if estado_caracteristicas}}
+
+    <div class="row mt-5 cuadro_estandart py-3">
+
+        {{#if caracteristicas_terreno}}
+
+            <div class="col-12 col-md-6">
+
+                <div class="titulo_2 text-center texto-normal mt-2 mb-5">Estado actual</div>
+
+                <div class="row">
+                    <div class="col-4">
+                        {{#if informacion.resplandor_1}}
+                            <div class="celda-tabla-circulo-estados">
+                                <div class="css-numero-resplandor" data-id="reserva">
+                                    <i class="fas fa-bullhorn"></i>
+                                </div>
+                            </div>
+
+                            <div class="titulo_4 text-center mt-3">
+                                1. Convocatoria
+                            </div>
+                        {{else}}
+                            <div class="celda-tabla-circulo-estados">
+                                <div class="css-numero-estado">
+                                    <i class="fas fa-bullhorn"></i>
+                                </div>
+                            </div>
+                            <div class="titulo_4 text-center mt-3">
+                                1. Convocatoria
+                            </div>
+                        {{/if}}
+                    </div>
+
+                    <div class="col-4">
+                        {{#if informacion.resplandor_2}}
+                            <div class="celda-tabla-circulo-estados">
+                                <div class="css-numero-resplandor" data-id="pago">
+                                    <i class="fas fa-drafting-compass"></i>
+                                </div>
+                            </div>
+                            <div class="titulo_4 text-center mt-3">
+                                2. Anteproyecto
+                            </div>
+                        {{else}}
+                            <div class="celda-tabla-circulo-estados">
+                                <div class="css-numero-estado">
+                                    <i class="fas fa-drafting-compass"></i>
+                                </div>
+                            </div>
+                            <div class="titulo_4 text-center mt-3">
+                                2. Anteproyecto
+                            </div>
+                        {{/if}}
+                    </div>
+
+                    <div class="col-4">
+                        {{#if informacion.resplandor_3}}
+                            <div class="celda-tabla-circulo-estados">
+                                <div class="css-numero-resplandor" data-id="aprobacion">
+                                    <i class="fas fa-key"></i>
+                                </div>
+                            </div>
+                            <div class="titulo_4 text-center mt-3">
+                                3. Reserva
+                            </div>
+                        {{else}}
+                            <div class="celda-tabla-circulo-estados">
+                                <div class="css-numero-estado">
+                                    <i class="fas fa-key"></i>
+                                </div>
+                            </div>
+                            <div class="titulo_4 text-center mt-3">
+                                3. Reserva
+                            </div>
+                        {{/if}}
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-4">
+                        {{#if informacion.resplandor_4}}
+                            <div class="celda-tabla-circulo-estados">
+                                <div class="css-numero-resplandor" data-id="construccion">
+                                    <i class="fas fa-hammer"></i>
+                                </div>
+                            </div>
+                            <div class="titulo_4 text-center mt-3">
+                                4. Contrucción
+                            </div>
+                        {{else}}
+                            <div class="celda-tabla-circulo-estados">
+                                <div class="css-numero-estado">
+                                    <i class="fas fa-hammer"></i>
+                                </div>
+                            </div>
+                            <div class="titulo_4 text-center mt-3">
+                                4. Contrucción
+                            </div>
+                        {{/if}}
+                    </div>
+
+                    <div class="col-4">
+                        {{#if informacion.resplandor_5}}
+                            <div class="celda-tabla-circulo-estados">
+                                <div class="css-numero-resplandor" data-id="construido">
+                                    <i class="fas fa-building"></i>
+                                </div>
+                            </div>
+                            <div class="titulo_4 text-center mt-3">
+                                5. Construido
+                            </div>
+                        {{else}}
+                            <div class="celda-tabla-circulo-estados">
+                                <div class="css-numero-estado">
+                                    <i class="fas fa-building"></i>
+                                </div>
+                            </div>
+                            <div class="titulo_4 text-center mt-3">
+                                5. Construido
+                            </div>
+                        {{/if}}
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <table class="text-normal w-100" cellpadding="8">
+                        <thead>
+                            <tr style="border: none;">
+                                <th class="text-center" colspan="3">
+                                    <div class="d-flex justify-content-between">
+                                        <div class="titulo_4 m-0">Financiamiento</div>
+                                        <div>
+                                            <span
+                                                class="titulo_4 elvalor"
+                                                data-bs="{{financiamiento}}"
+                                            >{{informacion.financiamiento_render}}</span>
+                                            <span class="titulo_4 lamoneda">Bs</span>
+                                        </div>
+
+                                    </div>
+
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <th class="text-center h4" colspan="3">
+                                    <div style="position: relative;">
+                                        <div class="progress" style="height: 2rem;">
+                                            <div
+                                                class="progress-bar"
+                                                role="progressbar"
+                                                style="width: {{informacion.p_financiamiento}}%;"
+                                                id="ref_progreso_generandose"
+                                            ></div>
+                                        </div>
+                                        <div class="css-val-porcentaje-segundero">
+                                            <b
+                                                id="ref_valor_progreso_generandose_2"
+                                            >{{informacion.p_financiamiento_render}}
+                                                %</b>
+                                        </div>
+                                    </div>
+                                </th>
+                            </tr>
+                        </tbody>
+
+                    </table>
+
+                </div>
+                <div class="text-center">
+                    <h5>{{informacion.etiqueta_plazo}}</h5>
+                </div>
+
+            </div>
+
+        {{else}}
+
+            {{! para caracteristicas del lado IZQUIERDO de: Proyecto, Inmueble }}
+
+            <div class="table-responsive barra-deslizadora-mob col-12 col-md-6">
+
+                <div class="titulo_2 text-center texto-normal mt-2 mb-5">Estado actual</div>
+
+                <div class="row">
+                    <div class="col-4">
+                        {{#if informacion.resplandor_1}}
+                            <div class="celda-tabla-circulo-estados">
+                                <div class="css-numero-resplandor" data-id="reserva">
+                                    <i class="fas fa-bullhorn"></i>
+                                </div>
+                            </div>
+
+                            <div class="titulo_4 text-center mt-3">
+                                1. Convocatoria
+                            </div>
+                        {{else}}
+                            <div class="celda-tabla-circulo-estados">
+                                <div class="css-numero-estado">
+                                    <i class="fas fa-bullhorn"></i>
+                                </div>
+                            </div>
+                            <div class="titulo_4 text-center mt-3">
+                                1. Convocatoria
+                            </div>
+                        {{/if}}
+                    </div>
+
+                    <div class="col-4">
+                        {{#if informacion.resplandor_2}}
+                            <div class="celda-tabla-circulo-estados">
+                                <div class="css-numero-resplandor" data-id="pago">
+                                    <i class="fas fa-drafting-compass"></i>
+                                </div>
+                            </div>
+                            <div class="titulo_4 text-center mt-3">
+                                2. Anteproyecto
+                            </div>
+                        {{else}}
+                            <div class="celda-tabla-circulo-estados">
+                                <div class="css-numero-estado">
+                                    <i class="fas fa-drafting-compass"></i>
+                                </div>
+                            </div>
+                            <div class="titulo_4 text-center mt-3">
+                                2. Anteproyecto
+                            </div>
+                        {{/if}}
+                    </div>
+
+                    <div class="col-4">
+                        {{#if informacion.resplandor_3}}
+                            <div class="celda-tabla-circulo-estados">
+                                <div class="css-numero-resplandor" data-id="aprobacion">
+                                    <i class="fas fa-key"></i>
+                                </div>
+                            </div>
+                            <div class="titulo_4 text-center mt-3">
+                                3. Reserva
+                            </div>
+                        {{else}}
+                            <div class="celda-tabla-circulo-estados">
+                                <div class="css-numero-estado">
+                                    <i class="fas fa-key"></i>
+                                </div>
+                            </div>
+                            <div class="titulo_4 text-center mt-3">
+                                3. Reserva
+                            </div>
+                        {{/if}}
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-4">
+                        {{#if informacion.resplandor_4}}
+                            <div class="celda-tabla-circulo-estados">
+                                <div class="css-numero-resplandor" data-id="construccion">
+                                    <i class="fas fa-hammer"></i>
+                                </div>
+                            </div>
+                            <div class="titulo_4 text-center mt-3">
+                                4. Contrucción
+                            </div>
+                        {{else}}
+                            <div class="celda-tabla-circulo-estados">
+                                <div class="css-numero-estado">
+                                    <i class="fas fa-hammer"></i>
+                                </div>
+                            </div>
+                            <div class="titulo_4 text-center mt-3">
+                                4. Contrucción
+                            </div>
+                        {{/if}}
+                    </div>
+
+                    <div class="col-4">
+                        {{#if informacion.resplandor_5}}
+                            <div class="celda-tabla-circulo-estados">
+                                <div class="css-numero-resplandor" data-id="construido">
+                                    <i class="fas fa-building"></i>
+                                </div>
+                            </div>
+                            <div class="titulo_4 text-center mt-3">
+                                5. Construido
+                            </div>
+                        {{else}}
+                            <div class="celda-tabla-circulo-estados">
+                                <div class="css-numero-estado">
+                                    <i class="fas fa-building"></i>
+                                </div>
+                            </div>
+                            <div class="titulo_4 text-center mt-3">
+                                5. Construido
+                            </div>
+                        {{/if}}
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <table class="text-normal w-100" cellpadding="8">
+                        <thead>
+                            <tr style="border: none;">
+                                <th class="text-center" colspan="3">
+                                    <div class="d-flex justify-content-between">
+                                        <div class="titulo_4 m-0">Financiamiento</div>
+                                        <div>
+                                            <span
+                                                class="titulo_4 elvalor"
+                                                data-bs="{{financiamiento}}"
+                                            >{{informacion.financiamiento_render}}</span>
+                                            <span class="titulo_4 lamoneda">Bs</span>
+                                        </div>
+
+                                    </div>
+
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <th class="text-center h4" colspan="3">
+                                    <div style="position: relative;">
+                                        <div class="progress" style="height: 2rem;">
+                                            <div
+                                                class="progress-bar"
+                                                role="progressbar"
+                                                style="width: {{informacion.p_financiamiento}}%;"
+                                                id="ref_progreso_generandose"
+                                            ></div>
+                                        </div>
+                                        <div class="css-val-porcentaje-segundero">
+                                            <b
+                                                id="ref_valor_progreso_generandose_2"
+                                            >{{informacion.p_financiamiento_render}}
+                                                %</b>
+                                        </div>
+                                    </div>
+                                </th>
+                            </tr>
+                        </tbody>
+
+                    </table>
+
+                </div>
+                <div class="text-center">
+                    <h5>{{informacion.etiqueta_plazo}}</h5>
+                </div>
+            </div>
+
+        {{/if}}
+
+        {{! para caracteristicas del lado DERECHO de: Terreno, Proyecto, Inmueble }}
+
+        <div class="col-12 col-md-6 mt-4 mt-md-0">
+            {{#if caracteristicas_terreno}}
+                <div class="tabla_caracteristicas table-responsive">
+                    <table class="texto-normal w-100" cellpadding="8">
+
+                        <thead>
+                            <tr>
+                                <th class="text-center" colspan="2">
+                                    <div class="titulo_2 texto-normal">Terreno</div>
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+                                <td class="titulo_4 text-left">
+                                    <i class="fas fa-landmark icono_py_grales texto-resaltado"></i>
+                                    <span>Precio</span>
+                                </td>
+
+                                <td class="text-right titulo_4">
+                                    <span class="elvalor" data-bs="{{informacion.precio_bs}}">{{informacion.precio_bs_r}}</span>
+                                    <span class="lamoneda">Bs</span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="titulo_4 text-left">
+                                    <i
+                                        class="fas fa-piggy-bank icono_py_grales texto-resaltado"
+                                    ></i>
+                                    <span>Descuento</span>
+                                </td>
+
+                                <td class="text-right titulo_4">
+                                    <span class="elvalor" data-bs="{{informacion.descuento_bs}}">{{informacion.descuento_bs_r}}</span>
+                                    <span class="lamoneda">Bs</span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="titulo_4 text-left">
+                                    <i
+                                        class="fas fa-ruler-combined icono_py_grales texto-resaltado"
+                                    ></i>
+                                    <span>Superficie</span>
+                                </td>
+
+                                <td class="text-right titulo_4">
+                                    <span>{{informacion.superficie}}</span>
+                                    <span>m<sup>2</sup></span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="titulo_4 text-left">
+                                    <i
+                                        class="fas fa-layer-group icono_py_grales texto-resaltado"
+                                    ></i>
+                                    <span>Máx. Pisos</span>
+                                    <i
+                                        class="icono_popover fas fa-info-circle ml-1"
+                                        data-toggle="popover"
+                                        data-html="true"
+                                        data-content="Por normativa vigente se refiere al número máximo de pisos que se permiten construir en la zona."
+                                    ></i>
+                                </td>
+
+                                <td class="text-right titulo_4">
+                                    <span>{{informacion.maximo_pisos}}</span>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tabla_caracteristicas table-responsive barra-deslizadora-mob">
+                    <table class="texto-normal w-100" cellpadding="8">
+
+                        <thead>
+                            <tr>
+                                <th class="text-center" colspan="2">
+                                    <div class="titulo_2 texto-normal">Fracción</div>
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td class="titulo_4 text-left">
+                                    <i
+                                        class="fas fa-money-bill icono_py_grales texto-resaltado"
+                                    ></i>
+                                    <span>Valor</span>
+                                    <i
+                                        class="icono_popover fas fa-info-circle ml-1"
+                                        data-toggle="popover"
+                                        data-html="true"
+                                        data-content="Es el precio unitario de una fracción del terreno, que brinda a los inversionistas la oportunidad de invertir en la propiedad."
+                                    ></i>
+                                </td>
+
+                                <td class="text-right titulo_4">
+                                    <span class="elvalor" data-bs="{{informacion.fraccion_bs}}">{{informacion.fraccion_bs_r}}</span>
+                                    <span class="lamoneda">Bs</span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="titulo_4 text-left">
+                                    <i class="fas fa-box icono_py_grales texto-resaltado"></i>
+                                    <span>Vendidos</span>
+                                </td>
+
+                                <td class="text-right titulo_4">
+                                    <span>{{informacion.fracciones_invertidas}}</span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="titulo_4 text-left">
+                                    <i class="fas fa-box-open icono_py_grales texto-resaltado"></i>
+                                    <span>Disponibles</span>
+                                </td>
+
+                                <td class="text-right titulo_4">
+                                    <span>{{informacion.fracciones_disponibles}}</span>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            {{/if}}
+
+            {{#if caracteristicas_proyecto}}
+                <div class="tabla_caracteristicas table-responsive barra-deslizadora-mob">
+                    <table class="texto-normal w-100" cellpadding="8">
+
+                        <thead>
+                            <tr>
+                                <th class="text-center" colspan="2">
+                                    <div class="titulo_2 texto-normal">Características</div>
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td class="titulo_4 text-left">
+                                    <i class="fas fa-hard-hat icono_py_grales"></i>
+                                    {{! <span>Precio Justo<sup><b>a</b></sup></span> }}
+                                    <span>Precio Justo</span>
+                                    <i
+                                        class="icono_popover fas fa-info-circle ml-1"
+                                        data-toggle="popover"
+                                        data-html="true"
+                                        data-content="{{informacion.nota_precio_justo}}"
+                                    ></i>
+                                </td>
+
+                                <td class="text-right titulo_4">
+                                    <span
+                                        class="elvalor"
+                                        data-bs="{{precio_justo}}"
+                                    >{{informacion.precio_justo_render}}</span>
+                                    <span class="lamoneda">Bs</span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="titulo_4 text-left">
+                                    <i class="fas fa-ruler-combined icono_py_grales"></i>
+                                    <span>Superficie</span>
+                                </td>
+
+                                <td class="text-right titulo_4">
+                                    <span>{{informacion.area_construida}}</span>
+                                    <span>m<sup>2</sup></span>
+                                </td>
+                            </tr>
+
+                            {{#if informacion.tipo_edificio}}
+                                <tr>
+                                    <td class="titulo_4 text-left">
+                                        <i class="fas fa-house-user icono_py_grales"></i>
+                                        <span>Departamentos</span>
+                                    </td>
+
+                                    <td class="text-right titulo_4">
+                                        <span>{{informacion.total_departamentos}}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="titulo_4 text-left">
+                                        <i class="fas fa-briefcase icono_py_grales"></i>
+                                        <span>Oficinas</span>
+                                    </td>
+
+                                    <td class="text-right titulo_4">
+                                        <span>{{informacion.total_oficinas}}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="titulo_4 text-left">
+                                        <i class="fas fa-store icono_py_grales"></i>
+                                        <span>Comerciales</span>
+                                    </td>
+
+                                    <td class="text-right titulo_4">
+                                        <span>{{informacion.total_comerciales}}</span>
+                                    </td>
+                                </tr>
+                            {{/if}}
+
+                            {{#if informacion.tipo_condominio}}
+                                <tr>
+                                    <td class="titulo_4 text-left">
+                                        <i class="fas fa-house-user icono_py_grales"></i>
+                                        <span>Casas</span>
+                                    </td>
+
+                                    <td class="text-right titulo_4">
+                                        <span>{{informacion.total_casas}}</span>
+                                    </td>
+                                </tr>
+                            {{/if}}
+
+                            <tr>
+                                <td class="titulo_4 text-left">
+                                    <i class="fas fa-door-closed icono_py_grales"></i>
+                                    <span>Dormitorios</span>
+                                </td>
+
+                                <td class="text-right titulo_4">
+                                    <span>{{informacion.dormitorios_total}}</span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="titulo_4 text-left">
+                                    <i class="fas fa-bath icono_py_grales"></i>
+                                    <span>Baños</span>
+                                </td>
+
+                                <td class="text-right titulo_4">
+                                    <span>{{informacion.banos_total}}</span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="titulo_4 text-left">
+                                    <i class="fas fa-car icono_py_grales"></i>
+                                    <span>Garajes</span>
+                                </td>
+
+                                <td class="text-right titulo_4">
+                                    <span>{{informacion.garajes}}</span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="titulo_4 text-left">
+                                    <i class="fas fa-walking icono_py_grales"></i>
+                                    <span>Tráfico</span>
+                                    <i
+                                        class="icono_popover fas fa-info-circle ml-1"
+                                        data-toggle="popover"
+                                        data-html="true"
+                                        data-content="Número promedio de personas que circulan por hora en las cercanías del inmueble. Información útil para el establecimiento de negocios comerciales."
+                                    ></i>
+                                </td>
+
+                                <td class="text-right titulo_4">
+                                    <span>{{informacion.trafico}}</span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="titulo_4 text-left">
+                                    <i class="fas fa-clock icono_py_grales"></i>
+                                    <span>Construcción</span>
+                                </td>
+
+                                <td class="text-right titulo_4">
+                                    <span>{{informacion.meses_construccion}}</span>
+                                    <span>Meses</span>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+                </div>
+            {{/if}}
+
+            {{#if caracteristicas_inmueble}}
+                <div class="tabla_caracteristicas table-responsive barra-deslizadora-mob">
+                    <table class="texto-normal w-100" cellpadding="8">
+
+                        <thead>
+                            <tr>
+                                <th class="text-center" colspan="2">
+                                    <div class="titulo_2 texto-normal">Características</div>
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td class="titulo_4 text-left">
+                                    <i class="fas fa-tag icono_py_grales"></i>
+                                    <span>Clase</span>
+                                </td>
+
+                                <td class="text-right titulo_4">
+                                    <span>{{informacion.tipo_inmueble}}</span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="titulo_4 text-left">
+                                    <i class="fas fa-hard-hat icono_py_grales"></i>
+                                    <span>Precio Justo</span>
+                                    <i
+                                        class="icono_popover fas fa-info-circle ml-1"
+                                        data-toggle="popover"
+                                        data-html="true"
+                                        data-content="{{informacion.nota_precio_justo}}"
+                                    ></i>
+                                </td>
+
+                                <td class="text-right titulo_4">
+                                    <span
+                                        class="elvalor"
+                                        data-bs="{{precio_justo}}"
+                                    >{{informacion.precio_justo_render}}</span>
+                                    <span class="lamoneda">Bs</span>
+                                </td>
+                            </tr>
+
+                            {{#if informacion.refracu}}
+                                {{#if informacion.ver_fraccion}}
+                                    <tr>
+                                        <td class="titulo_4 text-left">
+                                            <i class="fas fa-coins icono_py_grales"></i>
+                                            <span>{{informacion.titulo_refracu}}</span>
+                                        </td>
+
+                                        <td class="text-right titulo_4">
+                                            <i class="fas fa-less-than-equal"></i>
+                                            <span
+                                                class="elvalor"
+                                                data-bs="{{valor_refracu}}"
+                                            >{{informacion.valor_refracu_render}}</span>
+                                            <span class="lamoneda">Bs</span>
+                                        </td>
+                                    </tr>
+                                {{/if}}
+
+                                {{#if informacion.ver_reserva}}
+                                    <tr>
+                                        <td class="titulo_4 text-left">
+                                            <i class="fas fa-coins icono_py_grales"></i>
+                                            <span>{{informacion.titulo_refracu}}</span>
+                                        </td>
+
+                                        <td class="text-right titulo_4">
+                                            <span
+                                                class="elvalor"
+                                                data-bs="{{valor_refracu}}"
+                                            >{{informacion.valor_refracu_render}}</span>
+                                            <span class="lamoneda">Bs</span>
+                                        </td>
+                                    </tr>
+                                {{/if}}
+
+                                {{#if informacion.ver_cuota}}
+                                    <tr>
+                                        <td class="titulo_4 text-left">
+                                            <i class="fas fa-money-bill icono_py_grales"></i>
+                                            <span>Cuota</span>
+                                            <i
+                                                class="icono_popover fas fa-info-circle ml-1"
+                                                data-toggle="popover"
+                                                data-html="true"
+                                                data-content="Cuota mensual de construcción."
+                                            ></i>
+                                        </td>
+
+                                        <td class="text-right titulo_4">
+                                            <span
+                                                class="elvalor"
+                                                data-bs="{{valor_refracu}}"
+                                            >{{informacion.valor_refracu_render}}</span>
+                                            <span class="lamoneda">Bs</span>
+                                        </td>
+                                    </tr>
+                                {{/if}}
+                            {{/if}}
+
+                            <tr>
+                                <td class="titulo_4 text-left">
+                                    <i class="fas fa-ruler-combined icono_py_grales"></i>
+                                    <span>Superficie</span>
+                                </td>
+
+                                <td class="text-right titulo_4">
+                                    <span>{{informacion.superficie_inmueble_m2}}</span>
+                                    <span>m<sup>2</sup></span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="titulo_4 text-left">
+                                    <i class="fas fa-door-closed icono_py_grales"></i>
+                                    <span>Dormitorios</span>
+                                </td>
+
+                                <td class="text-right titulo_4">
+                                    <span>{{informacion.dormitorios_inmueble}}</span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="titulo_4 text-left">
+                                    <i class="fas fa-bath icono_py_grales"></i>
+                                    <span>Baños</span>
+                                </td>
+
+                                <td class="text-right titulo_4">
+                                    <span>{{informacion.banos_inmueble}}</span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="titulo_4 text-left">
+                                    <i class="fas fa-car icono_py_grales"></i>
+                                    <span>Garajes</span>
+                                </td>
+
+                                <td class="text-right titulo_4">
+                                    <span>{{informacion.garaje_inmueble}}</span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="titulo_4 text-left">
+                                    <i class="fas fa-walking icono_py_grales"></i>
+                                    <span>Tráfico</span>
+                                    <i
+                                        class="icono_popover fas fa-info-circle ml-1"
+                                        data-toggle="popover"
+                                        data-html="true"
+                                        data-content="Número promedio de personas que circulan por hora en las cercanías del inmueble. Información útil para el establecimiento de negocios comerciales."
+                                    ></i>
+                                </td>
+
+                                <td class="text-right titulo_4">
+                                    <span>{{informacion.trafico}}</span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="titulo_4 text-left">
+                                    <i class="fas fa-clock icono_py_grales"></i>
+                                    <span>Construcción</span>
+                                </td>
+
+                                <td class="text-right titulo_4">
+                                    <span>{{informacion.plazo}}</span>
+                                    <span>Meses</span>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+                </div>
+            {{/if}}
+
+        </div>
+    </div>
+
+{{/if}}

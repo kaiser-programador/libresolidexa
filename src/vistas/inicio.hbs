@@ -98,10 +98,10 @@ daria 100vh. lo aconsejable seria dar todas estos estilos en el BODY--}}
                         </div>
                         <div class="contenedor-icono-info--info">
                             <div class="contenedor-icono-info--texto_principal">
-                                <span>{{datos_empresa.n_ahorros}}</span>
-                                <span>$us</span>
+                                <span class="elvalor" data-bs="{{datos_empresa.n_ahorros}}">{{datos_empresa.r_ahorros}}</span>
+                                <span class="lamoneda">Bs</span>
                             </div>
-                            <div class="contenedor-icono-info--texto_normal">Ganancias</div>
+                            <div class="contenedor-icono-info--texto_normal">Ahorros</div>
                         </div>
                     </div>
                 </div>
@@ -113,8 +113,8 @@ daria 100vh. lo aconsejable seria dar todas estos estilos en el BODY--}}
                         </div>
                         <div class="contenedor-icono-info--info">
                             <div class="contenedor-icono-info--texto_principal">
-                                <span>{{datos_empresa.n_resp_social}}</span>
-                                <span>$us</span>
+                                <span class="elvalor" data-bs="{{datos_empresa.n_resp_social}}">{{datos_empresa.r_resp_social}}</span>
+                                <span class="lamoneda">Bs</span>
                             </div>
                             <div class="contenedor-icono-info--texto_normal">Sociedad</div>
                         </div>

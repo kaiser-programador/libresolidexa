@@ -1,292 +1,429 @@
-//const { Number } = require("mongoose");
 const {
     indiceTerreno,
-    indiceInversiones,
-    indiceInmueble,
-    indiceGuardados,
     indiceProyecto,
+    indiceInmueble,
+    indiceFraccionInmueble,
+    indiceFraccionTerreno,
 } = require("../modelos/indicemodelo");
 
-const { barra_progreso_card } = require("./ayudaslibreria");
+const { fraccion_card_adm_cli } = require("./funcionesayuda_1");
 const { numero_punto_coma } = require("./funcionesayuda_3");
+const { super_info_inm, super_info_te } = require("../ayudas/funcionesayuda_5");
+const moment = require("moment");
 
 const funcionesAyuda_4 = {};
 
-// paquete_inmueble ={codigo_inmueble, codigo_usuario}
-funcionesAyuda_4.inmueble_info_cd = async function (paquete_inmueble) {
+//=======================================================================
+
+funcionesAyuda_4.te_inm_copropietario = async function (paquete_datos) {
     try {
-        // ------- Para verificación -------
-        //console.log("EL PAQUETE DE DATOS QUE LE LLEGA INMUEBLE INFO CD");
-        //console.log(paquete_inmueble);
+        var ci_propietario = paquete_datos.ci_propietario;
+        var codigo_objetivo = paquete_datos.codigo_objetivo; // codigo_inmueble || codigo_terreno
+        var copropietario = paquete_datos.copropietario; // "inmueble" || "terreno"
 
-        var codigo_inmueble = paquete_inmueble.codigo_inmueble;
-        var codigo_usuario = paquete_inmueble.codigo_usuario; // usuario que navega con su cuenta registrada
+        var tiene_fracciones = false;
+        var precio_te_inm = 0; // precio del terreno || precio justo del inmueble
+        var fracciones_propietario = [];
+        var leyenda_tiempo = "Vencido"; // por defecto
 
-        const info_inmueble = await indiceInmueble.findOne(
-            { codigo_inmueble: codigo_inmueble },
-            {
-                codigo_terreno: 1,
-                codigo_proyecto: 1,
-                estado_inmueble: 1,
-                valor_reserva: 1,
-                precio_construccion: 1,
-                precio_competencia: 1,
-                inmueble_remate: 1,
-                acumulador_penalizaciones: 1,
-                penalizacion_inm: 1,
-                _id: 0,
-            }
-        );
+        //-------------------------
+        // propietario las fracciones de terreno que tiene disponibles
+        var c_ft_d_n = 0;
+        var c_ft_d_n_render = "0";
+        var c_ft_d_val = 0;
+        var c_ft_d_val_render = "0";
+        //-------------------------
+        // propietario fracciones de terreno||inmueble adquiridos
+        var c_fti_a_n = 0;
+        var c_fti_a_n_render = "0";
+        var c_fti_a_val = 0;
+        var c_fti_a_val_render = "0";
+        var c_fti_a_p = 0; // % participacion
+        var c_fti_a_p_render = "0"; // % participacion
+        //------------------------
+        // terreno||inmueble financiamiento
+        var ti_f_p_render = "0"; // %
+        var ti_f_val = 0;
+        var ti_f_val_render = "0";
+        //----------------------
+        // terreno||inmueble fracciones disponibles
+        var ti_f_d_n = 0;
+        var ti_f_d_n_render = "0";
+        var ti_f_d_val = 0;
+        var ti_f_d_val_render = "0";
+        //----------------------
 
-        if (info_inmueble) {
-            if (info_inmueble.inmueble_remate) {
-                // si el inmueble se encuentra en remate por la irresponsabilidad de su actual propietario
-                var aux_precio_actual_inm = Number(
-                    (
-                        info_inmueble.precio_construccion -
-                        info_inmueble.acumulador_penalizaciones -
-                        info_inmueble.penalizacion_inm
-                    ).toFixed(0)
-                );
-            } else {
-                var aux_precio_actual_inm = Number(
-                    (
-                        info_inmueble.precio_construccion - info_inmueble.acumulador_penalizaciones
-                    ).toFixed(0)
-                );
-            }
+        var array_fracciones = [];
 
-            var reserva = numero_punto_coma(info_inmueble.valor_reserva);
-
-            var aux_ahorro = Number(
-                (info_inmueble.precio_competencia - aux_precio_actual_inm).toFixed(0)
+        if (copropietario === "terreno") {
+            // todas las fracciones que guardan relacion con el inmueble
+            let fracciones_terreno = await indiceFraccionTerreno.find(
+                {
+                    codigo_terreno: codigo_objetivo,
+                },
+                {
+                    disponible: 1,
+                    fraccion_bs: 1,
+                    ci_propietario: 1,
+                    codigo_fraccion: 1,
+                    _id: 0,
+                }
             );
-            var ahorro = numero_punto_coma(aux_ahorro);
 
-            var precio_actual_inm = numero_punto_coma(aux_precio_actual_inm);
-            var precio_competencia = numero_punto_coma(info_inmueble.precio_competencia.toFixed(0));
-
-            var porcentaje_datos = {
-                tipo_objetivo: "inmueble",
-                codigo_objetivo: codigo_inmueble,
-            };
-
-            var resultado = await barra_progreso_card(porcentaje_datos);
-
-            //--------------------------------------------------------------
-            // para saber si el presente inmueble es guardado del usuario
-            if (codigo_usuario == "ninguno") {
-                var inmueble_guardado = false;
-            } else {
-                var registro_inmueble_guardado = await indiceGuardados.findOne(
-                    {
-                        codigo_inmueble: codigo_inmueble,
-                        ci_propietario: codigo_usuario,
-                    },
-                    {
-                        codigo_inmueble: 1,
-                        _id: 0,
+            if (fracciones_terreno.length > 0) {
+                let j = -1;
+                for (let i = 0; i < fracciones_terreno.length; i++) {
+                    let disponible = fracciones_terreno[i].disponible;
+                    if (disponible) {
+                        ti_f_d_n = ti_f_d_n + 1;
+                        ti_f_d_val = ti_f_d_val + fracciones_terreno[i].fraccion_bs;
+                    } else {
+                        if (ci_propietario === fracciones_terreno[i].ci_propietario) {
+                            // fracciones de terreno en el terreno especifico que fueron adquiridas por el ci_propietario
+                            c_fti_a_n = c_fti_a_n + 1;
+                            c_fti_a_val = c_fti_a_val + fracciones_terreno[i].fraccion_bs;
+                            j = j + 1;
+                            fracciones_propietario[j] = {
+                                codigo_fraccion: fracciones_terreno[i].codigo_fraccion,
+                                fraccion_bs: fracciones_terreno[i].fraccion_bs,
+                            };
+                        }
                     }
-                );
-
-                if (registro_inmueble_guardado) {
-                    // significa que el inmueble si es guardado por el usuario
-                    var inmueble_guardado = true;
-                } else {
-                    // significa que el inmueble no es guardado por el usuario
-                    var inmueble_guardado = false;
                 }
             }
 
-            //--------------------------------------------------------------
-            // para saber si el presente inmueble es PROPIEDAD del usuario
-            if (codigo_usuario == "ninguno") {
-                var inmueble_propiedad = false;
-            } else {
-                var registro_inmueble_propiedad = await indiceInversiones.findOne(
-                    {
-                        codigo_inmueble: codigo_inmueble,
-                        ci_propietario: codigo_usuario,
-                    },
-                    {
-                        codigo_inmueble: 1,
-                        _id: 0,
-                    }
-                );
+            //--------------------------------------------------
+            // para financiamiento de terreno
 
-                if (registro_inmueble_propiedad) {
-                    // significa que el inmueble si es propiedad actual del usuario
-                    var inmueble_propiedad = true;
-                } else {
-                    // significa que el inmueble no es propiedad actual del usuario
-                    var inmueble_propiedad = false;
+            let registro_terreno = await indiceTerreno.findOne(
+                { codigo_terreno: codigo_objetivo },
+                {
+                    precio_bs: 1,
+                    fecha_fin_convocatoria: 1,
+                    _id: 0,
                 }
+            );
+
+            if (registro_terreno) {
+                var datos_inm = {
+                    // datos del terreno
+                    codigo_terreno: codigo_objetivo,
+                    precio_terreno: registro_terreno.precio_bs,
+                    fecha_fin_convocatoria: registro_terreno.fecha_fin_convocatoria,
+                };
+                let resultado = await super_info_te(datos_inm);
+
+                let plazo_titulo = resultado.plazo_titulo; // Finaliza || Finalizado
+                let plazo_tiempo = resultado.plazo_tiempo; // x dias || hace x dias
+                let fracciones_disponibles = resultado.fracciones_disponibles; // #
+                let financiamiento = resultado.financiamiento;
+                let p_financiamiento_render = resultado.p_financiamiento_render;
+
+                //--------------------------------------------------------------
+                precio_te_inm = registro_terreno.precio_bs;
+                ti_f_p_render = p_financiamiento_render;
+                ti_f_val = financiamiento;
+
+                ti_f_d_n = fracciones_disponibles;
+                ti_f_d_val = precio_te_inm - ti_f_val;
+
+                //--------------------------------------------------
+                // para participacion del propietario
+
+                if (precio_te_inm > 0 && c_fti_a_val > 0) {
+                    let string_p_participacion = ((c_fti_a_val / precio_te_inm) * 100).toFixed(2);
+                    c_fti_a_p = Number(string_p_participacion); // numerico con 2 decimales
+                }
+
+                //--------------------------------------------------------
+                // para fecha vencimiento de fracciones terreno
+                leyenda_tiempo = plazo_titulo + " " + plazo_tiempo;
+
+                //--------------------------------------------------------
             }
 
-            //--------------------------------------------------------------
-            // porcentaje de progreso de: recaudacion o pagados o construccion (dependiendo del estado del proyecto)
-            // EL PORCENTAJE DE PROGRESO DEL INMUEBLE, SERA EL MISMO QUE EL DEL PROYECTO AL CUAL PERTENECE
+            //--------------------------------------------------------
 
-            /*
-            var paquete_datos = {
-                codigo_terreno: info_inmueble.codigo_terreno,
-                codigo_proyecto: info_inmueble.codigo_proyecto,
-                estado_inmueble: info_inmueble.estado_inmueble,
-            };
-            var porcentaje_progreso = await progreso_proyecto(paquete_datos);
-            */
-            var paquete_datos = {
-                codigo_terreno: info_inmueble.codigo_terreno,
-                estado_inmueble: info_inmueble.estado_inmueble,
-            };
-            var obj_porcentaje_obra_inm = await progreso_obra_inm(paquete_datos);
+            if (fracciones_propietario.length > 0) {
+                tiene_fracciones = true;
 
-            //--------------------------------------------------------------
+                for (let i = 0; i < fracciones_propietario.length; i++) {
+                    let codigo_fraccion_i = fracciones_propietario[i].codigo_fraccion;
+                    let paquete_fraccion = {
+                        codigo_fraccion: codigo_fraccion_i,
+                        ci_propietario: ci_propietario,
 
-            var informacion = {
-                //porcentaje_progreso,
-                porcentaje_obra_inm: obj_porcentaje_obra_inm.porcentaje_obra_inm,
-                porcentaje_obra_inm_render: obj_porcentaje_obra_inm.porcentaje_obra_inm_render,
-                reserva,
-                financiado: resultado.card_financiamiento_render, // como STRING y PUNTO COMO MIL y COMA DECIMAL
-                meta: resultado.card_meta_render,
-                ahorro,
-                num_puro_construccion: info_inmueble.precio_construccion,
-                num_puro_ahorro: aux_ahorro, // util para hacer sumatorias donde se necesite
-
-                porcentaje: resultado.card_porcentaje,
-                porcentaje_render: resultado.card_porcentaje_render,
-
-                precio_actual_inm,
-                num_puro_precio_actual: aux_precio_actual_inm, // util para hacer sumatorias donde se necesite
-                precio_competencia,
-                inmueble_guardado,
-                inmueble_propiedad,
-            };
-
-            return informacion;
+                        // el unico que requiere a este controlador viene de "adm_propietario", como es un "adm", entonces supone que se lo requiere desde una navegacion del tipo "administrador".
+                        tipo_navegacion: "administrador",
+                    };
+                    let card_fraccion_i = await fraccion_card_adm_cli(paquete_fraccion);
+                    array_fracciones[i] = card_fraccion_i;
+                }
+            }
         }
+
+        if (copropietario === "inmueble") {
+            // todas las fracciones que guardan relacion con el inmueble
+            let fracciones_inmueble = await indiceFraccionInmueble.find(
+                {
+                    codigo_inmueble: codigo_objetivo,
+                },
+                {
+                    disponible: 1,
+                    fraccion_bs: 1,
+                    ci_propietario: 1,
+                    codigo_fraccion: 1,
+                    _id: 0,
+                }
+            );
+
+            if (fracciones_inmueble.length > 0) {
+                let j = -1;
+                for (let i = 0; i < fracciones_inmueble.length; i++) {
+                    let disponible = fracciones_inmueble[i].disponible;
+                    if (disponible) {
+                        ti_f_d_n = ti_f_d_n + 1;
+                        ti_f_d_val = ti_f_d_val + fracciones_inmueble[i].fraccion_bs;
+                    } else {
+                        if (ci_propietario === fracciones_inmueble[i].ci_propietario) {
+                            // fracciones de inmueble en el inmueble especifico que fueron adquiridas por el ci_propietario
+                            c_fti_a_n = c_fti_a_n + 1;
+                            c_fti_a_val = c_fti_a_val + fracciones_inmueble[i].fraccion_bs;
+                            j = j + 1;
+                            fracciones_propietario[j] = {
+                                codigo_fraccion: fracciones_inmueble[i].codigo_fraccion,
+                                fraccion_bs: fracciones_inmueble[i].fraccion_bs,
+                            };
+                        }
+                    }
+                }
+            }
+
+            //--------------------------------------------------
+            // para financiamiento de inmueble
+
+            let registro_inmueble = await indiceInmueble.findOne(
+                { codigo_inmueble: codigo_inmueble },
+                {
+                    codigo_proyecto: 1,
+                    codigo_terreno: 1,
+                    precio_construccion: 1,
+                    precio_competencia: 1,
+                    superficie_inmueble_m2: 1,
+                    fraccionado: 1,
+                    fecha_fin_fraccionado: 1, // solo para leyenda de fecha vencimiento
+                    _id: 0,
+                }
+            );
+
+            if (registro_inmueble) {
+                let registro_terreno = await indiceTerreno.findOne(
+                    {
+                        codigo_terreno: registro_inmueble.codigo_terreno,
+                    },
+                    {
+                        estado_terreno: 1,
+                        precio_bs: 1,
+                        descuento_bs: 1,
+                        rend_fraccion_mensual: 1,
+                        superficie: 1,
+                        fecha_inicio_convocatoria: 1,
+                        fecha_inicio_reservacion: 1,
+                        fecha_fin_reservacion: 1,
+                        fecha_fin_construccion: 1,
+                        _id: 0,
+                    }
+                );
+
+                let registro_proyecto = await indiceProyecto.findOne(
+                    {
+                        codigo_proyecto: registro_inmueble.codigo_proyecto,
+                    },
+                    {
+                        construccion_mensual: 1,
+                        _id: 0,
+                    }
+                );
+
+                if (registro_terreno && registro_proyecto) {
+                    //--------------------------------------------------------------
+                    var datos_inm = {
+                        // datos del inmueble
+                        codigo_inmueble: codigo_objetivo,
+                        precio_construccion: registro_inmueble.precio_construccion,
+                        precio_competencia: registro_inmueble.precio_competencia,
+                        superficie_inmueble: registro_inmueble.superficie_inmueble_m2,
+                        fraccionado: registro_inmueble.fraccionado,
+                        // datos del proyecto
+                        construccion_mensual: registro_proyecto.construccion_mensual,
+                        // datos del terreno
+                        estado_terreno: registro_terreno.estado_terreno,
+                        precio_terreno: registro_terreno.precio_bs,
+                        descuento_terreno: registro_terreno.descuento_bs,
+                        rend_fraccion_mensual: registro_terreno.rend_fraccion_mensual,
+                        superficie_terreno: registro_terreno.superficie,
+                        fecha_inicio_convocatoria: registro_terreno.fecha_inicio_convocatoria,
+                        fecha_inicio_reservacion: registro_terreno.fecha_inicio_reservacion,
+                        fecha_fin_reservacion: registro_terreno.fecha_fin_reservacion,
+                        fecha_fin_construccion: registro_terreno.fecha_fin_construccion,
+                    };
+                    let resultado = await super_info_inm(datos_inm);
+
+                    // precio justo
+                    let precio_justo = resultado.precio_justo;
+                    let financiamiento = resultado.financiamiento;
+                    let p_financiamiento_render = resultado.p_financiamiento_render;
+
+                    //--------------------------------------------------------------
+                    precio_te_inm = precio_justo;
+                    ti_f_p_render = p_financiamiento_render;
+                    ti_f_val = financiamiento;
+
+                    //--------------------------------------------------
+                    // para participacion del propietario
+
+                    if (precio_te_inm > 0 && c_fti_a_val > 0) {
+                        let string_p_participacion = ((c_fti_a_val / precio_te_inm) * 100).toFixed(
+                            2
+                        );
+                        c_fti_a_p = Number(string_p_participacion); // numerico con 2 decimales
+                    }
+                }
+
+                //----------------------------------------------------------
+                // PARA FRACCIONES DE TERRENO DISPONIBLES CON LAS QUE CUENTA EL ci_propietario
+
+                let registro_copropietario_te = await indiceFraccionTerreno.find(
+                    {
+                        codigo_terreno: registro_inmueble.codigo_terreno,
+                        ci_propietario: ci_propietario,
+                    },
+                    {
+                        codigo_fraccion: 1,
+                        fraccion_bs: 1,
+                    }
+                );
+
+                let sum_ft_total_n = 0;
+                let sum_ft_utilizado_n = 0;
+                let sum_ft_total = 0;
+                let sum_ft_utilizado = 0;
+
+                if (registro_copropietario_te.length > 0) {
+                    sum_ft_total_n = registro_copropietario_inm.length;
+
+                    // todas las fracciones de inmueble pertenecientes al terreno en especifico y que fueron adquiridas por el ci_propietario
+                    var registro_copropietario_inm = await indiceFraccionInmueble.find(
+                        {
+                            codigo_terreno: registro_inmueble.codigo_terreno,
+                            ci_propietario: ci_propietario,
+                        },
+                        {
+                            fraccion_bs: 1,
+                            codigo_fraccion: 1,
+                            _id: 0,
+                        }
+                    );
+
+                    if (registro_copropietario_inm.length > 0) {
+                        sum_ft_utilizado_n = registro_copropietario_inm.length;
+                        for (let i = 0; i < registro_copropietario_te.length; i++) {
+                            let cod_ft_i = registro_copropietario_te[i].codigo_fraccion;
+                            let val_ft_i = registro_copropietario_te[i].fraccion_bs;
+                            sum_ft_total = sum_ft_total + val_ft_i;
+                            for (let k = 0; k < registro_copropietario_inm.length; k++) {
+                                let cod_fi_k = registro_copropietario_inm[k].codigo_fraccion;
+                                if (cod_ft_i === cod_fi_k) {
+                                    let val_fi_k = registro_copropietario_inm[k].fraccion_bs;
+                                    sum_ft_utilizado = sum_ft_utilizado + val_fi_k;
+                                }
+                            }
+                        }
+                    } else {
+                        for (let i = 0; i < registro_copropietario_te.length; i++) {
+                            let val_ft_i = registro_copropietario_te[i].fraccion_bs;
+                            sum_ft_total = sum_ft_total + val_ft_i;
+                        }
+                    }
+                }
+
+                c_ft_d_val = sum_ft_total - sum_ft_utilizado;
+                c_ft_d_n = sum_ft_total_n - sum_ft_utilizado_n;
+
+                //--------------------------------------------------------
+                // para fecha vencimiento de inmueble fraccionado
+
+                let fecha_fin_fraccionado = registro_inmueble.fecha_fin_fraccionado;
+
+                let fecha_actual = new Date();
+                moment.locale("es");
+                if (fecha_actual <= fecha_fin_fraccionado) {
+                    let plazo_tiempo = moment(fecha_fin_fraccionado).endOf("minute").fromNow(); // ej/ en x dias
+                    leyenda_tiempo = "Finaliza " + plazo_tiempo;
+                } else {
+                    let plazo_tiempo = moment(fecha_fin_fraccionado).startOf("minute").fromNow(); // hace x dias
+                    leyenda_tiempo = "Finalizado " + plazo_tiempo;
+                }
+                //--------------------------------------------------------
+            }
+
+            //--------------------------------------------------------
+
+            if (fracciones_propietario.length > 0) {
+                tiene_fracciones = true;
+
+                for (let i = 0; i < fracciones_propietario.length; i++) {
+                    let codigo_fraccion_i = fracciones_propietario[i].codigo_fraccion;
+                    let paquete_fraccion = {
+                        codigo_fraccion: codigo_fraccion_i,
+                        ci_propietario: ci_propietario,
+
+                        // el unico que requiere a este controlador viene de "adm_propietario", como es un "adm", entonces supone que se lo requiere desde una navegacion del tipo "administrador".
+                        tipo_navegacion: "administrador",
+                    };
+                    let card_fraccion_i = await fraccion_card_adm_cli(paquete_fraccion);
+                    array_fracciones[i] = card_fraccion_i;
+                }
+            }
+        }
+
+        c_ft_d_n_render = numero_punto_coma(c_ft_d_n);
+        c_ft_d_val_render = numero_punto_coma(c_ft_d_val);
+        c_fti_a_n_render = numero_punto_coma(c_fti_a_n);
+        c_fti_a_val_render = numero_punto_coma(c_fti_a_val);
+        c_fti_a_p_render = numero_punto_coma(c_fti_a_p);
+        //ti_f_p_render = numero_punto_coma(ti_f_p);
+        ti_f_val_render = numero_punto_coma(ti_f_val);
+        ti_f_d_n_render = numero_punto_coma(ti_f_d_n);
+        ti_f_d_val_render = numero_punto_coma(ti_f_d_val);
+
+        return {
+            leyenda_tiempo,
+            precio_te_inm,
+            tiene_fracciones,
+            array_fracciones,
+            c_ft_d_n,
+            c_ft_d_n_render,
+            c_ft_d_val,
+            c_ft_d_val_render,
+            c_fti_a_n,
+            c_fti_a_n_render,
+            c_fti_a_val,
+            c_fti_a_val_render,
+            c_fti_a_p,
+            c_fti_a_p_render,
+            ti_f_p_render,
+            ti_f_val,
+            ti_f_val_render,
+            ti_f_d_n,
+            ti_f_d_n_render,
+            ti_f_d_val,
+            ti_f_d_val_render,
+        };
     } catch (error) {
         console.log(error);
     }
 };
 
-/************************************************************************************ */
-/************************************************************************************ */
-// capitales PROYECTO, con informacion de inmuebles existentes, disponibles
-
-funcionesAyuda_4.proyecto_info_cd = async function (codigo_proyecto) {
-    try {
-        const inmuebles_proyecto = await indiceInmueble.find(
-            { codigo_proyecto: codigo_proyecto },
-            {
-                codigo_inmueble: 1,
-                estado_inmueble: 1,
-                valor_reserva: 1,
-                precio_competencia: 1,
-                precio_construccion: 1,
-                _id: 0,
-            }
-        );
-
-        var n_disponibles = 0;
-        var total_reserva = 0;
-        var total_precio_competencia = 0;
-        var total_precio_construccion = 0;
-
-        if (inmuebles_proyecto.length > 0) {
-            for (let i = 0; i < inmuebles_proyecto.length; i++) {
-                var reserva = inmuebles_proyecto[i].valor_reserva;
-                var precio_competencia = inmuebles_proyecto[i].precio_competencia;
-                var precio_construccion = inmuebles_proyecto[i].precio_construccion;
-                total_reserva = total_reserva + reserva;
-                total_precio_competencia = total_precio_competencia + precio_competencia;
-                total_precio_construccion = total_precio_construccion + precio_construccion;
-                if (inmuebles_proyecto[i].estado_inmueble == "disponible") {
-                    n_disponibles = n_disponibles + 1;
-                }
-            }
-        }
-
-        var aux_ahorro = total_precio_competencia - total_precio_construccion;
-        var ahorro = numero_punto_coma(aux_ahorro.toFixed(0));
-
-        var porcentaje_datos = {
-            tipo_objetivo: "proyecto",
-            codigo_objetivo: codigo_proyecto,
-        };
-
-        var resultado = await barra_progreso_card(porcentaje_datos);
-
-        var informacion = {
-            n_inmuebles: inmuebles_proyecto.length,
-            n_disponibles,
-            financiado: resultado.card_financiamiento_render, // como string CON PUNTO COMO MIL Y COMA DECIMAL
-            financiado_num: resultado.card_financiamiento,
-            construccion: total_precio_construccion, // como numerico
-            meta: resultado.card_meta_render, // como string
-            meta_num: resultado.card_meta,
-            ahorro, // como string
-            ahorro_num: aux_ahorro,
-
-            porcentaje: resultado.card_porcentaje,
-            porcentaje_render: resultado.card_porcentaje_render,
-        };
-
-        return informacion;
-    } catch (error) {
-        console.log(error);
-    }
-};
-
-/*************************************************************************************/
-// PORCENTAJE DE AVANCE DE OBRA DE CONTRUCCION DEL INMUEBLE
-async function progreso_obra_inm(paquete_datos) {
-    var codigo_terreno = paquete_datos.codigo_terreno;
-    var estado_inmueble = paquete_datos.estado_inmueble;
-
-    const info_terreno = await indiceTerreno.findOne(
-        { codigo_terreno: codigo_terreno },
-        {
-            fecha_inicio_construccion: 1,
-            fecha_fin_construccion: 1,
-            _id: 0,
-        }
-    );
-
-    // por defecto
-    var obj_porcentajes = {
-        porcentaje_obra_inm: 0,
-        porcentaje_obra_inm_render: "0",
-    };
-    if (info_terreno) {
-        if (estado_inmueble == "completado") {
-            obj_porcentajes.porcentaje_obra_inm = 100;
-            obj_porcentajes.porcentaje_obra_inm_render = "100";
-        } else {
-            // en inmueble el estado de "pagos" corresponde a su estado de contruccion, por tanto no confundir con pagos de aprobacion
-            if (estado_inmueble == "pagos" || estado_inmueble == "remate") {
-                let tiempo_duracion_construccion =
-                    info_terreno.fecha_fin_construccion - info_terreno.fecha_inicio_construccion; //resultados en milisegundos
-
-                // "new Date()" nos devuelve la fecha actual
-                let tiempo_transcurrido = new Date() - info_terreno.fecha_inicio_construccion;
-
-                let aux_porcentaje_obra_inm = (
-                    (tiempo_transcurrido / tiempo_duracion_construccion) *
-                    100
-                ).toFixed(2);
-                obj_porcentajes.porcentaje_obra_inm = aux_porcentaje_obra_inm;
-                obj_porcentajes.porcentaje_obra_inm_render = numero_punto_coma(aux_porcentaje_obra_inm);
-            } else {
-                obj_porcentajes.porcentaje_obra_inm = 0;
-                obj_porcentajes.porcentaje_obra_inm_render = "0";
-            }
-        }
-    }
-    return obj_porcentajes;
-}
-
-/*************************************************************************************/
-
+//=======================================================================
 module.exports = funcionesAyuda_4;

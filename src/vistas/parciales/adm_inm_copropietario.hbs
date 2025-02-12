@@ -1,0 +1,323 @@
+{{!-- SON CASI SIMILARES: adm_inm_copropietario.hbs, cli_te_copropietario.hbs, cli_inm_copropietario --}}
+
+{{!-- Para registrar la venta de fracciones de inmueble a copropietario --}}
+
+{{!-- IMPORTANTE: EN LAS VENTANAS DONDE SE PERMITE LA VENTA DE FRACCIONES, O DE PAGOS, SIEMPRE SE LO HARA EN MONEDA NACIONAL BS. POR MAS QUE ESTE SELECCIONADA LA OPCION DE MONEDA EN $US. --}}
+
+<div class="contenido container-fluid">
+
+    {{#each contenido_inmueble.fracciones_disponibles}}
+    {{!-- se llenara con las fracciones disponibles expresadas en bs, esto sera util solo para los botones de "+" y "-" en la venta de fracciones disponibles (por tanto no es necesario mostrar los cards de fracciones disponibles) --}}
+    {{!-- al presionar los botones de + o - se iran mostrando el monto que debera pagar el copropietario --}}
+    <span class="fraccion_disponible_bs" data-fraccion_disponible_bs="{{fraccion_bs}}"></span>
+    {{/each}}
+
+    {{!-- valor del precio justo del inmueble expresado en bs --}}
+    <span id="precio_justo_inm" data-precio_justo_inm="{{contenido_inmueble.precio_justo}}"></span>
+
+    <div class="row mt-4">
+
+        <div class="col-12 col-sm-6 col-lg-4">
+            <div class="card mb-2">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>COPROPIETARIO</h5>
+                    <i class="d-block fas fa-user size_iconos"></i>
+                </div>
+
+                <div class="card-body">
+
+                    <div class="input-group ref_idCedulaIdentidad">
+                        <input
+                            type="text"
+                            id="idCedulaIdentidad"
+                            class="form-control"
+                            placeholder="Cedula de identidad"
+                        />
+
+                        <div class="input-group-append">
+                            <button class="llenar_datos_copropietario_inm btn btn-outline-secondary boton_resaltado" data-codigo_inmueble="{{codigo_inmueble}}">
+                                <i class="fas fa-user"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-4">
+            <div class="card mb-2">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>FRACCIONES INMUEBLE</h5>
+                    <i class="d-block fas fa-house-user size_iconos"></i>
+                </div>
+
+                <div class="card-body">
+
+                    <div>
+                        <div>
+                            <span>Financiamiento</span>
+                            <i
+                                class="icono_popover fas fa-info-circle ml-1"
+                                data-toggle="popover"
+                                data-html="true"
+                                data-content="Es el nivel de financiamiento de la propiedad mediante la adquisición de fracciones de inmueble por parte de sus futuros copropietarios."
+                            ></i>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <span class="ti_f_p">{{contenido.ti_f_p_render}}</span>
+                                <span>%</span>
+                            </div>
+                            <div>
+                                <span class="ti_f_val" data-ti_f_val="{{contenido.ti_f_val}}">{{contenido.ti_f_val_render}}</span>
+                                <span>Bs</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div>
+                            <span>Disponibles</span>
+                            <i
+                                class="icono_popover fas fa-info-circle ml-1"
+                                data-toggle="popover"
+                                data-html="true"
+                                data-content="Es la cantidad de fracciones de inmueble disponibles en la propiedad, para ser adquiridas por futuros copropietarios."
+                            ></i>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <span class="ti_f_d_n" data-ti_f_d_n="{{contenido.ti_f_d_n}}">{{contenido.ti_f_d_n_render}}</span>
+                            </div>
+                            <div>
+                                <span class="ti_f_d_val" data-ti_f_d_val="{{contenido.ti_f_d_val}}">{{contenido.ti_f_d_val_render}}</span>
+                                <span>Bs</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    {{#unless contenido_inmueble.existen_disponibles}}
+                        <div class="row mt-2">
+                            <div class="col-12">
+                                <div class="alert alert-danger mt-3 mx-3">
+                                    No existen fracciones disponibles
+                                </div>
+                            </div>
+                        </div>
+                    {{/unless}}
+                    
+                </div>
+            </div>
+        </div>
+
+        {{!-- este card solo sera mostrado siempre y cuando exista un copropietario del inmueble con fracciones --}}
+        <div id="contenedor_eliminar_copropietario" class="col-12 col-sm-6 col-lg-4" hidden>
+            <div class="card mb-2">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5>ELIMINAR COPROPIETARIO</h5>
+                    <i class="d-block fas fa-user-plus size_iconos"></i>
+                </div>
+
+                <div class="card-body">
+                    <div class="text-center">
+                        <div id="clase" data-clase="inmueble"></div>
+                        <button
+                            type="button"
+                            class="btn btn-primary mr-3"
+                            id="eliminar_copropietario"
+                            data-ci="{{contenido_propietario.propietario_datos.ci_propietario}}"
+                            >
+                            Eliminar
+                        </button>
+                    </div>
+                    <div class="mt-2">
+                        Se procederá a eliminar toda la documentación y las fracciones que guarda el actual copropietario con el inmueble.
+                    </div>
+                </div>
+            </div>
+        </div>
+            
+    </div>
+
+    <div id="contenedor_copropietario" class="row mt-4" hidden>
+        
+        <div class="card my-4">
+            <div class="card-header ref_boton_datos_pagos_propietario">
+                <div class="d-flex justify-content-between">
+                    <h5>COPROPIETARIO</h5>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+                    {{!-- <div class="p-3 col-12 col-sm-6"> --}}
+                    <div class="col-12 col-lg-6">
+                        <div>
+                            {{> adm_propietario_datos}}
+                        </div>
+
+                        <div>
+                            <button
+                            type="button"
+                            class="btn btn-primary mr-3"
+                            id="guardar_datos_propietario"
+                            data-ci="{{contenido_propietario.propietario_datos.ci_propietario}}"
+                            >
+                            Guardar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="col-12 col-lg-6">
+                        <div>
+                            <h6>Copropietario</h6>
+
+                            {{!-- valor Bs total actual que en fracciones que tiene el propietario, sera llenado con jquery, cuando se llenan los datos y se actualiza SOLO DESPUES QUE el copropietario compre fracciones --}}
+
+                            <div>
+                                <div>
+                                    <span>Participación</span>
+                                    <i
+                                        class="icono_popover fas fa-info-circle ml-1"
+                                        data-toggle="popover"
+                                        data-html="true"
+                                        data-content="Es el porcentaje de participación que tienes en el inmueble."
+                                    ></i>
+                                </div>
+
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <span class="c_fti_a_p"></span>
+                                        <span>%</span>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <hr>
+                            <div>
+                                <div>
+                                    <span>Adquiridos</span>
+                                    <i
+                                        class="icono_popover fas fa-info-circle ml-1"
+                                        data-toggle="popover"
+                                        data-html="true"
+                                        data-content="Es la cantidad de fracciones de inmueble que adquiriste sobre esta propiedad."
+                                    ></i>
+                                </div>
+
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <span class="c_fti_a_n" data-c_fti_a_n=""></span>
+                                    </div>
+                                    <div>
+                                        <span class="c_fti_a_val" data-c_fti_a_val=""></span>
+                                        <span>Bs</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{#if contenido_inmueble.existen_disponibles}}
+                        
+                            <hr>
+
+                            {{!-- Para venderle al copropietario nuevas fracciones de terreno --}}
+
+                            <span class="f_boton" data-f_boton="suma">+</span>
+                            <span id="f_vender_n" data-f_vender_n="0">0</span>
+                            <span class="f_boton" data-f_boton="menos">-</span>
+
+                            <div class="row">
+                                <div class="col-12 col-sm-6 col-xl-3">
+                                    <p class="text-left texto-link">
+                                        Pago
+                                    </p>
+                                </div>
+
+                                <div class="col-12 col-sm-6 col-xl-3">
+                                    <p class="text-left">
+                                        <span id="f_vender_val" data-f_vender_val="0">0</span>
+                                        <span>Bs</span>
+                                    </p>
+                                </div>
+
+                            </div>
+
+                            <div>
+                                <button
+                                type="button"
+                                class="btn btn-primary mr-3"
+                                id="guardar_pago_copropietario_inm"
+                                >
+                                Vender
+                                </button>
+                            </div>
+
+                        {{else}}
+
+                            <div class="alert alert-danger mt-3 mx-3">
+                                No existen fracciones disponibles
+                            </div>
+
+                        {{/if}}
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="contenedor_fracciones" class="row mt-4" hidden>
+
+        <div class="card my-4">
+            <div class="card-header ref_boton_pagos_propietario">
+                <div class="d-flex justify-content-between">
+                    <h5>FRACCIONES INMUEBLE COPROPIETARIO</h5>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="ref_fracciones col-12">
+                        {{!-- <h5 class="cuadro_estandart p-2 text-center">
+                            PROYECTO TERRENO
+                        </h5> --}}
+                    </div>
+                        {{!-- si el usuario es dueño de fracciones del inmueble, entonces aqui se mostraran los card de fracciones. SERAN LLENADOS CON JQUERY AL MOMENTO DE VERIFICAR EL CI DEL PROPIETARIO --}}
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="contenedor_documentos" class="row mt-4" hidden>
+
+        <div class="card my-4">
+            <div class="card-header ref_boton_pagos_propietario">
+                <div class="d-flex justify-content-between">
+                    <h5>DOCUMENTOS COPROPIETARIO</h5>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+                    {{!-- se mostraran con jquery el listado de documentos privados que tiene el copropietario con respecto a las fracciones del inmueble. Hacerlo igual al subir documentos en proyecto --}}
+                    {{!-- <div class="p-3 col-12 col-sm-6"> --}}
+                    <div class="p-3 col-12 col-lg-9 col-xl-6">
+                        <div>
+                            {{> adm_copropietario_documentos}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+</div>

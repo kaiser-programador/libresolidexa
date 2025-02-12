@@ -27,15 +27,17 @@ const {
     indiceInmueble,
     indiceInversiones,
     indice_propietario,
-    indiceImagenesSistema,
+    indiceFraccionTerreno,
+    indiceFraccionInmueble,
 } = require("../modelos/indicemodelo");
 
 const {
     verificadorTerrenoBloqueado,
     guardarAccionAdministrador,
+    fraccion_card_adm_cli,
 } = require("../ayudas/funcionesayuda_1");
 
-//const { cabezeras_adm_cli } = require("../ayudas/funcionesayuda_2");
+const { datos_pagos_propietario } = require("../ayudas/funcionesayuda_2");
 
 const controladorAdministradorGeneral = {};
 
@@ -54,18 +56,27 @@ controladorAdministradorGeneral.permisoNuevoProyecto = async (req, res) => {
                 { codigo_terreno: codigo_terreno },
                 {
                     convocatoria_disponible: 1, // false o true
-                    anteproyectos_maximo: 1,
-                    anteproyectos_registrados: 1,
                     _id: 0,
                 }
             );
 
             if (terreno_encontrado) {
+                //-------------------------------------------------------
+                // Cuenta solo las fracciones que pertenecen al terreno en especifico
+                var fracciones_maximo = await indiceFraccionTerreno.countDocuments({
+                    codigo_terreno: codigo_terreno,
+                });
+
+                var fracciones_invertidas = await indiceFraccionTerreno.countDocuments({
+                    codigo_terreno: codigo_terreno,
+                    disponible: false,
+                });
+                //-------------------------------------------------------
+
                 // si es "true", significa que aun queda espacio para admitir anteproyectos
                 if (
                     terreno_encontrado.convocatoria_disponible == true &&
-                    terreno_encontrado.anteproyectos_registrados <
-                        terreno_encontrado.anteproyectos_maximo
+                    fracciones_invertidas < fracciones_maximo
                 ) {
                     res.json({
                         exito: "libre",
@@ -471,326 +482,6 @@ controladorAdministradorGeneral.subirImagen = async (req, res) => {
     }
 };
 
-/************************************************************************************ */
-// PARA subir al servidor imagenes del SISTEMA: CABECERAS Y PRINCIPAL
-
-// RUTA   "post"  /laapirest/administracion/general/accion/subir_imagen_empresa
-
-controladorAdministradorGeneral.subirImagenEmpresa = async (req, res) => {
-    try {
-        // ------- Para verificación -------
-        //console.log("los mensajes body de guardar imagen de SISTEMA EMPRESA");
-        //console.log(req.body);
-
-        // revisamos si la imagen es en verdad una imagen en formato jpg
-
-        //console.log("INICIO LA DIRECCION ACTUAL DEL ARCHIVO adm_generales");
-        //console.log(__dirname);
-        //console.log("FIN LA DIRECCION ACTUAL DEL ARCHIVO adm_generales");
-
-        // extraemos la direccion donde se encuentra temporalmente la imagen (carpeta temporal) y la guardamos en la constante "direccionTemporalImagen"
-        const direccionTemporalImagen = req.file.path; // es "path" (no pache, la que requerimos al inicio), esta es la propiedad propia de "file"
-
-        /*
-        console.log(
-            "VEMOS INICIO EL req.file.path PARA VER LA DIRECCION ACTUAL DONDE ESTA GUARDADA LA IMAGEN TEMPORALMENTE"
-        );
-        console.log(direccionTemporalImagen);
-        console.log("VEMOS FIN");
-        */
-
-        // para validar la imagen, que lo que se esta subiendo sea en verdad un archivo de imagen
-        const tipo_archivo_a = req.file.mimetype.toLowerCase(); // en minuscula
-
-        // para validar si en verdad es una imagen y NO UN ARCHIVO CORRUPTO (aquel que tiene la extension de imagen, pero que en verdad es de otro tipo) con "file-type"
-        // con fileType analizamos si es un archivo de imagen verdadero, y para ello le damos la direccion donde esta almacenado temporalmente el archivo antes de ser subido al servidor
-        const infoArchivo = await fileType.fromFile(direccionTemporalImagen);
-
-        if (infoArchivo != undefined) {
-            // si el archivo no es de tipo indefinido
-            // ej, nos devolvera un objeto con la siguiente informacion { ext: 'jpg', mime: 'image/jpeg' } por tanto nos interezara solo el valor de su "mime"
-            const tipo_archivo_b = infoArchivo.mime.toLowerCase(); // en minuscula
-
-            //console.log("el tipo_archivo_a: " + tipo_archivo_a);
-            //console.log("el tipo_archivo_b: " + tipo_archivo_b);
-
-            // PARA IMAGENES DEL SISTEMA, SOLO ESTARAN PERMITIDAS SUBIR IMAGENES "jpg" o jpeg
-            if (
-                tipo_archivo_a === "image/jpg" ||
-                (tipo_archivo_a === "image/jpeg" && tipo_archivo_b === "image/jpg") ||
-                tipo_archivo_b === "image/jpeg"
-            ) {
-                const tipo_imagen = req.body.name_radio_tipo_img_emp; // los 14 tipos de imagen de la empresa, ej/ cabecera_convocatoria
-
-                // revisamos la existencia en la BD del tipo de imagen que se pretende subir
-
-                var imagenExistente = await indiceImagenesSistema.findOne(
-                    {
-                        tipo_imagen: tipo_imagen,
-                    },
-                    {
-                        imagen: 1,
-                        completo: 1, // EJ/ "cabecera_convocatoria.jpg", "inicio_horizontal.jpg"
-                    }
-                );
-
-                // (extname) extraemos la extension de la imagen y la convertimos en minuscula "toLowerCase" por precausion, porque el codigo alfanumerico generado, se genera en minuscula.
-                const extensionImagenMinuscula = pache.extname(req.file.originalname).toLowerCase();
-
-                if (imagenExistente) {
-                    // si la imagen existe, entonces se procedera a eliminar la existente porque sera reemplazado con la nueva imagen que ocupara su lugar
-
-                    /*
-                    // direccion de las imagenes del sistema
-                    const direccionExistente = pache.resolve(
-                        `src/publico/imagenes/imagenes_sistema/${imagenExistente.completo}`
-                    );
-
-                    // con "fs.unlink" eliminamos el archivo imagen, dentro de ( ) le damos la direccion donde el archivo esta guardado.
-                    await fs.unlink(direccionExistente);
-                    */
-
-                    const storage = getStorage();
-
-                    var nombre_y_ext = imagenExistente.completo;
-                    // para guardar en la carpeta "imagenes_sistema" en firebase con el nombre y la extension de la imagen incluida
-                    var direccionActualImagen = "imagenes_sistema/" + nombre_y_ext;
-
-                    // Crear una referencia al archivo que se eliminará
-                    const desertRef = ref(storage, direccionActualImagen);
-
-                    // Eliminar el archivo y esperar la promesa
-                    await deleteObject(desertRef);
-
-                    // Archivo eliminado con éxito
-                    //console.log("Archivo eliminado con éxito");
-
-                    /*
-                    // direccion de destino, donde sera guardada la imagen (se la guardara en la carpeta "subido"), esta direccion sera guardada en la constante "direccionDestinoImagen"
-                    // la imagen sera guardada
-                    const direccionDestinoImagen = pache.resolve(
-                        `src/publico/imagenes/imagenes_sistema/${tipo_imagen}${extensionImagenMinuscula}`
-                    );
-
-                    // ahora guardamos la nueva imagen
-                    // "fs.rename" mueve un archivo (es este caso una imagen) del lugar de origen (direccionTemporalImagen) a otro destino (direccionDestinoImagen)
-                    await fs.rename(direccionTemporalImagen, direccionDestinoImagen);
-                    */
-
-                    //--------------------------------------------------------------
-                    // PARA SUBIR ARCHIVO IMAGEN A FIREBASE
-
-                    //const storage = getStorage();
-
-                    var nombre_y_ext = tipo_imagen + extensionImagenMinuscula;
-                    // para guardar en la carpeta "imagenes_sistema" en firebase con el nombre y la extension de la imagen incluida
-                    var direccionDestinoImagen = "imagenes_sistema/" + nombre_y_ext;
-
-                    // cramos una referencia al archivo imagen. donde se guardara y con que nombre sera guardado dentro de firebase
-                    const storageRef = ref(storage, direccionDestinoImagen);
-
-                    const data = await fs.promises.readFile(direccionTemporalImagen); // Utilizamos fs.promises.readFile para obtener una versión promisificada de fs.readFile
-
-                    // ESPERAMOS QUE SUBA LA IMAGEN
-                    await uploadBytes(storageRef, data);
-
-                    // Obtiene la URL de descarga pública de la imagen
-                    const url_imagen = await getDownloadURL(storageRef);
-
-                    //--------------------------------------------------------------
-                    // despues de subir la imagen a firebase, eliminamos el archivo de la carpeta "temporal" donde se encuentra alamacenado temporalmente
-                    // con "fs.unlink" eliminamos el archivo imagen, dentro de ( ) le damos la direccion donde el archivo esta guardado.
-                    await fs.unlink(direccionTemporalImagen);
-                    //--------------------------------------------------------------
-
-                    // por seguridad solo actualizamos el atributo "completo" de la BD con el nombre y la extension con la que se guardo la nueva imagen
-                    await indiceImagenesSistema.updateOne(
-                        { tipo_imagen: tipo_imagen },
-                        { $set: { completo: nombre_y_ext, url: url_imagen } }
-                    );
-
-                    var imagen = imagenExistente.imagen;
-
-                    //-------------------------------------------------------------------
-                    // guardamos en el historial de acciones
-                    var ci_administrador = req.user.ci_administrador; // extraido de la SESION guardada del administrador
-                    var accion_administrador =
-                        "Reemplaza imagen sistema " + tipo_imagen + extensionImagenMinuscula;
-                    var aux_accion_adm = {
-                        ci_administrador,
-                        accion_administrador,
-                    };
-                    await guardarAccionAdministrador(aux_accion_adm);
-                    //-------------------------------------------------------------------
-
-                    res.json({
-                        exito: "si",
-                        tipo_imagen,
-                        imagen,
-                        url: url_imagen,
-                    });
-                } else {
-                    // si no existe la imagen, entonces se procedera a ser almacenado en la BD
-
-                    /*
-                    // direccion de destino, donde sera guardada la imagen (se la guardara en la carpeta "subido"), esta direccion sera guardada en la constante "direccionDestinoImagen"
-                    // la imagen sera guardada con el codigo alfanumerico que se le dio
-                    const direccionDestinoImagen = pache.resolve(
-                        `src/publico/imagenes/imagenes_sistema/${tipo_imagen}${extensionImagenMinuscula}`
-                    );
-
-                    // ahora guardamos la nueva imagen
-                    // "fs.rename" mueve un archivo (es este caso una imagen) del lugar de origen (direccionTemporalImagen) a otro destino (direccionDestinoImagen)
-                    await fs.rename(direccionTemporalImagen, direccionDestinoImagen);
-                    */
-
-                    /*
-                    const firebaseConfig = {
-                        apiKey: direccionBaseDatos.F_API_KEY,
-                        authDomain: direccionBaseDatos.F_AUTH_DOMAIN,
-                        projectId: direccionBaseDatos.F_PROJECT_ID,
-                        storageBucket: direccionBaseDatos.F_STORAGE_BUCKET,
-                        messagingSenderId: direccionBaseDatos.F_MESSAGING_SENDER_ID,
-                        appId: direccionBaseDatos.F_APP_ID,
-                    };
-
-                    const app = initializeApp(firebaseConfig);
-                    */
-
-                    //const storage = getStorage(app);
-
-                    //--------------------------------------------------------------
-                    // PARA SUBIR ARCHIVO IMAGEN A FIREBASE
-
-                    const storage = getStorage();
-
-                    var nombre_y_ext = tipo_imagen + extensionImagenMinuscula;
-                    // para guardar en la carpeta "imagenes_sistema" en firebase con el nombre y la extension de la imagen incluida
-                    var direccionDestinoImagen = "imagenes_sistema/" + nombre_y_ext;
-
-                    // cramos una referencia al archivo imagen. donde se guardara y con que nombre sera guardado dentro de firebase
-                    const storageRef = ref(storage, direccionDestinoImagen);
-
-                    const data = await fs.promises.readFile(direccionTemporalImagen); // Utilizamos fs.promises.readFile para obtener una versión promisificada de fs.readFile
-
-                    // ESPERAMOS QUE SUBA LA IMAGEN
-                    await uploadBytes(storageRef, data);
-
-                    //console.log("Archivo subido con éxito a Firebase Storage");
-
-                    // Obtiene la URL de descarga pública de la imagen
-                    const url_imagen = await getDownloadURL(storageRef);
-
-                    //console.log("URL de descarga pública:", url_imagen);
-
-                    //--------------------------------------------------------------
-                    // despues de subir la imagen a firebase, eliminamos el archivo de la carpeta "temporal" donde se encuentra alamacenado temporalmente
-                    // con "fs.unlink" eliminamos el archivo imagen, dentro de ( ) le damos la direccion donde el archivo esta guardado.
-                    await fs.unlink(direccionTemporalImagen);
-                    //--------------------------------------------------------------
-
-                    if (tipo_imagen == "inicio_horizontal") {
-                        var imagen = "Inicio horizontal";
-                    }
-                    if (tipo_imagen == "inicio_vertical") {
-                        var imagen = "Inicio vertical";
-                    }
-                    if (tipo_imagen == "cabecera_convocatoria") {
-                        var imagen = "Cabecera convocatoria";
-                    }
-                    if (tipo_imagen == "cabecera_reserva") {
-                        var imagen = "Cabecera reserva";
-                    }
-                    if (tipo_imagen == "cabecera_aprobacion") {
-                        var imagen = "Cabecera aprobacion";
-                    }
-                    if (tipo_imagen == "cabecera_pago") {
-                        var imagen = "Cabecera pago";
-                    }
-                    if (tipo_imagen == "cabecera_construccion") {
-                        var imagen = "Cabecera construcción";
-                    }
-                    if (tipo_imagen == "cabecera_construido") {
-                        var imagen = "Cabecera construido";
-                    }
-                    if (tipo_imagen == "cabecera_administrador") {
-                        var imagen = "Cabecera administrador";
-                    }
-                    if (tipo_imagen == "cabecera_propietario") {
-                        var imagen = "Cabecera propietario";
-                    }
-                    if (tipo_imagen == "cabecera_terreno") {
-                        var imagen = "Cabecera terreno";
-                    }
-                    if (tipo_imagen == "cabecera_proyecto") {
-                        var imagen = "Cabecera proyecto";
-                    }
-                    if (tipo_imagen == "cabecera_inmueble") {
-                        var imagen = "Cabecera inmueble";
-                    }
-                    if (tipo_imagen == "cabecera_empresa") {
-                        var imagen = "Cabecera empresa";
-                    }
-                    if (tipo_imagen == "cabecera_resultados_inmuebles") {
-                        var imagen = "Cabecera resultados inmuebles";
-                    }
-                    if (tipo_imagen == "cabecera_resultados_requerimientos") {
-                        var imagen = "Cabecera resultados requerimientos";
-                    }
-
-                    // registramos la nueva imagen en la BD
-                    const datosImagenNueva = new indiceImagenesSistema({
-                        imagen,
-                        tipo_imagen,
-                        completo: nombre_y_ext,
-                        url: url_imagen,
-                    });
-
-                    // ahora guardamos en la base de datos la informacion de la imagen creada
-                    await datosImagenNueva.save();
-
-                    //-------------------------------------------------------------------
-                    // guardamos en el historial de acciones
-                    var ci_administrador = req.user.ci_administrador; // extraido de la SESION guardada del administrador
-                    var accion_administrador =
-                        "guarda imagen sistema " + tipo_imagen + extensionImagenMinuscula;
-                    var aux_accion_adm = {
-                        ci_administrador,
-                        accion_administrador,
-                    };
-                    await guardarAccionAdministrador(aux_accion_adm);
-                    //-------------------------------------------------------------------
-
-                    res.json({
-                        exito: "si",
-                        tipo_imagen,
-                        imagen,
-                        url: url_imagen,
-                    });
-                }
-            } else {
-                // en caso de que el archivo no sea una IMAGEN, entonces sera eliminado de la carpeta "TEMPORAL"
-                // con "fs.unlink" eliminamos el archivo que no es una imagen, dentro de ( ) le damos la direccion donde el archivo esta guardado temporalmente.
-                await fs.unlink(direccionTemporalImagen);
-
-                res.json({
-                    exito: "no",
-                });
-            }
-        } else {
-            // en caso de que el archivo no sea una IMAGEN, entonces sera eliminado de la carpeta "TEMPORAL"
-            // con "fs.unlink" eliminamos el archivo que no es una imagen, dentro de ( ) le damos la direccion donde el archivo esta guardado temporalmente.
-            await fs.unlink(direccionTemporalImagen);
-
-            res.json({
-                exito: "no",
-            });
-        }
-    } catch (error) {
-        console.log(error);
-    }
-};
-
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // PARA ELIMINACION DE IMAGEN DE TERRENO || PROYECTO || EMPRESA (somos y funciona) || SISTEMA
 controladorAdministradorGeneral.eliminarImagen = async (req, res) => {
@@ -821,23 +512,11 @@ controladorAdministradorGeneral.eliminarImagen = async (req, res) => {
         }
 
         if (objetivo_tipo == "administrador") {
-            if (codigo_imagen.indexOf("cabecera") != -1 || codigo_imagen.indexOf("inicio") != -1) {
-                // entonces se trata de una imagen del sistema (ej/ cabeceras)
-                var imagenEliminar = await indiceImagenesSistema.findOne(
-                    {
-                        tipo_imagen: codigo_imagen, // ok (ej/ cabecera_convocatoria)
-                    },
-                    {
-                        completo: 1, // EJ/  la URL imagen en FIREBASE
-                    }
-                );
-            } else {
-                // si es una imagen "administrador", es decir que es propio de la EMPRESA
-                // imagenes de: COMO FUNCIONA y QUINES SOMOS
-                var imagenEliminar = await indiceImagenesEmpresa_sf.findOne({
-                    codigo_imagen: codigo_imagen,
-                });
-            }
+            // si es una imagen "administrador", es decir que es propio de la EMPRESA
+            // imagenes de: COMO FUNCIONA y QUINES SOMOS
+            var imagenEliminar = await indiceImagenesEmpresa_sf.findOne({
+                codigo_imagen: codigo_imagen,
+            });
 
             var acceso = "permitido";
         }
@@ -849,62 +528,7 @@ controladorAdministradorGeneral.eliminarImagen = async (req, res) => {
 
         if (acceso == "permitido") {
             if (imagenEliminar) {
-                if (
-                    codigo_imagen.indexOf("cabecera") != -1 ||
-                    codigo_imagen.indexOf("inicio") != -1
-                ) {
-                    // entonces se trata de una imagen del sistema
-
-                    /*
-                    const auxCodigoImagen = imagenEliminar.completo; // EJ/  "cabecera_convocatoria.jpg"
-
-                    // "unlink" es un metodo de "fs" que elimina un archivo a partir de la direccion que se le de. Esta direccion sera aquella donde se encuentra guardada la imagen
-                    await fs.unlink(
-                        pache.resolve("./src/publico/imagenes/imagenes_sistema/" + auxCodigoImagen)
-                    ); // "+" es para concatenar
-                    */
-
-                    //--------------------------------------------------
-
-                    const storage = getStorage();
-
-                    var nombre_y_ext = codigo_imagen + ".jpg"; // porque solo son aceptados imagnes ".jpg" y son guardados en minuscula
-                    // para encontrar en la carpeta "imagenes_sistema" en firebase con el nombre y la extension de la imagen incluida
-                    var direccionActualImagen = "imagenes_sistema/" + nombre_y_ext;
-
-                    // Crear una referencia al archivo que se eliminará
-                    const desertRef = ref(storage, direccionActualImagen);
-
-                    // Eliminar el archivo y esperar la promesa
-                    await deleteObject(desertRef);
-
-                    // Archivo eliminado con éxito
-                    //console.log("Archivo eliminado DE FIREBASE con éxito");
-
-                    //--------------------------------------------------
-
-                    // ahora eliminamos todos los datos (informacion que esta guardada en la base de datos) de la imagen
-                    //await imagenEliminar.remove(); // indiceImagenesSistema (funcionaba, pero lo reemplazamos para no tener problemas con la obsolescencia)
-
-                    // se trata de una imagen del sistema (ej/ cabeceras)
-                    await indiceImagenesSistema.deleteOne({ tipo_imagen: codigo_imagen });
-
-                    //--------------------------------------------
-                    // guardamos en el historial de acciones
-                    var ci_administrador = req.user.ci_administrador; // extraido de la SESION guardada del administrador
-                    var accion_administrador = "Elimina imagen SISTEMA " + codigo_imagen;
-                    var aux_accion_adm = {
-                        ci_administrador,
-                        accion_administrador,
-                    };
-                    await guardarAccionAdministrador(aux_accion_adm);
-                    //--------------------------------------------
-
-                    res.json({
-                        exito: "si",
-                    });
-                } else {
-                    /*
+                /*
                     // si la imagen es encontrada en la base de datos
                     // entonces eliminamos el archivo imagen (la imagen misma) de la carpeta donde se encuentra guardada (carpeta "subido")
                     // "unlink" es un metodo de "fs" que elimina un archivo a partir de la direccion que se le de. Esta direccion sera aquella donde se encuentra guardada la imagen
@@ -912,78 +536,77 @@ controladorAdministradorGeneral.eliminarImagen = async (req, res) => {
 
                     await fs.unlink(pache.resolve("./src/publico/subido/" + auxCodigoImagen)); // "+" es para concatenar
                     */
-                    //--------------------------------------------------
+                //--------------------------------------------------
 
-                    const storage = getStorage();
+                const storage = getStorage();
 
-                    var nombre_y_ext = codigo_imagen + imagenEliminar.extension_imagen;
+                var nombre_y_ext = codigo_imagen + imagenEliminar.extension_imagen;
 
-                    // para encontrar en la carpeta "subido" en firebase con el nombre y la extension de la imagen incluida
-                    var direccionActualImagen = "subido/" + nombre_y_ext;
+                // para encontrar en la carpeta "subido" en firebase con el nombre y la extension de la imagen incluida
+                var direccionActualImagen = "subido/" + nombre_y_ext;
 
-                    // Crear una referencia al archivo que se eliminará
-                    const desertRef = ref(storage, direccionActualImagen);
+                // Crear una referencia al archivo que se eliminará
+                const desertRef = ref(storage, direccionActualImagen);
 
-                    // Eliminar el archivo y esperar la promesa
-                    await deleteObject(desertRef);
+                // Eliminar el archivo y esperar la promesa
+                await deleteObject(desertRef);
 
-                    // Archivo eliminado con éxito
-                    //console.log("Archivo eliminado DE FIREBASE con éxito");
+                // Archivo eliminado con éxito
+                //console.log("Archivo eliminado DE FIREBASE con éxito");
 
-                    //--------------------------------------------------
+                //--------------------------------------------------
 
-                    // ahora eliminamos todos los datos (informacion que esta guardada en la base de datos) de la imagen
-                    //await imagenEliminar.remove(); // indiceImagenesSistema (funcionaba, pero lo reemplazamos para no tener problemas con la obsolescencia)
+                // ahora eliminamos todos los datos (informacion que esta guardada en la base de datos) de la imagen
 
-                    if (objetivo_tipo == "terreno") {
-                        await indiceImagenesTerreno.deleteOne({ codigo_imagen: codigo_imagen });
-                    }
+                if (objetivo_tipo == "terreno") {
+                    await indiceImagenesTerreno.deleteOne({ codigo_imagen: codigo_imagen });
+                }
 
-                    if (objetivo_tipo == "proyecto") {
-                        await indiceImagenesProyecto.deleteOne({ codigo_imagen: codigo_imagen });
-                    }
+                if (objetivo_tipo == "proyecto") {
+                    await indiceImagenesProyecto.deleteOne({ codigo_imagen: codigo_imagen });
+                }
 
-                    if (objetivo_tipo == "administrador") {
-                        // ya se verifico que no es una imagen del sistema
-                        // es una imagen "administrador", es decir que es propio de la EMPRESA
-                        await indiceImagenesEmpresa_sf.deleteOne({
-                            codigo_imagen: codigo_imagen,
-                        });
-                    }
+                if (objetivo_tipo == "administrador") {
+                    // ya se verifico que no es una imagen del sistema
+                    // es una imagen "administrador", es decir que es propio de la EMPRESA
+                    await indiceImagenesEmpresa_sf.deleteOne({
+                        codigo_imagen: codigo_imagen,
+                    });
+                }
 
-                    //--------------------------------------------
-                    // revision si la imagen tiene documentos pdf, word, excel que la acompañen (imagenes de FUNCIONA)
+                //--------------------------------------------
+                // revision si la imagen tiene documentos pdf, word, excel que la acompañen (imagenes de FUNCIONA)
 
-                    if (codigo_imagen.indexOf("imaemp_sf") != -1) {
-                        const documentos_imagen = await indiceDocumentos.find(
-                            {
-                                codigo_terreno: codigo_imagen, // para documentos que pertenecen a "como funciona" en "codigo_terreno" se encuentra el codigo de la imagen al que pertenecen los documentos de "como funciona"
-                            },
-                            {
-                                codigo_documento: 1,
-                                nombre_documento: 1, // para documentos de COMO FUNCIONA, en "nombre_documento" se guarda la: pdf || word || excel
+                if (codigo_imagen.indexOf("imaemp_sf") != -1) {
+                    const documentos_imagen = await indiceDocumentos.find(
+                        {
+                            codigo_terreno: codigo_imagen, // para documentos que pertenecen a "como funciona" en "codigo_terreno" se encuentra el codigo de la imagen al que pertenecen los documentos de "como funciona"
+                        },
+                        {
+                            codigo_documento: 1,
+                            nombre_documento: 1, // para documentos de COMO FUNCIONA, en "nombre_documento" se guarda la: pdf || word || excel
+                        }
+                    );
+
+                    var documentos_eliminados = ""; // un string que contendra los doc eliminados que pertenecen a la imagen de la empresa
+                    if (documentos_imagen.length > 0) {
+                        // 1. eliminamos los archivos documentos en la carpeta donde se encuentran guardados
+
+                        for (let i = 0; i < documentos_imagen.length; i++) {
+                            if (documentos_imagen[i].nombre_documento == "pdf") {
+                                var extension = "pdf";
                             }
-                        );
+                            if (documentos_imagen[i].nombre_documento == "word") {
+                                var extension = "docx";
+                            }
+                            if (documentos_imagen[i].nombre_documento == "excel") {
+                                var extension = "xlsx";
+                            }
 
-                        var documentos_eliminados = ""; // un string que contendra los doc eliminados que pertenecen a la imagen de la empresa
-                        if (documentos_imagen.length > 0) {
-                            // 1. eliminamos los archivos documentos en la carpeta donde se encuentran guardados
+                            let documentoNombreExtension =
+                                documentos_imagen[i].codigo_documento + "." + extension;
 
-                            for (let i = 0; i < documentos_imagen.length; i++) {
-                                if (documentos_imagen[i].nombre_documento == "pdf") {
-                                    var extension = "pdf";
-                                }
-                                if (documentos_imagen[i].nombre_documento == "word") {
-                                    var extension = "docx";
-                                }
-                                if (documentos_imagen[i].nombre_documento == "excel") {
-                                    var extension = "xlsx";
-                                }
-
-                                let documentoNombreExtension =
-                                    documentos_imagen[i].codigo_documento + "." + extension;
-
-                                /*
+                            /*
                                 // eliminamos el ARCHIVO DOCUMENTO DE LA CARPETA DONDE ESTA GUARDADA
                                 await fs.unlink(
                                     pache.resolve(
@@ -992,65 +615,64 @@ controladorAdministradorGeneral.eliminarImagen = async (req, res) => {
                                 ); // "+" es para concatenar
                                 */
 
-                                //--------------------------------------------------
+                            //--------------------------------------------------
 
-                                //const storage = getStorage(); // ya fue declarado anteriormente
+                            //const storage = getStorage(); // ya fue declarado anteriormente
 
-                                // para encontrar en la carpeta "subido" en firebase con el nombre y la extension de la imagen incluida
-                                var direccionActualImagen = "subido/" + documentoNombreExtension;
+                            // para encontrar en la carpeta "subido" en firebase con el nombre y la extension de la imagen incluida
+                            var direccionActualImagen = "subido/" + documentoNombreExtension;
 
-                                // Crear una referencia al archivo que se eliminará
-                                const desertRef = ref(storage, direccionActualImagen);
+                            // Crear una referencia al archivo que se eliminará
+                            const desertRef = ref(storage, direccionActualImagen);
 
-                                // Eliminar el archivo y esperar la promesa
-                                await deleteObject(desertRef);
+                            // Eliminar el archivo y esperar la promesa
+                            await deleteObject(desertRef);
 
-                                // Archivo eliminado con éxito
-                                //console.log("Archivo eliminado DE FIREBASE con éxito");
+                            // Archivo eliminado con éxito
+                            //console.log("Archivo eliminado DE FIREBASE con éxito");
 
-                                //--------------------------------------------------
+                            //--------------------------------------------------
 
-                                documentos_eliminados =
-                                    documentos_eliminados + " " + documentoNombreExtension;
-                            }
-                            // 2. eliminamos de la base de datos todos los documentos que pertenecen a la imagen eliminada
-
-                            //await indiceDocumentos.remove({ codigo_terreno: codigo_imagen }); // NUNCA VIMOS USAR REMOVE DE ESA MANERA, PERO LO CAMBIAMOS POR "deleteMany" para que borre a TODOS los que coincidan con la condicion: codigo_terreno: codigo_imagen
-
-                            await indiceDocumentos.deleteMany({ codigo_terreno: codigo_imagen });
+                            documentos_eliminados =
+                                documentos_eliminados + " " + documentoNombreExtension;
                         }
+                        // 2. eliminamos de la base de datos todos los documentos que pertenecen a la imagen eliminada
 
-                        //--------------------------------------------
-                        // guardamos en el historial de acciones
-                        var ci_administrador = req.user.ci_administrador; // extraido de la SESION guardada del administrador
-                        var accion_administrador =
-                            "Elimina imagen " +
-                            codigo_imagen +
-                            " y sus documentos: " +
-                            documentos_eliminados;
-                        var aux_accion_adm = {
-                            ci_administrador,
-                            accion_administrador,
-                        };
-                        await guardarAccionAdministrador(aux_accion_adm);
-                        //--------------------------------------------
-                    } else {
-                        //--------------------------------------------
-                        // guardamos en el historial de acciones
-                        var ci_administrador = req.user.ci_administrador; // extraido de la SESION guardada del administrador
-                        var accion_administrador = "Elimina imagen " + codigo_imagen;
-                        var aux_accion_adm = {
-                            ci_administrador,
-                            accion_administrador,
-                        };
-                        await guardarAccionAdministrador(aux_accion_adm);
-                        //--------------------------------------------
+                        //await indiceDocumentos.remove({ codigo_terreno: codigo_imagen }); // NUNCA VIMOS USAR REMOVE DE ESA MANERA, PERO LO CAMBIAMOS POR "deleteMany" para que borre a TODOS los que coincidan con la condicion: codigo_terreno: codigo_imagen
+
+                        await indiceDocumentos.deleteMany({ codigo_terreno: codigo_imagen });
                     }
 
-                    res.json({
-                        exito: "si",
-                    });
+                    //--------------------------------------------
+                    // guardamos en el historial de acciones
+                    var ci_administrador = req.user.ci_administrador; // extraido de la SESION guardada del administrador
+                    var accion_administrador =
+                        "Elimina imagen " +
+                        codigo_imagen +
+                        " y sus documentos: " +
+                        documentos_eliminados;
+                    var aux_accion_adm = {
+                        ci_administrador,
+                        accion_administrador,
+                    };
+                    await guardarAccionAdministrador(aux_accion_adm);
+                    //--------------------------------------------
+                } else {
+                    //--------------------------------------------
+                    // guardamos en el historial de acciones
+                    var ci_administrador = req.user.ci_administrador; // extraido de la SESION guardada del administrador
+                    var accion_administrador = "Elimina imagen " + codigo_imagen;
+                    var aux_accion_adm = {
+                        ci_administrador,
+                        accion_administrador,
+                    };
+                    await guardarAccionAdministrador(aux_accion_adm);
+                    //--------------------------------------------
                 }
+
+                res.json({
+                    exito: "si",
+                });
             } else {
                 res.json({
                     exito: "no",
@@ -1604,7 +1226,7 @@ controladorAdministradorGeneral.seleccionarDeseleccionarImagen = async (req, res
 controladorAdministradorGeneral.subirDocumento = async (req, res) => {
     try {
         if (req.body.clase_documento == "Propietario") {
-            var codigo_inmueble = req.body.codigo_inmueble_pertenecera;
+            var codigo_inmueble = req.body.codigo_inmueble;
             var propiedad_real = await indiceInversiones.findOne({
                 ci_propietario: req.body.ci_propietario,
                 codigo_inmueble: codigo_inmueble,
@@ -2376,6 +1998,32 @@ controladorAdministradorGeneral.guardarTabla = async (req, res) => {
                     );
                 }
 
+                if (tipo_tabla_objetivo == "py_cuotas") {
+                    var array_cuotas = [];
+                    if (array_tabla.length > 0) {
+                        for (let i = 0; i < array_tabla.length; i++) {
+                            let pago_bs = array_tabla[i][1];
+
+                            // aunque ya viene en tipo numerico, lo convertimos nuevamente en numerico por seguridad
+                            let pagoNumero = Number(pago_bs);
+
+                            let fecha = array_tabla[i][0]; // String ej: "2010-10-10"
+
+                            array_cuotas[i] = {
+                                fecha: fecha,
+                                pago_bs: pagoNumero,
+                            };
+                        }
+                    }
+                    // para guardar la tabla de cuotas del proyecto
+                    var accion_administrador =
+                        "Guarda tabla de cuotas del proyecto " + codigo_objetivo;
+                    await indiceProyecto.updateOne(
+                        { codigo_proyecto: codigo_objetivo },
+                        { $set: { construccion_mensual: array_cuotas } }
+                    );
+                }
+
                 //-----------------------------------------------
                 // guardamos en el historial de acciones
                 var ci_administrador = req.user.ci_administrador; // extraido de la SESION guardada del administrador
@@ -2464,6 +2112,16 @@ controladorAdministradorGeneral.eliminarTabla = async (req, res) => {
                     );
                 }
 
+                if (tipo_tabla_objetivo == "py_cuotas") {
+                    // para guardar la tabla de responsabilidad social del proyecto
+                    var accion_administrador =
+                        "Elimina tabla de cuotas de construccion del proyecto " + codigo_objetivo;
+                    await indiceProyecto.updateOne(
+                        { codigo_proyecto: codigo_objetivo },
+                        { $set: { construccion_mensual: array_tabla } }
+                    );
+                }
+
                 //-----------------------------------------------
                 // guardamos en el historial de acciones
                 var ci_administrador = req.user.ci_administrador; // extraido de la SESION guardada del administrador
@@ -2495,10 +2153,10 @@ controladorAdministradorGeneral.eliminarTabla = async (req, res) => {
 
 /************************************************************************************ */
 /************************************************************************************ */
-// PARA GUARDAR PROPIETARIO (DATOS O PAGOS)
+// PARA GUARDAR PROPIETARIO (DATOS)
 
-controladorAdministradorGeneral.guardarDatosPagosPropietario = async (req, res) => {
-    // ruta   POST   "/laapirest/administracion/general/accion/guardar_datos_pagos_propietario/:tipo_guardado"
+controladorAdministradorGeneral.guardarDatosPropietario = async (req, res) => {
+    // ruta   POST   "/laapirest/administracion/general/accion/guardar_datos_propietario"
 
     try {
         /*
@@ -2510,198 +2168,262 @@ controladorAdministradorGeneral.guardarDatosPagosPropietario = async (req, res) 
         console.log(req.body.contenedor);
         */
 
-        // el array ya viene en string de ajax, aqui se lo convierte en objeto tipo array como debe ser
         var objeto_convertido = JSON.parse(req.body.contenedor);
 
-        // ------- Para verificación -------
-        //console.log("el objeto convertido es:");
-        //console.log(objeto_convertido);
-        // ------- Para verificación -------
-        //console.log("PAGOS MENSUALES es:");
-        //console.log(objeto_convertido.propietario_pagos);
-
         const ci_propietario = objeto_convertido.ci_propietario;
-        const tipo_guardado = req.params.tipo_guardado;
-
-        /*
-        // ------- Para verificación -------
-        console.log("entramos a guardar los datos en la base de datos");
-        console.log("ci_propietario: " + ci_propietario + " tipo de guardado: " + tipo_guardado);
-        */
 
         //------------------------------------------------------------------------
+        // guardamos los datos del propietario
 
-        // "guardar_datos_pagos_a" cuando se guardan datos y pagos en conjunto desde la pestaña "propietario" de la cuenta "inmueble"
-        // es el unico que requiere verificar si el propietario es nuevo o no en la base de datos.
-        // en esta opcion es donde se cambia el estado de propietario a "activo" en favor del propietario desde el cual se modifican los datos, poniendo a los demas a estado "pasivo"
-        if (tipo_guardado == "guardar_datos_pagos_a") {
-            const codigo_inmueble = objeto_convertido.propietario_pagos.codigo_inmueble;
+        var propietarioRegistrado = await indice_propietario.findOne({
+            ci_propietario: ci_propietario,
+        });
 
-            var inmuebleEncontrado = await indiceInmueble.findOne(
-                {
-                    codigo_inmueble: codigo_inmueble,
-                },
-                {
-                    codigo_terreno: 1,
-                    codigo_proyecto: 1,
-                    _id: 0,
-                }
-            );
+        if (propietarioRegistrado) {
+            // si es un propietario que ya existe
 
-            if (inmuebleEncontrado) {
-                var codigo_terreno = inmuebleEncontrado.codigo_terreno;
-                var acceso = await verificadorTerrenoBloqueado(codigo_terreno);
+            propietarioRegistrado.nombres_propietario =
+                objeto_convertido.propietario_datos.nombres_propietario;
+            propietarioRegistrado.apellidos_propietario =
+                objeto_convertido.propietario_datos.apellidos_propietario;
+            propietarioRegistrado.telefonos_propietario =
+                objeto_convertido.propietario_datos.telefonos_propietario;
+            propietarioRegistrado.fecha_nacimiento_propietario =
+                objeto_convertido.propietario_datos.fecha_nacimiento_propietario;
+            propietarioRegistrado.ocupacion_propietario =
+                objeto_convertido.propietario_datos.ocupacion_propietario;
+            propietarioRegistrado.departamento_propietario =
+                objeto_convertido.propietario_datos.departamento_propietario;
+            propietarioRegistrado.provincia_propietario =
+                objeto_convertido.propietario_datos.provincia_propietario;
+            propietarioRegistrado.domicilio_propietario =
+                objeto_convertido.propietario_datos.domicilio_propietario;
 
-                if (acceso == "permitido") {
-                    // guardamos los datos del propietario
+            await propietarioRegistrado.save();
 
-                    var propietarioRegistrado = await indice_propietario.findOne({
-                        ci_propietario: ci_propietario,
-                    });
+            //-----------------------------------------------
+            // guardamos en el historial de acciones
 
-                    if (propietarioRegistrado) {
-                        // si es un propietario que ya existe
+            var accion_administrador = "guarda datos de propietario " + ci_propietario;
 
-                        propietarioRegistrado.nombres_propietario =
-                            objeto_convertido.propietario_datos.nombres_propietario;
-                        propietarioRegistrado.apellidos_propietario =
-                            objeto_convertido.propietario_datos.apellidos_propietario;
-                        propietarioRegistrado.telefonos_propietario =
-                            objeto_convertido.propietario_datos.telefonos_propietario;
-                        propietarioRegistrado.fecha_nacimiento_propietario =
-                            objeto_convertido.propietario_datos.fecha_nacimiento_propietario;
-                        propietarioRegistrado.ocupacion_propietario =
-                            objeto_convertido.propietario_datos.ocupacion_propietario;
-                        propietarioRegistrado.departamento_propietario =
-                            objeto_convertido.propietario_datos.departamento_propietario;
-                        propietarioRegistrado.provincia_propietario =
-                            objeto_convertido.propietario_datos.provincia_propietario;
-                        propietarioRegistrado.domicilio_propietario =
-                            objeto_convertido.propietario_datos.domicilio_propietario;
+            var ci_administrador = req.user.ci_administrador; // extraido de la SESION guardada del administrador
+            var aux_accion_adm = {
+                ci_administrador,
+                accion_administrador,
+            };
+            await guardarAccionAdministrador(aux_accion_adm);
+            //-----------------------------------------------
 
-                        await propietarioRegistrado.save();
-                    } else {
-                        // entonces es un propietario nuevo
+            res.json({
+                exito: "si",
+            });
+        } else {
+            // entonces es un propietario nuevo
 
-                        //--------------------------------------------------
-                        // damos sus claves de acceso por defecto
-                        let auxFechaNacimiento =
-                            objeto_convertido.propietario_datos.fecha_nacimiento_propietario;
-                        // La fecha de nacimiento esta en formato: año-mes-dia   ej/ 1988-01-30
+            //--------------------------------------------------
+            // damos sus claves de acceso por defecto
+            let auxFechaNacimiento =
+                objeto_convertido.propietario_datos.fecha_nacimiento_propietario;
+            // La fecha de nacimiento esta en formato: año-mes-dia   ej/ 1988-01-30
 
-                        let a_m_d = auxFechaNacimiento.split("-");
-                        let a_ano = a_m_d[0];
-                        let a_mes = a_m_d[1];
-                        let a_dia = a_m_d[2];
+            let a_m_d = auxFechaNacimiento.split("-");
+            let a_ano = a_m_d[0];
+            let a_mes = a_m_d[1];
+            let a_dia = a_m_d[2];
 
-                        let clave_propietario = a_dia + a_mes + a_ano;
-                        // ------- Para verificación -------
-                        //console.log("la clave por defecto es:");
-                        //console.log(clave_propietario);
-                        //--------------------------------------------------
+            let clave_propietario = a_dia + a_mes + a_ano;
+            // ------- Para verificación -------
+            //console.log("la clave por defecto es:");
+            //console.log(clave_propietario);
+            //--------------------------------------------------
 
-                        const datosNuevoPropietario = new indice_propietario({
-                            ci_propietario: ci_propietario,
-                            nombres_propietario:
-                                objeto_convertido.propietario_datos.nombres_propietario,
-                            apellidos_propietario:
-                                objeto_convertido.propietario_datos.apellidos_propietario,
-                            telefonos_propietario:
-                                objeto_convertido.propietario_datos.telefonos_propietario,
-                            fecha_nacimiento_propietario:
-                                objeto_convertido.propietario_datos.fecha_nacimiento_propietario,
-                            ocupacion_propietario:
-                                objeto_convertido.propietario_datos.ocupacion_propietario,
-                            departamento_propietario:
-                                objeto_convertido.propietario_datos.departamento_propietario,
-                            provincia_propietario:
-                                objeto_convertido.propietario_datos.provincia_propietario,
-                            domicilio_propietario:
-                                objeto_convertido.propietario_datos.domicilio_propietario,
-                            usuario_propietario: ci_propietario,
-                            clave_propietario,
-                        });
+            const datosNuevoPropietario = new indice_propietario({
+                ci_propietario: ci_propietario,
+                nombres_propietario: objeto_convertido.propietario_datos.nombres_propietario,
+                apellidos_propietario: objeto_convertido.propietario_datos.apellidos_propietario,
+                telefonos_propietario: objeto_convertido.propietario_datos.telefonos_propietario,
+                fecha_nacimiento_propietario:
+                    objeto_convertido.propietario_datos.fecha_nacimiento_propietario,
+                ocupacion_propietario: objeto_convertido.propietario_datos.ocupacion_propietario,
+                departamento_propietario:
+                    objeto_convertido.propietario_datos.departamento_propietario,
+                provincia_propietario: objeto_convertido.propietario_datos.provincia_propietario,
+                domicilio_propietario: objeto_convertido.propietario_datos.domicilio_propietario,
+                usuario_propietario: ci_propietario,
+                clave_propietario,
+            });
 
-                        //----------------------------------
-                        // #session-passport #encriptar-contraseña para SESION USUARIO, encriptar contraseña y guardarlo en la base de datos
-                        datosNuevoPropietario.clave_propietario =
-                            await datosNuevoPropietario.encriptarContrasena(clave_propietario);
-                        //----------------------------------
+            //----------------------------------
+            // #session-passport #encriptar-contraseña para SESION USUARIO, encriptar contraseña y guardarlo en la base de datos
+            datosNuevoPropietario.clave_propietario =
+                await datosNuevoPropietario.encriptarContrasena(clave_propietario);
+            //----------------------------------
 
-                        await datosNuevoPropietario.save(); // GUARDAMOS EL NUEVO REGISTRO
-                    }
+            await datosNuevoPropietario.save(); // GUARDAMOS EL NUEVO REGISTRO
 
-                    // --------------------------------------------------
-                    // ahora procedemos a guardar los pagos del propietario
+            //-----------------------------------------------
+            // guardamos en el historial de acciones
 
-                    var inversionesInmueble = await indiceInversiones.find({
+            var accion_administrador = "guarda datos de propietario " + ci_propietario;
+
+            var ci_administrador = req.user.ci_administrador; // extraido de la SESION guardada del administrador
+            var aux_accion_adm = {
+                ci_administrador,
+                accion_administrador,
+            };
+            await guardarAccionAdministrador(aux_accion_adm);
+            //-----------------------------------------------
+
+            // "nuevo", para mostrar: usuario y clave por defecto
+            res.json({
+                exito: "nuevo",
+                usuario: ci_propietario,
+                clave: clave_propietario,
+            });
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+/************************************************************************************ */
+/************************************************************************************ */
+// PARA GUARDAR PROPIETARIO (PAGO)
+
+// aqui para guardar el pago de un propietario de inmueble, se verificara que el propietario ya cuenta con datos guardados en la base de datos y si existe un propietario en estado pasivo, este sera eliminado en favor del nuevo propietario que sera el dueño del inmueble
+controladorAdministradorGeneral.guardarPagoPropietario = async (req, res) => {
+    // "/laapirest/administracion/general/accion/guardar_pago_propietario"
+    try {
+        var ci_propietario = req.body.ci_propietario;
+        var codigo_inmueble = req.body.codigo_inmueble;
+
+        var inmuebleEncontrado = await indiceInmueble.findOne(
+            {
+                codigo_inmueble: codigo_inmueble,
+            },
+            {
+                codigo_terreno: 1,
+                codigo_proyecto: 1,
+                _id: 0,
+            }
+        );
+
+        if (inmuebleEncontrado) {
+            var codigo_terreno = inmuebleEncontrado.codigo_terreno;
+            var acceso = await verificadorTerrenoBloqueado(codigo_terreno);
+
+            if (acceso == "permitido") {
+                let inversionInmueble = await indiceInversiones.findOne(
+                    {
                         codigo_inmueble: codigo_inmueble,
-                    });
-
-                    if (inversionesInmueble.length > 0) {
-                        // se cambiara el estado a "pasivo" TODAS las inversiones existentes que tiene el inmueble, porque en lineas de codigos mas abajo el unico activo sera el propietario que esta siendo registrado en esta opcion
-                        await indiceInversiones.updateMany(
-                            //  REVISAR ESTE "updateMany"
-                            { codigo_inmueble: codigo_inmueble },
-                            { $set: { estado_propietario: "pasivo" } }
-                        );
+                    },
+                    {
+                        ci_propietario: 1,
+                        estado_propietario: 1,
+                        pagos_mensuales: 1,
+                        _id: 0,
                     }
+                );
 
-                    // buscamos si ya existe el registro o si es nuevo
+                if (inversionInmueble) {
+                    if (inversionInmueble.estado_propietario == "activo") {
+                        if (ci_propietario == inversionInmueble.ci_propietario) {
+                            let contenedor_propietario = await datos_pagos_propietario(
+                                codigo_inmueble
+                            );
 
-                    var inversionEncontrado = await indiceInversiones.findOne({
-                        codigo_inmueble: codigo_inmueble,
-                        ci_propietario: ci_propietario,
-                    });
+                            let deuda_demora = contenedor_propietario.deuda_demora;
+                            let deuda_demora_render = contenedor_propietario.deuda_demora_render;
 
-                    if (inversionEncontrado) {
-                        // significa que ya existe registro de inversion de este propietario en este inmueble
+                            // el pago sera registrado como cuota mensual o mensuales de construccion
 
-                        // notese que no es necesario re-guardar los datos de: codigos de inmueble, terreno, proyecto, porque estos ya estan guardados en esta base de datos, solo se actualizaran los campos de los pagos y fechas.
-                        inversionEncontrado.estado_propietario = "activo"; // porque desde esta opcion se guardan a los propietarios que seran activos del inmueble
-                        inversionEncontrado.tiene_reserva =
-                            objeto_convertido.propietario_pagos.tiene_reserva;
-                        inversionEncontrado.pagado_reserva =
-                            objeto_convertido.propietario_pagos.pagado_reserva;
-                        inversionEncontrado.fecha_pagado_reserva =
-                            objeto_convertido.propietario_pagos.fecha_pagado_reserva;
+                            let cronograma_pagos = contenedor_propietario.cronograma_pagos;
 
-                        inversionEncontrado.tiene_pago =
-                            objeto_convertido.propietario_pagos.tiene_pago;
-                        inversionEncontrado.pagado_pago =
-                            objeto_convertido.propietario_pagos.pagado_pago;
-                        inversionEncontrado.fecha_pagado_pago =
-                            objeto_convertido.propietario_pagos.fecha_pagado_pago;
+                            if (cronograma_pagos.length > 0) {
+                                let sum_demora = 0;
+                                let array_demora = [];
+                                for (let i = 0; i < cronograma_pagos.length; i++) {
+                                    let leyenda_pago = cronograma_pagos[i].leyenda_pago;
+                                    if (leyenda_pago == "Demora") {
+                                        let pago_bs = cronograma_pagos[i].pago_bs;
 
-                        inversionEncontrado.tiene_mensuales =
-                            objeto_convertido.propietario_pagos.tiene_mensuales;
-                        inversionEncontrado.pagos_mensuales =
-                            objeto_convertido.propietario_pagos.pagos_mensuales;
+                                        sum_demora = sum_demora + pago_bs;
 
-                        await inversionEncontrado.save();
+                                        // agregamos al array_demora
+                                        // El método push agrega uno o más elementos al final del array.
+                                        array_demora.push(pago_bs); // Agrega pago_bs al final
+                                    }
+                                }
 
-                        //-----------------------------------------------
-                        // guardamos en el historial de acciones
+                                if (deuda_demora == sum_demora) {
+                                    if (array_demora.length > 0) {
+                                        let pagos_mensuales = inversionInmueble.pagos_mensuales;
+                                        for (let j = 0; j < array_demora.length; j++) {
+                                            let pago_bs = array_demora[j];
 
-                        var accion_administrador =
-                            "guarda datos y pagos de propietario " +
-                            ci_propietario +
-                            " en inmueble " +
-                            codigo_inmueble;
+                                            // agregamos el nuevo pago al array de pagos mensuales de construccion del propietario activo
 
-                        var ci_administrador = req.user.ci_administrador; // extraido de la SESION guardada del administrador
-                        var aux_accion_adm = {
-                            ci_administrador,
-                            accion_administrador,
-                        };
-                        await guardarAccionAdministrador(aux_accion_adm);
-                        //-----------------------------------------------
+                                            let objetoPago = {
+                                                // "new Date()" nos devuelve la fecha actual
+                                                fecha: new Date(),
+                                                pago_bs: pago_bs,
+                                            };
 
-                        res.json({
-                            exito: "si",
-                        });
+                                            pagos_mensuales.push(objetoPago); // Agrega pago_bs al final
+                                        }
+
+                                        // guarda y actualiza la base de datos (si existe con anterioridad esa propiedad ya llenada con dato, lo sobreescribe con los datos nuevos)
+                                        await indiceInversiones.updateOne(
+                                            { codigo_inmueble: codigo_inmueble },
+                                            { $set: { pagos_mensuales: pagos_mensuales } }
+                                        );
+
+                                        //-----------------------------------------------
+                                        // guardamos en el historial de acciones
+
+                                        var accion_administrador =
+                                            "guarda pago de propietario " +
+                                            ci_propietario +
+                                            " en inmueble " +
+                                            codigo_inmueble;
+
+                                        var ci_administrador = req.user.ci_administrador; // extraido de la SESION guardada del administrador
+                                        var aux_accion_adm = {
+                                            ci_administrador,
+                                            accion_administrador,
+                                        };
+                                        await guardarAccionAdministrador(aux_accion_adm);
+                                        //-----------------------------------------------
+
+                                        res.json({
+                                            pagado_render: deuda_demora_render,
+                                            exito: "si",
+                                        });
+                                    }
+                                }
+                            }
+                        } else {
+                            // significa que el propietario que se intenta registrar el pago no es el mismo que figura como propietario del inmueble
+                            res.json({
+                                exito: "no_propietario",
+                            });
+                        }
                     } else {
-                        // significa que es nuevo pago
+                        // significa que el inmueble tiene un propietario en estado "pasivo", por tanto sera reeemplazado por este nuevo propietario y el pago del propietario pasivo sera eliminado de la base de datos
+
+                        let contenedor_propietario = await datos_pagos_propietario(codigo_inmueble);
+                        let pago_nuevo_propietario = contenedor_propietario.pago_nuevo_propietario;
+                        let pago_nuevo_propietario_render =
+                            contenedor_propietario.pago_nuevo_propietario_render;
+
+                        //-----------------------------------------
+                        // eliminamos el registro de pago del anterior propietario que se encontraba "pasivo"
+                        await indiceInversiones.deleteOne({
+                            codigo_inmueble: codigo_inmueble,
+                        });
+                        //-----------------------------------------
+
+                        // el pago sera registrado como pago_tipo: remate
                         const nuevaInversion = new indiceInversiones({
                             codigo_terreno: inmuebleEncontrado.codigo_terreno,
                             codigo_proyecto: inmuebleEncontrado.codigo_proyecto,
@@ -2710,18 +2432,8 @@ controladorAdministradorGeneral.guardarDatosPagosPropietario = async (req, res) 
 
                             estado_propietario: "activo", // porque desde esta opcion se guardan a los propietarios que seran activos del inmueble
 
-                            tiene_reserva: objeto_convertido.propietario_pagos.tiene_reserva,
-                            pagado_reserva: objeto_convertido.propietario_pagos.pagado_reserva,
-                            fecha_pagado_reserva:
-                                objeto_convertido.propietario_pagos.fecha_pagado_reserva,
-
-                            tiene_pago: objeto_convertido.propietario_pagos.tiene_pago,
-                            pagado_pago: objeto_convertido.propietario_pagos.pagado_pago,
-                            fecha_pagado_pago:
-                                objeto_convertido.propietario_pagos.fecha_pagado_pago,
-
-                            tiene_mensuales: objeto_convertido.propietario_pagos.tiene_mensuales,
-                            pagos_mensuales: objeto_convertido.propietario_pagos.pagos_mensuales,
+                            pago_primer_bs: pago_nuevo_propietario,
+                            pago_tipo: "remate",
                         });
                         await nuevaInversion.save(); // GUARDAMOS EL NUEVO REGISTRO
 
@@ -2729,7 +2441,7 @@ controladorAdministradorGeneral.guardarDatosPagosPropietario = async (req, res) 
                         // guardamos en el historial de acciones
 
                         var accion_administrador =
-                            "guarda datos y pagos de propietario " +
+                            "guarda pago de propietario " +
                             ci_propietario +
                             " en inmueble " +
                             codigo_inmueble;
@@ -2743,176 +2455,179 @@ controladorAdministradorGeneral.guardarDatosPagosPropietario = async (req, res) 
                         //-----------------------------------------------
 
                         res.json({
+                            pagado_render: pago_nuevo_propietario_render,
                             exito: "si",
                         });
                     }
                 } else {
-                    // si es TRUE, significa que el proyecto esta BLOQUEADO
-                    res.json({
-                        exito: "denegado",
-                    });
-                }
-            } else {
-                res.json({
-                    exito: "no",
-                });
-            }
-        }
+                    // significa que el inmueble no cuenta con ningun propietario
 
-        //------------------------------------------------------------------------
+                    let contenedor_propietario = await datos_pagos_propietario(codigo_inmueble);
+                    let pago_nuevo_propietario = contenedor_propietario.pago_nuevo_propietario;
+                    let pago_nuevo_propietario_render =
+                        contenedor_propietario.pago_nuevo_propietario_render;
 
-        // "guardar_datos_pagos_b" cuando se guardan datos y pagos en conjunto desde la pestaña "pagos" de la cuenta "inmueble"
-        if (tipo_guardado == "guardar_datos_pagos_b") {
-            const codigo_inmueble = objeto_convertido.propietario_pagos.codigo_inmueble;
-
-            var inmuebleEncontrado = await indiceInmueble.findOne(
-                {
-                    codigo_inmueble: codigo_inmueble,
-                },
-                {
-                    codigo_terreno: 1,
-                    codigo_proyecto: 1,
-                    _id: 0,
-                }
-            );
-
-            if (inmuebleEncontrado) {
-                var codigo_terreno = inmuebleEncontrado.codigo_terreno;
-                var acceso = await verificadorTerrenoBloqueado(codigo_terreno);
-
-                if (acceso == "permitido") {
-                    var propietarioRegistrado = await indice_propietario.findOne({
-                        ci_propietario: ci_propietario,
-                    });
-
-                    var inversionEncontrado = await indiceInversiones.findOne({
+                    // el pago sera registrado como pago_tipo: reserva
+                    const nuevaInversion = new indiceInversiones({
+                        codigo_terreno: inmuebleEncontrado.codigo_terreno,
+                        codigo_proyecto: inmuebleEncontrado.codigo_proyecto,
                         codigo_inmueble: codigo_inmueble,
                         ci_propietario: ci_propietario,
+
+                        estado_propietario: "activo", // porque desde esta opcion se guardan a los propietarios que seran activos del inmueble
+
+                        pago_primer_bs: pago_nuevo_propietario,
+                        pago_tipo: "reserva",
                     });
+                    await nuevaInversion.save(); // GUARDAMOS EL NUEVO REGISTRO
 
-                    if (propietarioRegistrado && inversionEncontrado) {
-                        // guardamos los datos del propietario
+                    //-----------------------------------------------
+                    // guardamos en el historial de acciones
 
-                        // si es un propietario que ya existe
+                    var accion_administrador =
+                        "guarda pago de propietario " +
+                        ci_propietario +
+                        " en inmueble " +
+                        codigo_inmueble;
 
-                        propietarioRegistrado.nombres_propietario =
-                            objeto_convertido.propietario_datos.nombres_propietario;
-                        propietarioRegistrado.apellidos_propietario =
-                            objeto_convertido.propietario_datos.apellidos_propietario;
-                        propietarioRegistrado.telefonos_propietario =
-                            objeto_convertido.propietario_datos.telefonos_propietario;
-                        propietarioRegistrado.fecha_nacimiento_propietario =
-                            objeto_convertido.propietario_datos.fecha_nacimiento_propietario;
-                        propietarioRegistrado.ocupacion_propietario =
-                            objeto_convertido.propietario_datos.ocupacion_propietario;
-                        propietarioRegistrado.departamento_propietario =
-                            objeto_convertido.propietario_datos.departamento_propietario;
-                        propietarioRegistrado.provincia_propietario =
-                            objeto_convertido.propietario_datos.provincia_propietario;
-                        propietarioRegistrado.domicilio_propietario =
-                            objeto_convertido.propietario_datos.domicilio_propietario;
+                    var ci_administrador = req.user.ci_administrador; // extraido de la SESION guardada del administrador
+                    var aux_accion_adm = {
+                        ci_administrador,
+                        accion_administrador,
+                    };
+                    await guardarAccionAdministrador(aux_accion_adm);
+                    //-----------------------------------------------
 
-                        await propietarioRegistrado.save();
-
-                        // --------------------------------------------------
-                        // ahora procedemos a guardar los pagos del propietario
-
-                        // aqui no se modifica el estado "estado_propietario" (pasivo o activo), se lo deja como se encuentra.
-
-                        inversionEncontrado.tiene_reserva =
-                            objeto_convertido.propietario_pagos.tiene_reserva;
-                        inversionEncontrado.pagado_reserva =
-                            objeto_convertido.propietario_pagos.pagado_reserva;
-                        inversionEncontrado.fecha_pagado_reserva =
-                            objeto_convertido.propietario_pagos.fecha_pagado_reserva;
-
-                        inversionEncontrado.tiene_pago =
-                            objeto_convertido.propietario_pagos.tiene_pago;
-                        inversionEncontrado.pagado_pago =
-                            objeto_convertido.propietario_pagos.pagado_pago;
-                        inversionEncontrado.fecha_pagado_pago =
-                            objeto_convertido.propietario_pagos.fecha_pagado_pago;
-
-                        inversionEncontrado.tiene_mensuales =
-                            objeto_convertido.propietario_pagos.tiene_mensuales;
-                        inversionEncontrado.pagos_mensuales =
-                            objeto_convertido.propietario_pagos.pagos_mensuales;
-
-                        await inversionEncontrado.save();
-
-                        //-----------------------------------------------
-                        // guardamos en el historial de acciones
-
-                        var accion_administrador =
-                            "guarda datos y pagos de propietario " +
-                            ci_propietario +
-                            " en inmueble " +
-                            codigo_inmueble;
-
-                        var ci_administrador = req.user.ci_administrador; // extraido de la SESION guardada del administrador
-                        var aux_accion_adm = {
-                            ci_administrador,
-                            accion_administrador,
-                        };
-                        await guardarAccionAdministrador(aux_accion_adm);
-                        //-----------------------------------------------
-
-                        res.json({
-                            exito: "si",
-                        });
-                    } else {
-                        res.json({
-                            exito: "no",
-                        });
-                    }
-                } else {
-                    // si es TRUE, significa que el proyecto esta BLOQUEADO
                     res.json({
-                        exito: "denegado",
+                        pagado_render: pago_nuevo_propietario_render,
+                        exito: "si",
                     });
                 }
             } else {
+                // si es TRUE, significa que el proyecto esta BLOQUEADO
                 res.json({
-                    exito: "no",
+                    exito: "denegado",
                 });
             }
-        }
-
-        //------------------------------------------------------------------------
-
-        // no es necesario verificar si el usuario existe, porque a esta opcion de "guardar datos" solo se ingresa desde usurios que ya existen en la base de datos, por tanto solo en necesario actualizar los datos.
-        // PERTENECE A LA PESTAÑA "DATOS" DE LA CUENTA DEL PROPIETARIO.
-        if (tipo_guardado == "guardar_datos") {
-            var propietarioRegistrado = await indice_propietario.findOne({
-                ci_propietario: ci_propietario,
+        } else {
+            res.json({
+                exito: "no",
             });
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
 
-            if (propietarioRegistrado) {
-                // si el propietario es encontrado
+//===========================================================================
+//===========================================================================
+// PARA GUARDAR VENTA DE FRACCIONES DE TERRENO A COPROPIETARIO
 
-                propietarioRegistrado.nombres_propietario =
-                    objeto_convertido.propietario_datos.nombres_propietario;
-                propietarioRegistrado.apellidos_propietario =
-                    objeto_convertido.propietario_datos.apellidos_propietario;
-                propietarioRegistrado.telefonos_propietario =
-                    objeto_convertido.propietario_datos.telefonos_propietario;
-                propietarioRegistrado.fecha_nacimiento_propietario =
-                    objeto_convertido.propietario_datos.fecha_nacimiento_propietario;
-                propietarioRegistrado.ocupacion_propietario =
-                    objeto_convertido.propietario_datos.ocupacion_propietario;
-                propietarioRegistrado.departamento_propietario =
-                    objeto_convertido.propietario_datos.departamento_propietario;
-                propietarioRegistrado.provincia_propietario =
-                    objeto_convertido.propietario_datos.provincia_propietario;
-                propietarioRegistrado.domicilio_propietario =
-                    objeto_convertido.propietario_datos.domicilio_propietario;
+controladorAdministradorGeneral.guardarPagoCopropietarioTe = async (req, res) => {
+    // "/laapirest/administracion/general/accion/guardar_pago_copropietario_te"
+    try {
+        var ci_propietario = req.body.ci_propietario;
+        var codigo_terreno = req.body.codigo_terreno;
+        var val_fracciones_te = req.body.val_fracciones_te; // Bs
 
-                await propietarioRegistrado.save();
+        var arrayFraccVendidas = []; // por defecto
+        var array_card_fracciones = []; // por defecto
+        var f_val_propietario = 0; // por defecto
+
+        var acceso = await verificadorTerrenoBloqueado(codigo_terreno);
+
+        if (acceso == "permitido") {
+            let registro_fracciones = await indiceFraccionTerreno
+                .find(
+                    {
+                        codigo_terreno: codigo_terreno,
+                        disponible: true,
+                    },
+                    {
+                        fraccion_bs: 1,
+                        codigo_fraccion: 1,
+                        _id: 0,
+                    }
+                )
+                .sort({ orden: 1 }); // ordenado del menor al mayor
+
+            let sum_varFraccion = 0; // por defecto
+            if (registro_fracciones.length > 0) {
+                for (let i = 0; i < registro_fracciones.length; i++) {
+                    let fraccion_bs = registro_fracciones[i].fraccion_bs;
+                    sum_varFraccion = sum_varFraccion + fraccion_bs;
+
+                    if (sum_varFraccion <= val_fracciones_te) {
+                        // almacenamiento de las fracciones de inmueble que seran vendidas al copropietario interesado
+                        arrayFraccVendidas[i] = registro_fracciones[i].codigo_fraccion;
+                    } else {
+                        break; // salimos del bucle for
+                    }
+                }
+            }
+
+            if (sum_varFraccion === val_fracciones_te) {
+                for (let i = 0; i < arrayFraccVendidas.length; i++) {
+                    // se prodecera a vender las fracciones, respetando el orden de menor a mayor de las fracciones de inmueble disponibles
+                    let codigo_fraccion = arrayFraccVendidas[i];
+
+                    // "new Date()" nos devuelve la fecha actual
+                    await indiceFraccionTerreno.updateOne(
+                        { codigo_fraccion: codigo_fraccion },
+                        {
+                            $set: {
+                                ci_propietario: ci_propietario,
+                                disponible: false,
+                                fecha_compra: new Date(),
+                            },
+                        }
+                    ); // guardamos el registro con el datos modificados
+                }
+
+                //-----------------------------------------------
+                // armado de las fracciones que seran renderizados en el navegador
+
+                for (let i = 0; i < arrayFraccVendidas.length; i++) {
+                    let codigo_fraccion = arrayFraccVendidas[i];
+                    var paquete_fraccion = {
+                        codigo_fraccion: codigo_fraccion,
+                        ci_propietario: ci_propietario,
+                        tipo_navegacion: "administrador", // porque estamos dentro de un controlador administrador
+                    };
+                    let card_fraccion_i = await fraccion_card_adm_cli(paquete_fraccion);
+                    array_card_fracciones[i] = card_fraccion_i;
+                }
+
+                //-----------------------------------------------
+                // valor actualizado de fracciones del cual es ahora dueño el propietario (considerando los que recientemente acaba de comprar)
+
+                let propietario_fracciones = await indiceFraccionTerreno.find(
+                    {
+                        codigo_terreno: codigo_terreno,
+                        ci_propietario: ci_propietario,
+                        disponible: false,
+                    },
+                    {
+                        fraccion_bs: 1,
+                        _id: 0,
+                    }
+                );
+
+                if (propietario_fracciones.length > 0) {
+                    for (let j = 0; j < propietario_fracciones.length; j++) {
+                        let fraccion_bs = propietario_fracciones[j].fraccion_bs;
+                        f_val_propietario = f_val_propietario + fraccion_bs;
+                    }
+                }
 
                 //-----------------------------------------------
                 // guardamos en el historial de acciones
 
-                var accion_administrador = "guarda datos de propietario " + ci_propietario;
+                var accion_administrador =
+                    "COpropietario " +
+                    ci_propietario +
+                    " compra fracciones de terreno " +
+                    codigo_terreno;
 
                 var ci_administrador = req.user.ci_administrador; // extraido de la SESION guardada del administrador
                 var aux_accion_adm = {
@@ -2923,13 +2638,456 @@ controladorAdministradorGeneral.guardarDatosPagosPropietario = async (req, res) 
                 //-----------------------------------------------
 
                 res.json({
+                    array_card_fracciones,
+                    val_fracciones_te,
+                    f_val_propietario,
+                    f_n_propietario: propietario_fracciones.length,
                     exito: "si",
                 });
             } else {
+                // fracciones disponibles insuficientes para vender al requerimiento del propietario
                 res.json({
-                    exito: "no",
+                    exito: "insuficiente",
                 });
             }
+        } else {
+            // si es TRUE, significa que el proyecto esta BLOQUEADO
+            res.json({
+                exito: "denegado",
+            });
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+//===========================================================================
+//===========================================================================
+// PARA GUARDAR VENTA DE FRACCIONES DE INMUEBLE A COPROPIETARIO
+
+controladorAdministradorGeneral.guardarPagoCopropietarioInm = async (req, res) => {
+    // "/laapirest/administracion/general/accion/guardar_pago_copropietario_inm"
+    try {
+        var ci_propietario = req.body.ci_propietario;
+        var codigo_inmueble = req.body.codigo_inmueble;
+        var val_fracciones_inm = req.body.val_fracciones_inm; // Bs
+
+        var arrayFraccVendidas = []; // por defecto
+        var array_card_fracciones = []; // por defecto
+        var f_val_propietario = 0; // por defecto
+
+        var inmuebleEncontrado = await indiceInmueble.findOne(
+            {
+                codigo_inmueble: codigo_inmueble,
+            },
+            {
+                codigo_terreno: 1,
+                codigo_proyecto: 1,
+                _id: 0,
+            }
+        );
+
+        if (inmuebleEncontrado) {
+            var codigo_terreno = inmuebleEncontrado.codigo_terreno;
+            var acceso = await verificadorTerrenoBloqueado(codigo_terreno);
+
+            if (acceso == "permitido") {
+                let registro_fracciones = await indiceFraccionInmueble
+                    .find(
+                        {
+                            codigo_inmueble: codigo_inmueble,
+                            disponible: true,
+                            tipo: "copropietario",
+                        },
+                        {
+                            fraccion_bs: 1,
+                            codigo_fraccion: 1,
+                            _id: 0,
+                        }
+                    )
+                    .sort({ orden: 1 }); // ordenado del menor al mayor
+
+                let sum_varFraccion = 0; // por defecto
+                if (registro_fracciones.length > 0) {
+                    for (let i = 0; i < registro_fracciones.length; i++) {
+                        let fraccion_bs = registro_fracciones[i].fraccion_bs;
+                        sum_varFraccion = sum_varFraccion + fraccion_bs;
+
+                        if (sum_varFraccion <= val_fracciones_inm) {
+                            // almacenamiento de las fracciones de inmueble que seran vendidas al copropietario interesado
+                            arrayFraccVendidas[i] = registro_fracciones[i].codigo_fraccion;
+                        } else {
+                            break; // salimos del bucle for
+                        }
+                    }
+                }
+
+                if (sum_varFraccion === val_fracciones_inm) {
+                    for (let i = 0; i < arrayFraccVendidas.length; i++) {
+                        // se prodecera a vender las fracciones, respetando el orden de menor a mayor de las fracciones de inmueble disponibles
+                        let codigo_fraccion = arrayFraccVendidas[i];
+
+                        // "new Date()" nos devuelve la fecha actual
+                        await indiceFraccionInmueble.updateOne(
+                            { codigo_fraccion: codigo_fraccion },
+                            {
+                                $set: {
+                                    ci_propietario: ci_propietario,
+                                    disponible: false,
+                                    fecha_copropietario: new Date(),
+                                },
+                            }
+                        ); // guardamos el registro con el datos modificados
+                    }
+
+                    //-----------------------------------------------
+                    // armado de las fracciones que seran renderizados en el navegador
+
+                    for (let i = 0; i < arrayFraccVendidas.length; i++) {
+                        let codigo_fraccion = arrayFraccVendidas[i];
+                        var paquete_fraccion = {
+                            codigo_fraccion: codigo_fraccion,
+                            ci_propietario: ci_propietario,
+                            tipo_navegacion: "administrador", // porque estamos dentro de un controlador administrador
+                        };
+                        let card_fraccion_i = await fraccion_card_adm_cli(paquete_fraccion);
+                        array_card_fracciones[i] = card_fraccion_i;
+                    }
+
+                    //-----------------------------------------------
+                    // valor actualizado de fracciones del cual es ahora dueño el propietario (considerando los que recientemente acaba de comprar)
+
+                    let propietario_fracciones = await indiceFraccionInmueble.find(
+                        {
+                            codigo_inmueble: codigo_inmueble,
+                            ci_propietario: ci_propietario,
+                            disponible: false,
+                            tipo: "copropietario",
+                        },
+                        {
+                            fraccion_bs: 1,
+                            _id: 0,
+                        }
+                    );
+
+                    if (propietario_fracciones.length > 0) {
+                        for (let j = 0; j < propietario_fracciones.length; j++) {
+                            let fraccion_bs = propietario_fracciones[j].fraccion_bs;
+                            f_val_propietario = f_val_propietario + fraccion_bs;
+                        }
+                    }
+
+                    //-----------------------------------------------
+                    // guardamos en el historial de acciones
+
+                    var accion_administrador =
+                        "COpropietario " +
+                        ci_propietario +
+                        " compra fracciones de inmueble " +
+                        codigo_inmueble;
+
+                    var ci_administrador = req.user.ci_administrador; // extraido de la SESION guardada del administrador
+                    var aux_accion_adm = {
+                        ci_administrador,
+                        accion_administrador,
+                    };
+                    await guardarAccionAdministrador(aux_accion_adm);
+                    //-----------------------------------------------
+
+                    res.json({
+                        array_card_fracciones,
+                        val_fracciones_inm,
+                        f_val_propietario,
+                        f_n_propietario: propietario_fracciones.length,
+                        exito: "si",
+                    });
+                } else {
+                    // fracciones disponibles insuficientes para vender al requerimiento del propietario
+                    res.json({
+                        exito: "insuficiente",
+                    });
+                }
+            } else {
+                // si es TRUE, significa que el proyecto esta BLOQUEADO
+                res.json({
+                    exito: "denegado",
+                });
+            }
+        } else {
+            res.json({
+                exito: "no",
+            });
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+//===========================================================================
+//===========================================================================
+// PARA ELIMINAR COPROPIETARIO DE LAS FRACCIONES DE TERRENO O FRACCIONES DE INMUEBLE
+// solo son eliminados los datos que relaciona al copropietario con las fracciones. (No se eliminan los datos personales del copropietario)
+
+controladorAdministradorGeneral.eliminarCopropietario = async (req, res) => {
+    // post : "/laapirest/administracion/general/accion/eliminar_copropietario"
+
+    try {
+        var ci_propietario = req.body.ci_propietario;
+        var codigo_objetivo = req.body.codigo_objetivo; // codigo_terreno o codigo_inmueble
+        var clase = req.body.clase; // "inmueble" || "terreno"
+
+        if (clase === "inmueble") {
+            let codigo_inmueble = codigo_objetivo;
+            let registroInmueble = await indiceInmueble.findOne(
+                {
+                    codigo_inmueble: codigo_inmueble,
+                },
+                {
+                    codigo_terreno: 1,
+                }
+            );
+
+            if (registroInmueble) {
+                var codigo_terreno = registroInmueble.codigo_terreno;
+            }
+        } else {
+            var codigo_terreno = codigo_objetivo;
+        }
+
+        var acceso = await verificadorTerrenoBloqueado(codigo_terreno);
+
+        if (acceso == "permitido") {
+            const storage = getStorage();
+
+            //--------------------------------------------------------
+            // ELIMINACION DE LOS DOCUMENTOS PRIVADOS
+
+            if (clase === "inmueble") {
+                var registroDocumentosPrivados = await indiceDocumentos.find({
+                    codigo_inmueble: codigo_objetivo,
+                    clase_documento: "Propietario",
+                    ci_propietario: ci_propietario,
+                });
+            }
+
+            if (clase === "terreno") {
+                var registroDocumentosPrivados = await indiceDocumentos.find({
+                    codigo_terreno: codigo_objetivo,
+                    clase_documento: "Propietario",
+                    ci_propietario: ci_propietario,
+                });
+            }
+
+            if (registroDocumentosPrivados.length > 0) {
+                // eliminamos los ARCHIVOS DOCUMENTOS PDF uno por uno (sean publicos o privados)
+                for (let i = 0; i < registroDocumentosPrivados.length; i++) {
+                    /*
+                        let documentoNombreExtension =
+                            registroDocumentosPrivados[i].codigo_documento + ".pdf";
+                        // eliminamos el ARCHIVO DOCUMENTO DE LA CARPETA DONDE ESTA GUARDADA
+                        await fs.unlink(
+                            pache.resolve("./src/publico/subido/" + documentoNombreExtension)
+                        ); // "+" es para concatenar
+                        */
+
+                    //--------------------------------------------------
+
+                    //const storage = getStorage();
+
+                    var nombre_y_ext = registroDocumentosPrivados[i].codigo_documento + ".pdf";
+
+                    // para encontrar en la carpeta "subido" en firebase con el nombre y la extension de la imagen incluida
+                    var direccionActualImagen = "subido/" + nombre_y_ext;
+
+                    // Crear una referencia al archivo que se eliminará
+                    var desertRef = ref(storage, direccionActualImagen);
+
+                    // Eliminar el archivo y esperar la promesa
+                    await deleteObject(desertRef);
+
+                    // Archivo eliminado con éxito
+                    //console.log("Archivo eliminado DE FIREBASE con éxito");
+
+                    //--------------------------------------------------
+                }
+                // luego de eliminar todos los ARCHIVOS DOCUMENTO, procedemos a ELIMINARLO DE LA BASE DE DATOS. Esto para ahorrar espacio en el servidor
+
+                if (clase === "inmueble") {
+                    await indiceDocumentos.deleteMany({
+                        codigo_inmueble: codigo_objetivo,
+                        clase_documento: "Propietario",
+                        ci_propietario: ci_propietario,
+                    }); // "deleteMany" para que elimine TODOS los que coinciden con las condiciones
+                }
+
+                if (clase === "terreno") {
+                    await indiceDocumentos.deleteMany({
+                        codigo_terreno: codigo_objetivo,
+                        clase_documento: "Propietario",
+                        ci_propietario: ci_propietario,
+                    }); // "deleteMany" para que elimine TODOS los que coinciden con las condiciones
+                }
+            }
+
+            //----------------------------------------------------
+            // eliminacion de los registros ci_propietario de las fracciones (no se eliminan las fracciones, solo ci_propietario)
+
+            if (clase === "terreno") {
+                var registrosFraccionesTe = await indiceFraccionTerreno.find({
+                    codigo_terreno: codigo_objetivo,
+                    ci_propietario: ci_propietario,
+                    disponible: false,
+                });
+
+                if (registrosFraccionesTe.length > 0) {
+                    // actualizaremos TODOS los documentos que coinciden con el filtro
+                    await indiceFraccionTerreno.updateMany(
+                        {
+                            codigo_terreno: codigo_objetivo,
+                            ci_propietario: ci_propietario,
+                            disponible: false,
+                        },
+                        {
+                            $set: {
+                                disponible: true,
+                                ci_propietario: "",
+                                fecha_compra: null, // LIMPIA el valor del campo (NO LO ELIMINA)
+                            },
+                        }
+                    );
+                    // PARA fecha_compra no podria ponerse fecha_compra: "", porque fecha_compra esta definido en la base de datos como type: Date, es por eso que lo limpiamos usando fecha_compra: null
+                }
+
+                //-------------------------------------------------------
+                // fracciones de terreno utilizados para adquirir fracciones de inmueble tipo "copropietario"
+
+                let registrosFraccionesInm_a = await indiceFraccionInmueble.find(
+                    {
+                        codigo_terreno: codigo_objetivo,
+                        ci_propietario: ci_propietario,
+                        tipo: "copropietario",
+                        disponible: false,
+                    },
+                    {
+                        codigo_fraccion: 1,
+                        codigo_inmueble: 1,
+                        orden: 1,
+                    }
+                );
+
+                if (registrosFraccionesInm_a.length > 0) {
+                    for (let i = 0; i < registrosFraccionesInm_a.length; i++) {
+                        let codigo_fraccion_i = registrosFraccionesInm_a[i].codigo_fraccion;
+                        let codigo_original_i =
+                            registrosFraccionesInm_a[i].codigo_inmueble +
+                            registrosFraccionesInm_a[i].orden;
+
+                        // actualizamos la fraccion devolviendole su codigo de fraccion inmueble original.
+                        await indiceFraccionInmueble.updateOne(
+                            { codigo_fraccion: codigo_fraccion_i },
+                            {
+                                $set: {
+                                    codigo_fraccion: codigo_original_i,
+                                    disponible: true,
+                                    ci_propietario: "",
+                                    fecha_copropietario: null, // LIMPIA el valor del campo (NO LO ELIMINA)
+                                },
+                            }
+                        );
+                    }
+                }
+
+                //--------------------------------------------------------
+                // fracciones de terreno convertidos en fracciones de inmueble como tipo "inversionista"
+                // ELIMINAMOS estos registros
+
+                let registrosFraccionesInm_b = await indiceFraccionInmueble.find({
+                    codigo_terreno: codigo_objetivo,
+                    ci_propietario: ci_propietario,
+                    tipo: "inversionista",
+                });
+
+                if (registrosFraccionesInm_b.length > 0) {
+                    await indiceFraccionInmueble.deleteMany({
+                        codigo_terreno: codigo_objetivo,
+                        ci_propietario: ci_propietario,
+                        tipo: "inversionista",
+                    }); // "deleteMany" para que elimine TODOS los que coinciden con las condiciones
+                }
+            } // FIN CLASE TERRENO
+
+            if (clase === "inmueble") {
+                
+                //-------------------------------------------------------
+                // fracciones de inmueble del tipo "copropietario"
+
+                let registrosFraccionesInm_a = await indiceFraccionInmueble.find(
+                    {
+                        codigo_inmueble: codigo_objetivo,
+                        ci_propietario: ci_propietario,
+                        tipo: "copropietario",
+                        disponible: false,
+                    },
+                    {
+                        codigo_fraccion: 1,
+                        codigo_inmueble: 1,
+                        orden: 1,
+                    }
+                );
+
+                if (registrosFraccionesInm_a.length > 0) {
+                    for (let i = 0; i < registrosFraccionesInm_a.length; i++) {
+                        let codigo_fraccion_i = registrosFraccionesInm_a[i].codigo_fraccion;
+                        let codigo_original_i =
+                            registrosFraccionesInm_a[i].codigo_inmueble +
+                            registrosFraccionesInm_a[i].orden;
+
+                        // actualizamos la fraccion devolviendole su codigo de fraccion inmueble original. PARA ESTE CASO NO ES NECESARIO, PERO SE LO HACE SOLO POR PRECAUSION
+                        await indiceFraccionInmueble.updateOne(
+                            { codigo_fraccion: codigo_fraccion_i },
+                            {
+                                $set: {
+                                    codigo_fraccion: codigo_original_i,
+                                    disponible: true,
+                                    ci_propietario: "",
+                                    fecha_copropietario: null, // LIMPIA el valor del campo (NO LO ELIMINA)
+                                },
+                            }
+                        );
+                    }
+                }
+
+                //--------------------------------------------------------
+                // NO EXISTEN FRACCIONES DE INMUEBLE DEL TIPO "inversionista", porque esto solo corresponde a fracciones de terreno
+
+                
+            } // FIN CLASE INMUEBLE
+
+            //------------------------------------------------------------------
+            // guardamos en el historial de acciones
+            var ci_administrador = req.user.ci_administrador; // extraido de la SESION guardada del administrador
+            var accion_administrador =
+                "El COpropietario: " +
+                ci_propietario +
+                " de " + clase + ": "
+                codigo_objetivo +
+                " fue eliminado";
+            var aux_accion_adm = {
+                ci_administrador,
+                accion_administrador,
+            };
+            await guardarAccionAdministrador(aux_accion_adm);
+            //-------------------------------------------------------------------
+
+            res.json({
+                exito: "si",
+            });
+
+        } else {
+            // si el acceso es denegado
+            res.json({
+                exito: "denegado",
+            });
         }
     } catch (error) {
         console.log(error);

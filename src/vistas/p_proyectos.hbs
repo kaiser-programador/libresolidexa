@@ -108,15 +108,11 @@ convocatoria: terrenos
         {{> adm_cli_card_inmueble}}
         {{/each}}
 
-        {{#each adm_cli_reserva}}
-        {{> adm_cli_card_proyecto}}
+        {{#each adm_cli_convocatoria}}
+        {{> adm_cli_card_terreno}}
         {{/each}}
 
-        {{#each adm_cli_pago}}
-        {{> adm_cli_card_proyecto}}
-        {{/each}}
-
-        {{#each adm_cli_aprobacion}}
+        {{#each adm_cli_reservacion}}
         {{> adm_cli_card_proyecto}}
         {{/each}}
 
@@ -126,10 +122,6 @@ convocatoria: terrenos
 
         {{#each adm_cli_construido}}
         {{> adm_cli_card_proyecto}}
-        {{/each}}
-
-        {{#each adm_cli_convocatoria}}
-        {{> adm_cli_card_terreno}}
         {{/each}}
 
     </div>

@@ -4,7 +4,7 @@
 {{!-- datos elementales --}}
 <div id="id_tipo_ventana" data-tipo_ventana="normal"></div>
 
-{{!-- data-objetivo_tipo = terreno, inmueble, proyecto, propietario --}}
+{{!-- data-objetivo_tipo = fraccion, terreno, inmueble, proyecto, propietario --}}
 <div id="id_objetivo_tipo" data-objetivo_tipo="inmueble"></div>
 <div id="id_objetivo_codigo" data-objetivo_codigo="{{codigo_inmueble}}"></div>
 {{!-- ------------------------- --}}
@@ -41,6 +41,18 @@
     <li class="nav-item">
         <a href="/inmueble/{{codigo_inmueble}}/descripcion" class="nav-link" id="descripcion_inm-tab" role="tab"
             aria-controls="descripcion_inm" aria-selected="false">Descripción</a>
+    </li>
+    {{/if}}
+
+    {{#if fracciones_inm}}
+    <li class="nav-item">
+        <a href="/inmueble/{{codigo_inmueble}}/fracciones" class="nav-link active" id="fracciones_inm-tab"
+            role="tab" aria-controls="fracciones_inm" aria-selected="true">Fracciones</a>
+    </li>
+    {{else}}
+    <li class="nav-item">
+        <a href="/inmueble/{{codigo_inmueble}}/fracciones" class="nav-link" id="fracciones_inm-tab" role="tab"
+            aria-controls="fracciones_inm" aria-selected="false">Fracciones</a>
     </li>
     {{/if}}
 
@@ -95,20 +107,6 @@
     </li>
     {{/if}}
 
-    {{#if global_inm.existe_calculadora}}
-    {{#if calculadora_inm}}
-    <li class="nav-item">
-        <a href="/inmueble/{{codigo_inmueble}}/calculadora" class="nav-link active"
-            id="calculadora_inm-tab" role="tab" aria-controls="calculadora_inm" aria-selected="true">Calculadora</a>
-    </li>
-    {{else}}
-    <li class="nav-item">
-        <a href="/inmueble/{{codigo_inmueble}}/calculadora" class="nav-link" id="calculadora_inm-tab"
-            role="tab" aria-controls="calculadora_inm" aria-selected="false">Calculadora</a>
-    </li>
-    {{/if}}
-    {{/if}}
-
     {{#if global_inm.existe_inversor_inmueble}}
     {{#if inversor_inmueble}}
     <li class="nav-item">
@@ -123,12 +121,47 @@
     {{/if}}
     {{/if}}
 
+    {{#if global_inm.existe_copropietario_inmueble}}
+    {{#if copropietario_inmueble}}
+    <li class="nav-item">
+        <a href="/inmueble/{{codigo_inmueble}}/copropietario" class="nav-link active" id="copropietario_inmueble-tab"
+            role="tab" aria-controls="copropietario_inmueble" aria-selected="true">Copropietario</a>
+    </li>
+    {{else}}
+    <li class="nav-item">
+        <a href="/inmueble/{{codigo_inmueble}}/copropietario" class="nav-link" id="copropietario_inmueble-tab" role="tab"
+            aria-controls="copropietario_inmueble" aria-selected="false">Copropietario</a>
+    </li>
+    {{/if}}
+    {{/if}}
+
+    {{#if global_inm.existe_calculadora_inmueble}}
+    {{#if calculadora_inm}}
+    <li class="nav-item">
+        <a href="/inmueble/{{codigo_inmueble}}/calculadora" class="nav-link active"
+            id="calculadora_inm-tab" role="tab" aria-controls="calculadora_inm" aria-selected="true">Calculadora</a>
+    </li>
+    {{else}}
+    <li class="nav-item">
+        <a href="/inmueble/{{codigo_inmueble}}/calculadora" class="nav-link" id="calculadora_inm-tab"
+            role="tab" aria-controls="calculadora_inm" aria-selected="false">Calculadora</a>
+    </li>
+    {{/if}}
+    {{/if}}
+
 </ul>
 
 {{#if descripcion_inm}}
 <span id="tipo_pestana_inm" data-id="descripcion_inm"></span>
-<div class="container mt-3">
+<div class="container">
     {{> cli_inm_descri}}
+</div>
+{{/if}}
+
+{{#if fracciones_inm}}
+<span id="tipo_pestana_inm" data-id="normal"></span>
+<div class="container">
+    {{> cli_inm_fracciones}}
 </div>
 {{/if}}
 
@@ -169,10 +202,36 @@
 </div>
 {{/if}}
 
+{{#if calculadora_inm}}
+<span id="tipo_pestana_inm" data-id="calculadora_inm"></span>
+<div class="container">
+    {{#if inm_fraccionado}}
+        {{!-- para mostrar calculador de inmuebles fraccionados --}}
+        {{> cli_inm_calculadora_fraccion}}
+    {{else}}
+        {{!-- para mostrar calculador de inmuebles enteros --}}
+        {{> cli_inm_calculadora}}
+    {{/if}}
+</div>
+{{/if}}
+
 {{#if inversor_inmueble}}
 <span id="tipo_pestana_inm" data-id="inversor_inm"></span>
 <div class="container">
     {{> cli_inm_inversor}}
+</div>
+{{/if}}
+
+{{#if copropietario_inmueble}}
+<span id="tipo_pestana_inm" data-id="copropietario_inm"></span>
+<div class="container">
+    {{#if adquirir_f_inm}}
+        {{!-- para mostrar la opcion de comprar fracciones del inmueble --}}
+        {{> cli_inm_fracterinm}}
+    {{else}}
+        {{!-- para mostrar al copropietario de las fracciones del inmueble --}}
+        {{> cli_inm_copropietario}}
+    {{/if}}
 </div>
 {{/if}}
 

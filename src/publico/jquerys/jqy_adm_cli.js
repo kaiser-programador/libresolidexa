@@ -24,11 +24,11 @@ $("#selector_ciudad_busq_req").change(function () {
 });
 
 /************************************************************************************* */
-// SELECTOR DE CIUDAD EN OPCIONES DE BUSQUEDA DE PROYECTOS LADO DEL CLIENTE
-$("#selector_ciudad_busq_py").change(function () {
+// SELECTOR DE CIUDAD EN OPCIONES DE BUSQUEDA DE FRACCIONES TERRENO LADO DEL CLIENTE
+$("#selector_ciudad_busq_frac_te").change(function () {
     var $seleccionado = $(this);
     var ciudad = $seleccionado.val();
-    $("#ciudad_elegida_py").val(ciudad); // para el hidden
+    $("#ciudad_elegida_frac_te").val(ciudad); // para el hidden
 });
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -346,50 +346,6 @@ function buscarRequerimientos() {
                 <strong>No existen resultados!</strong>
             </div>`
         );
-    }
-}
-
-// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// PARA BUSCAR DOCUMENTOS PRIVADOS DENTRO DE LA TABLA
-
-$("#buscar_inmueble_inv").click(function (e) {
-    buscaCodigoInmueble();
-});
-
-$("#codigo_inmueble_inv").keyup(function (e) {
-    buscaCodigoInmueble();
-});
-
-function buscaCodigoInmueble() {
-    let inmueble_buscar_tabla = $("#codigo_inmueble_inv").val();
-    $(".alerta_busqueda").remove(); // borramos los mensajes alert si es que existiesen por seguridad
-
-    let n_filas = $(".fila_registro").length;
-    if (n_filas > 0) {
-        $(".fila_registro").attr("hidden", true); // ocultamos todas las filas de la tabla
-        let n_encontrados = 0;
-        for (let i = 0; i < n_filas; i++) {
-            // let aux_codigo_inm = $('.fila_registro .nom_doc').eq(i).attr('data-id');
-            let aux_codigo_inm = $(".fila_registro .cod_inm").eq(i).attr("data-id");
-
-            // if (aux_codigo_inm == inmueble_buscar_tabla) {
-            if (aux_codigo_inm.indexOf(inmueble_buscar_tabla) != -1) {
-                $(".fila_registro").eq(i).attr("hidden", false); // mostramos la fila
-                n_encontrados = n_encontrados + 1;
-            }
-        }
-        if (n_encontrados == 0) {
-            // si no se encontro ningun resultado
-            // con "after" el nuevo contenido se pondra DESPUES y al MISMO NIVEL
-            $(".referencia_alerta").after(
-                `<div class="alerta_busqueda alert alert-danger mt-3">
-                    <button type="button" class="close" data-dismiss="alert">
-                        <span>&times;</span>
-                    </button>
-                    <strong>Inmueble no encontrado!</strong>
-                </div>`
-            );
-        }
     }
 }
 

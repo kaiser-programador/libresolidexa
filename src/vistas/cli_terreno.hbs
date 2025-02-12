@@ -35,6 +35,19 @@
         </li>
         {{/if}}
 
+        {{#if fracciones_te}}
+        <li class="nav-item">
+            <a href="/terreno/{{codigo_terreno}}/fracciones" class="nav-link active"
+                id="fracciones_te-tab" role="tab" aria-controls="fracciones_te"
+                aria-selected="true">Fracciones</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/terreno/{{codigo_terreno}}/fracciones" class="nav-link" id="fracciones_te-tab"
+                role="tab" aria-controls="fracciones_te" aria-selected="false">Fracciones</a>
+        </li>
+        {{/if}}
+
         {{#if proyectos_te}}
         <li class="nav-item">
             <a href="/terreno/{{codigo_terreno}}/proyectos" class="nav-link active" id="proyectos_te-tab"
@@ -47,6 +60,34 @@
         </li>
         {{/if}}
 
+        {{#if global_te.existe_copropietario_terreno}}
+        {{#if copropietario_te}}
+        <li class="nav-item">
+            <a href="/terreno/{{codigo_terreno}}/copropietario" class="nav-link active" id="copropietario_te-tab"
+                role="tab" aria-controls="copropietario_te" aria-selected="true">Copropietario</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/terreno/{{codigo_terreno}}/copropietario" class="nav-link" id="copropietario_te-tab"
+                role="tab" aria-controls="copropietario_te" aria-selected="false">Copropietario</a>
+        </li>
+        {{/if}}
+        {{/if}}
+
+        {{#if global_te.existe_calculadora_terreno}}
+        {{#if calculadora_te}}
+        <li class="nav-item">
+            <a href="/terreno/{{codigo_terreno}}/calculadora" class="nav-link active" id="calculadora_te-tab"
+                role="tab" aria-controls="calculadora_te" aria-selected="true">Calculadora</a>
+        </li>
+        {{else}}
+        <li class="nav-item">
+            <a href="/terreno/{{codigo_terreno}}/calculadora" class="nav-link" id="calculadora_te-tab"
+                role="tab" aria-controls="calculadora_te" aria-selected="false">Calculadora</a>
+        </li>
+        {{/if}}
+        {{/if}}
+
     </ul>
 </div>
 
@@ -57,9 +98,27 @@
 </div>
 {{/if}}
 
+{{#if fracciones_te}}
+<div class="contenido container-fluid">
+    {{> cli_te_fracciones}}
+</div>
+{{/if}}
+
 {{#if proyectos_te}}
 <div class="contenido container-fluid">
     {{> cli_te_proyectos}}
+</div>
+{{/if}}
+
+{{#if copropietario_te}}
+<div class="contenido container-fluid">
+    {{> cli_te_copropietario}}
+</div>
+{{/if}}
+
+{{#if calculadora_te}}
+<div class="contenido container">
+    {{> cli_te_calculadora}}
 </div>
 {{/if}}
 

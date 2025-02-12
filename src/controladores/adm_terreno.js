@@ -19,7 +19,7 @@ const {
     indiceInversiones,
     indiceGuardados,
     indiceRequerimientos,
-    indiceImagenesSistema,
+    indiceFraccionTerreno,
 } = require("../modelos/indicemodelo");
 
 const {
@@ -27,9 +27,11 @@ const {
     verificadorLlavesMaestras,
     guardarAccionAdministrador,
     proyecto_card_adm_cli,
+    fraccion_card_adm_cli,
 } = require("../ayudas/funcionesayuda_1");
 
-const { cabezeras_adm_cli, pie_pagina_adm } = require("../ayudas/funcionesayuda_2");
+const { numero_punto_coma } = require("../ayudas/funcionesayuda_3");
+const { cabezeras_adm_cli } = require("../ayudas/funcionesayuda_2");
 
 const controladorAdmTerreno = {};
 
@@ -111,24 +113,7 @@ controladorAdmTerreno.renderizarVentanaTerreno = async (req, res) => {
             var info_terreno = {};
             info_terreno.cab_te_adm = true;
 
-            //info_terreno.estilo_cabezera = "cabezera_estilo_terreno";
-
-            //----------------------------------------------------
-            // para la url de la cabezera
-            var url_cabezera = ""; // vacio por defecto
-            const registro_cabezera = await indiceImagenesSistema.findOne(
-                { tipo_imagen: "cabecera_terreno" },
-                {
-                    url: 1,
-                    _id: 0,
-                }
-            );
-
-            if (registro_cabezera) {
-                url_cabezera = registro_cabezera.url;
-            }
-
-            info_terreno.url_cabezera = url_cabezera;
+            info_terreno.estilo_cabezera = "cabezera_estilo_terreno";
 
             //----------------------------------------------------
 
@@ -137,7 +122,6 @@ controladorAdmTerreno.renderizarVentanaTerreno = async (req, res) => {
             var aux_cabezera = {
                 codigo_objetivo: codigo_terreno,
                 tipo: "terreno",
-                lado: "administrador",
             };
 
             info_terreno.es_terreno = true; // para menu navegacion comprimido
@@ -145,13 +129,18 @@ controladorAdmTerreno.renderizarVentanaTerreno = async (req, res) => {
             var cabezera_adm = await cabezeras_adm_cli(aux_cabezera);
             info_terreno.cabezera_adm = cabezera_adm;
 
-            var pie_pagina = await pie_pagina_adm();
-            info_terreno.pie_pagina_adm = pie_pagina;
-
             if (tipo_ventana_terreno == "descripcion") {
                 var contenido_terreno = await terreno_descripcion(codigo_terreno);
                 info_terreno.descripcion_terreno = true; // para pestaña y ventana apropiada para terreno
 
+                info_terreno.contenido_terreno = contenido_terreno;
+
+                res.render("adm_terreno", info_terreno);
+            }
+
+            if (tipo_ventana_terreno == "fracciones") {
+                var contenido_terreno = await terreno_fracciones(codigo_terreno);
+                info_terreno.fracciones_terreno = true; // para pestaña y ventana apropiada para terreno
                 info_terreno.contenido_terreno = contenido_terreno;
 
                 res.render("adm_terreno", info_terreno);
@@ -193,6 +182,15 @@ controladorAdmTerreno.renderizarVentanaTerreno = async (req, res) => {
                 res.render("adm_terreno", info_terreno);
             }
 
+            // para COPROPIETARIOS de TERRENO
+            if (tipo_ventana_terreno == "copropietario") {
+                var contenido = await terreno_copropietario(codigo_terreno);
+                info_terreno.copropietario_terreno = true; // para resaltar la pestaña navegacion
+                info_terreno.contenido = contenido;
+
+                res.render("adm_terreno", info_terreno);
+            }
+
             if (tipo_ventana_terreno == "estados") {
                 var contenido_terreno = await terreno_estados(codigo_terreno);
                 info_terreno.estados_terreno = true; // para pestaña y ventana apropiada para terreno
@@ -218,21 +216,22 @@ async function terreno_descripcion(codigo_terreno) {
         const registro_terreno = await indiceTerreno.findOne(
             { codigo_terreno: codigo_terreno },
             {
-                proyecto_ganador: 1,
+                nombre: 1,
                 bandera_ciudad: 1,
-                fecha_inicio_reserva: 1,
-                fecha_fin_reserva: 1,
-                fecha_inicio_aprobacion: 1,
-                fecha_fin_aprobacion: 1,
-                fecha_inicio_pago: 1,
-                fecha_fin_pago: 1,
+
+                fecha_inicio_convocatoria: 1,
+                fecha_fin_convocatoria: 1,
+                fecha_inicio_anteproyecto: 1,
+                fecha_fin_anteproyecto: 1,
+                fecha_inicio_reservacion: 1,
+                fecha_fin_reservacion: 1,
                 fecha_inicio_construccion: 1,
                 fecha_fin_construccion: 1,
+
                 ciudad: 1,
                 provincia: 1,
                 direccion: 1,
-                precio_sus: 1,
-                anteproyectos_maximo: 1,
+                precio_bs: 1,
                 superficie: 1,
                 maximo_pisos: 1,
                 convocatoria: 1,
@@ -262,52 +261,52 @@ async function terreno_descripcion(codigo_terreno) {
 
             // AQUI no existe necesidad de convertir los numeros a formato 1.000,02 (solo se hara para cliente)
             // solo es necesario convertir la fecha MONGO a fecha JS (NOTE como con "aux_objeto" que fue reconvertido a OBJETO, ahora si es posible añadir propiedades a este objeto)
-            if (aux_objeto.fecha_inicio_reserva) {
-                let arrayFecha = aux_objeto.fecha_inicio_reserva.split("T");
+            if (aux_objeto.fecha_inicio_reservacion) {
+                let arrayFecha = aux_objeto.fecha_inicio_reservacion.split("T");
                 // ahora con split lo separamos, quedandonos con el formato que intereza "año-mes-dia"
-                aux_objeto.fecha_inicio_reserva = arrayFecha[0]; // nos devolvera "2010-10-10" (año-mes-dia) y eso si se puede pintar en un input tipo "date"
+                aux_objeto.fecha_inicio_reservacion = arrayFecha[0]; // nos devolvera "2010-10-10" (año-mes-dia) y eso si se puede pintar en un input tipo "date"
             } else {
-                aux_objeto.fecha_inicio_reserva = "";
+                aux_objeto.fecha_inicio_reservacion = "";
             }
 
-            if (aux_objeto.fecha_fin_reserva) {
-                let arrayFecha = aux_objeto.fecha_fin_reserva.split("T");
+            if (aux_objeto.fecha_fin_reservacion) {
+                let arrayFecha = aux_objeto.fecha_fin_reservacion.split("T");
                 // ahora con split lo separamos, quedandonos con el formato que intereza "año-mes-dia"
-                aux_objeto.fecha_fin_reserva = arrayFecha[0]; // nos devolvera "2010-10-10" y eso si se puede pintar en un input tipo "date"
+                aux_objeto.fecha_fin_reservacion = arrayFecha[0]; // nos devolvera "2010-10-10" y eso si se puede pintar en un input tipo "date"
             } else {
-                aux_objeto.fecha_fin_reserva = "";
+                aux_objeto.fecha_fin_reservacion = "";
             }
 
-            if (aux_objeto.fecha_inicio_aprobacion) {
-                let arrayFecha = aux_objeto.fecha_inicio_aprobacion.split("T");
+            if (aux_objeto.fecha_inicio_convocatoria) {
+                let arrayFecha = aux_objeto.fecha_inicio_convocatoria.split("T");
                 // ahora con split lo separamos, quedandonos con el formato que intereza "año-mes-dia"
-                aux_objeto.fecha_inicio_aprobacion = arrayFecha[0]; // nos devolvera "2010-10-10" (año-mes-dia) y eso si se puede pintar en un input tipo "date"
+                aux_objeto.fecha_inicio_convocatoria = arrayFecha[0]; // nos devolvera "2010-10-10" (año-mes-dia) y eso si se puede pintar en un input tipo "date"
             } else {
-                aux_objeto.fecha_inicio_aprobacion = "";
+                aux_objeto.fecha_inicio_convocatoria = "";
             }
 
-            if (aux_objeto.fecha_fin_aprobacion) {
-                let arrayFecha = aux_objeto.fecha_fin_aprobacion.split("T");
+            if (aux_objeto.fecha_fin_convocatoria) {
+                let arrayFecha = aux_objeto.fecha_fin_convocatoria.split("T");
                 // ahora con split lo separamos, quedandonos con el formato que intereza "año-mes-dia"
-                aux_objeto.fecha_fin_aprobacion = arrayFecha[0]; // nos devolvera "2010-10-10" y eso si se puede pintar en un input tipo "date"
+                aux_objeto.fecha_fin_convocatoria = arrayFecha[0]; // nos devolvera "2010-10-10" y eso si se puede pintar en un input tipo "date"
             } else {
-                aux_objeto.fecha_fin_aprobacion = "";
+                aux_objeto.fecha_fin_convocatoria = "";
             }
 
-            if (aux_objeto.fecha_inicio_pago) {
-                let arrayFecha = aux_objeto.fecha_inicio_pago.split("T");
+            if (aux_objeto.fecha_inicio_anteproyecto) {
+                let arrayFecha = aux_objeto.fecha_inicio_anteproyecto.split("T");
                 // ahora con split lo separamos, quedandonos con el formato que intereza "año-mes-dia"
-                aux_objeto.fecha_inicio_pago = arrayFecha[0]; // nos devolvera "2010-10-10" (año-mes-dia) y eso si se puede pintar en un input tipo "date"
+                aux_objeto.fecha_inicio_anteproyecto = arrayFecha[0]; // nos devolvera "2010-10-10" (año-mes-dia) y eso si se puede pintar en un input tipo "date"
             } else {
-                aux_objeto.fecha_inicio_pago = "";
+                aux_objeto.fecha_inicio_anteproyecto = "";
             }
 
-            if (aux_objeto.fecha_fin_pago) {
-                let arrayFecha = aux_objeto.fecha_fin_pago.split("T");
+            if (aux_objeto.fecha_fin_anteproyecto) {
+                let arrayFecha = aux_objeto.fecha_fin_anteproyecto.split("T");
                 // ahora con split lo separamos, quedandonos con el formato que intereza "año-mes-dia"
-                aux_objeto.fecha_fin_pago = arrayFecha[0]; // nos devolvera "2010-10-10" y eso si se puede pintar en un input tipo "date"
+                aux_objeto.fecha_fin_anteproyecto = arrayFecha[0]; // nos devolvera "2010-10-10" y eso si se puede pintar en un input tipo "date"
             } else {
-                aux_objeto.fecha_fin_pago = "";
+                aux_objeto.fecha_fin_anteproyecto = "";
             }
 
             if (aux_objeto.fecha_inicio_construccion) {
@@ -334,6 +333,55 @@ async function terreno_descripcion(codigo_terreno) {
         console.log(error);
     }
 }
+//------------------------------------------------------------------
+
+async function terreno_fracciones(codigo_terreno) {
+    try {
+        var fracciones_terreno = await indiceFraccionTerreno
+            .find(
+                { codigo_terreno: codigo_terreno },
+                {
+                    codigo_fraccion: 1,
+                    _id: 0,
+                }
+            )
+            .sort({ orden: 1 }); // ordenado del menor al mayor
+
+        if (fracciones_terreno.length > 0) {
+            var crear_fracciones = false;
+            var eliminar_fracciones = true;
+            var terreno_fracciones = []; // vacio de inicio
+
+            for (let i = 0; i < fracciones_terreno.length; i++) {
+                var codigo_fraccion_i = fracciones_terreno[i].codigo_fraccion;
+
+                var paquete_fraccion = {
+                    codigo_fraccion: codigo_fraccion_i,
+                    ci_propietario: "ninguno",
+                    tipo_navegacion: "administrador", // porque estamos dentro de un controlador administrador
+                };
+
+                var card_fraccion_i = await fraccion_card_adm_cli(paquete_fraccion);
+                terreno_fracciones[i] = card_fraccion_i;
+            }
+        } else {
+            var crear_fracciones = true; // por defecto
+            var eliminar_fracciones = false; // por defecto
+            var terreno_fracciones = []; // vacio
+        }
+
+        var contenido_fracciones = {
+            crear_fracciones,
+            eliminar_fracciones,
+            terreno_fracciones,
+        };
+
+        return contenido_fracciones;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 //------------------------------------------------------------------
 async function terreno_imagenes(codigo_terreno) {
     try {
@@ -369,7 +417,7 @@ async function terreno_imagenes(codigo_terreno) {
                         codigo_imagen: aux_objeto[i].codigo_imagen,
                         extension_imagen: aux_objeto[i].extension_imagen,
                         codigo_terreno,
-                        url:aux_objeto[i].url,
+                        url: aux_objeto[i].url,
                     };
                 } else {
                     posi_e = posi_e + 1;
@@ -378,7 +426,7 @@ async function terreno_imagenes(codigo_terreno) {
                         codigo_imagen: aux_objeto[i].codigo_imagen,
                         extension_imagen: aux_objeto[i].extension_imagen,
                         codigo_terreno,
-                        url:aux_objeto[i].url,
+                        url: aux_objeto[i].url,
                     };
                 }
             }
@@ -460,6 +508,104 @@ async function terreno_proyectos(codigo_terreno) {
 }
 
 //------------------------------------------------------------------
+async function terreno_copropietario(codigo_terreno) {
+    try {
+        // valores por defecto
+        var fracciones_disponibles = [];
+        var existen_disponibles = false;
+        var precio_terreno = 0;
+
+        var ti_f_val = 0;
+        var ti_f_val_render = "0";
+
+        var ti_f_d_n = 0;
+        var ti_f_d_n_render = "0";
+        var ti_f_d_val = 0;
+        var ti_f_d_val_render = "0";
+        var ti_f_p_render = "0"; // %
+
+        //-------------------------------------------------------
+        var fracciones_terreno = await indiceFraccionTerreno
+            .find(
+                { codigo_terreno: codigo_terreno },
+                {
+                    fraccion_bs: 1,
+                    disponible: 1, // true o false
+                    _id: 0,
+                }
+            )
+            .sort({ orden: 1 }); // ordenado del menor al mayor
+
+        if (fracciones_terreno.length > 0) {
+            let k = -1;
+            for (let i = 0; i < fracciones_terreno.length; i++) {
+                let fraccion_bs = fracciones_terreno[i].fraccion_bs;
+                let disponible = fracciones_terreno[i].disponible;
+
+                if (disponible === true) {
+                    ti_f_d_n = ti_f_d_n + 1;
+                    ti_f_d_val = ti_f_d_val + fraccion_bs;
+                    k = k + 1;
+                    fracciones_disponibles[k] = {
+                        fraccion_bs: fraccion_bs,
+                    };
+                } else {
+                    ti_f_val = ti_f_val + fraccion_bs;
+                }
+            }
+
+            ti_f_val_render = numero_punto_coma(ti_f_val);
+
+            if (ti_f_d_n > 0) {
+                ti_f_d_n_render = numero_punto_coma(ti_f_d_n);
+                ti_f_d_val_render = numero_punto_coma(ti_f_d_val);
+
+                existen_disponibles = true;
+
+                //--------------------------------------------------
+                // para precio del terreno
+
+                let registro_terreno = await indiceTerreno.findOne(
+                    {
+                        codigo_terreno: codigo_terreno,
+                    },
+                    {
+                        precio_bs: 1,
+                        _id: 0,
+                    }
+                );
+
+                if (registro_terreno) {
+                    precio_terreno = registro_terreno.precio_bs;
+
+                    // % financiamiento del terreno
+                    let aux_ti_f_p = ((ti_f_val / precio_terreno) * 100).toFixed(2);
+                    ti_f_p_render = numero_punto_coma(Number(aux_ti_f_p));
+                }
+            }
+        }
+        //-------------------------------------------------------
+
+        var resultado = {
+            fracciones_disponibles,
+            existen_disponibles, // para permitir o negar la venta de fracciones
+            precio_terreno,
+            //-----------------
+            ti_f_val,
+            ti_f_val_render,
+            ti_f_d_n,
+            ti_f_d_n_render,
+            ti_f_d_val,
+            ti_f_d_val_render,
+            ti_f_p_render,
+        };
+
+        return resultado;
+    } catch (error) {
+        console.log(error);
+    }
+}
+//------------------------------------------------------------------
 async function terreno_estados(codigo_terreno) {
     try {
         const registro_terreno = await indiceTerreno.findOne(
@@ -534,13 +680,12 @@ controladorAdmTerreno.guardarDescripcionTerreno = async (req, res) => {
                 /**--------------------------------------------- */
                 // INFORMACION BASICA html
 
-                terreno_encontrado.anteproyectos_maximo = req.body.anteproyectos_maximo;
-                terreno_encontrado.fecha_inicio_reserva = req.body.fecha_inicio_reserva;
-                terreno_encontrado.fecha_fin_reserva = req.body.fecha_fin_reserva;
-                terreno_encontrado.fecha_inicio_aprobacion = req.body.fecha_inicio_aprobacion;
-                terreno_encontrado.fecha_fin_aprobacion = req.body.fecha_fin_aprobacion;
-                terreno_encontrado.fecha_inicio_pago = req.body.fecha_inicio_pago;
-                terreno_encontrado.fecha_fin_pago = req.body.fecha_fin_pago;
+                terreno_encontrado.fecha_inicio_reservacion = req.body.fecha_inicio_reservacion;
+                terreno_encontrado.fecha_fin_reservacion = req.body.fecha_fin_reservacion;
+                terreno_encontrado.fecha_inicio_anteproyecto = req.body.fecha_inicio_anteproyecto;
+                terreno_encontrado.fecha_fin_anteproyecto = req.body.fecha_fin_anteproyecto;
+                terreno_encontrado.fecha_inicio_convocatoria = req.body.fecha_inicio_convocatoria;
+                terreno_encontrado.fecha_fin_convocatoria = req.body.fecha_fin_convocatoria;
                 terreno_encontrado.fecha_inicio_construccion = req.body.fecha_inicio_construccion;
                 terreno_encontrado.fecha_fin_construccion = req.body.fecha_fin_construccion;
                 terreno_encontrado.ciudad = req.body.ciudad;
@@ -549,9 +694,8 @@ controladorAdmTerreno.guardarDescripcionTerreno = async (req, res) => {
                 terreno_encontrado.importante = req.body.importante;
                 terreno_encontrado.provincia = req.body.provincia;
                 terreno_encontrado.direccion = req.body.direccion;
-                terreno_encontrado.precio_sus = req.body.precio_sus;
+                terreno_encontrado.precio_bs = req.body.precio_bs;
                 terreno_encontrado.superficie = req.body.superficie;
-                terreno_encontrado.anteproyectos_maximo = req.body.anteproyectos_maximo;
                 terreno_encontrado.maximo_pisos = req.body.maximo_pisos;
                 terreno_encontrado.descri_ubi_terreno = req.body.descri_ubi_terreno;
                 terreno_encontrado.titulo_ubi_otros_1 = req.body.titulo_ubi_otros_1;
@@ -565,6 +709,7 @@ controladorAdmTerreno.guardarDescripcionTerreno = async (req, res) => {
                 terreno_encontrado.link_facebook = req.body.link_facebook;
                 terreno_encontrado.link_instagram = req.body.link_instagram;
                 terreno_encontrado.link_tiktok = req.body.link_tiktok;
+                terreno_encontrado.nombre = req.body.nombre;
 
                 // LOS DATOS LLENADOS EN EL FORMULARIO, SERAN GUARDADOS EN LA BASE DE DATOS
                 await terreno_encontrado.save();
@@ -738,6 +883,144 @@ controladorAdmTerreno.guardarBloqueoDesbloqueoTerreno = async (req, res) => {
 };
 
 /************************************************************************************ */
+// PARA CREAR FRACCIONES DEL TERRENO
+
+controladorAdmTerreno.crearFraccionesTerreno = async (req, res) => {
+    // la ruta que entra a este controlador es:
+    // post   "/laapirest/terreno/:codigo_terreno/accion/crear_fracciones_terreno"
+
+    try {
+        // ------- Para verificación -------
+        console.log("los datos que se leen para CREAR FRACCIONES TERRENO");
+        console.log(req.body);
+
+        var codigo_terreno = req.body.codigo_terreno;
+        var valor_fraccion = Number(req.body.valor_fraccion);
+        var cantidad_fraccion = Number(req.body.cantidad_fraccion);
+
+        var acceso = await verificadorTerrenoBloqueado(registro_inmueble.codigo_terreno);
+        if (acceso == "permitido") {
+            var fracciones_terreno = await indiceFraccionTerreno.find({
+                codigo_terreno: codigo_terreno,
+            });
+
+            if (fracciones_terreno.length > 0) {
+                // si el terreno ya cuenta con fracciones anteriormente creadas, entonces no sera posible crear nuevas, porque primero debera eliminar las anteriores existentes
+                res.json({
+                    exito: "no_fracciones",
+                });
+            } else {
+                // si el terreno no cuenta con fracciones.
+
+                //--------------------------------------------------
+                // determinacion de la ganancia y el tiempo de ganancia
+
+                let registro_terreno = await indiceTerreno.findOne(
+                    { codigo_terreno: codigo_terreno },
+                    {
+                        rend_fraccion_total: 1,
+                        dias_maximo: 1,
+                        _id: 0,
+                    }
+                );
+
+                if (registro_terreno) {
+                    var fraccion_bs = numero_punto_coma(Math.floor(valor_fraccion));
+
+                    var ganancia = numero_punto_coma(
+                        Math.floor(valor_fraccion * (registro_terreno.rend_fraccion_total / 100))
+                    );
+
+                    var dias_ganancia = numero_punto_coma(Math.floor(registro_terreno.dias_maximo));
+
+                    //------------------------------------------------------
+
+                    var arrayFraccionesCreadas = []; // vacio por defecto
+
+                    for (let i = 0; i < cantidad_fraccion; i++) {
+                        let aux_orden = i + 1;
+                        //--------------------------------------------------
+                        // Convertir el número a string
+                        var numeroComoString = aux_orden.toString();
+
+                        // Contar los caracteres
+                        var numeroDeCaracteres = numeroComoString.length;
+
+                        if (numeroDeCaracteres >= 3) {
+                            var string_orden = numeroComoString;
+                            var aux_codigo_fraccion = codigo_terreno + string_orden;
+                        } else {
+                            if ((numeroDeCaracteres = 1)) {
+                                var string_orden = "00" + numeroComoString;
+                                var aux_codigo_fraccion = codigo_terreno + string_orden;
+                            }
+                            if ((numeroDeCaracteres = 2)) {
+                                var string_orden = "0" + numeroComoString;
+                                var aux_codigo_fraccion = codigo_terreno + string_orden;
+                            }
+                        }
+
+                        var orden = aux_orden; // tipo numerico
+                        var codigo_fraccion = aux_codigo_fraccion; // tipo string
+
+                        //--------------------------------------------------
+
+                        const fraccionTerreno = new indiceFraccionTerreno({
+                            codigo_fraccion: codigo_fraccion,
+                            codigo_terreno: codigo_terreno,
+                            fraccion_bs: valor_fraccion, // numerico
+                            orden: orden, // numerico
+                            //disponible: // ya se encuentra configurado en la base de datos, por defecto se creara como "true"
+                        });
+
+                        await fraccionTerreno.save();
+
+                        //--------------------------------------------------------
+
+                        let objeto = {
+                            codigo_fraccion,
+                            fraccion_bs,
+                            ganancia,
+                            dias_ganancia,
+                        };
+                        // El método unshift agrega uno o más elementos al principio del array. Esto para que la ordenacion renderizada en la ventana del navegador recorriendo el for se vea ordenadas secuencialemte las fracciones creadas
+                        arrayFraccionesCreadas.unshift(objeto);
+                        // usamos un array extra "arrayFraccionesCreadas" donde estaran los codigos de las fracciones recientemente creadas.
+                    }
+
+                    //-------------------------------------------------------------------
+                    // guardamos en el historial de acciones
+                    var ci_administrador = req.user.ci_administrador; // extraido de la SESION guardada del administrador
+                    var accion_administrador = "Crea fracciones para el terreno " + codigo_terreno;
+                    var aux_accion_adm = {
+                        ci_administrador,
+                        accion_administrador,
+                    };
+                    await guardarAccionAdministrador(aux_accion_adm);
+                    //-------------------------------------------------------------------
+
+                    res.json({
+                        exito: "si",
+                        arrayCodigosCreados, // para renderizar los codigos recientemente creados
+                    });
+                } else {
+                    res.json({
+                        exito: "no",
+                    });
+                }
+            }
+        } else {
+            // si el acceso es denegado
+            res.json({
+                exito: "denegado",
+            });
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+/************************************************************************************ */
 // CONTROLADOR PARA ELIMINAR TERRENO
 
 controladorAdmTerreno.eliminarTerreno = async (req, res) => {
@@ -827,11 +1110,8 @@ async function eliminadorImagenesTerreno(codigo_terreno) {
         const storage = getStorage();
 
         if (registroImagenesTerreno) {
-
-
             // eliminamos los ARCHIVOS IMAGEN uno por uno
             for (let i = 0; i < registroImagenesTerreno.length; i++) {
-
                 /*
                 let imagenNombreExtension =
                     registroImagenesTerreno[i].codigo_imagen +
@@ -844,7 +1124,8 @@ async function eliminadorImagenesTerreno(codigo_terreno) {
 
                 //const storage = getStorage();
 
-                var nombre_y_ext = registroImagenesTerreno[i].codigo_imagen +
+                var nombre_y_ext =
+                    registroImagenesTerreno[i].codigo_imagen +
                     registroImagenesTerreno[i].extension_imagen;
 
                 // para encontrar en la carpeta "subido" en firebase con el nombre y la extension de la imagen incluida
@@ -860,7 +1141,6 @@ async function eliminadorImagenesTerreno(codigo_terreno) {
                 //console.log("Archivo eliminado DE FIREBASE con éxito");
 
                 //--------------------------------------------------
-
             }
             // luego de eliminar todos los ARCHIVOS IMAGEN, procedemos a ELIMINARLO DE LA BASE DE DATOS
             // await indiceImagenesTerreno.remove({ codigo_terreno: codigo_terreno }); // no usamos remove para no tener problemas con su caducidad
@@ -870,7 +1150,6 @@ async function eliminadorImagenesTerreno(codigo_terreno) {
         if (registroImagenesProyecto) {
             // eliminamos los ARCHIVOS IMAGEN uno por uno
             for (let i = 0; i < registroImagenesProyecto.length; i++) {
-
                 /*
                 let imagenNombreExtension =
                     registroImagenesProyecto[i].codigo_imagen +
@@ -883,8 +1162,9 @@ async function eliminadorImagenesTerreno(codigo_terreno) {
 
                 //const storage = getStorage();
 
-                var nombre_y_ext = registroImagenesProyecto[i].codigo_imagen +
-                registroImagenesProyecto[i].extension_imagen;
+                var nombre_y_ext =
+                    registroImagenesProyecto[i].codigo_imagen +
+                    registroImagenesProyecto[i].extension_imagen;
 
                 // para encontrar en la carpeta "subido" en firebase con el nombre y la extension de la imagen incluida
                 var direccionActualImagen = "subido/" + nombre_y_ext;
@@ -899,7 +1179,6 @@ async function eliminadorImagenesTerreno(codigo_terreno) {
                 //console.log("Archivo eliminado DE FIREBASE con éxito");
 
                 //--------------------------------------------------
-
             }
 
             // await indiceImagenesProyecto.remove({ codigo_terreno: codigo_terreno }); // no usamos remove para no tener problemas con su caducidad
@@ -922,12 +1201,10 @@ async function eliminadorDocumentosTerreno(codigo_terreno) {
         });
 
         if (registroDocumentosTerreno) {
-
             const storage = getStorage();
 
             // eliminamos los ARCHIVOS DOCUMENTOS PDF uno por uno
             for (let i = 0; i < registroDocumentosTerreno.length; i++) {
-
                 /*
                 let documentoNombreExtension =
                     registroDocumentosTerreno[i].codigo_documento + ".pdf";
@@ -954,7 +1231,6 @@ async function eliminadorDocumentosTerreno(codigo_terreno) {
                 //console.log("Archivo eliminado DE FIREBASE con éxito");
 
                 //--------------------------------------------------
-
             }
             // luego de eliminar todos los ARCHIVOS DOCUMENTO, procedemos a ELIMINARLO DE LA BASE DE DATOS
             // await indiceDocumentos.remove({ codigo_terreno: codigo_terreno });

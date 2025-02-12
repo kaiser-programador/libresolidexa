@@ -1,0 +1,69 @@
+{{!-- Para eliminar la totalidad de la "fraccion de terreno" o de la "fraccion de inmueble" --}}
+
+<div class="contenido container-fluid my-4">
+    <div class="row">
+        <div class="mb-3 col-12 col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>ELIMINAR FRACCIÓN</h5>
+                </div>
+
+                <div class="card-body">
+                    <p> <b class="texto-resaltado">Claves Maestras</b></p>
+
+                    <div class="form-group">
+                        <label for="id_usuario_maestro">Usuario</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text texto-resaltado">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                            </div>
+
+                            <input
+                                type="text"
+                                name="usuario_maestro"
+                                id="id_usuario_maestro"
+                                class="form-control"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_clave_maestro">Contraseña</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text texto-resaltado">
+                                    <i class="fas fa-lock"></i>
+                                </div>
+                            </div>
+
+                            <input
+                                type="password"
+                                name="clave_maestro"
+                                id="id_clave_maestro"
+                                class="form-control"
+                            />
+                        </div>
+                    </div>
+                    <p class="text-left">Seran eliminados todos los datos de la fraccion, incluido su respectivo PROPIETARIO si es que lo tuviese.</p>
+                    
+                    <form
+                        action="/laapirest/accesosistema"
+                        id="id_ref_ventana_inicio"
+                        method="GET"
+                        hidden
+                    >
+                    </form>
+
+                    <div class="card-footer text-center">
+                        <button class="btn btn-primary" id="id_eliminar_fraccion">Eliminar</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>

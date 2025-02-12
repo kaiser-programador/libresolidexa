@@ -1,0 +1,174 @@
+{{! util solo para: propietario entero, copropietario, fraccion terreno, fraccion inmueble }}
+
+<div class="row mt-5 cuadro_estandart py-3">
+
+    {{! ------------------------------------------------ }}
+    <div class="col-12 col-md-6 py-3">
+
+        <div class="text-center pb-3">
+            <h4 class="texto-normal">
+                Ganancia
+            </h4>
+        </div>
+
+        <div class="borde_entero p-0 mb-2 d-flex">
+            {{! los font-size y font-weight son iguales para "h1", pero sin el espaciado inferior por defecto de los "h´s" }}
+
+            <div class="dolar_seg_social">
+                Bs
+            </div>
+
+            <div
+                class="text-right px-2 py-1 align-self-center d-block w-100"
+                style="font-size: 2.5rem;font-weight: 500;letter-spacing: 1rem;"
+                id="entero_tot_ret_alq"
+            >
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end">
+            <div
+                id="decimales_tot_ret_alq"
+                class="borde_decimal py-1 h4 text-right px-2 www-75"
+                style="letter-spacing: 1rem;"
+            >
+                <div class="cd"></div><div class="cd"></div><div class="cd"></div><div
+                    class="cd"
+                ></div><div class="cd"></div>
+            </div>
+        </div>
+
+        <div style="position: relative;">
+            <div class="progress" style="height: 2rem;">
+                <div
+                    class="progress-bar"
+                    role="progressbar"
+                    style="width: 0%;"
+                    id="ref_progreso_generandose"
+                ></div>
+            </div>
+            <div class="css-val-porcentaje-segundero">
+                <b id="ref_valor_progreso_generandose"></b>
+            </div>
+        </div>
+
+        <div class="px-2 mt-3">
+            <div class="text-center escritura">
+                {{informacion.mensaje_segundero}}
+            </div>
+        </div>
+
+    </div>
+
+    {{! ------------------------------------------------ }}
+    {{! lado DERECHO segundero }}
+    <div class="col-12 col-md-6 py-3">
+
+        <div class="text-center pb-3">
+            <h4 class="texto-normal">
+                Valores
+            </h4>
+        </div>
+
+        <div class="my-3">
+
+            <div class="row">
+
+                <div class="col-6">
+                    <div class="p-2">
+                        <div>
+                            <div style="text-align: center;">
+                                <i class="fas fa-hand-holding-usd icono_1"></i>
+                            </div>
+
+                            <b>
+                                <div style="text-align: center;">
+                                    <span
+                                        class="h5 elvalor"
+                                        data-bs="{{informacion.fracciones}}"
+                                    >{{informacion.fracciones_render}}</span>
+                                    <span class="h5 lamoneda">Bs</span>
+                                </div>
+                                <h5 class="texto-resaltado" style="text-align: center;">Fracciones
+                                </h5>
+                            </b>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="p-2">
+                        <div>
+                            <div style="text-align: center;">
+                                <i class="fas fa-calendar-check icono_1"></i>
+                            </div>
+                            <b>
+                                <div style="text-align: center;">
+                                    <span
+                                        class="h5 elvalor"
+                                        data-bs="{{informacion.propietario}}"
+                                    >{{informacion.propietario_render}}</span>
+                                    <span class="h5 lamoneda">Bs</span>
+                                </div>
+
+                                <h5 class="texto-resaltado" style="text-align: center;">Propietario
+                                </h5>
+                            </b>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-6">
+                    <div class="p-2">
+                        <div>
+                            <div style="text-align: center;">
+                                <i class="fas fa-hand-holding-usd icono_1"></i>
+                            </div>
+
+                            <b>
+                                <div style="text-align: center;">
+                                    <span
+                                        class="h5 elvalor"
+                                        data-bs="{{informacion.ganancia}}"
+                                    >{{informacion.ganancia_render}}</span>
+                                    <span class="h5 lamoneda">Bs</span>
+                                </div>
+                                <h5 class="texto-resaltado" style="text-align: center;">Ganancia
+                                </h5>
+                            </b>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-6">
+                    <div class="p-2">
+                        <div>
+                            <div style="text-align: center;">
+                                <i class="fas fa-calendar-check icono_1"></i>
+                            </div>
+                            <b>
+                                <div style="text-align: center;">
+                                    <span
+                                        class="h5 elvalor"
+                                        data-bs="{{informacion.plusvalia}}"
+                                    >{{informacion.plusvalia_render}}</span>
+                                    <span class="h5 lamoneda">Bs</span>
+                                </div>
+
+                                <h5 class="texto-resaltado" style="text-align: center;">Plusvalía
+                                </h5>
+                            </b>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    {{! ------------------------------------------------ }}
+</div>

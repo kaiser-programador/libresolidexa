@@ -130,63 +130,6 @@
                                             </div>
                                         {{/if}}
 
-                                        {{#if estado_py_pago}}
-                                            <div class="align-items-center">
-                                                <label title="Pago pendiente">
-                                                    <input
-                                                        type="radio"
-                                                        name="name_radio_inm_py"
-                                                        class="radio_inm_py"
-                                                        data-id="Pendiente"
-                                                        value="pendiente_pago"
-                                                    />
-                                                    Pendiente
-                                                </label>
-                                                {{#if badge_pendiente_pago}}
-                                                    <span
-                                                        class="ml-2 badge badge-primary"
-                                                    >{{n_pendiente_pago}}</span>
-                                                {{/if}}
-                                            </div>
-                                            <div class="align-items-center">
-                                                <label>
-                                                    <input
-                                                        type="radio"
-                                                        name="name_radio_inm_py"
-                                                        class="radio_inm_py"
-                                                        data-id="Pagado"
-                                                        value="pagado_pago"
-                                                    />
-                                                    Pagado
-                                                </label>
-                                                {{#if badge_pagado_pago}}
-                                                    <span
-                                                        class="ml-2 badge badge-primary"
-                                                    >{{n_pagado_pago}}</span>
-                                                {{/if}}
-                                            </div>
-                                        {{/if}}
-
-                                        {{#if estado_py_aprobacion}}
-                                            <div class="align-items-center">
-                                                <label title="Aprobación pendiente">
-                                                    <input
-                                                        type="radio"
-                                                        name="name_radio_inm_py"
-                                                        class="radio_inm_py"
-                                                        data-id="Pendiente"
-                                                        value="pendiente_aprobacion"
-                                                    />
-                                                    Aprobación
-                                                </label>
-                                                {{#if badge_pendiente_aprobacion}}
-                                                    <span
-                                                        class="ml-2 badge badge-primary"
-                                                    >{{n_pendiente_aprobacion}}</span>
-                                                {{/if}}
-                                            </div>
-                                        {{/if}}
-
                                         {{#if estado_py_construccion}}
                                             <div class="align-items-center">
                                                 <label>
@@ -199,10 +142,10 @@
                                                     />
                                                     Construcción
                                                 </label>
-                                                {{#if badge_en_pago}}
+                                                {{#if badge_construccion}}
                                                     <span
                                                         class="ml-2 badge badge-primary"
-                                                    >{{n_en_pago}}</span>
+                                                    >{{n_construccion}}</span>
                                                 {{/if}}
                                             </div>
                                             <div class="align-items-center">
@@ -236,10 +179,10 @@
                                                     />
                                                     Construido
                                                 </label>
-                                                {{#if badge_completado}}
+                                                {{#if badge_construido}}
                                                     <span
                                                         class="ml-2 badge badge-primary"
-                                                    >{{n_completado}}</span>
+                                                    >{{n_construido}}</span>
                                                 {{/if}}
                                             </div>
                                         {{/if}}

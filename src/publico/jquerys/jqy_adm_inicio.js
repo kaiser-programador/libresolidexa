@@ -474,7 +474,7 @@ $("#id_crear_terreno").on("submit", function (e) {
             }
 
             if (tipoRespuesta == "no") {
-                $("#id_crear_terreno").after(
+                $(".ref-crear_terreno").after(
                     `<div class="alert alert-danger mt-3">
                         <button type="button" class="close" data-dismiss="alert">
                             <span>&times;</span>
@@ -485,7 +485,7 @@ $("#id_crear_terreno").on("submit", function (e) {
             }
         });
     } else {
-        $("#id_crear_terreno").after(
+        $(".ref-crear_terreno").after(
             `<div class="alert alert-danger mt-3">
                 <button type="button" class="close" data-dismiss="alert">
                     <span>&times;</span>

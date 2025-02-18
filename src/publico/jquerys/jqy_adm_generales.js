@@ -351,7 +351,7 @@ $("#idSubirImagen").on("submit", function (e) {
 
                             <div class="card-footer">
                                 <button
-                                    class="selec_deselec_imagen_principal_te btn btn-primary mb-2"
+                                    class="selec_deselec_imagen_principal_te btn boton-primario mb-2"
                                     data-id="${codigo_imagen}/${codigo_terreno}"
                                 >Principal</button>
                             </div>
@@ -394,7 +394,7 @@ $("#idSubirImagen").on("submit", function (e) {
                                     <button class="boton_seleccionar_deseleccionar_imagen_jquery btn btn-success mb-2"
                                         data-id="${codigo_imagen}/${codigo_proyecto}">Exclusiva</button>
 
-                                    <button class="selec_deselec_imagen_principal btn btn-primary mb-2"
+                                    <button class="selec_deselec_imagen_principal btn boton-primario mb-2"
                                         data-id="${codigo_imagen}/${codigo_proyecto}">Principal</button>
                                 </div>
                             </div>
@@ -1178,13 +1178,13 @@ $("#idSubirDocumento").on("submit", function (e) {
                         <td>
                             <div class="contenedor_ver_eliminar_documento">
                                 <button
-                                    class="boton_eliminar_documento_jquery btn btn-danger"
+                                    class="boton_eliminar_documento_jquery btn btn-danger btn-sm"
                                     data-id="${codigo_documento}"
                                 >Eliminar</button>
                                 <a
                                     href="${url}"
                                     target="_blank"
-                                    class="btn btn-success"
+                                    class="btn btn-success btn-sm"
                                 >Ver</a>
                             </div>
                         </td>
@@ -1211,9 +1211,9 @@ $("#idSubirDocumento").on("submit", function (e) {
                         <td>${clase_documento}</td>
                         <td>
                             <div class="contenedor_ver_eliminar_documento">
-                                <button class="boton_eliminar_documento_jquery btn btn-danger"
+                                <button class="boton_eliminar_documento_jquery btn btn-danger btn-sm"
                                     data-id="${codigo_documento}">Eliminar</button>
-                                <a href="${url}" target="_blank" class="btn btn-success">Ver</a>
+                                <a href="${url}" target="_blank" class="btn btn-success btn-sm">Ver</a>
                             </div>
                         </td>
                     </tr>`
@@ -1941,13 +1941,13 @@ $(".contenido").on("click", ".llenar_datos_copropietario_te", function () {
                             <td>
                                 <div class="contenedor_ver_eliminar_documento">
                                     <button
-                                        class="boton_eliminar_documento_jquery btn btn-danger"
+                                        class="boton_eliminar_documento_jquery btn btn-danger btn-sm"
                                         data-id="${codigo_documento}"
                                     >Eliminar</button>
                                     <a
                                         href="${url}"
                                         target="_blank"
-                                        class="btn btn-success"
+                                        class="btn btn-success btn-sm"
                                     >Ver</a>
                                 </div>
                             </td>
@@ -2161,13 +2161,13 @@ $(".contenido").on("click", ".llenar_datos_copropietario_inm", function () {
                             <td>
                                 <div class="contenedor_ver_eliminar_documento">
                                     <button
-                                        class="boton_eliminar_documento_jquery btn btn-danger"
+                                        class="boton_eliminar_documento_jquery btn btn-danger btn-sm"
                                         data-id="${codigo_documento}"
                                     >Eliminar</button>
                                     <a
                                         href="${url}"
                                         target="_blank"
-                                        class="btn btn-success"
+                                        class="btn btn-success btn-sm"
                                     >Ver</a>
                                 </div>
                             </td>

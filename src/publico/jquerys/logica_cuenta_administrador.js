@@ -877,10 +877,10 @@ $(".cuerpo_filas_funciona").on("click", ".funciona_arriba", function () {
 
                 <td>
                     <div class="d-flex">
-                        <button class="funciona_arriba d-block btn btn-primary p-1 m-1"
+                        <button class="funciona_arriba d-block btn boton-primario p-1 m-1"
                             data-id=""><i
                                 class="fas fa-arrow-circle-up size_iconos"></i></button>
-                        <button class="funciona_abajo d-block btn btn-primary p-1 m-1"
+                        <button class="funciona_abajo d-block btn boton-primario p-1 m-1"
                             data-id=""><i
                                 class="fas fa-arrow-circle-down size_iconos"></i></button>
                         <button class="funciona_eliminar d-block btn btn-danger p-1 m-1"
@@ -938,10 +938,10 @@ $(".cuerpo_filas_funciona").on("click", ".funciona_abajo", function () {
 
                 <td>
                     <div class="d-flex">
-                        <button class="funciona_arriba d-block btn btn-primary p-1 m-1"
+                        <button class="funciona_arriba d-block btn boton-primario p-1 m-1"
                             data-id=""><i
                                 class="fas fa-arrow-circle-up size_iconos"></i></button>
-                        <button class="funciona_abajo d-block btn btn-primary p-1 m-1"
+                        <button class="funciona_abajo d-block btn boton-primario p-1 m-1"
                             data-id=""><i
                                 class="fas fa-arrow-circle-down size_iconos"></i></button>
                         <button class="funciona_eliminar d-block btn btn-danger p-1 m-1"

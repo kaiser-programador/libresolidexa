@@ -7,15 +7,16 @@
             {{! <div class="contenedor_estados_terreno card my-4" style="max-width: 18rem;"> }}
             <div class="contenedor_estados_terreno card my-4">
                 <div class="card-header">
-                    <h5>ESTADO DEL TERRENO</h5>
+                    <div class="titulo_3">ESTADO DEL TERRENO</div>
                 </div>
 
                 <div class="card-body">
 
-                    <h6 class="texto-link">Estado actual del terreno:</h6>
-                    <h6 class="texto_estado_terreno">{{contenido_terreno.texto_estado_terreno}}</h6>
+                    <div class="titulo_4">Estado actual del terreno:</div>
+                    <div class="texto_estado_terreno">{{contenido_terreno.texto_estado_terreno}}</div>
                     <br />
-                    <h6 class="texto-link">Estados:</h6>
+                    <div class="titulo_4">Estados:</div>
+                    {{!-- guardado, convocatoria, anteproyecto, reservacion, construccion, construido --}}
                     <div>
                         <label>
                             <input
@@ -37,9 +38,9 @@
                                 name="name_estado"
                                 class="gral_radio radio_estado_terreno"
                                 data-radio_input="radio_input_estado"
-                                value="reserva"
+                                value="convocatoria"
                             />
-                            Convocatoria (Terreno) / Reserva (Proyecto)
+                            Convocatoria
                         </label>
                     </div>
 
@@ -50,9 +51,9 @@
                                 name="name_estado"
                                 class="gral_radio radio_estado_terreno"
                                 data-radio_input="radio_input_estado"
-                                value="pago"
+                                value="anteproyecto"
                             />
-                            Pago
+                            Anteproyecto
                         </label>
                     </div>
 
@@ -63,9 +64,9 @@
                                 name="name_estado"
                                 class="gral_radio radio_estado_terreno"
                                 data-radio_input="radio_input_estado"
-                                value="aprobacion"
+                                value="reservacion"
                             />
-                            Aprobación
+                            Reservación
                         </label>
                     </div>
 
@@ -111,7 +112,7 @@
 
                     <div class="text-center">
                         <button
-                            class="btn btn-primary mt-2"
+                            class="btn boton-primario mt-2"
                             id="guardar_estado_terreno"
                             data-boton_radio="radio_input_estado"
                         >Guardar estado</button>
@@ -126,7 +127,7 @@
         <div class="mb-3 col-12 col-sm-6 col-lg-4">
             <div class="card">
                 <div class="card-header">
-                    <h5>LLAVE MAESTRA</h5>
+                    <div class="titulo_3">LLAVE MAESTRA</div>
                 </div>
 
                 <div class="card-body">
@@ -137,7 +138,7 @@
                         <label for="id_usuario_maestro">Usuario</label>
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <div class="input-group-text texto-resaltado">
+                                <div class="input-group-text bg-unidad">
                                     <i class="fas fa-user"></i>
                                 </div>
                             </div>
@@ -155,7 +156,7 @@
                         <label for="id_clave_maestro">Contraseña</label>
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <div class="input-group-text texto-resaltado">
+                                <div class="input-group-text bg-unidad">
                                     <i class="fas fa-lock"></i>
                                 </div>
                             </div>
@@ -175,7 +176,7 @@
         <div class="mb-3 col-12 col-sm-6 col-lg-4">
             <div class="card">
                 <div class="card-header">
-                    <h5>ACCESO TERRENO</h5>
+                    <div class="titulo_3">ACCESO TERRENO</div>
                 </div>
 
                 <div class="card-body">
@@ -221,7 +222,7 @@
 
                 <div class="card-footer text-center">
                     <button
-                        class="btn btn-primary"
+                        class="btn boton-primario"
                         id="guardar_bloqueo_desbloqueo_terreno"
                         data-boton_radio="radio_input_bloqueo"
                     >Guardar</button>
@@ -232,7 +233,7 @@
         <div class="mb-3 col-12 col-sm-6 col-lg-4">
             <div class="card">
                 <div class="card-header">
-                    <h5>ELIMINAR TERRENO</h5>
+                    <div class="titulo_3">ELIMINAR TERRENO</div>
                 </div>
 
                 <div class="card-body">
@@ -244,7 +245,7 @@
                 </form>
 
                 <div class="card-footer text-center">
-                    <button class="btn btn-primary" id="eliminar_terreno">Eliminar</button>
+                    <button class="btn boton-primario" id="eliminar_terreno">Eliminar</button>
                 </div>
             </div>
         </div>

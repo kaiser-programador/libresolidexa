@@ -1,18 +1,19 @@
 {{! cabezeras INTERNAS de lado de ADMINISTRADOR, EJ/ cuando estamos en la ventana propia del terreno }}
 {{! valido para TERRENOS, PROYECTOS, INMUEBLES, PROPIETARIOS, ADMINISTRADOR }}
 
-<div class="{{estilo_cabezera}} cabezera-secundario w-100"></div>
+<div class="{{estilo_cabezera}} cabezera-secundario w-100">
+{{!-- <div class="cabezera_estilo_terreno cabezera-secundario w-100"> --}}
 
     <div class="letras_cabezera p-3" style="display: flex; justify-content: space-between;">
 
         {{#if cab_te_adm}}
             <div>
-                <div>
+                <div class="titulo_3">{{cabezera_adm.ubicacion}}</div>
+                <div class="pb-2">
                     <span>{{cabezera_adm.ciudad}}</span>
-                    <span class="d-none d-sm-inline-block">&nbsp;/&nbsp;</span>
+                    <span class="d-none d-sm-inline-block">&nbsp;-&nbsp;</span>
                     <span class="d-none d-sm-inline-block">{{cabezera_adm.provincia}}</span>
                 </div>
-                <div class="py-2">{{cabezera_adm.direccion}}</div>
                 <div class="codigo-cabezera">{{cabezera_adm.codigo}}</div>
             </div>
 

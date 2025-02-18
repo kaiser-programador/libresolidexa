@@ -454,7 +454,7 @@ $("#orden_inm_interior").on("click", ".o_inm_py", function () {
             let i_aux = n_inmuebles - n - 1;
 
             $("#contenedor_py_inm_render .ref_tipo_py_inm").after(
-                `<div class="card_un_inm_py mb-3 col-12 col-sm-6 col-md-4 col-lg-3">` +
+                `<div class="card_un_inm_py mb-3 col-12 col-md-6 col-lg-4 col-xl-3">` +
                     arrayInmueblesHtml[i_aux] +
                     `</div>`
             );
@@ -589,12 +589,12 @@ $("#orden_inm_exterior").on("click", ".orden_gral_inm_py", function () {
             let i_aux = n_inmuebles - n - 1;
 
             $("#contenedor_py_inm_render .ref_tipo_py_inm").after(
-                `<div class="card_un_inm_py mb-3 col-12 col-sm-6 col-md-4 col-lg-3">` +
+                `<div class="card_un_inm_py mb-3 col-12 col-md-6 col-lg-4 col-xl-3">` +
                     arrayInmueblesHtml[i_aux] +
                     `</div>`
             );
         }
-
+        
         // cambiamos el tipo de ordenamiento para el siguiente click sobre el mismo tipo de ordenamiento
         if (ordenamiento == "menor") {
             $(this).attr("el_orden", "mayor");
@@ -745,7 +745,7 @@ function buscarInmuebleInterior() {
     if (arrayInmueblesHtml.length > 0) {
         for (let r = 0; r < arrayInmueblesHtml.length; r++) {
             $("#contenedor_py_inm_render .ref_tipo_py_inm").after(
-                `<div class="card_un_inm_py mb-3 col-12 col-sm-6 col-md-4 col-lg-3">` +
+                `<div class="card_un_inm_py mb-3 col-12 col-md-6 col-lg-4 col-xl-3">` +
                     arrayInmueblesHtml[r] +
                     `</div>`
             );

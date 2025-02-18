@@ -96,11 +96,13 @@ funcionesAyuda_1.terreno_card_adm_cli = async function (paquete_terreno) {
             { codigo_terreno: codigo_terreno },
             {
                 codigo_terreno: 1,
+                ubicacion: 1,
                 ciudad: 1,
                 bandera_ciudad: 1,
                 provincia: 1,
                 direccion: 1,
                 precio_bs: 1,
+                fraccion_bs: 1,
                 superficie: 1,
                 link_youtube: 1,
                 link_facebook: 1,
@@ -131,6 +133,7 @@ funcionesAyuda_1.terreno_card_adm_cli = async function (paquete_terreno) {
             terreno_card.superficie_num = registro_terreno.superficie;
             terreno_card.precio_bs = numero_punto_coma(registro_terreno.precio_bs);
             terreno_card.precio_bs_num = registro_terreno.precio_bs;
+            terreno_card.fraccion_bs_r = numero_punto_coma(registro_terreno.fraccion_bs);
 
             terreno_card.laapirest = paquete_terreno.laapirest;
 

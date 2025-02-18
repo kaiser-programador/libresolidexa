@@ -77,7 +77,9 @@ $("#cal_te_copropietario").click(function (e) {
         var inflacion = inflacion_ine;
     }
 
-    let valor_inversion = Number($("#valor_adquiridos").val()); // valor de las fracciones que el usuario pretende comprar. Siempre estara en moneda BOLIVIANOS
+    let valor_inversion = $("#valor_adquiridos").data("bs"); // valor de las fracciones que el usuario pretende comprar. Siempre estara en moneda BOLIVIANOS. como este input es tipo "text", es que rescataremos su valor numerico bs guardado en el atributo "data-bs"
+
+    let valor_inversion_bs = $("#valor_adquiridos").val(); // capturamos el valor de la inversion en fracciones en formato punto mil, util para mostrarlo en los popover.
 
     if (valor_inversion > 0 && economia === true) {
         $(".contenedor_1").show(); // visualizamos
@@ -98,7 +100,7 @@ $("#cal_te_copropietario").click(function (e) {
         // valor_inversion siempre estara en moneda BOLIVIANOS, es por ello que dependiendo la moneda con la que se deseen visualizar los resultados, es que se hara la debida converdion de valor_inversion a moneda deseada renonbradolo con la variable "inversion"
         if (tipoMoneda === "sus") {
             var cambio = tc_oficial;
-            var inversion = Math.floor(valor_inversion * tc_oficial);
+            var inversion = Math.floor(valor_inversion / tc_oficial);
         } else {
             if (tipoMoneda === "bs") {
                 var cambio = 1;
@@ -158,6 +160,10 @@ $("#cal_te_copropietario").click(function (e) {
                 pronostico_pm2_ok[j] = pronostico_pm2[j] + factor;
             }
 
+            // ------- Para verificación -------
+            console.log("LOS PUTOS PRONOSTICOS NORMALIZADOS");
+            console.log(pronostico_pm2_ok);
+
             //-------------------
             // ahora se procede a extraer el valor normalizado futuro del precio por m2 del terreno
 
@@ -168,23 +174,36 @@ $("#cal_te_copropietario").click(function (e) {
             fechaActualAux.setMonth(fechaActualAux.getMonth() + meses_maximo);
 
             // Obtener el año y el mes de la nueva fecha
-            let nuevoAno = fechaActualAux.getFullYear();
-            let nuevoMes = fechaActualAux.getMonth() + 1; // getMonth() devuelve un índice (0-11), así que sumamos 1
+            let futuroAno = fechaActualAux.getFullYear();
+            let futuroMes = fechaActualAux.getMonth() + 1; // getMonth() devuelve un índice (0-11), así que sumamos 1
 
-            if (nuevoMes <= 5) {
-                var semestreNuevo = "I";
+            if (futuroMes <= 5) {
+                var semestreFuturo = "I";
             } else {
-                var semestreNuevo = "II";
+                var semestreFuturo = "II";
             }
 
             // formato: "2019 - II"
-            let periodoNuevo = nuevoAno + " - " + semestreNuevo;
+            let periodoFuturo = futuroAno + " - " + semestreFuturo;
 
-            if (pronostico_pm2_ok.length > 0) {
+            let posiFuturo = 0; // posicion que ocupa la fecha futura en el array de pronosticos. por defecto sera 0, luego sera corregido.
+
+            if (pronostico_periodo.length > 0) {
                 for (let i = 0; i < pronostico_periodo.length; i++) {
                     let elemento = pronostico_periodo[i];
-                    if (elemento === periodoNuevo) {
-                        // dado que pronostico_periodo y pronostico_pm2_ok son complementarios, bast con encontrar la posicion "i" del periodo nuevo en pronostico_periodo, para utilizar esta misma posicion "i" en pronostico_pm2_ok y asi extraer de este array el valor del precio por m2 del terreno en ese periodo futuro
+                    if (elemento === periodoFuturo) {
+                        posiFuturo = i;
+                        break; // para salir del bucle for
+                    }
+                }
+            }
+
+            if (pronostico_pm2_ok.length > 0) {
+                for (let i = 0; i < pronostico_pm2_ok.length; i++) {
+                    let elemento = pronostico_pm2_ok[i];
+
+                    if (i >= posiFuturo && elemento > promedio_pm2) {
+                        // aseguramos que el valor futuro del pronostico sea mayor que el precio promedio por m2 del mercado tradicional
                         solidexa_pm2_futuro = pronostico_pm2_ok[i];
                         break; // para salir del bucle for
                     }
@@ -192,43 +211,57 @@ $("#cal_te_copropietario").click(function (e) {
             }
         }
 
-        //-------------------
-
-        // Ganancia plusvalia en valor por m2
         let solidexa_pm2 = solidexa_te_bsm2 * (1 / cambio);
+
+        // participacion del usuario en funcion al numero de fracciones de terreno que desea adquirir
+        let participacion = Number($("#participacion").val()) / 100; // en decimales
+
+        //-------------------
+        // Ganancia plusvalia ACTUAL en valor por m2
+
+        let plus_solidexa_pm2_actual = promedio_pm2 - solidexa_pm2; // precio por m2
+
+        // Ganancia plusvalia en valor monetario
+        let plusvalia_te_actual = solidexa_te_m2 * plus_solidexa_pm2_actual;
+
+        // ganancia por plusvalia ACTUAL del usuario en funcion a su nivel de participacion
+        // floor redondea al inmediato entero inferior y devuelve tipo numerico
+        let plusvaliaUsuarioActual = Math.floor(plusvalia_te_actual * participacion);
+
+        //-------------------
+        // Ganancia plusvalia EN X MESES en valor por m2
+
         let plus_solidexa_pm2 = solidexa_pm2_futuro - solidexa_pm2; // precio por m2
 
         // Ganancia plusvalia en valor monetario
         let plusvalia_te = solidexa_te_m2 * plus_solidexa_pm2;
-
-        // participacion del usuario en funcion al numero de fracciones de terreno que desea adquirir
-        let participacion = Number($("#participacion").val()) / 100; // en decimales
 
         // ganancia por plusvalia del usuario en funcion a su nivel de participacion
         // floor redondea al inmediato entero inferior y devuelve tipo numerico
         let plusvaliaUsuario = Math.floor(plusvalia_te * participacion);
         let plusvaliaUsuarioRender = numero_punto_coma_query(plusvaliaUsuario);
 
-        // grafica barras apiladas
         // Ganancia plusvalía
 
         let paqueteDatos_a = {
             canvasId: "grafico_12_1",
-            etiquetas: ["SOLIDEXA"],
-            datasets_1: {
-                label: "Inversión",
-                data: [inversion],
-            },
-            datasets_2: {
-                label: "Ganancia plusvalía",
-                data: [plusvaliaUsuario],
+            etiquetas: ["Actual", "En 8 meses"],
+            datasets: {
+                label: "Ganancia por plusvalía",
+                data: [plusvaliaUsuarioActual, plusvaliaUsuario],
             },
         };
 
-        grafico_12(paqueteDatos_a);
+        grafico_21(paqueteDatos_a);
 
         // RENDERIZAR LOS VALORES
         $(".12_1_1").text(plusvaliaUsuarioRender);
+
+        // significados
+        let s_12_1_1 = `Ganancia obtenida por plusvalía al cabo de los
+                                    ${meses_maximo}
+                                    meses de espera.`;
+        $(".s_12_1_1").attr("data-content", s_12_1_1);
 
         //-------------------------------------------------------
         // GANANCIA ESTANDART
@@ -259,6 +292,12 @@ $("#cal_te_copropietario").click(function (e) {
 
         // RENDERIZAR LOS VALORES
         $(".12_2_1").text(gananciaEstandartRender);
+
+        // significados
+        let s_12_2_1 = `Ganancia estandart que obtendrías al cabo de los
+                                    ${meses_maximo}
+                                    meses de espera.`;
+        $(".s_12_2_1").attr("data-content", s_12_2_1);
 
         //-------------------------------------------------------
         // BENEFICIO --- Inversión $us
@@ -294,6 +333,13 @@ $("#cal_te_copropietario").click(function (e) {
         $(".21_1_1").text(solidexa_sus_render);
         $(".21_1_2").text(tradicional_sus_render);
 
+        // significados
+        let s_21_1_1 = `Es el valor que adquieren tus ${valor_inversion_bs} Bs convertidos a dolares gracias al ser invertidos en fracciones del terreno SOLIDEXA.`;
+        $(".s_21_1_1").attr("data-content", s_21_1_1);
+
+        let s_21_1_2 = `Es el valor que adquieren tus ${valor_inversion_bs} Bs convertidos a dolares al tipo de cambio del mercado paralelo.`;
+        $(".s_21_1_2").attr("data-content", s_21_1_2);
+
         //-------------------------------------------------------
         // BENEFICIO --- Compra M2
 
@@ -322,6 +368,12 @@ $("#cal_te_copropietario").click(function (e) {
         // visualizamos los valores renderizados
         $(".21_2_1").text(solidexa_m2_render);
         $(".21_2_2").text(tradicional_m2_render);
+
+        // significados
+        let s_21_2_1 = `Cantidad adicional de superficie que obtienes con SOLIDEXA.`;
+        $(".s_21_2_1").attr("data-content", s_21_2_1);
+        let s_21_2_2 = `Cantidad de superficie que pierdes con un terreno tradicional.`;
+        $(".s_21_2_2").attr("data-content", s_21_2_2);
 
         //-------------------------------------------------------
         // PROTECCION INFLACION ----- Desprotegido
@@ -416,6 +468,26 @@ $("#cal_te_copropietario").click(function (e) {
             // visualizamos los valores renderizados
             $(".x21_1_1").text(gananciaFinal_render);
             $(".x21_1_2").text(perdidaFinal_render);
+
+            // significados
+            let s_x21_1_1 = `
+            Valor que alcalza tus
+            ${valor_inversion_bs}
+            Bs al cabo de los
+            ${meses_maximo}
+            meses por encontrarse protegidos con la adquisición de
+            fracciones de terreno SOLIDEXA.
+            `;
+            $(".s_x21_1_1").attr("data-content", s_x21_1_1);
+
+            let s_x21_1_2 = `
+            Perdida del poder de compra que tus
+            ${valor_inversion_bs}
+                                    Bs alcanzan al cabo de los
+                                    ${meses_maximo}
+                                    meses por no estar protegido frente a la inflación.
+            `;
+            $(".s_x21_1_2").attr("data-content", s_x21_1_2);
         }
 
         //-------------------------------------------------------
@@ -454,6 +526,28 @@ $("#cal_te_copropietario").click(function (e) {
         // visualizamos el numero de años
         $(".21_3_1").text(protegido_sus_render);
         $(".21_3_2").text(desprotegido_sus_render);
+
+        // significados
+        let s_21_3_1 = `
+                    es el valor que adquieren tus
+                    ${valor_inversion_bs}
+                    Bs
+                    al cabo de los
+                    ${meses_maximo}
+                    meses convertidos a dolares gracias al ser invertidos en
+                    fracciones del terreno SOLIDEXA.
+                    `;
+        $(".s_21_3_1").attr("data-content", s_21_3_1);
+
+        let s_21_3_2 = `
+                    es el valor que adquieren tus
+                    ${valor_inversion_bs}
+                    Bs
+                    al cabo de los
+                    ${meses_maximo}
+                    meses convertidos a dolares en el mercado paralelo.
+                    `;
+        $(".s_21_3_2").attr("data-content", s_21_3_2);
 
         //-------------------------------------------------------
     } else {
@@ -540,7 +634,7 @@ $("#cal_te_comparacion").click(function (e) {
             $("#p_tradicional_precio_m2").css("width", string_ptje);
 
             let i_tradicional_precio_m2 = numero_punto_coma_query(tradicional_pm2.toFixed(2));
-            $("#i_tradicional_precio_m2").text(i_tradicional_precio_m2);
+            $("#i_tradicional_precio_m2").val(i_tradicional_precio_m2);
 
             //----------------------------------------
             $(".contenedor_2").show(); // visualizamos
@@ -562,8 +656,8 @@ $("#cal_te_comparacion").click(function (e) {
             let promedio_bsm2 = Number($(".promedio_bsm2").attr("data-promedio_bsm2"));
             let promedio_pm2 = promedio_bsm2 * (1 / cambio);
 
-            let plus_solidexa_pm2 = promedio_pm2 - solidexa_pm2; // precio por m2
-            let plus_tradicional_pm2 = promedio_pm2 - tradicional_pm2; // precio por m2
+            let plus_solidexa_pm2 = Number((promedio_pm2 - solidexa_pm2).toFixed(2)); // precio por m2
+            let plus_tradicional_pm2 = Number((promedio_pm2 - tradicional_pm2).toFixed(2)); // precio por m2
 
             if (plus_tradicional_pm2 <= promedio_pm2) {
                 plus_tradicional_pm2 = 0;
@@ -596,6 +690,12 @@ $("#cal_te_comparacion").click(function (e) {
             let r_plus_tradicional = numero_punto_coma_query(plus_tradicional_pm2);
             $(".22_1_2").text(r_plus_tradicional);
 
+            // significados
+            let s_22_1_1 = `Es la plusvalia que presenta el terreno SOLIDEXA.`;
+            $(".s_22_1_1").attr("data-content", s_22_1_1);
+            let s_22_1_2 = `Es la plusvalía que presenta el terreno tradicional.`;
+            $(".s_22_1_2").attr("data-content", s_22_1_2);
+
             //----------------------------------------
             // calculo del tiempo de espera PLUSVALIA ACTUAL
 
@@ -625,6 +725,11 @@ $("#cal_te_comparacion").click(function (e) {
 
             // visualizamos el numero de años
             $(".21_4_1").text(year_espera);
+
+            // significados
+            let s_21_4_1 = `Es el tiempo que le tomaría al terreno tradicional igualar la
+                                    plusvalía de SOLIDEXA.`;
+            $(".s_21_4_1").attr("data-content", s_21_4_1);
 
             //----------------------------------------
             // calculo de comsion desperdiciada (si la casilla fue seleccionada)

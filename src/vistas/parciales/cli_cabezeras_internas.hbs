@@ -7,12 +7,13 @@
 
         {{#if cab_te_cli}}
             <div>
-                <div>
+                <div class="titulo_3">{{cabezera_cli.ubicacion}}</div>
+                <div class="pb-2">
                     <span>{{cabezera_cli.ciudad}}</span>
-                    <span class="d-none d-sm-inline-block">&nbsp;/&nbsp;</span>
+                    <span class="d-none d-sm-inline-block">&nbsp;-&nbsp;</span>
                     <span class="d-none d-sm-inline-block">{{cabezera_cli.provincia}}</span>
                 </div>
-                <div class="py-2 codigo-cabezera">{{cabezera_cli.codigo}}</div>
+                <div class="pb-2 codigo-cabezera">{{cabezera_cli.codigo}}</div>
                 <div>
                     <button class="btn boton-primario" id="ver_fotos_te"><i
                             class="fas fa-binoculars"

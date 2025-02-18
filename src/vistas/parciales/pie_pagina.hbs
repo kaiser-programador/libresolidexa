@@ -28,7 +28,7 @@ a este, sino que se queden destras de este y ADEMAS PARA QUE EL MODAL DE "CREAR 
                         />
                     </form>
 
-                    <a class="btn btn-primary" href="#ventanaModalNp" data-toggle="modal">Crear
+                    <a class="btn boton-primario" href="#ventanaModalNp" data-toggle="modal">Crear
                         convocatoria</a>
 
                     {{! "modal fade" convierte toda la pantalla en oscuro }}
@@ -36,17 +36,17 @@ a este, sino que se queden destras de este y ADEMAS PARA QUE EL MODAL DE "CREAR 
                     de la ventana modal }}
                     <div class="modal fade" id="ventanaModalNp" data-backdrop="static">
                         <div class="modal-dialog">
-                            <div class="modal-content fondo_secundario">
+                            <div class="modal-content cuadro_estandart color-normal">
                                 <form id="id_crear_terreno">
 
                                     {{! para el encabezado de la ventana }}
                                     <div class="modal-header">
-                                        <h4 class="modal-title texto-resaltado">Claves maestras</h4>
+                                        <div class="modal-title titulo_3">Claves maestras</div>
 
                                         {{! BOTON PARA CERRAR la ventana modal }}
                                         <button
                                             type="button"
-                                            class="aux_cerrar_np close texto-resaltado"
+                                            class="aux_cerrar_np close"
                                             data-dismiss="modal"
                                             aria-hidden="true"
                                         >&times;</button>
@@ -58,11 +58,11 @@ a este, sino que se queden destras de este y ADEMAS PARA QUE EL MODAL DE "CREAR 
                                         <div class="form-group text-left">
                                             <label
                                                 for="id_usuario_maestro_modal"
-                                                class="texto-normal"
+                                                class="titulo_4"
                                             >Usuario</label>
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
-                                                    <div class="input-group-text texto-resaltado">
+                                                    <div class="input-group-text bg-unidad">
                                                         <i class="fas fa-user"></i>
                                                     </div>
                                                 </div>
@@ -80,11 +80,11 @@ a este, sino que se queden destras de este y ADEMAS PARA QUE EL MODAL DE "CREAR 
                                         <div class="form-group text-left">
                                             <label
                                                 for="id_clave_maestro_modal"
-                                                class="texto-normal"
+                                                class="titulo_4"
                                             >Clave</label>
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
-                                                    <div class="input-group-text texto-resaltado">
+                                                    <div class="input-group-text bg-unidad">
                                                         <i class="fas fa-lock"></i>
                                                     </div>
                                                 </div>
@@ -101,9 +101,11 @@ a este, sino que se queden destras de este y ADEMAS PARA QUE EL MODAL DE "CREAR 
 
                                         <input
                                             type="submit"
-                                            class="btn btn-primary"
+                                            class="btn boton-primario"
                                             value="Crear convocatoria"
                                         />
+
+                                        <div class="ref-crear_terreno"></div>
 
                                     </div>
 

@@ -4,8 +4,8 @@
 <div class="contenido container-fluid my-3">
 
     <div class="card" style="max-width: 36rem;">
-        <h5 class="card-header">CREAR NUEVO INMUEBLE</h5>
-        <div class="card-body text-primary">
+        <div class="card-header titulo_3">CREAR NUEVO INMUEBLE</div>
+        <div class="card-body">
             {{! importante es que tenga el METODO DESEADO, en este caso sera "post" , el
                             "action" se le dara en su jquery de su boton "crear nuevo inmueble" }}
             <form target="_blank" id="formulario_creador_inmueble" method="post">
@@ -19,7 +19,7 @@
                 id="creador_nuevo_inmueble"
                 value="Crear inmueble"
                 data-id="{{codigo_proyecto}}"
-                class="btn btn-primary"
+                class="btn boton-primario"
             />
         </div>
     </div>
@@ -46,7 +46,7 @@
                     <div
                         class="cuadro_estandart p-2 mb-2 d-flex justify-content-between"
                     >
-                        <div class="filtrador btn btn-primary" href="#ventanaModalFiltros" data-toggle="modal">
+                        <div class="filtrador btn boton-primario" href="#ventanaModalFiltros" data-toggle="modal">
                             <i class="fas fa-filter size-iconos"></i>
                         </div>
                         <div class="mt-1 ref_titulo_py_inm_r_o_b h5 d-none d-sm-block">

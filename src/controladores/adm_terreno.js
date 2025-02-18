@@ -20,6 +20,7 @@ const {
     indiceGuardados,
     indiceRequerimientos,
     indiceFraccionTerreno,
+    indiceFraccionInmueble,
 } = require("../modelos/indicemodelo");
 
 const {
@@ -143,6 +144,10 @@ controladorAdmTerreno.renderizarVentanaTerreno = async (req, res) => {
                 info_terreno.fracciones_terreno = true; // para pestaña y ventana apropiada para terreno
                 info_terreno.contenido_terreno = contenido_terreno;
 
+                // ------- Para verificación -------
+                // console.log("FRACCIONES DE TERRENO");
+                // console.log(info_terreno);
+
                 res.render("adm_terreno", info_terreno);
             }
 
@@ -218,6 +223,15 @@ async function terreno_descripcion(codigo_terreno) {
             {
                 nombre: 1,
                 bandera_ciudad: 1,
+                fraccion_bs:1,
+                rend_fraccion_mensual:1,
+                rend_fraccion_total:1,
+                dias_maximo:1,
+                meses_maximo:1,
+
+                direccion_comparativa: 1,
+                m2_comparativa: 1,
+                precio_comparativa: 1,
 
                 fecha_inicio_convocatoria: 1,
                 fecha_fin_convocatoria: 1,
@@ -229,9 +243,11 @@ async function terreno_descripcion(codigo_terreno) {
                 fecha_fin_construccion: 1,
 
                 ciudad: 1,
+                ubicacion: 1,
                 provincia: 1,
                 direccion: 1,
                 precio_bs: 1,
+                descuento_bs: 1,
                 superficie: 1,
                 maximo_pisos: 1,
                 convocatoria: 1,
@@ -324,6 +340,41 @@ async function terreno_descripcion(codigo_terreno) {
             } else {
                 aux_objeto.fecha_fin_construccion = "";
             }
+
+            //------------------------------------------
+            // para los inputs de departamentos tradicionales comparativos
+            let direccion_comparativa = registro_terreno.direccion_comparativa;
+            let m2_comparativa = registro_terreno.m2_comparativa;
+            let precio_comparativa = registro_terreno.precio_comparativa;
+
+            if (
+                direccion_comparativa.length > 0 &&
+                m2_comparativa.length > 0 &&
+                precio_comparativa.length > 0
+            ) {
+                // oblibatoriamente son 5 inmuebles TRADICIONALES, por tanto se procede al armado de estos datos:
+                aux_objeto.tra_direccion_1 = direccion_comparativa[0];
+                aux_objeto.tra_superficie_1 = Number(m2_comparativa[0]);
+                aux_objeto.tra_precio_1 = Number(precio_comparativa[0]);
+
+                aux_objeto.tra_direccion_2 = direccion_comparativa[1];
+                aux_objeto.tra_superficie_2 = Number(m2_comparativa[1]);
+                aux_objeto.tra_precio_2 = Number(precio_comparativa[1]);
+
+                aux_objeto.tra_direccion_3 = direccion_comparativa[2];
+                aux_objeto.tra_superficie_3 = Number(m2_comparativa[2]);
+                aux_objeto.tra_precio_3 = Number(precio_comparativa[2]);
+
+                aux_objeto.tra_direccion_4 = direccion_comparativa[3];
+                aux_objeto.tra_superficie_4 = Number(m2_comparativa[3]);
+                aux_objeto.tra_precio_4 = Number(precio_comparativa[3]);
+
+                aux_objeto.tra_direccion_5 = direccion_comparativa[4];
+                aux_objeto.tra_superficie_5 = Number(m2_comparativa[4]);
+                aux_objeto.tra_precio_5 = Number(precio_comparativa[4]);
+
+            }
+            //------------------------------------------
 
             return aux_objeto;
         } else {
@@ -630,17 +681,19 @@ async function terreno_estados(codigo_terreno) {
                 aux_objeto.te_bloq_desbloq = "desbloqueado";
             }
 
+            // guardado, convocatoria, anteproyecto, reservacion, construccion, construido
+
             if (aux_objeto.estado_terreno == "guardado") {
                 var texto_estado = "Guardado";
             }
-            if (aux_objeto.estado_terreno == "reserva") {
-                var texto_estado = "Reserva";
+            if (aux_objeto.estado_terreno == "convocatoria") {
+                var texto_estado = "Convocatoria";
             }
-            if (aux_objeto.estado_terreno == "aprobacion") {
-                var texto_estado = "Aprobación";
+            if (aux_objeto.estado_terreno == "anteproyecto") {
+                var texto_estado = "Anteproyecto";
             }
-            if (aux_objeto.estado_terreno == "pago") {
-                var texto_estado = "Pago";
+            if (aux_objeto.estado_terreno == "reservacion") {
+                var texto_estado = "Reservacion";
             }
             if (aux_objeto.estado_terreno == "construccion") {
                 var texto_estado = "Construcción";
@@ -695,6 +748,14 @@ controladorAdmTerreno.guardarDescripcionTerreno = async (req, res) => {
                 terreno_encontrado.provincia = req.body.provincia;
                 terreno_encontrado.direccion = req.body.direccion;
                 terreno_encontrado.precio_bs = req.body.precio_bs;
+
+                terreno_encontrado.descuento_bs = req.body.descuento_bs;
+                terreno_encontrado.fraccion_bs = req.body.fraccion_bs;
+                terreno_encontrado.rend_fraccion_mensual = req.body.rend_fraccion_mensual;
+                terreno_encontrado.rend_fraccion_total = req.body.rend_fraccion_total;
+                terreno_encontrado.dias_maximo = req.body.dias_maximo;
+                terreno_encontrado.meses_maximo = req.body.meses_maximo;
+
                 terreno_encontrado.superficie = req.body.superficie;
                 terreno_encontrado.maximo_pisos = req.body.maximo_pisos;
                 terreno_encontrado.descri_ubi_terreno = req.body.descri_ubi_terreno;
@@ -709,7 +770,40 @@ controladorAdmTerreno.guardarDescripcionTerreno = async (req, res) => {
                 terreno_encontrado.link_facebook = req.body.link_facebook;
                 terreno_encontrado.link_instagram = req.body.link_instagram;
                 terreno_encontrado.link_tiktok = req.body.link_tiktok;
-                terreno_encontrado.nombre = req.body.nombre;
+                terreno_encontrado.ubicacion = req.body.ubicacion;
+
+                /**--------------------------------------------- */
+                // INFORMACION ECONOMICA html
+
+                var auxDireccionComparativa = [
+                    req.body.direccion_1,
+                    req.body.direccion_2,
+                    req.body.direccion_3,
+                    req.body.direccion_4,
+                    req.body.direccion_5,
+                ];
+
+                var auxSuperficieComparativa = [
+                    Number(req.body.superficie_m2_1),
+                    Number(req.body.superficie_m2_2),
+                    Number(req.body.superficie_m2_3),
+                    Number(req.body.superficie_m2_4),
+                    Number(req.body.superficie_m2_5),
+                ];
+
+                var auxPrecioComparativa = [
+                    Number(req.body.precio_bs_1),
+                    Number(req.body.precio_bs_2),
+                    Number(req.body.precio_bs_3),
+                    Number(req.body.precio_bs_4),
+                    Number(req.body.precio_bs_5),
+                ];
+
+                terreno_encontrado.direccion_comparativa = auxDireccionComparativa;
+                terreno_encontrado.m2_comparativa = auxSuperficieComparativa;
+                terreno_encontrado.precio_comparativa = auxPrecioComparativa;
+
+                // -------------------------------------------------------
 
                 // LOS DATOS LLENADOS EN EL FORMULARIO, SERAN GUARDADOS EN LA BASE DE DATOS
                 await terreno_encontrado.save();
@@ -898,7 +992,7 @@ controladorAdmTerreno.crearFraccionesTerreno = async (req, res) => {
         var valor_fraccion = Number(req.body.valor_fraccion);
         var cantidad_fraccion = Number(req.body.cantidad_fraccion);
 
-        var acceso = await verificadorTerrenoBloqueado(registro_inmueble.codigo_terreno);
+        var acceso = await verificadorTerrenoBloqueado(codigo_terreno);
         if (acceso == "permitido") {
             var fracciones_terreno = await indiceFraccionTerreno.find({
                 codigo_terreno: codigo_terreno,
@@ -925,11 +1019,13 @@ controladorAdmTerreno.crearFraccionesTerreno = async (req, res) => {
                 );
 
                 if (registro_terreno) {
-                    var fraccion_bs = numero_punto_coma(Math.floor(valor_fraccion));
+                    var fraccion_bs = Math.floor(valor_fraccion);
+                    var fraccion_bs_r = numero_punto_coma(fraccion_bs);
 
-                    var ganancia = numero_punto_coma(
-                        Math.floor(valor_fraccion * (registro_terreno.rend_fraccion_total / 100))
-                    );
+                    var ganancia = Math.floor(
+                        valor_fraccion * (registro_terreno.rend_fraccion_total / 100)
+                    ); // bs
+                    var ganancia_r = numero_punto_coma(ganancia); // bs
 
                     var dias_ganancia = numero_punto_coma(Math.floor(registro_terreno.dias_maximo));
 
@@ -980,13 +1076,22 @@ controladorAdmTerreno.crearFraccionesTerreno = async (req, res) => {
                         let objeto = {
                             codigo_fraccion,
                             fraccion_bs,
+                            fraccion_bs_r,
                             ganancia,
+                            ganancia_r,
                             dias_ganancia,
                         };
                         // El método unshift agrega uno o más elementos al principio del array. Esto para que la ordenacion renderizada en la ventana del navegador recorriendo el for se vea ordenadas secuencialemte las fracciones creadas
                         arrayFraccionesCreadas.unshift(objeto);
                         // usamos un array extra "arrayFraccionesCreadas" donde estaran los codigos de las fracciones recientemente creadas.
                     }
+
+                    //----------------------------------------------------
+                    // updateOne guarda y actualiza la base de datos (si existe con anterioridad esa propiedad ya llenada con dato, lo sobreescribe con los datos nuevos)
+                    await indiceTerreno.updateOne(
+                        { codigo_terreno: codigo_terreno },
+                        { $set: { fraccion_bs: fraccion_bs } }
+                    );
 
                     //-------------------------------------------------------------------
                     // guardamos en el historial de acciones
@@ -1001,7 +1106,7 @@ controladorAdmTerreno.crearFraccionesTerreno = async (req, res) => {
 
                     res.json({
                         exito: "si",
-                        arrayCodigosCreados, // para renderizar los codigos recientemente creados
+                        arrayFraccionesCreadas, // para renderizar los codigos recientemente creados
                     });
                 } else {
                     res.json({
@@ -1013,6 +1118,65 @@ controladorAdmTerreno.crearFraccionesTerreno = async (req, res) => {
             // si el acceso es denegado
             res.json({
                 exito: "denegado",
+            });
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+//==============================================================================
+// eliminar todas las fracciones que pertenecen al terreno
+
+controladorAdmTerreno.eliminarFraccionesTerreno = async (req, res) => {
+    // ruta   delete  "/laapirest/terreno/accion/eliminar_fracciones_te"
+    try {
+        let codigo_terreno = req.body.codigo_terreno;
+        let usuario_maestro = req.body.usuario_maestro;
+        let clave_maestro = req.body.clave_maestro;
+
+        var paquete_datos = {
+            usuario_maestro,
+            clave_maestro,
+        };
+        var llaves_maestras = await verificadorLlavesMaestras(paquete_datos);
+        if (llaves_maestras) {
+            var acceso = await verificadorTerrenoBloqueado(codigo_terreno);
+            if (acceso == "permitido") {
+                // usamos "deleteMany" para eliminar TODOS los que cumplan con el filtro
+                await indiceFraccionInmueble.deleteMany({
+                    codigo_terreno: codigo_terreno,
+                });
+
+                await indiceFraccionTerreno.deleteMany({
+                    codigo_terreno: codigo_terreno,
+                });
+
+                //-------------------------------------------------------------------
+                // guardamos en el historial de acciones
+                var ci_administrador = req.user.ci_administrador; // extraido de la SESION guardada del administrador
+                var accion_administrador = "Elimina fraccines del terreno " + codigo_terreno;
+                var aux_accion_adm = {
+                    ci_administrador,
+                    accion_administrador,
+                };
+                await guardarAccionAdministrador(aux_accion_adm);
+                //-------------------------------------------------------------------
+                res.json({
+                    exito: "si",
+                });
+            } else {
+                // si el acceso es denegado
+                res.json({
+                    exito: "denegado",
+                    mensaje:
+                        "El Terreno se encuentra bloqueado, por tanto no es posible realizar cambios",
+                });
+            }
+        } else {
+            res.json({
+                exito: "no_maestro",
+                mensaje: "Datos de acceso MAESTRO incorrectos",
             });
         }
     } catch (error) {
@@ -1048,13 +1212,15 @@ controladorAdmTerreno.eliminarTerreno = async (req, res) => {
                     eliminadorDocumentosTerreno(codigo_terreno),
                     eliminadorPyInmGuarTerreno(codigo_terreno),
                     eliminadorRequerimientos(codigo_terreno),
+                    eliminadorFraccionesTerreno(codigo_terreno),
                 ]);
 
                 if (
                     resultadoEliminador[0] == "ok" &&
                     resultadoEliminador[1] == "ok" &&
                     resultadoEliminador[2] == "ok" &&
-                    resultadoEliminador[3] == "ok"
+                    resultadoEliminador[3] == "ok" &&
+                    resultadoEliminador[4] == "ok"
                 ) {
                     // si todos fueron eliminados satisfactoriamente
                     // AQUI RECIEN SE ELIMINARA EL PROYECTO DE LA BASE DE DATOS
@@ -1268,6 +1434,21 @@ async function eliminadorPyInmGuarTerreno(codigo_terreno) {
 async function eliminadorRequerimientos(codigo_terreno) {
     try {
         await indiceRequerimientos.deleteMany({ codigo_terreno: codigo_terreno }); // esta con "codigo_terreno" ok
+
+        return "ok";
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+//-----------------------------------------------------------------
+async function eliminadorFraccionesTerreno(codigo_terreno) {
+    try {
+        // se eliminaran todas las fracciones que existen en fracciones de inmueble y fracciones de terreno que guardan relacon con el codigo_terreno
+
+        // usamos "deleteMany" para eliminar TODOS los que cumplan con el filtro
+        await indiceFraccionInmueble.deleteMany({ codigo_terreno: codigo_terreno });
+        await indiceFraccionTerreno.deleteMany({ codigo_terreno: codigo_terreno });
 
         return "ok";
     } catch (error) {

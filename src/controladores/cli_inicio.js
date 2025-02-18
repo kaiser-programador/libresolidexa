@@ -11,6 +11,7 @@ const {
 const { cards_inicio_cli_adm } = require("../ayudas/funcionesayuda_0");
 
 const { inmueble_card_adm_cli, terreno_card_adm_cli } = require("../ayudas/funcionesayuda_1");
+const { numero_punto_coma } = require("../ayudas/funcionesayuda_3");
 
 const moment = require("moment");
 
@@ -71,12 +72,12 @@ controladorClienteInicio.inicioCliente = async (req, res) => {
 
             //----------------------------------------
             // agregando valores render con punto mil
-            datos_empresa.r_construidos = numero_punto_coma(n_construidos);
-            datos_empresa.r_proyectos = numero_punto_coma(n_proyectos);
-            datos_empresa.r_inmuebles = numero_punto_coma(n_inmuebles);
-            datos_empresa.r_empleos = numero_punto_coma(n_empleos);
-            datos_empresa.r_ahorros = numero_punto_coma(n_ahorros);
-            datos_empresa.r_resp_social = numero_punto_coma(n_resp_social);
+            datos_empresa.r_construidos = numero_punto_coma(registro_empresa.n_construidos);
+            datos_empresa.r_proyectos = numero_punto_coma(registro_empresa.n_proyectos);
+            datos_empresa.r_inmuebles = numero_punto_coma(registro_empresa.n_inmuebles);
+            datos_empresa.r_empleos = numero_punto_coma(registro_empresa.n_empleos);
+            datos_empresa.r_ahorros = numero_punto_coma(registro_empresa.n_ahorros);
+            datos_empresa.r_resp_social = numero_punto_coma(registro_empresa.n_resp_social);
             //----------------------------------------
 
             /*
@@ -981,8 +982,8 @@ controladorClienteInicio.cliProyectosVariosTipos = async (req, res) => {
 
         // ------- Para verificación -------
 
-        //console.log("los datos ARMADOS DE INICIO");
-        //console.log(cards_inicio);
+        // console.log("los datos ARMADOS DE INICIO");
+        // console.log(cards_inicio);
 
         res.render("cli_p_proyectos", cards_inicio);
     } catch (error) {

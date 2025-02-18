@@ -118,7 +118,7 @@
                                 data-tipo_moneda="sus"
                             >Dolar</div>
                             <div class="dropdown-divider"></div>
-                            <div class="text-center">
+                            <div class="dropdown-header" style="font-weight: 600;">
                                 <span id="tcOficial"></span>
                                 <span>Bs/$us</span>
                             </div>
@@ -183,11 +183,11 @@
                     {{/if}}
 
                     {{#if global_te.existe_calculadora_terreno}}
-                    <li class="nav-item"><a
-                            href="#"
-                            class="nav-link aux_tabe pestana_navegador"
-                            data-id="calculadora_te-tab"
-                        >Calculadora</a></li>
+                        <li class="nav-item"><a
+                                href="#"
+                                class="nav-link aux_tabe pestana_navegador"
+                                data-id="calculadora_te-tab"
+                            >Calculadora</a></li>
                     {{/if}}
 
                 </ul>
@@ -309,7 +309,7 @@
                                 class="nav-link aux_tabe pestana_navegador"
                                 data-id="calculadora_inm-tab"
                             >Calculadora</a></li>
-                        {{/if}}
+                    {{/if}}
 
                     {{#if global_inm.existe_inversor_inmueble}}
                         <li class="nav-item"><a
@@ -449,7 +449,7 @@
 
                         <div style="position: relative;right: 8rem;z-index: 500;">
                             <div
-                                class="dropdown-menu fondo_secundario"
+                                class="dropdown-menu dropdown-moneda"
                                 aria-labelledby="opciones_usuario"
                             >
                                 <a
@@ -531,7 +531,7 @@
                 >
 
                     <div class="mt-3">
-                        <h6 class="titul texto-link">Tipo de búsqueda</h6>
+                        <div class="titulo_4">Tipo de búsqueda</div>
                         {{! <div class="d-flex justify-content-between mx-1"> }}
                         <div class="mx-1">
 
@@ -584,7 +584,7 @@
                         />
 
                         <div class="mt-3 mx-1">
-                            <h6 class="titul texto-link">Selecciona ciudad</h6>
+                            <div class="titulo_4">Selecciona ciudad</div>
 
                             <div>
                                 <select
@@ -616,7 +616,7 @@
                         </div>
 
                         <div class="text-center mt-3">
-                            <input type="submit" value="Buscar" class="btn btn-primary" />
+                            <input type="submit" value="Buscar" class="btn boton-primario" />
                         </div>
 
                     </form>
@@ -630,7 +630,7 @@
                     >
 
                         <div class="mt-3 mx-1">
-                            <h6 class="titul texto-link">Selecciona ciudad</h6>
+                            <div class="titulo_4">Selecciona ciudad</div>
 
                             <div>
                                 <select
@@ -662,7 +662,7 @@
                         </div>
 
                         <div class="text-center mt-3">
-                            <input type="submit" value="Buscar" class="btn btn-primary" />
+                            <input type="submit" value="Buscar" class="btn boton-primario" />
                         </div>
 
                     </form>
@@ -683,7 +683,7 @@
                         />
 
                         <div class="mt-3 mx-1">
-                            <h6 class="titul texto-link">Selecciona ciudad</h6>
+                            <div class="titulo_4">Selecciona ciudad</div>
 
                             <div>
                                 <select
@@ -715,7 +715,7 @@
                         </div>
 
                         <div class="mt-3">
-                            <h6 class="titul texto-link">Estado del inmueble</h6>
+                            <div class="titulo_4">Estado del inmueble</div>
                             <div class="mx-1">
                                 <label class="d-block">
                                     <input
@@ -754,7 +754,7 @@
 
                         <div class="contenedor_disponible_busq mx-1">
                             <div class="mt-2">
-                                <h6 class="titul texto-link">Precio min.</h6>
+                                <div class="titulo_4">Precio min.</div>
 
                                 <div class="d-flex justify-content-between">
                                     <div class="limite_min">0 $us</div>
@@ -769,7 +769,7 @@
                                     max="100000"
                                     step="10000"
                                     value="100000"
-                                    class="w-100"
+                                    class="custom-range w-100"
                                 />
 
                                 <div class="input-group">
@@ -782,7 +782,7 @@
                                         class="form-control"
                                     />
                                     <div class="input-group-append">
-                                        <span class="input-group-text">$us</span>
+                                        <span class="input-group-text bg-unidad">$us</span>
                                     </div>
                                 </div>
                             </div>
@@ -790,7 +790,7 @@
 
                         <div class="contenedor_fraccion_busq mx-1">
                             <div class="mt-2">
-                                <h6 class="titul texto-link">Precio min.</h6>
+                                <div class="titulo_4">Precio min.</div>
 
                                 <div class="d-flex justify-content-between">
                                     <div class="limite_min">0 $us</div>
@@ -805,7 +805,7 @@
                                     max="100000"
                                     step="10000"
                                     value="100000"
-                                    class="w-100"
+                                    class="custom-range w-100"
                                 />
 
                                 <div class="input-group">
@@ -818,7 +818,7 @@
                                         min="0"
                                     />
                                     <div class="input-group-append">
-                                        <span class="input-group-text">$us</span>
+                                        <span class="input-group-text bg-unidad">$us</span>
                                     </div>
                                 </div>
                             </div>
@@ -827,7 +827,7 @@
 
                         <div class="contenedor_remate_busq mx-1">
                             <div class="mt-2">
-                                <h6 class="titul texto-link">Precio min.</h6>
+                                <div class="titulo_4">Precio min.</div>
 
                                 <div class="d-flex justify-content-between">
                                     <div class="limite_min">0 $us</div>
@@ -842,7 +842,7 @@
                                     max="100000"
                                     step="10000"
                                     value="100000"
-                                    class="w-100"
+                                    class="custom-range w-100"
                                 />
 
                                 <div class="input-group">
@@ -855,7 +855,7 @@
                                         min="0"
                                     />
                                     <div class="input-group-append">
-                                        <span class="input-group-text">$us</span>
+                                        <span class="input-group-text bg-unidad">$us</span>
                                     </div>
                                 </div>
                             </div>
@@ -863,7 +863,7 @@
                         </div>
 
                         <div class="mt-3">
-                            <h6 class="titul texto-link">Tipo</h6>
+                            <div class="titulo_4">Tipo</div>
 
                             <div class="contenedor_tipo_inmueble_busqueda">
 
@@ -929,7 +929,7 @@
                         </div>
 
                         <div class="mt-3 mx-1">
-                            <h6 class="titul texto-link">Superficie min.</h6>
+                            <div class="titulo_4">Superficie min.</div>
 
                             <div class="d-flex justify-content-between">
                                 <div class="limite_min">0 m2</div>
@@ -943,7 +943,7 @@
                                 max="500"
                                 step="50"
                                 value="500"
-                                class="w-100"
+                                class="custom-range w-100"
                                 name="html_range_superficie"
                             />
 
@@ -957,35 +957,35 @@
                                     name="html_input_superficie"
                                 />
                                 <div class="input-group-append">
-                                    <span class="input-group-text">m2</span>
+                                    <span class="input-group-text bg-unidad">m2</span>
                                 </div>
                             </div>
                         </div>
 
                         <div class="mt-3 mx-1">
-                            <h6 class="titul texto-link">Dormitorios min.</h6>
+                            <div class="titulo_4">Dormitorios min.</div>
                             <div
                                 class="btn-group ref_numero_habitaciones d-flex justify-content-between"
                             >
                                 <button
                                     numero="1"
-                                    class="texto-normal numero_habitaciones btn border rounded-0"
+                                    class="numero_habitaciones btn rounded-0"
                                 >1</button>
                                 <button
                                     numero="2"
-                                    class="texto-normal numero_habitaciones btn border"
+                                    class="numero_habitaciones btn"
                                 >2</button>
                                 <button
                                     numero="3"
-                                    class="texto-normal numero_habitaciones btn border"
+                                    class="numero_habitaciones btn"
                                 >3</button>
                                 <button
                                     numero="4"
-                                    class="texto-normal numero_habitaciones btn border"
+                                    class="numero_habitaciones btn"
                                 >4</button>
                                 <button
                                     numero="5"
-                                    class="texto-normal numero_habitaciones btn border rounded-0"
+                                    class="numero_habitaciones btn rounded-0"
                                 >+5</button>
                             </div>
                             {{! este hidden para envio con el formulari al servidor }}
@@ -999,27 +999,27 @@
                         </div>
 
                         <div class="mt-3 mx-1">
-                            <h6 class="titul texto-link">Baños min.</h6>
+                            <div class="titulo_4">Baños min.</div>
                             <div class="btn-group ref_numero_banos d-flex justify-content-between">
                                 <button
                                     numero="1"
-                                    class="texto-normal numero_banos btn border rounded-0"
+                                    class="numero_banos btn rounded-0"
                                 >1</button>
                                 <button
                                     numero="2"
-                                    class="texto-normal numero_banos btn border"
+                                    class="numero_banos btn"
                                 >2</button>
                                 <button
                                     numero="3"
-                                    class="texto-normal numero_banos btn border"
+                                    class="numero_banos btn"
                                 >3</button>
                                 <button
                                     numero="4"
-                                    class="texto-normal numero_banos btn border"
+                                    class="numero_banos btn"
                                 >4</button>
                                 <button
                                     numero="5"
-                                    class="texto-normal numero_banos btn border rounded-0"
+                                    class="numero_banos btn rounded-0"
                                 >+5</button>
                             </div>
                             {{! este hidden para envio con el formulari al servidor }}
@@ -1046,7 +1046,7 @@
                         </div>
 
                         <div class="text-center mt-2">
-                            <input type="submit" value="Buscar" class="btn btn-primary" />
+                            <input type="submit" value="Buscar" class="btn boton-primario" />
                         </div>
 
                     </form>
@@ -1087,7 +1087,7 @@
                     <label for="id_usuario_modal" class="texto-normal">Usuario</label>
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <div class="input-group-text texto-resaltado">
+                            <div class="input-group-text bg-unidad">
                                 <i class="fas fa-user"></i>
                             </div>
                         </div>
@@ -1107,7 +1107,7 @@
                     {{! <label for="html_clave_inversor" class="texto-normal">Contraseña</label> }}
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <div class="input-group-text texto-resaltado">
+                            <div class="input-group-text bg-unidad">
                                 <i class="fas fa-lock"></i>
                             </div>
                         </div>
@@ -1125,7 +1125,7 @@
                 <div class="text-center">
                     <input
                         type="submit"
-                        class="ref_boton_acceder btn btn-primary"
+                        class="ref_boton_acceder btn boton-primario"
                         value="Acceder"
                     />
                 </div>

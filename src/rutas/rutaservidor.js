@@ -470,6 +470,13 @@ module.exports = function (servidorDamosRutas) {
         controladorAdmTerreno.crearFraccionesTerreno
     );
 
+    // eliminar todas las fracciones que pertenecen al terreno
+    laRuta.delete(
+        "/laapirest/terreno/accion/eliminar_fracciones_te",
+        validador.validar_adm,
+        controladorAdmTerreno.eliminarFraccionesTerreno
+    );
+
     //===================================================================================
     //===================================================================================
     // RUTAS PROYECTO

@@ -108,12 +108,12 @@ controladorInicio.inicioSistema = async (req, res) => {
 
             //----------------------------------------
             // agregando valores render con punto mil
-            datos_empresa.r_construidos= numero_punto_coma(n_construidos);
-            datos_empresa.r_proyectos= numero_punto_coma(n_proyectos);
-            datos_empresa.r_inmuebles= numero_punto_coma(n_inmuebles);
-            datos_empresa.r_empleos= numero_punto_coma(n_empleos);
-            datos_empresa.r_ahorros= numero_punto_coma(n_ahorros);
-            datos_empresa.r_resp_social= numero_punto_coma(n_resp_social);
+            datos_empresa.r_construidos= numero_punto_coma(registro_empresa.n_construidos);
+            datos_empresa.r_proyectos= numero_punto_coma(registro_empresa.n_proyectos);
+            datos_empresa.r_inmuebles= numero_punto_coma(registro_empresa.n_inmuebles);
+            datos_empresa.r_empleos= numero_punto_coma(registro_empresa.n_empleos);
+            datos_empresa.r_ahorros= numero_punto_coma(registro_empresa.n_ahorros);
+            datos_empresa.r_resp_social= numero_punto_coma(registro_empresa.n_resp_social);
             //----------------------------------------
 
             // es_ninguno: true  // para las opciones de navegacion de la ventana en estado comprimido

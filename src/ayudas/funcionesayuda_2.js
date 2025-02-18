@@ -38,6 +38,7 @@ funcionesAyuda_2.cabezeras_adm_cli = async function (aux_cabezera) {
 
                     ciudad: 1,
                     provincia: 1,
+                    ubicacion: 1,
                     direccion: 1,
                     link_youtube: 1,
                     link_facebook: 1,
@@ -49,6 +50,7 @@ funcionesAyuda_2.cabezeras_adm_cli = async function (aux_cabezera) {
             if (datos_objetivo) {
                 datos_cabezera.ciudad = datos_objetivo.ciudad;
                 datos_cabezera.provincia = datos_objetivo.provincia;
+                datos_cabezera.ubicacion = datos_objetivo.ubicacion;
                 datos_cabezera.direccion = datos_objetivo.direccion;
                 datos_cabezera.codigo = codigo_objetivo;
 

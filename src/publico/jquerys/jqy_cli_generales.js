@@ -79,6 +79,9 @@ $(".radio_tipo_busqueda").click(function (e) {
         $("#formulario_busqueda_requerimiento").attr("hidden", true); // ocultamos
         $("#formulario_busqueda_cli").attr("hidden", false); // mostramos
         $("#formulario_busqueda_fracciones").attr("hidden", true); // ocultamos
+
+        // se hara click en el primer tipo radio de busqueda de inmuebles: "Disponible"
+        $("#formulario_busqueda_cli .radio_inm_py_busq").eq(0).click();
     }
 
     if (val_seleccionado == "requerimiento") {
@@ -87,7 +90,7 @@ $(".radio_tipo_busqueda").click(function (e) {
         $("#formulario_busqueda_fracciones").attr("hidden", true); // ocultamos
     }
 
-    if (val_seleccionado == "proyecto") {
+    if (val_seleccionado == "fracciones_terreno") {
         $("#formulario_busqueda_requerimiento").attr("hidden", true); // ocultamos
         $("#formulario_busqueda_cli").attr("hidden", true); // ocultamos
         $("#formulario_busqueda_fracciones").attr("hidden", false); // mostramos
@@ -409,8 +412,12 @@ $("#ajustar_economia").change(function () {
         $("#tc_paralelo").addClass("input_respuesta");
         $("#inflacion").addClass("input_respuesta");
 
-        $("#tc_paralelo").val(6);
-        $("#inflacion").val(4.9);
+        // los valores de inflacion y tc paralelo por defecto
+        let tc_paralelo = $(".tc_paralelo").data("tc_paralelo");
+        let inflacion_ine = $(".inflacion_ine").data("inflacion_ine");
+
+        $("#tc_paralelo").val(tc_paralelo);
+        $("#inflacion").val(inflacion_ine);
     }
 });
 
@@ -505,21 +512,46 @@ $('[data-fancybox="images"]').fancybox({
 // Al momento de seleccionar un tipo de moneda desde el menu superior
 
 $("#id_body").on("click", ".tipo_moneda", function (e) {
-    let tipoMoneda = $(this).attr("data-tipo_moneda"); // bs o sus
+    // Obtener la URL actual
+    var direccionUrl = window.location.href;
+    // ------- Para verificación -------
+    console.log("la url es:");
+    console.log(direccionUrl);
 
-    // en el cargado de toda ventana se asegura que existan los valores de: tipoCambio y tipoMoneda, por tanto se puede extraer directaente el tipoCambio, puesto que esta previamente asegurado su existencia
+    // Definir las palabras clave que deben estar en la URL
+    var palabrasClave = ["calculadora"];
 
-    let tipoCambio = Number(sessionStorage.getItem("tipoCambio")); // Number, porque en sessionStorage al final los datos se almacenan en tipo string, por mas que se los alamacene en type numerico
+    // Verificar si todas las palabras clave están presentes en la URL
+    var todasLasPalabrasPresentes = palabrasClave.every((palabra) =>
+        direccionUrl.includes(palabra)
+    );
 
-    // funcion
-    let datosMoneda = {
-        tipoCambio,
-        tipoMoneda,
-    };
-    tipoMonedaTipoCambio(datosMoneda);
+    if (todasLasPalabrasPresentes) {
+        // si se trata de una ventana de tipo calculadora
 
-    // ahora se guarda en la memoria del navegador el tipo de moneda que se selecciono:
-    sessionStorage.setItem("tipoMoneda", tipoMoneda);
+        let tipoMoneda = $(this).attr("data-tipo_moneda"); // bs o sus
+        // ahora se guarda en la memoria del navegador el tipo de moneda que se selecciono:
+        sessionStorage.setItem("tipoMoneda", tipoMoneda);
+
+        // recargamos la ventana actual, para que se vea el tipo de moneda seleccionada.
+        location.reload();
+    } else {
+        let tipoMoneda = $(this).attr("data-tipo_moneda"); // bs o sus
+
+        // en el cargado de toda ventana se asegura que existan los valores de: tipoCambio y tipoMoneda, por tanto se puede extraer directaente el tipoCambio, puesto que esta previamente asegurado su existencia
+
+        let tipoCambio = Number(sessionStorage.getItem("tipoCambio")); // Number, porque en sessionStorage al final los datos se almacenan en tipo string, por mas que se los alamacene en type numerico
+
+        // funcion
+        let datosMoneda = {
+            tipoCambio,
+            tipoMoneda,
+        };
+        tipoMonedaTipoCambio(datosMoneda);
+
+        // ahora se guarda en la memoria del navegador el tipo de moneda que se selecciono:
+        sessionStorage.setItem("tipoMoneda", tipoMoneda);
+    }
 });
 
 //==================================================================
@@ -528,26 +560,11 @@ $("#id_body").on("click", ".tipo_moneda", function (e) {
 
 // cuando se mueve manualmente el punto del rangue
 $("#range_fracciones").change(function (e) {
-    let cambio = $(this);
-    let el_valor = cambio.val();
+    let punto = $(this);
+    let el_valor = punto.val();
     $("#input_fracciones").val(el_valor);
-});
 
-// cuando se escribe directamente dentro de la caja del input
-$("#input_fracciones").keyup(function (e) {
-    let maximo = Number($(".limite_max").attr("data-maximo"));
-    let num_f = Number($("#input_fracciones").val());
-
-    if (num_f >= 0 && num_f <= maximo) {
-        let valor_numerico = Number($("#input_fracciones").val());
-        $("#range_fracciones").val(valor_numerico);
-    } else {
-        alert("El número de fracciones no debe superar los límites establecidos " + num_f);
-    }
-});
-
-// cada vez que la caja del input cambia de valor
-$("#input_fracciones").change(function (e) {
+    //--------------------------------
     var tc_oficial = Number(sessionStorage.getItem("tipoCambio"));
     var tipoMoneda = sessionStorage.getItem("tipoMoneda");
     if (tipoMoneda === "sus") {
@@ -568,15 +585,17 @@ $("#input_fracciones").change(function (e) {
 
     let num_f = Number($("#input_fracciones").val());
 
-    let fraccion_val = num_f * fraccion_bs * (1 / cambio);
-    let terreno_val = solidexa_bs * (1 / cambio);
+    let fraccion_val = num_f * fraccion_bs; // siempre en Bs
+    let terreno_val = solidexa_bs; // en Bs, porque fraccion_val esta en Bs
 
-    let participacion = Math.floor(fraccion_val / terreno_val);
+    let participacion = Number(((fraccion_val / terreno_val) * 100).toFixed(2));
     let participacion_render = numero_punto_coma_query(participacion);
     let fraccion_val_render = numero_punto_coma_query(fraccion_val);
 
+    $("#valor_adquiridos").attr("data-bs", fraccion_val); // fraciones adquiridas en numerico y bs
     $("#valor_adquiridos").val(fraccion_val_render);
     $("#participacion").val(participacion_render);
 });
+
 //==================================================================
 //==================================================================

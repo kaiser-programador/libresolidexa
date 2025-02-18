@@ -1776,7 +1776,7 @@ $("#cal_inmFr_copropietario").click(function (e) {
         var inflacion = inflacion_ine;
     }
 
-    let valor_inversion = Number($("#valor_adquiridos").val()); // valor de las fracciones que el usuario pretende comprar. Siempre estara en moneda BOLIVIANOS
+    let valor_inversion = $("#valor_adquiridos").data("bs"); // valor de las fracciones que el usuario pretende comprar. Siempre estara en moneda BOLIVIANOS. como este input es tipo "text", es que rescataremos su valor numerico bs guardado en el atributo "data-bs"
 
     if (valor_inversion > 0 && economia === true) {
         $(".contenedor_1").show(); // visualizamos

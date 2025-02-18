@@ -23,54 +23,6 @@ $(document).ready(function () {
 
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    // PARA VENTANA CALCULADORA DE TERRENO
-
-    // Obtener la URL actual
-    var direccionUrl = window.location.href;
-    // ------- Para verificación -------
-    console.log("la url es:");
-    console.log(direccionUrl);
-
-    // Definir las palabras clave que deben estar en la URL
-    var palabrasClave_1 = ["terreno", "calculadora"];
-
-    // Verificar si todas las palabras clave están presentes en la URL
-    var todasLasPalabrasPresentes_1 = palabrasClave_1.every((palabra) =>
-        direccionUrl.includes(palabra)
-    );
-
-    if (todasLasPalabrasPresentes_1) {
-        // ocultamos el contenedor que contienen a los resultados de los calculos y graficos
-        $(".contenedor_1").hide();
-        $(".contenedor_2").hide();
-        $(".contenedor_3").hide();
-    }
-
-    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    // PARA VENTANA CALCULADORA DE INMUEBLE ENTERO e INMUEBLE FRACCIONADO
-
-    // Definir las palabras clave que deben estar en la URL
-    var palabrasClave_2 = ["inmueble", "calculadora"];
-
-    // Verificar si todas las palabras clave están presentes en la URL
-    var todasLasPalabrasPresentes_2 = palabrasClave_2.every((palabra) =>
-        direccionUrl.includes(palabra)
-    );
-
-    if (todasLasPalabrasPresentes_2) {
-        // ocultamos el contenedor que contienen a los resultados de los calculos y graficos
-        $(".contenedor_1").hide();
-        $(".contenedor_2").hide();
-        $(".contenedor_4").hide();
-        $(".contenedor_5").hide();
-        $(".contenedor_6").hide();
-        $(".contenedor_7").hide();
-        $(".contenedor_8").hide();
-    }
-
-    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     // TIPO DE CAMBIO ----> ALMACENAMIENTO EN LA MEMORIA DEL NAVEGADOR
 
     let tipoCambio = Number(sessionStorage.getItem("tipoCambio")); // Number, porque en sessionStorage al final los datos se almacenan en tipo string, por mas que se los alamacene en type numerico
@@ -78,7 +30,6 @@ $(document).ready(function () {
     let tipoMoneda = sessionStorage.getItem("tipoMoneda"); // bs o sus
 
     if (tipoCambio && tipoMoneda) {
-
         // Para visualizar el tipo de cambio en el menu dropdown
         $("#tcOficial").text(numero_punto_coma_query(tipoCambio));
 
@@ -90,7 +41,7 @@ $(document).ready(function () {
         };
 
         tipoMonedaTipoCambio(datosMoneda);
-        continuamosReady();
+        continuamosReady_1();
     } else {
         // Significa que SOLIDEXA es abierta por primera vez en el navegador del usuario, por tanto la moneda por defecto sera el BOLIVIANO Y debemos extraer de la base de datos el valor del tipo de cambio.
 
@@ -124,7 +75,7 @@ $(document).ready(function () {
                         tipoMoneda,
                     };
                     tipoMonedaTipoCambio(datosMoneda);
-                    continuamosReady();
+                    continuamosReady_1();
                 } else {
                     console.error("La respuesta del servidor es inválida.");
                 }
@@ -137,9 +88,125 @@ $(document).ready(function () {
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// CONTINUAMOS CON EL CODIGO CUANDO LA VENTANA DEL NAVEGADOR SE TRATE DE UNA CALCULADORA PARA EL CARGADO EN LA MEMORIA DEL NAVEGADOR DE LOS PRONOSTICOS YA SEA DE TERRENO O INMUEBLE.
+
+function continuamosReady_1() {
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    // PARA VENTANA CALCULADORA DE TERRENO
+
+    // Obtener la URL actual
+    var direccionUrl = window.location.href;
+    // ------- Para verificación -------
+    console.log("la url es:");
+    console.log(direccionUrl);
+
+    // Definir las palabras clave que deben estar en la URL
+    var palabrasClave_1 = ["terreno", "calculadora"];
+
+    // Verificar si todas las palabras clave están presentes en la URL
+    var todasLasPalabrasPresentes_1 = palabrasClave_1.every((palabra) =>
+        direccionUrl.includes(palabra)
+    );
+
+    if (todasLasPalabrasPresentes_1) {
+        // ocultamos el contenedor que contienen a los resultados de los calculos y graficos
+        $(".contenedor_1").hide();
+        $(".contenedor_2").hide();
+        $(".contenedor_3").hide();
+
+        // para el cargado en la memoria del navegador de los pronosticos del terreno
+        let datos_1 = sessionStorage.getItem("te_array_sus_m2");
+        let datos_2 = sessionStorage.getItem("te_array_periodo");
+
+        if (datos_1 && datos_2) {
+            continuamosReady_2();
+        } else {
+            // no existen datos, entonces tendran que ser cargados del servidor
+
+            $.ajax({
+                type: "POST",
+                url: "/terreno/operacion/pronostico_precio_m2",
+            }).done(function (respuestaPronostico) {
+                // ------- Para verificación -------
+                console.log("respuesta de pronostico terreno desde el servidor");
+                console.log(respuestaPronostico);
+
+                let arraySusM2 = respuestaPronostico.array_sus_m2;
+                let arrayPeriodo = respuestaPronostico.array_periodo;
+
+                // guardamos en sessionStorage del navegador con los nombres de: te_array_sus_m2 y te_array_periodo
+                // La función JSON.stringify es necesaria en sessionStorage.setItem porque sessionStorage solo puede almacenar datos en formato de texto plano (strings).
+                sessionStorage.setItem("te_array_sus_m2", JSON.stringify(arraySusM2));
+                sessionStorage.setItem("te_array_periodo", JSON.stringify(arrayPeriodo));
+
+                continuamosReady_2();
+            });
+        }
+    } else {
+        // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        // PARA VENTANA CALCULADORA DE INMUEBLE ENTERO e INMUEBLE FRACCIONADO
+
+        // Definir las palabras clave que deben estar en la URL
+        var palabrasClave_2 = ["inmueble", "calculadora"];
+
+        // Verificar si todas las palabras clave están presentes en la URL
+        var todasLasPalabrasPresentes_2 = palabrasClave_2.every((palabra) =>
+            direccionUrl.includes(palabra)
+        );
+
+        if (todasLasPalabrasPresentes_2) {
+            // ocultamos el contenedor que contienen a los resultados de los calculos y graficos
+            $(".contenedor_1").hide();
+            $(".contenedor_2").hide();
+            $(".contenedor_4").hide();
+            $(".contenedor_5").hide();
+            $(".contenedor_6").hide();
+            $(".contenedor_7").hide();
+            $(".contenedor_8").hide();
+
+            // para el cargado en la memoria del navegador de los pronosticos del imueble
+            let datos_1 = sessionStorage.getItem("inm_array_sus_m2");
+            let datos_2 = sessionStorage.getItem("inm_array_periodo");
+
+            if (datos_1 && datos_2) {
+                // si existen datos guardados del pronostico $us/m2 del inmueble
+                continuamosReady_2();
+            } else {
+                // no existen datos, entonces tendran que ser cargados del servidor
+
+                $.ajax({
+                    type: "POST",
+                    url: "/inmueble/operacion/pronostico_precio_m2",
+                }).done(function (respuestaPronostico) {
+                    // ------- Para verificación -------
+                    console.log("respuesta de pronostico inmueble desde el servidor");
+                    console.log(respuestaPronostico);
+
+                    let arraySusM2 = respuestaPronostico.array_sus_m2;
+                    let arrayPeriodo = respuestaPronostico.array_periodo;
+
+                    // guardamos en sessionStorage del navegador con los nombres de: inm_array_sus_m2 y inm_array_periodo
+                    // La función JSON.stringify es necesaria en sessionStorage.setItem porque sessionStorage solo puede almacenar datos en formato de texto plano (strings).
+                    sessionStorage.setItem("inm_array_sus_m2", JSON.stringify(arraySusM2));
+                    sessionStorage.setItem("inm_array_periodo", JSON.stringify(arrayPeriodo));
+
+                    continuamosReady_2();
+                });
+            }
+        } else {
+            // entonces se trata de una ventana que no involucra calculadora
+            continuamosReady_2();
+        }
+    }
+}
+
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // CONTINUAMOS CON EL CODIGO CUANDO LA VENTANA DEL NAVEGADOR  YA ESTA RENDERIZADA Y LA MONEDA Y TIPO DE CAMBIO YA SON CONOCIDOS
 
-function continuamosReady() {
+function continuamosReady_2() {
     let tipoCambio = Number(sessionStorage.getItem("tipoCambio")); // ej: 7
     let tipoMoneda = sessionStorage.getItem("tipoMoneda"); // bs o sus
 
@@ -192,7 +259,7 @@ function continuamosReady() {
     $(".radio_tipo_busqueda").eq(0).click();
 
     // se hara click en el primer tipo radio de busqueda de inmuebles: "Disponible"
-    $("#formulario_busqueda_cli .radio_inm_py_busq").eq(0).click();
+    //$("#formulario_busqueda_cli .radio_inm_py_busq").eq(0).click();
 
     var tipo_ventana = $("#id_tipo_ventana").attr("data-tipo_ventana");
     let vemos = $("#id_objetivo_tipo").attr("data-objetivo_tipo");
@@ -1100,18 +1167,42 @@ function grafico_20(paqueteDatos) {
                 {
                     label: label_1,
                     data: data_1, // []
-                    backgroundColor: "#3A91FF", // Color de las barras
+                    // Color de las barras
+                    backgroundColor: "rgba(54, 162, 235, 0.6)", // Color de las barras
+                    borderColor: "rgba(54, 162, 235, 1)", // Color del borde
+                    borderWidth: 1,
                     stack: "Stack 0", // indica que es una barra separada de la siguiente
                 },
                 {
                     label: label_2,
                     data: data_2, // []
-                    backgroundColor: "#3A91FF", // Color de las barras
+                    // Color de las barras
+                    backgroundColor: "rgba(54, 162, 235, 0.6)", // Color de las barras
+                    borderColor: "rgba(54, 162, 235, 1)", // Color del borde
+                    borderWidth: 1,
                     stack: "Stack 1",
                 },
             ],
         },
         options: {
+
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true, // Mostrar la leyenda
+                    position: "top",
+                },
+            },
+            scales: {
+                x: {
+                    stacked: false, // Las barras no estarán apiladas
+                },
+                y: {
+                    beginAtZero: true, // Comienza el eje Y en cero
+                },
+            },
+
+            /*
             //responsive: true,
             // en "false" Esto desactivará la relación de aspecto predeterminada y permitirá que el lienzo del gráfico se ajuste a la altura y el ancho especificados.
             maintainAspectRatio: false,
@@ -1146,6 +1237,7 @@ function grafico_20(paqueteDatos) {
                 },
             },
             //////////////
+            */
         },
     };
 
@@ -1173,35 +1265,32 @@ function grafico_12(paqueteDatos) {
                 {
                     label: label_1,
                     data: data_1, // []
-                    backgroundColor: "#FF6F31", // Color de las barras para el Precio
+                    backgroundColor: "rgba(255, 111, 49, 0.6)", // Color de las barras
+                    borderColor: "rgba(255, 111, 49, 1)", // Color del borde
+                    borderWidth: 1,
                 },
                 // barra superior:
                 {
                     label: label_2,
                     data: data_2, // []
-                    backgroundColor: "#3A91FF", // Color de las barras para el Plusvalía
+                    // Color de las barras para el Plusvalía
+                    backgroundColor: "rgba(54, 162, 235, 0.6)", // Color de las barras
+                    borderColor: "rgba(54, 162, 235, 1)", // Color del borde
+                    borderWidth: 1,
                 },
             ],
         },
         options: {
-            // en "false" Esto desactivará la relación de aspecto predeterminada y permitirá que el lienzo del gráfico se ajuste a la altura y el ancho especificados.
-            maintainAspectRatio: false,
-
+            
             scales: {
                 xAxes: [
                     {
-                        stacked: true, // Apila las barras horizontalmente
-
                         // Ajusta el porcentaje de ancho de las barras (por ejemplo, 0.7 para un 70%)
                         barPercentage: 0.4,
                     },
                 ],
-                yAxes: [
-                    {
-                        stacked: true, // Apila las barras verticalmente
-                    },
-                ],
             },
+            
         },
     };
 
@@ -1229,7 +1318,10 @@ function grafico_21(paqueteDatos) {
                 {
                     label: label,
                     data: data, // []
-                    backgroundColor: "#3A91FF", // Color de las barras para el Plusvalia
+                    // Color de las barras para el Plusvalia
+                    backgroundColor: "rgba(54, 162, 235, 0.6)", // Color de las barras
+                    borderColor: "rgba(54, 162, 235, 1)", // Color del borde
+                    borderWidth: 1,
                 },
             ],
         },
@@ -1268,12 +1360,17 @@ function grafico_22(paqueteDatos) {
                 {
                     label: label_1,
                     data: data_1, // []
-                    backgroundColor: "#FF6F31", // Color de las barras para el Precio
+                    backgroundColor: "rgba(255, 111, 49, 0.6)", // Color de las barras
+                    borderColor: "rgba(255, 111, 49, 1)", // Color del borde
+                    borderWidth: 1,
                 },
                 {
                     label: label_2,
                     data: data_2, // []
-                    backgroundColor: "#3A91FF", // Color de las barras para el Plusvalía
+                    // Color de las barras para el Plusvalía
+                    backgroundColor: "rgba(54, 162, 235, 0.6)", // Color de las barras
+                    borderColor: "rgba(54, 162, 235, 1)", // Color del borde
+                    borderWidth: 1,
                 },
             ],
         },
@@ -1423,106 +1520,45 @@ function tePronosticoPrecioM2(paqueteDatos) {
     let tipoMoneda = paqueteDatos.tipoMoneda; // sus o bs
     let tc_oficial = paqueteDatos.tc_oficial;
 
-    // sessionStorage: Los datos permanecen solo durante la sesión del navegador. Se eliminan automáticamente cuando se cierra la pestaña o la ventana.
+    // te_array_sus_m2 y te_array_periodo ya se encuentran almacenados en la memoria del navegador al momento en que la ventana de calculadora este cargada.
 
-    var datos_1 = sessionStorage.getItem("te_array_sus_m2");
-    var datos_2 = sessionStorage.getItem("te_array_periodo");
+    // ya existen datos guardados del pronostico $us/m2 del terreno
 
-    if (datos_1 && datos_2) {
-        // si existen datos guardados del pronostico $us/m2 del terreno
-        // lectura de los datos de pronostico
-        // Cuando recuperas datos almacenados como un string JSON, debes convertirlos nuevamente a su formato original (objeto, array, etc.) usando JSON.parse.
+    // Cuando recuperas datos almacenados como un string JSON, debes convertirlos nuevamente a su formato original (objeto, array, etc.) usando JSON.parse.
 
-        // Recuperar y convertir de vuelta a objeto||array
-        var array_sus_m2 = JSON.parse(sessionStorage.getItem("te_array_sus_m2"));
-        var pronostico_periodo = JSON.parse(sessionStorage.getItem("te_array_periodo"));
+    // Recuperar y convertir de vuelta a objeto||array
+    var array_sus_m2 = JSON.parse(sessionStorage.getItem("te_array_sus_m2"));
+    var pronostico_periodo = JSON.parse(sessionStorage.getItem("te_array_periodo"));
 
-        //=================================================
+    //=================================================
 
-        if (tipoMoneda === "sus") {
-            var pronostico_pm2 = array_sus_m2;
-        } else {
-            if (tipoMoneda === "bs") {
-                // dado que los valores pronosticos de precio por m2 estan en DOLARES, entonces abra que convertir los valores de pronosticos a BOLIVIANOS
-                var pronostico_pm2 = [];
-                if (array_sus_m2.length > 0) {
-                    for (let i = 0; i < array_sus_m2.length; i++) {
-                        pronostico_pm2[i] = array_sus_m2[i] * tc_oficial;
-                    }
+    if (tipoMoneda === "sus") {
+        var pronostico_pm2 = array_sus_m2;
+    } else {
+        if (tipoMoneda === "bs") {
+            // dado que los valores pronosticos de precio por m2 estan en DOLARES, entonces abra que convertir los valores de pronosticos a BOLIVIANOS
+            var pronostico_pm2 = [];
+            if (array_sus_m2.length > 0) {
+                for (let i = 0; i < array_sus_m2.length; i++) {
+                    pronostico_pm2[i] = array_sus_m2[i] * tc_oficial;
                 }
             }
         }
-
-        // ------- Para verificación -------
-        // para ver si se mantinen los valores numericos como numeros o string.
-        console.log("array_sus_m2");
-        console.log(pronostico_pm2);
-        console.log("array_periodo");
-        console.log(pronostico_periodo);
-
-        var respuesta = {
-            pronostico_pm2,
-            pronostico_periodo,
-        };
-
-        return respuesta;
-    } else {
-        // no existen datos, entonces tendran que ser cargados del servidor
-
-        $.ajax({
-            type: "POST",
-            url: "/terreno/operacion/pronostico_precio_m2",
-        }).done(function (respuestaPronostico) {
-            // ------- Para verificación -------
-            console.log("respuesta de pronostico terreno desde el servidor");
-            console.log(respuestaPronostico);
-
-            let arraySusM2 = respuestaPronostico.array_sus_m2;
-            let arrayPeriodo = respuestaPronostico.array_periodo;
-
-            // guardamos en sessionStorage del navegador con los nombres de: te_array_sus_m2 y te_array_periodo
-            // La función JSON.stringify es necesaria en sessionStorage.setItem porque sessionStorage solo puede almacenar datos en formato de texto plano (strings).
-            sessionStorage.setItem("te_array_sus_m2", JSON.stringify(arraySusM2));
-            sessionStorage.setItem("te_array_periodo", JSON.stringify(arrayPeriodo));
-
-            // lectura de los datos de pronostico
-            // Cuando recuperas datos almacenados como un string JSON, debes convertirlos nuevamente a su formato original (objeto, array, etc.) usando JSON.parse.
-
-            // Recuperar y convertir de vuelta a objeto||array
-            var array_sus_m2 = JSON.parse(sessionStorage.getItem("te_array_sus_m2"));
-            var pronostico_periodo = JSON.parse(sessionStorage.getItem("te_array_periodo"));
-
-            //=================================================
-
-            if (tipoMoneda === "sus") {
-                var pronostico_pm2 = array_sus_m2;
-            } else {
-                if (tipoMoneda === "bs") {
-                    // dado que los valores pronosticos de precio por m2 estan en DOLARES, entonces abra que convertir los valores de pronosticos a BOLIVIANOS
-                    var pronostico_pm2 = [];
-                    if (array_sus_m2.length > 0) {
-                        for (let i = 0; i < array_sus_m2.length; i++) {
-                            pronostico_pm2[i] = array_sus_m2[i] * tc_oficial;
-                        }
-                    }
-                }
-            }
-
-            // ------- Para verificación -------
-            // para ver si se mantinen los valores numericos como numeros o string.
-            console.log("array_sus_m2");
-            console.log(pronostico_pm2);
-            console.log("array_periodo");
-            console.log(pronostico_periodo);
-
-            var respuesta = {
-                pronostico_pm2,
-                pronostico_periodo,
-            };
-
-            return respuesta;
-        });
     }
+
+    // ------- Para verificación -------
+    // para ver si se mantinen los valores numericos como numeros o string.
+    console.log("TERRENO array_sus_m2");
+    console.log(pronostico_pm2);
+    console.log("TERRENO array_periodo");
+    console.log(pronostico_periodo);
+
+    var respuesta = {
+        pronostico_pm2,
+        pronostico_periodo,
+    };
+
+    return respuesta;
 }
 
 //====================================================================
@@ -1532,106 +1568,45 @@ function inmPronosticoPrecioM2(paqueteDatos) {
     let tipoMoneda = paqueteDatos.tipoMoneda; // sus o bs
     let tc_oficial = paqueteDatos.tc_oficial;
 
-    // sessionStorage: Los datos permanecen solo durante la sesión del navegador. Se eliminan automáticamente cuando se cierra la pestaña o la ventana.
+    // inm_array_sus_m2 y inm_array_periodo ya se encuentran almacenados en la memoria del navegador al momento en que la ventana de calculadora este cargada.
 
-    var datos_1 = sessionStorage.getItem("inm_array_sus_m2");
-    var datos_2 = sessionStorage.getItem("inm_array_periodo");
+    // ya existen datos guardados del pronostico $us/m2 del inmueble
 
-    if (datos_1 && datos_2) {
-        // si existen datos guardados del pronostico $us/m2 del terreno
-        // lectura de los datos de pronostico
-        // Cuando recuperas datos almacenados como un string JSON, debes convertirlos nuevamente a su formato original (objeto, array, etc.) usando JSON.parse.
+    // Cuando recuperas datos almacenados como un string JSON, debes convertirlos nuevamente a su formato original (objeto, array, etc.) usando JSON.parse.
 
-        // Recuperar y convertir de vuelta a objeto||array
-        var array_sus_m2 = JSON.parse(sessionStorage.getItem("inm_array_sus_m2"));
-        var pronostico_periodo = JSON.parse(sessionStorage.getItem("inm_array_periodo"));
+    // Recuperar y convertir de vuelta a objeto||array
+    var array_sus_m2 = JSON.parse(sessionStorage.getItem("inm_array_sus_m2"));
+    var pronostico_periodo = JSON.parse(sessionStorage.getItem("inm_array_periodo"));
 
-        //=================================================
+    //=================================================
 
-        if (tipoMoneda === "sus") {
-            var pronostico_pm2 = array_sus_m2;
-        } else {
-            if (tipoMoneda === "bs") {
-                // dado que los valores pronosticos de precio por m2 estan en DOLARES, entonces abra que convertir los valores de pronosticos a BOLIVIANOS
-                var pronostico_pm2 = [];
-                if (array_sus_m2.length > 0) {
-                    for (let i = 0; i < array_sus_m2.length; i++) {
-                        pronostico_pm2[i] = array_sus_m2[i] * tc_oficial;
-                    }
+    if (tipoMoneda === "sus") {
+        var pronostico_pm2 = array_sus_m2;
+    } else {
+        if (tipoMoneda === "bs") {
+            // dado que los valores pronosticos de precio por m2 estan en DOLARES, entonces abra que convertir los valores de pronosticos a BOLIVIANOS
+            var pronostico_pm2 = [];
+            if (array_sus_m2.length > 0) {
+                for (let i = 0; i < array_sus_m2.length; i++) {
+                    pronostico_pm2[i] = array_sus_m2[i] * tc_oficial;
                 }
             }
         }
-
-        // ------- Para verificación -------
-        // para ver si se mantinen los valores numericos como numeros o string.
-        console.log("array_sus_m2");
-        console.log(pronostico_pm2);
-        console.log("array_periodo");
-        console.log(pronostico_periodo);
-
-        var respuesta = {
-            pronostico_pm2,
-            pronostico_periodo,
-        };
-
-        return respuesta;
-    } else {
-        // no existen datos, entonces tendran que ser cargados del servidor
-
-        $.ajax({
-            type: "POST",
-            url: "/inmueble/operacion/pronostico_precio_m2",
-        }).done(function (respuestaPronostico) {
-            // ------- Para verificación -------
-            console.log("respuesta de pronostico inmueble desde el servidor");
-            console.log(respuestaPronostico);
-
-            let arraySusM2 = respuestaPronostico.array_sus_m2;
-            let arrayPeriodo = respuestaPronostico.array_periodo;
-
-            // guardamos en sessionStorage del navegador con los nombres de: inm_array_sus_m2 y inm_array_periodo
-            // La función JSON.stringify es necesaria en sessionStorage.setItem porque sessionStorage solo puede almacenar datos en formato de texto plano (strings).
-            sessionStorage.setItem("inm_array_sus_m2", JSON.stringify(arraySusM2));
-            sessionStorage.setItem("inm_array_periodo", JSON.stringify(arrayPeriodo));
-
-            // lectura de los datos de pronostico
-            // Cuando recuperas datos almacenados como un string JSON, debes convertirlos nuevamente a su formato original (objeto, array, etc.) usando JSON.parse.
-
-            // Recuperar y convertir de vuelta a objeto||array
-            var array_sus_m2 = JSON.parse(sessionStorage.getItem("inm_array_sus_m2"));
-            var pronostico_periodo = JSON.parse(sessionStorage.getItem("inm_array_periodo"));
-
-            //=================================================
-
-            if (tipoMoneda === "sus") {
-                var pronostico_pm2 = array_sus_m2;
-            } else {
-                if (tipoMoneda === "bs") {
-                    // dado que los valores pronosticos de precio por m2 estan en DOLARES, entonces abra que convertir los valores de pronosticos a BOLIVIANOS
-                    var pronostico_pm2 = [];
-                    if (array_sus_m2.length > 0) {
-                        for (let i = 0; i < array_sus_m2.length; i++) {
-                            pronostico_pm2[i] = array_sus_m2[i] * tc_oficial;
-                        }
-                    }
-                }
-            }
-
-            // ------- Para verificación -------
-            // para ver si se mantinen los valores numericos como numeros o string.
-            console.log("array_sus_m2");
-            console.log(pronostico_pm2);
-            console.log("array_periodo");
-            console.log(pronostico_periodo);
-
-            var respuesta = {
-                pronostico_pm2,
-                pronostico_periodo,
-            };
-
-            return respuesta;
-        });
     }
+
+    // ------- Para verificación -------
+    // para ver si se mantinen los valores numericos como numeros o string.
+    console.log("INMUEBLE array_sus_m2");
+    console.log(pronostico_pm2);
+    console.log("INMUEBLE array_periodo");
+    console.log(pronostico_periodo);
+
+    var respuesta = {
+        pronostico_pm2,
+        pronostico_periodo,
+    };
+
+    return respuesta;
 }
 
 //====================================================================

@@ -407,7 +407,7 @@ Notese que esta hoja de css, a pesar de encontrarse separado del css principal d
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    background: var(--color_texto_link);
+    background: var(--color_texto_resalte);
 }
 .dot-1 {
     animation-name: flow;
@@ -463,8 +463,8 @@ Notese que esta hoja de css, a pesar de encontrarse separado del css principal d
     width: 4rem;
     padding: 0.5rem;
 
-    background: var(--color_texto_link);
-    color: var(--color_fondo_principal);
+    background: linear-gradient(to bottom right, rgb(231 125 47), var(--color_texto_resalte));
+    color: var(--color_texto_normal);
     font-size: 1.9rem;
     /* font-weight: bold; */
 

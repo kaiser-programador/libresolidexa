@@ -139,8 +139,8 @@ controladorCliTerreno.renderVentanaTerreno = async (req, res) => {
                 info_terreno_cli.codigo_terreno = codigo_terreno;
 
                 // ------- Para verificación -------
-                //console.log("los datos info de TERRENO CLIENTE son");
-                //console.log(info_terreno_cli);
+                console.log("los datos info de TERRENO CLIENTE son");
+                console.log(info_terreno_cli);
 
                 res.render("cli_terreno", info_terreno_cli);
             }
@@ -170,8 +170,8 @@ controladorCliTerreno.renderVentanaTerreno = async (req, res) => {
                 info_terreno_cli.contenido_terreno = contenido_terreno;
 
                 // ------- Para verificación -------
-                //console.log("los proyectos del terreno son ");
-                //console.log(info_terreno_cli);
+                // console.log("los proyectos del terreno son ");
+                // console.log(info_terreno_cli);
 
                 res.render("cli_terreno", info_terreno_cli);
             }
@@ -213,11 +213,11 @@ controladorCliTerreno.renderVentanaTerreno = async (req, res) => {
 
                 var contenido_terreno = await terreno_calculadora(codigo_terreno);
 
-                info_terreno_cli.contenido_terreno = contenido_terreno;
+                info_terreno_cli.informacion = contenido_terreno;
 
                 // ------- Para verificación -------
-                //console.log("los calculadora del terreno son ");
-                //console.log(info_terreno_cli);
+                console.log("los calculadora del terreno son ");
+                console.log(info_terreno_cli);
 
                 res.render("cli_terreno", info_terreno_cli);
             }
@@ -239,6 +239,7 @@ async function terreno_descripcion(codigo_terreno) {
         const registro_terreno = await indiceTerreno.findOne(
             { codigo_terreno: codigo_terreno },
             {
+                estado_terreno: 1,
                 precio_bs: 1,
                 descuento_bs: 1,
                 fraccion_bs: 1,
@@ -269,6 +270,34 @@ async function terreno_descripcion(codigo_terreno) {
 
             // reconversion del "string" a "objeto"
             var te_descripcion = JSON.parse(aux_string);
+
+            //-------------------------------------------------------------------
+            // para resplandor de estado actual del terreno
+
+            // por defecto ponemos a todos en "false"
+            te_descripcion.resplandor_1 = false;
+            te_descripcion.resplandor_2 = false;
+            te_descripcion.resplandor_3 = false;
+            te_descripcion.resplandor_4 = false;
+            te_descripcion.resplandor_5 = false;
+
+            // guardado, convocatoria, anteproyecto, reservacion, construccion, construido OK
+            // corregimos que estado estara como "true"
+            if (registro_terreno.estado_terreno == "convocatoria") {
+                te_descripcion.resplandor_1 = true;
+            }
+            if (registro_terreno.estado_terreno == "anteproyecto") {
+                te_descripcion.resplandor_2 = true;
+            }
+            if (registro_terreno.estado_terreno == "reservacion") {
+                te_descripcion.resplandor_3 = true;
+            }
+            if (registro_terreno.estado_terreno == "construccion") {
+                te_descripcion.resplandor_4 = true;
+            }
+            if (registro_terreno.estado_terreno == "construido") {
+                te_descripcion.resplandor_5 = true;
+            }
 
             //-------------------------------------------------------------------
             // UBICACION DEL TERRENO
@@ -439,6 +468,7 @@ async function terreno_proyectos(codigo_terreno) {
 
         var terreno_proyectos = []; // vacio de inicio
         if (proyectos_terreno.length > 0) {
+            var existe = true;
             for (let i = 0; i < proyectos_terreno.length; i++) {
                 var codigo_proyecto_i = proyectos_terreno[i].codigo_proyecto;
                 var laapirest = "/"; // por partir desde el lado del CLIENTE
@@ -449,9 +479,15 @@ async function terreno_proyectos(codigo_terreno) {
                 var card_proyecto_i = await proyecto_card_adm_cli(paquete_proyecto);
                 terreno_proyectos[i] = card_proyecto_i;
             }
+        } else {
+            var existe = false;
         }
 
-        return terreno_proyectos;
+        //return terreno_proyectos;
+        return {
+            terreno_proyectos,
+            existe,
+        };
     } catch (error) {
         console.log(error);
     }
@@ -614,8 +650,8 @@ async function terreno_calculadora(codigo_terreno) {
 
             //------------------------------------------------------------
 
-            let precios_otros = registro_inmueble.precio_comparativa;
-            let m2_otros = registro_inmueble.m2_comparativa;
+            let precios_otros = registro_terreno.precio_comparativa;
+            let m2_otros = registro_terreno.m2_comparativa;
             let sus_m2 = [];
             let sum_sus_m2 = 0;
             let contador = 0;
@@ -643,7 +679,7 @@ async function terreno_calculadora(codigo_terreno) {
 
             //------------------------------------------------------------
 
-            var registro_fracciones = await indiceFraccionTerreno.findOne(
+            var registro_fracciones = await indiceFraccionTerreno.find(
                 { codigo_terreno: codigo_terreno, disponible: true },
                 {
                     fraccion_bs: 1,
@@ -669,6 +705,7 @@ async function terreno_calculadora(codigo_terreno) {
                 solidexa_te_bs_render: numero_punto_coma(registro_terreno.precio_bs),
                 solidexa_te_m2: registro_terreno.superficie,
                 solidexa_te_bsm2,
+                solidexa_te_bsm2_render: numero_punto_coma(solidexa_te_bsm2),
                 maximo_bsm2,
                 minimo_bsm2,
                 promedio_bsm2,

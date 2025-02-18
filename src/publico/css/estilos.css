@@ -25,9 +25,12 @@
 
     /* color para los inputs respuesta */
     --color_gris_2: rgb(228, 229, 229);
+
+    /* color para los disponibles */
+    --color_verde: #0fbd66;
     
-    /* --color_texto_resalte: rgb(254, 93, 21); */
-    --color_texto_resalte: #FF6F31;
+    /* --color_texto_resalte: #FF6F31; */
+    --color_texto_resalte: rgb(255, 111, 49);
     --color_texto_link: rgb(0, 123, 255);
     --color_texto_inputs: rgb(0, 0, 0);
 
@@ -102,9 +105,7 @@ body {
 
 }
 /* -------------------------------------------------------------*/
-.card-footer {
-    background-color: var(--color_fondo_secundario) !important;
-}
+
 .progress {
     background-color: var(--color_gris) !important;
     border: 1.2px solid var(--color_borde_progreso) !important;
@@ -117,13 +118,19 @@ body {
 }
 
 .linea-x {
-    border-top: 1px solid var(--color_bordes_card);
+    border-top: 1.3px solid var(--color_gris);
 }
 
 .linea-v {
-    border-right: 1px solid var(--color_bordes_card);
+    border-right: 1.3px solid var(--color_gris);
     /* margin-top: 0.8rem; */
 }
+
+/* para la linea inferior de las pestañas de navegacion internas */
+#tab_navegacion {
+    border-bottom: 1px solid var(--color_borde_progreso);
+}
+
 /* -------------------------------------------------------------*/
 /* la barra delizadora, los estilos no son soportados en FIREFOX*/
 /* el fondo de la barra */
@@ -234,6 +241,7 @@ body {
     background-size: cover;
     background-position: center;
 }
+
 .cabezera_estilo_proyecto {
     background-image: linear-gradient(rgba(16, 16, 21, 0.8), rgba(14, 14, 23, 0.8)),
         url(/rutavirtualpublico/imagenes/imagenes_sistema/cabecera_proyecto.jpg);
@@ -315,30 +323,36 @@ body {
 
 .numero_banos,
 .numero_habitaciones {
-    border: 0.12rem solid var(--color_texto_link) !important;
+    border: 0.12rem solid var(--color_gris);
 }
 
 .n_bano_seleccionado,
 .n_dormitorio_seleccionado {
-    background-color: var(--color_texto_link) !important;
-    color: var(--color_fondo_principal) !important;
+    background-color: var(--color_gris);
+    color: var(--color_fondo_principal);
 }
 
 /* .card_un_inm_py .card-footer:hover { */
 .card_un_inm_py .card-footer {
     /* cursor: pointer; */
-    background: var(--color_texto_link) !important;
     color: var(--color_fondo_principal) !important;
     font-weight: 400 !important;
 
     padding: 0;
+
+    background-color: transparent !important;
+    border-top: none !important;
 }
 
 .card_un_inm_py .card-footer a{
     display: block;
     color: var(--color_fondo_principal);
-    padding: 0.8rem 0rem;
+    padding-bottom: 0.8rem;
     text-decoration: none;
+}
+
+.card_un_inm_py .card-footer .boton-linea-secundario{
+    font-weight: 600;
 }
 
 
@@ -378,6 +392,25 @@ footer {
     width: 100%;
     padding: 2rem;
     background: #e0f803;
+}
+
+/* para el boton de cerrar en formularios modal */
+.close{
+    opacity: 1 !important;
+}
+
+a:hover {
+    color: var(--color_texto_resalte);
+    text-decoration: none; /* Evita que se subraye en hover */
+}
+
+/* para todos los labes que acompañan a los inputs de un formulario. IGUAL A titulo_4 */
+
+.form-group > label{
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+    font-size: 1rem;
+    font-weight: 600;
 }
 
 .texto-resaltado {
@@ -475,8 +508,16 @@ footer {
     color: red;
 }
 
+.color-normal {
+    color: var(--color_texto_normal);
+}
+
 .color-gris {
     color: var(--color_gris);
+}
+
+.color-verde {
+    color: var(--color_verde);
 }
 
 .color_celeste_gris {
@@ -562,15 +603,14 @@ table td {
 /* ------------------------------------------------------- */
 /* para el ordenador de cabezeras exteriores (cli, adm) */
 #orden_inm_exterior {
-    background: var(--color_fondo_secundario);
-    border: 0.1px solid var(--color_fondo_principal);
+    background-color: var(--color_texto_normal);
 }
 #orden_inm_exterior div {
-    color: var(--color_texto_link);
+    color: var(--color_texto_resalte);
 }
 #orden_inm_exterior div:hover {
-    border: 0.1px solid var(--color_texto_link);
-    background: var(--color_texto_link);
+    border: 0.1px solid var(--color_texto_resalte);
+    background: var(--color_texto_resalte);
     color: var(--color_fondo_principal);
 }
 /* ------------------------------------------------------- */
@@ -587,12 +627,7 @@ table td {
     /* color: var(--color_texto_normal); */
 }
 /* +++++++++++++++++++++++++++++++++++++++++++++++++++++  */
-/* !important es para que sobreescriba un estilo que estaba definido previamente en bootstrap*/
-.boton_principal {
-    background: none !important;
-    color: var(--color_texto_resalte) !important;
-    border: 1.5px solid var(--color_texto_resalte);
-}
+
 
 /* +++++++++++++++++++++++++++++++++++++++++++++++++++++  */
 /* ESTILOS GENERALES */
@@ -626,9 +661,9 @@ table td {
 } */
 
 .letras_cabezera {
-    font-size: var(--letra_cabezera);
+    /* font-size: var(--letra_cabezera); */
     color: var(--color_texto_resalte);
-    font-weight: 500;
+    /* font-weight: 500; */
 }
 
 /* ------------------------------------------ */
@@ -641,6 +676,17 @@ table td {
 .icono_popover{
     font-size: 1.1rem;
     color: var(--color_texto_resalte);
+}
+
+.significado{
+    color: var(--color_texto_resalte);
+    border-color: var(--color_texto_resalte);
+}
+
+.significado:hover{
+    background-color: var(--color_texto_resalte);
+    border-color: var(--color_texto_resalte);
+    color: var(--color_fondo_principal);
 }
 
 /* grafico de calculadora propietario */
@@ -934,15 +980,19 @@ table td {
     letter-spacing: 0.1em;
 }
 
+/* .card-footer {
+    border-top: none !important;
+}
+
+.card-footer {
+    background-color: var(--color_fondo_secundario) !important;
+} */
+
 .card-cabeza {
     text-align: center;
     /* el grosor de los caracteres */
     font-weight: 600;
     font-size: 1.4em;
-}
-
-.card-footer {
-    border-top: none !important;
 }
 
 .card-ciudad-provincia-direccion {
@@ -1089,8 +1139,7 @@ table td {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(5, 5, 54, 0.55);
-    /* background: rgba(0, 0, 0, 0.58); */
+    background: rgba(5, 5, 54, 0.35);
 }
 
 .capa {
@@ -1099,8 +1148,7 @@ table td {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(5, 5, 54, 0.5);
-    /* background: rgba(0, 0, 0, 0.5); */
+    background: rgba(5, 5, 54, 0.35);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1238,8 +1286,8 @@ table td {
     width: 100%;
     text-align: center;
     z-index: 1000;
-    color: var(--color_texto_normal);
-    font-weight: 700;
+    color: var(--color_fondo_principal);
+    font-weight: 600;
 }
 
 .css-val-porcentaje-segundero {
@@ -1405,7 +1453,7 @@ table td {
     /* padding: 0; */
     /* margin: 0; */
     /* margin-right: 0rem; */
-    color: var(--color_texto_link);
+    color: var(--color_texto_resalte);
 }
 
 .puntos-lista {

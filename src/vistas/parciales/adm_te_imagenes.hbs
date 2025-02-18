@@ -4,9 +4,9 @@
 
     <div class="card my-4" style="max-width: 40rem;">
 
-        <h5 class="card-header">SUBIR ARCHIVO IMAGEN</h5>
+        <div class="card-header titulo_3">SUBIR ARCHIVO IMAGEN</div>
 
-        <div class="card-body text-primary">
+        <div class="card-body">
 
             <form enctype="multipart/form-data" id="idSubirImagen">
 
@@ -52,7 +52,7 @@
                 {{! tipo imagen proyecto, como estamos en "terreno", entonces sera: "ninguno" }}
                 <input type="text" name="tipo_imagen_py" value="ninguno" id="tipo_py_rs" hidden />
 
-                <input type="submit" class="ref_subir_img btn btn-primary offset-4" value="Subir Imagen" />
+                <input type="submit" class="ref_subir_img btn boton-primario offset-4" value="Subir Imagen" />
 
             </form>
         </div>
@@ -107,7 +107,7 @@
                     </div>
                     <div class="card-footer">
                         <button
-                            class="selec_deselec_imagen_principal_te btn btn-primary mb-2"
+                            class="selec_deselec_imagen_principal_te btn boton-primario mb-2"
                             data-id="{{codigo_imagen}}/{{codigo_terreno}}"
                         >Principal</button>
                     </div>
@@ -169,7 +169,7 @@
                     </div>
                     <div class="card-footer">
                         <button
-                            class="selec_deselec_imagen_principal_te btn btn-primary mb-2"
+                            class="selec_deselec_imagen_principal_te btn boton-primario mb-2"
                             data-id="{{codigo_imagen}}/{{codigo_terreno}}"
                         >Principal</button>
                     </div>

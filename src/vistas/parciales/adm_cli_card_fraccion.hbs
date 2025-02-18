@@ -11,10 +11,10 @@
                 {{#if lado_administrador}}
 
                     {{#if verde}}
-                        <span class="h6"><b>Disponible</b></span>
+                        <span class="titulo_4 color-verde">Disponible</span>
                     {{else}}
                         <a href="laapirest/fraccion/{{codigo_fraccion}}/descripcion">
-                            <span class="h6"><b>{{codigo_fraccion}}</b></span>
+                            <span class="h6">{{codigo_fraccion}}</span>
                         </a>
                     {{/if}}
 
@@ -24,17 +24,18 @@
 
                     {{!-- entonces pertenece al lado del cliente --}}
                     {{#if verde}}
-                        <span class="h6"><b>Disponible</b></span>
+                        <span class="titulo_4 color-verde">Disponible</span>
                     {{/if}}
 
                     {{#if gris}}
-                        <span class="h6"><b>{{codigo_fraccion}}</b></span>
+                        <span class="h6">{{codigo_fraccion}}</span>
                     {{/if}}
 
                     {{!-- esta disponible el link para el PROPIETARIO DE LA FRACCION y para el ADMINISTRADOR --}}
+                    {{!-- el color no sera azul, sera anaranajado --}}
                     {{#if azul}}
                         <a href="/fraccion/{{codigo_fraccion}}/descripcion">
-                            <span class="h6"><b>{{codigo_fraccion}}</b></span>
+                            <span class="h6">{{codigo_fraccion}}</span>
                         </a>
                     {{/if}}
 
@@ -42,48 +43,44 @@
 
             </div>
 
-            <div class="text-center mb-2" title="Valor fracción de terreno">
-                <span class="h6"><b class="elvalor" data-bs="{{fraccion_bs}}">{{fraccion_bs_render}}</b></span>
+            <div class="text-center titulo_4 mb-2" title="Valor fracción de terreno">
+                <span class="elvalor" data-bs="{{fraccion_bs}}">{{fraccion_bs_render}}</span>
                 {{!-- data-bs almacena el valor de la moneda en BS ENTERO, util para usarlo como referencia para las conversiones a $us que tambien deberan ser enteros --}}
-                <span class="h6"><b class="lamoneda">Bs</b></span>
+                <span class="lamoneda">Bs</span>
             </div>
 
             {{#if existe_inversionista}}
                 {{! ----- GANANCIA ------ }}
                 <div class="linea-x"></div>
 
-                <div class="text-center">Inversionista</div>
+                <div class="text-center mt-2">Inversionista</div>
                 <div class="d-flex justify-content-between my-2">
                     <div class="linea-v text-center w-50">
                         <div>
-                            <div class="h6">
-                                <b>
-                                    <span class="elvalor" data-bs="{{ganancia_bs}}">{{ganancia_bs_render}}</span>
-                                    <span class="lamoneda">Bs</span>
-                                </b>
+                            <div class="titulo_4">
+                                <span class="elvalor" data-bs="{{ganancia_bs}}">{{ganancia_bs_render}}</span>
+                                <span class="lamoneda">Bs</span>
                             </div>
                         </div>
 
-                        <div class="mb-1">
-                            <span class="h6">Ganancia</span>
+                        <div class="">
+                            <span class="">Ganancia</span>
                         </div>
                     </div>
 
                     <div class="text-center w-50">
                         <div>
-                            <div class="h6">
-                                <b>
-                                    {{#if menor_igual}}
-                                        <i class="fas fa-less-than-equal"></i>
-                                    {{/if}}
-                                    <span>{{dias_inversionista}}</span>
-                                    <span>Días</span>
-                                </b>
+                            <div class="titulo_4">
+                                {{#if menor_igual}}
+                                    <i class="fas fa-less-than-equal"></i>
+                                {{/if}}
+                                <span>{{dias_inversionista}}</span>
+                                <span>Días</span>
                             </div>
                         </div>
 
-                        <div class="mb-1">
-                            <span class="h6">Duración</span>
+                        <div class="">
+                            <span class="">Duración</span>
                         </div>
                     </div>
                 </div>

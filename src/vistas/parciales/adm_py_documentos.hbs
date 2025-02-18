@@ -3,8 +3,8 @@
 <div class="contenido container-fluid mt-4">
 
     <div class="card" style="max-width: 36rem;">
-        <h5 class="card-header">SUBIR ARCHIVO DOCUMENTO</h5>
-        <div class="card-body text-primary">
+        <div class="card-header titulo_3">SUBIR ARCHIVO DOCUMENTO</div>
+        <div class="card-body">
             <p class="text-center">Los documentos subidos, seran de caracter público</p>
             <form enctype="multipart/form-data" id="idSubirDocumento" data-tipo_doc="te_py_inm">
 
@@ -105,7 +105,7 @@
                 <input type="text" name="ci_propietario" value="" hidden />
 
                 <div class="form-group ref_subir_doc text-center">
-                    <button class="btn btn-primary">Subir Documento</button>
+                    <button class="btn boton-primario">Subir Documento</button>
                 </div>
 
             </form>
@@ -124,10 +124,10 @@
                 <table class="tabla_contenedora table">
                     <thead>
                         <tr>
-                            <th class="texto-resaltado">PDF</th>
-                            <th class="texto-resaltado">TÍTULO DOCUMENTO</th>
-                            <th class="texto-resaltado">TIPO</th>
-                            <th class="texto-resaltado">OPERACIÓN</th>
+                            <th class="titulo_4">PDF</th>
+                            <th class="titulo_4">TÍTULO DOCUMENTO</th>
+                            <th class="titulo_4">TIPO</th>
+                            <th class="titulo_4">OPERACIÓN</th>
                         </tr>
                     </thead>
 
@@ -139,7 +139,7 @@
                             <tr class="fila_registro">
                                 <td class="text-center">
                                     <i
-                                        class="texto-link fas fa-file-pdf"
+                                        class="fas fa-file-pdf"
                                         style="font-size: 2em;"
                                     ></i>
                                 </td>
@@ -148,13 +148,13 @@
                                 <td>
                                     <div class="contenedor_ver_eliminar_documento">
                                         <button
-                                            class="boton_eliminar_documento_jquery btn btn-danger"
+                                            class="boton_eliminar_documento_jquery btn btn-danger btn-sm"
                                             data-id="{{codigo_documento}}"
                                         >Eliminar</button>
                                         <a
                                             href="{{url}}"
                                             target="_blank"
-                                            class="btn btn-success"
+                                            class="btn btn-success btn-sm"
                                         >Ver</a>
                                     </div>
                                 </td>

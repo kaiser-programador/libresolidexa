@@ -12,7 +12,7 @@
 
         <div class="col-12 col-sm-6">
 
-            <h5>INFORMACIÓN BÁSICA</h5>
+            <div class="titulo_3">INFORMACIÓN BÁSICA</div>
 
             <div class="form-group row">
                 <label for="selector_ciudad" class="col-sm-12 col-lg-4 col-form-label">Elige ciudad</label>
@@ -43,21 +43,6 @@
             </div>
 
             <div class="form-group row">
-                <label for="label_nombre" class="col-sm-12 col-lg-4 col-form-label">Nombre</label>
-                <div class="col-sm-12 col-lg-8">
-                    <input
-                        title="Nombre de referencia de la ubicación del terreno"
-                        placeholder="Ej/ La Vertiente"
-                        type="text"
-                        name="nombre"
-                        value="{{contenido_terreno.ubicacion}}"
-                        class="form-control"
-                        id="label_nombre"
-                    />
-                </div>
-            </div>
-
-            <div class="form-group row">
                 <label class="col-sm-12 col-lg-4 col-form-label">Ciudad</label>
                 <label class="col-sm-12 col-lg-8 col-form-label" id="label_ciudad">
                     {{contenido_terreno.ciudad}}
@@ -83,7 +68,28 @@
             />
 
             <div class="form-group row">
-                <label for="label_provincia" class="col-sm-12 col-lg-4 col-form-label">Provincia</label>
+                <label
+                    for="label_ubicacion"
+                    class="col-sm-12 col-lg-4 col-form-label"
+                >Ubicación</label>
+                <div class="col-sm-12 col-lg-8">
+                    <input
+                        title="Ubicación de referencia del terreno"
+                        placeholder="Ej/ La Vertiente"
+                        type="text"
+                        name="ubicacion"
+                        value="{{contenido_terreno.ubicacion}}"
+                        class="form-control"
+                        id="label_ubicacion"
+                    />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label
+                    for="label_provincia"
+                    class="col-sm-12 col-lg-4 col-form-label"
+                >Provincia</label>
                 <div class="col-sm-12 col-lg-8">
                     <input
                         type="text"
@@ -96,7 +102,10 @@
             </div>
 
             <div class="form-group row">
-                <label for="label_direccion" class="col-sm-12 col-lg-4 col-form-label">Dirección</label>
+                <label
+                    for="label_direccion"
+                    class="col-sm-12 col-lg-4 col-form-label"
+                >Dirección</label>
                 <div class="col-sm-12 col-lg-8">
                     <input
                         type="text"
@@ -109,7 +118,10 @@
             </div>
 
             <div class="form-group row">
-                <label for="label_superficie" class="col-sm-12 col-lg-4 col-form-label">Superficie</label>
+                <label
+                    for="label_superficie"
+                    class="col-sm-12 col-lg-4 col-form-label"
+                >Superficie</label>
                 <div class="col-sm-12 col-lg-8 input-group">
                     <input
                         name="superficie"
@@ -122,15 +134,17 @@
                         required
                     />
                     <div class="input-group-append">
-                        <span class="input-group-text bg-warning">M2</span>
+                        <span class="input-group-text bg-unidad">M2</span>
                     </div>
                 </div>
             </div>
 
-
-            {{!-- Este precio ya considera el descuento si es que el terreno lo tuviese --}}
+            {{! Este precio ya considera el descuento si es que el terreno lo tuviese }}
             <div class="form-group row">
-                <label for="label_precio_bs" class="col-sm-12 col-lg-4 col-form-label">Precio</label>
+                <label
+                    for="label_precio_bs"
+                    class="col-sm-12 col-lg-4 col-form-label"
+                >Precio</label>
                 <div class="col-sm-12 col-lg-8 input-group">
                     <input
                         name="precio_bs"
@@ -143,13 +157,16 @@
                         required
                     />
                     <div class="input-group-append">
-                        <span class="input-group-text bg-warning">Bs</span>
+                        <span class="input-group-text bg-unidad">Bs</span>
                     </div>
                 </div>
             </div>
 
             <div class="form-group row">
-                <label for="label_descuento_bs" class="col-sm-12 col-lg-4 col-form-label">Descuento</label>
+                <label
+                    for="label_descuento_bs"
+                    class="col-sm-12 col-lg-4 col-form-label"
+                >Descuento</label>
                 <div class="col-sm-12 col-lg-8 input-group">
                     <input
                         name="descuento_bs"
@@ -162,13 +179,14 @@
                         required
                     />
                     <div class="input-group-append">
-                        <span class="input-group-text bg-warning">Bs</span>
+                        <span class="input-group-text bg-unidad">Bs</span>
                     </div>
                 </div>
             </div>
 
             <div class="form-group row">
-                <label for="label_maximo_pisos" class="col-sm-12 col-lg-4 col-form-label">Número Max. Pisos</label>
+                <label for="label_maximo_pisos" class="col-sm-12 col-lg-4 col-form-label">Número
+                    Max. Pisos</label>
                 <div class="col-sm-12 col-lg-8">
                     <input
                         type="number"
@@ -181,7 +199,8 @@
             </div>
 
             <div class="form-group row">
-                <label for="label_convocatoria" class="col-sm-12 col-lg-4 col-form-label">Texto convocatoria</label>
+                <label for="label_convocatoria" class="col-sm-12 col-lg-4 col-form-label">Texto
+                    convocatoria</label>
                 <div class="col-sm-12 col-lg-8">
                     <textarea
                         name="convocatoria"
@@ -194,7 +213,8 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label for="label_importante" class="col-sm-12 col-lg-4 col-form-label">Texto Importante</label>
+                <label for="label_importante" class="col-sm-12 col-lg-4 col-form-label">Texto
+                    Importante</label>
                 <div class="col-sm-12 col-lg-8">
                     <textarea
                         name="importante"
@@ -207,11 +227,13 @@
                 </div>
             </div>
 
-            <h5>FECHAS TERRENO</h5>
+            <div class="titulo_3">FECHAS TERRENO</div>
 
             <div class="form-group row">
-                <label for="label_fecha_inicio_convocatoria" class="col-sm-12 col-lg-4 col-form-label">Fecha
-                    inicio convocatoria</label>
+                <label
+                    for="label_fecha_inicio_convocatoria"
+                    class="col-sm-12 col-lg-4 col-form-label"
+                >Fecha inicio convocatoria</label>
                 <div class="col-sm-12 col-lg-8">
                     <input
                         name="fecha_inicio_convocatoria"
@@ -224,8 +246,10 @@
             </div>
 
             <div class="form-group row">
-                <label for="label_fecha_fin_convocatoria" class="col-sm-12 col-lg-4 col-form-label">Fecha fin
-                    convocatoria</label>
+                <label
+                    for="label_fecha_fin_convocatoria"
+                    class="col-sm-12 col-lg-4 col-form-label"
+                >Fecha fin convocatoria</label>
                 <div class="col-sm-12 col-lg-8">
                     <input
                         name="fecha_fin_convocatoria"
@@ -238,8 +262,10 @@
             </div>
 
             <div class="form-group row">
-                <label for="label_fecha_inicio_anteproyecto" class="col-sm-12 col-lg-4 col-form-label">Fecha
-                    inicio anteproyecto</label>
+                <label
+                    for="label_fecha_inicio_anteproyecto"
+                    class="col-sm-12 col-lg-4 col-form-label"
+                >Fecha inicio anteproyecto</label>
                 <div class="col-sm-12 col-lg-8">
                     <input
                         name="fecha_inicio_anteproyecto"
@@ -253,8 +279,10 @@
             </div>
 
             <div class="form-group row">
-                <label for="label_fecha_fin_anteproyecto" class="col-sm-12 col-lg-4 col-form-label">Fecha fin
-                    anteproyecto</label>
+                <label
+                    for="label_fecha_fin_anteproyecto"
+                    class="col-sm-12 col-lg-4 col-form-label"
+                >Fecha fin anteproyecto</label>
                 <div class="col-sm-12 col-lg-8">
                     <input
                         name="fecha_fin_anteproyecto"
@@ -268,8 +296,10 @@
             </div>
 
             <div class="form-group row">
-                <label for="label_fecha_inicio_reservacion" class="col-sm-12 col-lg-4 col-form-label">Fecha
-                    inicio reservación</label>
+                <label
+                    for="label_fecha_inicio_reservacion"
+                    class="col-sm-12 col-lg-4 col-form-label"
+                >Fecha inicio reservación</label>
                 <div class="col-sm-12 col-lg-8">
                     <input
                         name="fecha_inicio_reservacion"
@@ -283,8 +313,10 @@
             </div>
 
             <div class="form-group row">
-                <label for="label_fecha_fin_reservacion" class="col-sm-12 col-lg-4 col-form-label">Fecha fin
-                    reservación</label>
+                <label
+                    for="label_fecha_fin_reservacion"
+                    class="col-sm-12 col-lg-4 col-form-label"
+                >Fecha fin reservación</label>
                 <div class="col-sm-12 col-lg-8">
                     <input
                         name="fecha_fin_reservacion"
@@ -314,8 +346,10 @@
             </div>
 
             <div class="form-group row">
-                <label for="label_fecha_fin_construccion" class="col-sm-12 col-lg-4 col-form-label">Fecha
-                    fin construcción</label>
+                <label
+                    for="label_fecha_fin_construccion"
+                    class="col-sm-12 col-lg-4 col-form-label"
+                >Fecha fin construcción</label>
                 <div class="col-sm-12 col-lg-8">
                     <input
                         name="fecha_fin_construccion"
@@ -330,11 +364,13 @@
         </div>
 
         <div class="col-12 col-sm-6">
-            <h5>UBICACIÓN Y PROXIMIDADES</h5>
+            <div class="titulo_3">UBICACIÓN Y PROXIMIDADES</div>
 
             <div class="form-group row">
-                <label for="label_descri_ubi_terreno" class="col-sm-12 col-lg-4 col-form-label">Ubicación
-                    y proximidades</label>
+                <label
+                    for="label_descri_ubi_terreno"
+                    class="col-sm-12 col-lg-4 col-form-label"
+                >Ubicación y proximidades</label>
                 <div class="col-sm-12 col-lg-8">
                     <textarea
                         name="descri_ubi_terreno"
@@ -416,6 +452,115 @@
                     >{{contenido_terreno.ubi_otros_3}}</textarea>
                 </div>
             </div>
+
+            <div class="titulo_3">FRACCIONES TERRENO</div>
+
+            <div class="form-group row">
+                <label
+                    for="label_fraccion_bs"
+                    class="col-sm-12 col-lg-4 col-form-label"
+                >Precio</label>
+                <div class="col-sm-12 col-lg-8 input-group">
+                    <input
+                        name="fraccion_bs"
+                        type="number"
+                        step="1"
+                        value="{{contenido_terreno.fraccion_bs}}"
+                        class="form-control"
+                        id="label_fraccion_bs"
+                        min="0"
+                        title="Precio unitario fracción de terreno"
+                        required
+                    />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg-unidad">Bs</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label
+                    for="label_rend_mensual"
+                    class="col-sm-12 col-lg-4 col-form-label"
+                >Rendimiento mensual</label>
+                <div class="col-sm-12 col-lg-8 input-group">
+                    <input
+                        name="rend_fraccion_mensual"
+                        type="number"
+                        step="1"
+                        value="{{contenido_terreno.rend_fraccion_mensual}}"
+                        class="form-control"
+                        id="label_rend_mensual"
+                        min="0"
+                        title="Rendimiento mensual fracción de terreno"
+                        required
+                    />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg-unidad">%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="label_rend_total" class="col-sm-12 col-lg-4 col-form-label">Rendimiento
+                    total</label>
+                <div class="col-sm-12 col-lg-8 input-group">
+                    <input
+                        name="rend_fraccion_total"
+                        type="number"
+                        step="1"
+                        value="{{contenido_terreno.rend_fraccion_total}}"
+                        class="form-control"
+                        id="label_rend_total"
+                        min="0"
+                        title="Rendimiento total fracción de terreno"
+                        required
+                    />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg-unidad">%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="label_rend_dias" class="col-sm-12 col-lg-4 col-form-label">Días máximo</label>
+                <div class="col-sm-12 col-lg-8 input-group">
+                    <input
+                        name="dias_maximo"
+                        type="number"
+                        step="1"
+                        value="{{contenido_terreno.dias_maximo}}"
+                        class="form-control"
+                        id="label_rend_dias"
+                        min="0"
+                        title="Máximo número de días para el rendimiento total de la fracción de terreno"
+                        required
+                    />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg-unidad">Días</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="label_rend_meses" class="col-sm-12 col-lg-4 col-form-label">Meses máximo</label>
+                <div class="col-sm-12 col-lg-8 input-group">
+                    <input
+                        name="meses_maximo"
+                        type="number"
+                        step="1"
+                        value="{{contenido_terreno.meses_maximo}}"
+                        class="form-control"
+                        id="label_rend_meses"
+                        min="0"
+                        title="Máximo número de meses para el rendimiento total de la fracción de terreno. Debe ser igual a los dias maximo convertido en meses y considerando que 1 mes tiene 30 días."
+                        required
+                    />
+                    <div class="input-group-append">
+                        <span class="input-group-text bg-unidad">Meses</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>
@@ -428,7 +573,7 @@
 
             {{! *********************************************************************** }}
             {{! UBICACION MAPA }}
-            <h5>Ubicación del terreno https://</h5>
+            <div class="titulo_3">Mapa del terreno https://</div>
             <div class="form-group">
                 <input
                     type="text"
@@ -442,7 +587,7 @@
             {{! *********************************************************************** }}
             {{! VIDEO YOUTUBE RECORRIDO VIRTUAL }}
             {{! para mostrar vista aereo del terreno y alrededores, topografos tomando medidas }}
-            <h5>YouTube terreno https://</h5>
+            <div class="titulo_3">YouTube terreno https://</div>
             <div class="form-group">
                 <input
                     type="text"
@@ -455,7 +600,7 @@
             </div>
             {{! redes sociales para dar a conocer por este medio la convocatoria para anteproyectos sobre este terreno
             y para comunicar los anteproyectos que se bayan subiendo }}
-            <h5>Facebook terreno https://</h5>
+            <div class="titulo_3">Facebook terreno https://</div>
             <div class="form-group">
                 <input
                     type="text"
@@ -467,7 +612,7 @@
                 />
             </div>
 
-            <h5>Instagram terreno https://</h5>
+            <div class="titulo_3">Instagram terreno https://</div>
             <div class="form-group">
                 <input
                     type="text"
@@ -479,7 +624,7 @@
                 />
             </div>
 
-            <h5>TikTok terreno https://</h5>
+            <div class="titulo_3">TikTok terreno https://</div>
             <div class="form-group">
                 <input
                     type="text"
@@ -495,10 +640,165 @@
 
     </div>
 
-    {{! ********************************************************************* }}
+    {{! =========================================================== }}
+    <div class="table-responsive cuadro_estandart p-3 my-4">
+        <h5>INFORMACIÓN ECONÓMICA</h5>
+        <h6 class="text-danger my-2">¡Llene todos los campos!</h6>
+        <p class="text-left">
+            Los precios de los 5 terrenos de referencia incluyen el valor de la plusvalía y/o las
+            ganancias que generan en el mercado tradicional.
+        </p>
+        <table class="table table-bordered">
+
+            <tr>
+                <th class="text-center titulo_4">DIRECCIÓN TERRENO</th>
+                <th class="text-center titulo_4">SUPERFICIE M2</th>
+                <th class="text-center titulo_4">PRECIO Bs</th>
+            </tr>
+
+            <tr>
+                <td><input
+                        type="text"
+                        name="direccion_1"
+                        value="{{contenido_terreno.tra_direccion_1}}"
+                        class="form-control"
+                        required
+                    />
+                </td>
+                <td><input
+                        type="number"
+                        step="1"
+                        name="superficie_m2_1"
+                        value="{{contenido_terreno.tra_superficie_1}}"
+                        class="form-control"
+                        required
+                    /></td>
+                <td><input
+                        type="number"
+                        step="1"
+                        name="precio_bs_1"
+                        value="{{contenido_terreno.tra_precio_1}}"
+                        class="form-control"
+                        required
+                    /></td>
+            </tr>
+            <tr>
+                <td><input
+                        type="text"
+                        name="direccion_2"
+                        value="{{contenido_terreno.tra_direccion_2}}"
+                        class="form-control"
+                        required
+                    />
+                </td>
+                <td><input
+                        type="number"
+                        step="1"
+                        name="superficie_m2_2"
+                        value="{{contenido_terreno.tra_superficie_2}}"
+                        class="form-control"
+                        required
+                    /></td>
+                <td><input
+                        type="number"
+                        step="1"
+                        name="precio_bs_2"
+                        value="{{contenido_terreno.tra_precio_2}}"
+                        class="form-control"
+                        required
+                    /></td>
+            </tr>
+
+            <tr>
+                <td><input
+                        type="text"
+                        name="direccion_3"
+                        value="{{contenido_terreno.tra_direccion_3}}"
+                        class="form-control"
+                        required
+                    />
+                </td>
+                <td><input
+                        type="number"
+                        step="1"
+                        name="superficie_m2_3"
+                        value="{{contenido_terreno.tra_superficie_3}}"
+                        class="form-control"
+                        required
+                    /></td>
+                <td><input
+                        type="number"
+                        step="1"
+                        name="precio_bs_3"
+                        value="{{contenido_terreno.tra_precio_3}}"
+                        class="form-control"
+                        required
+                    /></td>
+            </tr>
+
+            <tr>
+                <td><input
+                        type="text"
+                        name="direccion_4"
+                        value="{{contenido_terreno.tra_direccion_4}}"
+                        class="form-control"
+                        required
+                    />
+                </td>
+                <td><input
+                        type="number"
+                        step="1"
+                        name="superficie_m2_4"
+                        value="{{contenido_terreno.tra_superficie_4}}"
+                        class="form-control"
+                        required
+                    /></td>
+                <td><input
+                        type="number"
+                        step="1"
+                        name="precio_bs_4"
+                        value="{{contenido_terreno.tra_precio_4}}"
+                        class="form-control"
+                        required
+                    /></td>
+
+            </tr>
+
+            <tr>
+                <td><input
+                        type="text"
+                        name="direccion_5"
+                        value="{{contenido_terreno.tra_direccion_5}}"
+                        class="form-control"
+                        required
+                    />
+                </td>
+                <td><input
+                        type="number"
+                        step="1"
+                        name="superficie_m2_5"
+                        value="{{contenido_terreno.tra_superficie_5}}"
+                        class="form-control"
+                        required
+                    /></td>
+                <td><input
+                        type="number"
+                        step="1"
+                        name="precio_bs_5"
+                        value="{{contenido_terreno.tra_precio_5}}"
+                        class="form-control"
+                        required
+                    /></td>
+
+            </tr>
+
+        </table>
+
+    </div>
+    {{! =========================================================== }}
 
     <div class="form-group boton_guardado">
-        <button class="btn btn-primary">Guardar datos Terreno</button>
+        <button class="btn boton-primario">Guardar datos Terreno</button>
     </div>
 
 </form>

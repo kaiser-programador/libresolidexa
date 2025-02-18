@@ -1,6 +1,7 @@
 {{! CARD de TERRENO para vistas EXTERNAS lado ADMINISTRADOR Y CLIENTE }}
 
-<div class="card_un_inm_py mb-3 col-12 col-sm-6 col-md-4 col-lg-3">
+{{! <div class="card_un_inm_py mb-3 col-12 col-sm-6 col-md-4 col-lg-3"> }}
+<div class="card_un_inm_py mb-3 col-12 col-md-6 col-lg-4 col-xl-3">
 
     <div class="card">
 
@@ -9,13 +10,13 @@
             <div style="display: flex;">
 
                 <div style="width: 85%;">
-                    <div class="card-ciudad-provincia-direccion">
-                        {{ciudad}}
-                        /
-                        {{provincia}}
+                    <div class="card-ciudad-provincia-direccion titulo_3">
+                        {{ubicacion}}
                     </div>
-                    <div class="card-ciudad-provincia-direccion">
-                        {{direccion}}
+                    <div class="card-ciudad-provincia-direccion color-gris">
+                        {{ciudad}}
+                        -
+                        {{provincia}}
                     </div>
                 </div>
                 <div style="width: 15%;margin-top: 0.25em; margin-left: 0.25em;">
@@ -96,34 +97,30 @@
             </a>
         </div>
 
-        <div class="card-body py-2">
+        <div class="card-body pb-0">
 
             {{! ------------------------ }}
             <div class="d-flex justify-content-between">
                 <div>
-                    <div class="h6">Financiado</div>
-                    <div class="h6">
-                        <b>
-                            <span
-                                class="v_financiado elvalor"
-                                valor="{{financiado_num}}"
-                                data-bs="{{financiado_num}}"
-                            >{{financiado}}</span>
-                            <span class="lamoneda">Bs</span>
-                        </b>
+                    <div class="color-gris">Financiado</div>
+                    <div class="titulo_4">
+                        <span
+                            class="v_financiado elvalor"
+                            valor="{{financiado_num}}"
+                            data-bs="{{financiado_num}}"
+                        >{{financiado}}</span>
+                        <span class="lamoneda">Bs</span>
                     </div>
                 </div>
                 <div class="text-right">
-                    <div class="h6">Meta</div>
-                    <div class="h6">
-                        <b>
-                            <span
-                                class="v_meta elvalor"
-                                valor="{{meta_num}}"
-                                data-bs="{{meta_num}}"
-                            >{{meta}}</span>
-                            <span class="lamoneda">Bs</span>
-                        </b>
+                    <div class="color-gris">Meta</div>
+                    <div class="titulo_4">
+                        <span
+                            class="v_meta elvalor"
+                            valor="{{meta_num}}"
+                            data-bs="{{meta_num}}"
+                        >{{meta}}</span>
+                        <span class="lamoneda">Bs</span>
                     </div>
                 </div>
             </div>
@@ -144,11 +141,11 @@
 
             <div class="d-flex justify-content-between my-2">
                 <div>
-                    <i class="fas fa-clock texto-resaltado"></i>
-                    <span class="h6">{{factor_tiempo_titulo}}</span>
+                    <i class="fas fa-clock"></i>
+                    <span class="color-gris">{{factor_tiempo_titulo}}</span>
                 </div>
                 <div>
-                    <span class="h6"><b>{{factor_tiempo_tiempo}}</b></span>
+                    <span class="titulo_4">{{factor_tiempo_tiempo}}</span>
                 </div>
             </div>
 
@@ -157,16 +154,14 @@
                 title="Precio unitario de fracción de terreno"
             >
                 <div>
-                    <i class="fas fa-chart-pie texto-resaltado"></i>
-                    <span class="h6">Fracción</span>
+                    <i class="fas fa-chart-pie"></i>
+                    <span class="color-gris">Fracción</span>
                 </div>
-                <div>
-                    <b>
-                        <span class="h6 elvalor" data-bs="{{fraccion}}">
-                            {{fraccion_render}}
-                        </span>
-                        <span class="h6 lamoneda">Bs</span>
-                    </b>
+                <div class="titulo_4">
+                    <span class="elvalor" data-bs="{{fraccion_bs}}">
+                        {{fraccion_bs_r}}
+                    </span>
+                    <span class="lamoneda">Bs</span>
                 </div>
             </div>
 
@@ -175,40 +170,35 @@
             <div class="d-flex justify-content-between my-2">
                 <div class="linea-v text-center w-50">
                     <div class="mb-1">
-                        <span class="h6">Superficie</span>
+                        <span class="color-gris">Superficie</span>
                     </div>
                     <div>
-                        <div class="h6">
-                            <b>
-                                <span class="v_superficie" valor="{{superficie_num}}">
-                                    {{superficie}}
-                                </span>
-                                <span>m<sup>2</sup></span>
-
-                            </b>
+                        <div class="titulo_4">
+                            <span class="v_superficie" valor="{{superficie_num}}">
+                                {{superficie}}
+                            </span>
+                            <span>m<sup>2</sup></span>
                         </div>
                     </div>
                 </div>
 
                 <div class="text-center w-50">
                     <div class="mb-1">
-                        <span class="h6">Precio</span>
+                        <span class="color-gris">Precio</span>
                     </div>
                     <div>
-                        <div class="h6">
-                            <b>
-                                <span
-                                    class="v_precio elvalor"
-                                    valor="{{precio_bs_num}}"
-                                    data-bs="{{precio_bs_num}}"
-                                >{{precio_bs}}</span>
-                                <span class="lamoneda">Bs</span>
-                            </b>
+                        <div class="titulo_4">
+                            <span
+                                class="v_precio elvalor"
+                                valor="{{precio_bs_num}}"
+                                data-bs="{{precio_bs_num}}"
+                            >{{precio_bs}}</span>
+                            <span class="lamoneda">Bs</span>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="linea-h"></div>
+
         </div>
 
         {{!-- <div class="card-footer mx-3 mb-2" title="Código terreno">
@@ -216,9 +206,14 @@
         </div> --}}
 
         <div class="card-footer mx-3 mb-2" title="Código del terreno">
-            <a href="{{laapirest}}terreno/{{codigo_terreno}}/descripcion">
-                {{codigo_terreno}}
-            </a>
+            <div>
+                <a href="{{laapirest}}terreno/{{codigo_terreno}}/descripcion">
+                    <div class="btn boton-linea-secundario btn-block">
+                        {{codigo_terreno}}
+                    </div>
+
+                </a>
+            </div>
         </div>
 
         <span class="v_vencimiento" valor="{{vencimiento}}" hidden></span>
